@@ -1,4 +1,4 @@
-import { DimensionValue, View } from "react-native";
+import { type DimensionValue, View } from "react-native";
 
 type Props = {
   height?: string;

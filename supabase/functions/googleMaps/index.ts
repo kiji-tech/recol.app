@@ -7,7 +7,7 @@ const GOOGLE_MAPS_API_URL = "https://places.googleapis.com/v1/places";
 async function searchNearby(c: Hono.Context) {
   const { latitude, longitude } = await c.req.json();
   console.log({ latitude, longitude });
-  let response = await fetch(`${GOOGLE_MAPS_API_URL}:searchNearby`, {
+  const response = await fetch(`${GOOGLE_MAPS_API_URL}:searchNearby`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

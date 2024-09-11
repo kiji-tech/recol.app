@@ -1,13 +1,12 @@
-import { Stack } from "expo-router";
+import { Stack, Tabs } from "expo-router";
 
-const HomeLayout = () => {
+const EventsLayout = () => {
   return (
-    <Stack>
-      <Stack.Screen
-        name="index"
-        options={{ title: "ホーム", headerShown: true }}
-      />
-    </Stack>
+    <Tabs>
+      <Tabs.Screen name="index" options={{ title: "ホーム", headerShown: false }} />
+      <Tabs.Screen name="settings" options={{ title: "設定", headerShown: false }} />
+    </Tabs>
   );
 };
-export default HomeLayout;
+
+export default EventsLayout;
