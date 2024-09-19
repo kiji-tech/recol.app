@@ -7,7 +7,14 @@ import type { Region } from "react-native-maps";
 import { searchNearby, searchText } from "@/src/apis/GoogleMaps";
 import Button from "@/src/components/Button";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { ActivityIndicator, Image, Linking, Text, TextInput, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Linking,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const AppScreen = () => {
@@ -24,6 +31,16 @@ const AppScreen = () => {
     requestPermission();
   }
 
+  useEffect(() => {
+    const getLocations = async () => {
+      const {
+        coords: { latitude, longitude },
+      } = await Location.getCurrentPositionAsync({});
+      await fetchLocation(latitude, longitude);
+    };
+    getLocations();
+  }, []);
+
   const settingPlaces = (places: any) => {
     setPlaces(places);
     setSelectedPlace(places[0]);
@@ -34,19 +51,15 @@ const AppScreen = () => {
     });
   };
 
-  // Location Fetch
-  const fetchLocation = async (latitude: number, longitude: number) => {
-    console.log("fetchLocation", { latitude, longitude });
-    const response = await searchNearby(latitude, longitude);
-    settingPlaces(response);
-    setIsLoading(false);
-  };
-
   const handleSearch = async () => {
     console.log("search");
     setIsLoading(true);
     try {
-      const response = await searchText(isCoords?.latitude || 0, isCoords?.longitude || 0, text);
+      const response = await searchText(
+        isCoords?.latitude || 0,
+        isCoords?.longitude || 0,
+        text
+      );
       settingPlaces(response);
     } catch (e) {
       console.error(e);
@@ -55,15 +68,13 @@ const AppScreen = () => {
     }
   };
 
-  useEffect(() => {
-    const getLocations = async () => {
-      const {
-        coords: { latitude, longitude },
-      } = await Location.getCurrentPositionAsync({});
-      await fetchLocation(latitude, longitude);
-    };
-    getLocations();
-  }, []);
+  // Location Fetch
+  const fetchLocation = async (latitude: number, longitude: number) => {
+    console.log("fetchLocation", { latitude, longitude });
+    const response = await searchNearby(latitude, longitude);
+    settingPlaces(response);
+    setIsLoading(false);
+  };
 
   if (isLoading) {
     return (
@@ -75,20 +86,9 @@ const AppScreen = () => {
 
   return (
     <SafeAreaView>
-      <View className="flex justify-start items-center p-4 mb-2 h-full">
-        <View className="flex flex-row justify-between items-center w-full">
-          <MaterialIcons className="absolute opacity-30" name="search" size={38} color="#25292e" />
-          <TextInput
-            defaultValue={text}
-            onChangeText={(n) => setText(n)}
-            placeholder="検索"
-            onBlur={() => handleSearch()}
-            returnKeyType="search"
-            className="border-2 border-gray-300 rounded-lg w-full text-[18px] mb-2 py-2 pl-12"
-          />
-        </View>
-        {/* <Button text="search" onPress={search} /> */}
-        <View className="w-[100%] h-[80%] rounded-md">
+      <View className="flex justify-start items-center h-full">
+        {/* マップオブジェクト */}
+        <View className="w-[100%] h-[100%] rounded-md">
           <Map
             places={places}
             selectPlace={(place) => setSelectedPlace(place)}
@@ -96,8 +96,27 @@ const AppScreen = () => {
             setRegion={(region) => setIsCoords(region)}
           />
         </View>
+        {/* 検索バー */}
+        <View className="absolute bg-gray-100 flex flex-row justify-between rounded-xl items-center w-[95%] top-5">
+          <MaterialIcons
+            className="absolute opacity-30"
+            name="search"
+            size={38}
+            color="#25292e"
+          />
+          <TextInput
+            defaultValue={text}
+            onChangeText={(n) => setText(n)}
+            placeholder="検索"
+            onBlur={() => handleSearch()}
+            returnKeyType="search"
+            className="border-2 border-gray-300 w-full rounded-xl text-[18px] pl-12 py-2"
+          />
+        </View>
+
+        {/* 選択した場所のカード */}
         {selectedPlace && (
-          <View className="w-[70%] absolute bottom-20 bg-white opacity-80">
+          <View className="w-[70%] absolute bottom-5 bg-white opacity-80">
             {/* photos */}
             <View className="flex flex-row justify-start items-center">
               <Image
@@ -106,13 +125,20 @@ const AppScreen = () => {
               />
 
               <View className="flex justify-start items-start w-2/3">
-                <Text className="text-mb">{selectedPlace.displayName.text}</Text>
+                <Text className="text-mb">
+                  {selectedPlace.displayName.text}
+                </Text>
                 {/* address */}
-                <Text className="text-xs">{selectedPlace.formattedAddress}</Text>
+                <Text className="text-xs">
+                  {selectedPlace.formattedAddress}
+                </Text>
                 {/* rating */}
                 <Text>{selectedPlace.rating}</Text>
                 {/* GoogleMapURL */}
-                <Button text="website" onPress={() => Linking.openURL(selectedPlace.websiteUri)} />
+                <Button
+                  text="website"
+                  onPress={() => Linking.openURL(selectedPlace.websiteUri)}
+                />
               </View>
             </View>
             {/* reviews */}

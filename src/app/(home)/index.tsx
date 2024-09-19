@@ -28,8 +28,9 @@ export default function Events() {
             </TouchableOpacity>
           ))}
         </View>
-
-        <IconButton icon="add" onPress={() => {}} />
+        <TouchableOpacity>
+            <IconButton icon="add" onPress={() => {router.push('/(add.plan)/add.plan')}} />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
