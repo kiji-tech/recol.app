@@ -1,29 +1,52 @@
 import dayjs, { Dayjs } from 'dayjs';
-import { View } from 'react-native';
-import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
+import { useState } from 'react';
+import { TextInput, Text, TouchableOpacity, View } from 'react-native';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 type Props = {
-  selectedDates: { from?: Dayjs; to?: Dayjs };
-  onChange: (dates: { from?: Dayjs; to?: Dayjs }) => void;
+  label?: string;
+  value: Dayjs;
+  onChange: (date: Date) => void;
 };
-const DatePicker = ({ selectedDates, onChange }: Props) => {
+const DatePicker = ({ label, value, onChange }: Props) => {
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date: Date) => {
+    console.warn('A date has been picked: ', date);
+    onChange(date);
+    hideDatePicker();
+  };
+
   return (
-    <View className="bg-light-100 dark:bg-dark-200">
-      <DateTimePicker
-        locale={'jp'}
-        mode="range"
-        initialView="month"
-        startDate={selectedDates.from}
-        endDate={selectedDates.to}
-        onChange={({ startDate, endDate }) => {
-          if (startDate && endDate) {
-            onChange({ from: dayjs(startDate), to: dayjs(endDate) });
-          } else if (startDate) {
-            onChange({ from: dayjs(startDate), to: undefined });
-          } else if (endDate) {
-            onChange({ from: undefined, to: dayjs(endDate) });
-          }
-        }}
+    <View className="flex flex-col justify-start max-w-40 w-[40%] ">
+      {/* <TextInput
+        className="disabled"
+        value={value.format('YYYY/MM/DD')}
+        onPress={showDatePicker}
+        readOnly
+      /> */}
+      {label && (
+        <Text className="border-bottom-[1px] border-gray-10 text-lg text-gray-10 dark:text-gray-100">
+          {label}
+        </Text>
+      )}
+      <TouchableOpacity onPress={showDatePicker}>
+        <Text className="text-sm text-gray-10 dark:text-gray-100 bg-gray-100 dark:bg-gray-0 border-gray-50 dark:border-gray-40 border-[1px] py-2 px-4 rounded-xl">
+          {value.format('YYYY-MM-DD')}
+        </Text>
+      </TouchableOpacity>
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="date"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
       />
     </View>
   );

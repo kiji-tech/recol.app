@@ -4,7 +4,7 @@ import { colorScheme, useColorScheme } from 'nativewind';
 
 // Use imperatively
 //  | 'light' | 'system'
-colorScheme.set('dark');
+colorScheme.set('light');
 
 const RouteLayout = () => {
   return (
