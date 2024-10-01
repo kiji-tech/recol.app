@@ -44,3 +44,6 @@ expo-env.d.ts
 /docs/
 /functions/
 .env
+
+/android/
+/ios/

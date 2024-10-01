@@ -1,17 +1,34 @@
 import '@/global.css';
-import { Stack } from 'expo-router';
+import { Session } from '@supabase/supabase-js';
+import { router, Stack } from 'expo-router';
 import { colorScheme, useColorScheme } from 'nativewind';
+import { useEffect, useState } from 'react';
+import { supabase } from '../libs/supabase';
 
 // Use imperatively
 //  | 'light' | 'system'
 colorScheme.set('light');
 
 const RouteLayout = () => {
+  const [session, setSession] = useState<Session | null>(null);
+  useEffect(() => {
+    (async () => {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+      if (!session) {
+        router.navigate('/(auth)/signIn');
+      }
+    })();
+  }, []);
+
   return (
     <Stack>
       <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
       <Stack.Screen name="(add.plan)" options={{ title: '計画作成', headerShown: false }} />
       <Stack.Screen name="(plan)/[id]" options={{ title: '計画表示', headerShown: false }} />
+      <Stack.Screen name="(auth)" options={{ title: 'ログイン', headerShown: false }} />
     </Stack>
   );
 };

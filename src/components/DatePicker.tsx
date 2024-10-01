@@ -38,7 +38,7 @@ const DatePicker = ({ label, value, onChange }: Props) => {
         </Text>
       )}
       <TouchableOpacity onPress={showDatePicker}>
-        <Text className="text-sm text-gray-10 dark:text-gray-100 bg-gray-100 dark:bg-gray-0 border-gray-50 dark:border-gray-40 border-[1px] py-2 px-4 rounded-xl">
+        <Text className="text-sm text-gray-10 dark:text-gray-100 bg-gray-100 dark:bg-gray-0 border-gray-50 dark:border-gray-70 border-[1px] py-2 px-4 rounded-lg shadow-md">
           {value.format('YYYY-MM-DD')}
         </Text>
       </TouchableOpacity>

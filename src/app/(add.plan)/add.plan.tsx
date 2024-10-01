@@ -1,25 +1,58 @@
+import { Button } from '@/src/components';
 import BackgroundView from '@/src/components/BackgroundView';
-import Button from '@/src/components/Button';
+import CancelButton from '@/src/components/CancelButton';
 import DatePicker from '@/src/components/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
+import { router } from 'expo-router';
 import React, { useRef, useState } from 'react';
-import { View, Text, TextInput, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SwipeGesture } from 'react-native-swipe-gesture-handler';
 
 const SelectedDates = () => {
   const [fromDate, setFromDate] = useState<Dayjs>(dayjs());
   const [toDate, setToDate] = useState<Dayjs>(dayjs());
+  const [locations, setLocations] = useState<string[]>([]);
+
+  const handlerSubmit = async () => {
+    // 登録
+    const body = JSON.stringify({ from: fromDate.toDate(), to: toDate.toDate(), locations });
+    const res = await fetch(process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL + '/plan/list', {
+      body,
+      method: 'POST',
+    }).then((res) => res.json());
+    // toast
+    // 一覧に戻る
+    router.back();
+  };
 
   return (
     <SafeAreaView>
-      <View className="flex flex-col justify-start items-start">
+      <View className="flex flex-col justify-start items-start gap-4 h-screen">
         <Text className="text-lg text-gray-0 dark:text-gray-100 font-bold">
           日付を選択してください
         </Text>
         <View className="flex flex-row justify-center gap-4">
           <DatePicker label="from" value={fromDate} onChange={(date) => setFromDate(dayjs(date))} />
           <DatePicker label="to" value={toDate} onChange={(date) => setToDate(dayjs(date))} />
+        </View>
+        <Text className="text-lg text-gray-0 dark:text-gray-100 font-bold">
+          旅行したい場所を教えて下さい｡
+        </Text>
+        <TextInput
+          className="w-full h-10 p-2 border border-gray-50 dark:border-gray-70 rounded-lg bg-gray-100 dark:bg-dark-primary-base dark:text-gray-100 shadow-md"
+          value={locations[0]}
+          placeholder={'場所を入力してください'}
+          keyboardType="default"
+          onChangeText={(text) => setLocations([text])}
+        />
+        <Text className="text-lg text-gray-0 dark:text-gray-100 font-bold">
+          友達を追加する (任意)
+        </Text>
+        <Button text="選択" onPress={() => alert('準備中')} />
+        <View className="flex flex-row w-full justify-center items-center gap-4 absolute bottom-[20px] h-full">
+          <CancelButton />
+          <Button text="登録する" onPress={() => handlerSubmit()} />
         </View>
       </View>
     </SafeAreaView>
@@ -84,7 +117,7 @@ export default function AddPlan() {
         <SwipeGesture onSwipePerformed={handleSwipe}>
           <View className="flex justify-end items-center flex-col">
             <View className="flex h-full w-full">{steps[activeStep].component()}</View>
-            <View className="flex flex-row items-end  justify-center">
+            <View className="flex flex-row items-end justify-center">
               {steps.map((step, index) => (
                 <TouchableOpacity key={step.label} onPress={() => setActiveStep(index)}>
                   <View

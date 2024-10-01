@@ -1,27 +1,22 @@
-import Map from "@components/GoogleMaps/Map";
-import * as Location from "expo-location";
-import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
-import type { Region } from "react-native-maps";
+import Map from '@components/GoogleMaps/Map';
+import * as Location from 'expo-location';
+import { useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import type { Region } from 'react-native-maps';
 
-import { searchNearby, searchText } from "@/src/apis/GoogleMaps";
-import Button from "@/src/components/Button";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import {
-  ActivityIndicator,
-  Image,
-  Linking,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { searchNearby, searchText } from '@/src/apis/GoogleMaps';
+import Button from '@/src/components/Button';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { ActivityIndicator, Image, Linking, Text, TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Tables } from '@/src/libs/database.types';
 
 const AppScreen = () => {
   const { id } = useLocalSearchParams();
+  const [plan, setPlan] = useState<Tables<'plan'>>();
   const [isCoords, setIsCoords] = useState<Region>();
   const [isLoading, setIsLoading] = useState(true);
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
   const [selectedPlace, setSelectedPlace] = useState<any>();
   const [places, setPlaces] = useState<any>();
 
@@ -32,16 +27,39 @@ const AppScreen = () => {
   }
 
   useEffect(() => {
-    const getLocations = async () => {
-      const {
-        coords: { latitude, longitude },
-      } = await Location.getCurrentPositionAsync({});
-      await fetchLocation(latitude, longitude);
-    };
-    getLocations();
+    (async () => {
+      fetch(process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL + '/plan/' + id, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(async (res) => {
+          const plan = await res.json();
+          console.log({ plana: plan.data[0] });
+          setPlan(plan.data[0]);
+        })
+        .catch((e) => console.error(e))
+        .finally(() => {
+          setIsLoading(false);
+        });
+    })();
   }, []);
 
+  useEffect(() => {
+    if (plan && plan.locations!.length > 0) {
+      setText(plan.locations![0]);
+      searchText(isCoords?.latitude || 0, isCoords?.longitude || 0, plan.locations![0]).then(
+        (response) => {
+          console.log({ response });
+          settingPlaces(response);
+        }
+      );
+    }
+  }, [plan]);
+
   const settingPlaces = (places: any) => {
+    console.log({ places });
     setPlaces(places);
     setSelectedPlace(places[0]);
     setIsCoords({
@@ -52,14 +70,9 @@ const AppScreen = () => {
   };
 
   const handleSearch = async () => {
-    console.log("search");
     setIsLoading(true);
     try {
-      const response = await searchText(
-        isCoords?.latitude || 0,
-        isCoords?.longitude || 0,
-        text
-      );
+      const response = await searchText(isCoords?.latitude || 0, isCoords?.longitude || 0, text);
       settingPlaces(response);
     } catch (e) {
       console.error(e);
@@ -70,7 +83,7 @@ const AppScreen = () => {
 
   // Location Fetch
   const fetchLocation = async (latitude: number, longitude: number) => {
-    console.log("fetchLocation", { latitude, longitude });
+    console.log('fetchLocation', { latitude, longitude });
     const response = await searchNearby(latitude, longitude);
     settingPlaces(response);
     setIsLoading(false);
@@ -79,6 +92,7 @@ const AppScreen = () => {
   if (isLoading) {
     return (
       <View className="flex justify-center items-center h-full">
+        <Text className="mb-2">{isLoading ? 'Loading...' : ''}</Text>
         <ActivityIndicator />
       </View>
     );
@@ -98,12 +112,7 @@ const AppScreen = () => {
         </View>
         {/* 検索バー */}
         <View className="absolute bg-gray-100 flex flex-row justify-between rounded-xl items-center w-[95%] top-5">
-          <MaterialIcons
-            className="absolute opacity-30"
-            name="search"
-            size={38}
-            color="#25292e"
-          />
+          <MaterialIcons className="absolute opacity-30" name="search" size={38} color="#25292e" />
           <TextInput
             defaultValue={text}
             onChangeText={(n) => setText(n)}
@@ -125,20 +134,13 @@ const AppScreen = () => {
               />
 
               <View className="flex justify-start items-start w-2/3">
-                <Text className="text-mb">
-                  {selectedPlace.displayName.text}
-                </Text>
+                <Text className="text-mb">{selectedPlace.displayName.text}</Text>
                 {/* address */}
-                <Text className="text-xs">
-                  {selectedPlace.formattedAddress}
-                </Text>
+                <Text className="text-xs">{selectedPlace.formattedAddress}</Text>
                 {/* rating */}
                 <Text>{selectedPlace.rating}</Text>
                 {/* GoogleMapURL */}
-                <Button
-                  text="website"
-                  onPress={() => Linking.openURL(selectedPlace.websiteUri)}
-                />
+                <Button text="website" onPress={() => Linking.openURL(selectedPlace.websiteUri)} />
               </View>
             </View>
             {/* reviews */}

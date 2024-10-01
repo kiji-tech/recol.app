@@ -10,15 +10,19 @@
     "postinstall": "node postinstall.js",
     "functions:dev": "supabase functions serve --env-file .env --no-verify-jwt",
     "functions:deploy": "supabase functions deploy",
+    "generate:types": "export $(cat .env | grep -v \"#\" | xargs) && npx supabase gen types typescript --project-id ${EXPO_PUBLIC_SUPABASE_REFERENCE_ID} --schema public > src/libs/database.types.ts",
+    "generate:types:local": "export $(cat .env | grep -v \"#\" | xargs) &&  supabase gen types --lang typescript --local --schema public > src/libs/database.types.ts",
     "test": "jest",
     "lint": "eslint src",
-    "lint:fix": "eslint src --fix"
+    "lint:fix": "eslint src --fix",
+    "ios:simulator": "open -a Simulator"
   },
   "jest": {
     "preset": "jest-expo"
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
+    "@react-native-async-storage/async-storage": "^2.0.0",
     "@react-native-community/datetimepicker": "^8.0.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
@@ -49,7 +53,7 @@
     "react-native-dotenv": "^3.4.11",
     "react-native-geocoder": "^0.5.0",
     "react-native-gesture-handler": "~2.16.1",
-    "react-native-maps": "^1.18.0",
+    "react-native-maps": "^1.14.0",
     "react-native-modal-datetime-picker": "^18.0.0",
     "react-native-reanimated": "~3.10.1",
     "react-native-safe-area-context": "4.10.5",

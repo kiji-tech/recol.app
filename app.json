@@ -13,7 +13,10 @@
         },
         "ios": {
             "supportsTablet": true,
-            "bundleIdentifier": "com.libetech.voyz"
+            "bundleIdentifier": "com.libetech.voyz",
+            "config": {
+                "googleMapsApiKey": "AIzaSyDZg8Pd1pIXO0NWl1lWo0JJM1UCixBqarQ"
+            }
         },
         "android": {
             "adaptiveIcon": {
@@ -42,6 +45,7 @@
             "typedRoutes": true
         },
         "extra": {
+            "scheme": "voyz",
             "router": {
                 "origin": false
             },
