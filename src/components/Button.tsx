@@ -11,13 +11,10 @@ const Button = ({ text, theme = 'primary', onPress = () => void 0 }: Props) => {
     <TouchableOpacity onPress={onPress}>
       <View
         className={`
-            rounded-md w-full flex justify-center item-center py-2 px-4
-            bg-light-${theme}-base dark:bg-dark-${theme}-base 
-            hover:bg-light-${theme}-hover dark:hover:bg-dark-${theme}-hover
-            shadow-md
+            rounded-md w-full flex justify-center item-center py-2 px-4 bg-light-theme dark:bg-dark-theme shadow-md
             `}
       >
-        <Text className={`text-gray-0 dark:text-gray-100 text-md text-center`}>{text}</Text>
+        <Text className={`text-light-text dark:text-dark-text text-md text-center`}>{text}</Text>
       </View>
     </TouchableOpacity>
   );

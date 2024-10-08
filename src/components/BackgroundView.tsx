@@ -1,8 +1,14 @@
-import { SafeAreaView, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { backgroundColor } from '../themes/ColorUtil';
 
-export default function BackgroundView({ children }: { children: React.ReactNode }) {
+type Props = {
+  children: React.ReactNode;
+};
+export default function BackgroundView({ children }: Props) {
   return (
-    <View className="flex flex-col justify-start items-center w-screen h-screen p-4 bg-light-primary-clear dark:bg-dark-primary-clear">
+    <View
+      className={`flex flex-col justify-start items-start h-screen p-8 gap-8  bg-[#fff] dark:bg-[#1A0927]`}
+    >
       {children}
     </View>
   );

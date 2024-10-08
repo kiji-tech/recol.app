@@ -1,6 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
-import { Pressable, Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
+import { bgFormColor, bgThemeColor, borderColor, textColor } from '../themes/ColorUtil';
 
 type Props = {
   icon: string;
@@ -8,14 +9,19 @@ type Props = {
 };
 export default function IconButton({ icon, onPress }: Props) {
   return (
-    <TouchableOpacity
-      className={`
-        h-12 w-12 bg-gray-100 rounded-full
+    <TouchableOpacity onPress={onPress}>
+      <View
+        className={`
+        h-12 w-12 rounded-full
         flex justify-center items-center
+        shadow-sm
+        ${borderColor}
+        ${textColor}
+        ${bgThemeColor}
      `}
-      onPress={onPress}
-    >
-      <MaterialIcons name={icon as any} size={24} color="#25292e" className="" />
+      >
+        <MaterialIcons name={icon as any} size={18} className={`${textColor}`} />
+      </View>
     </TouchableOpacity>
   );
 }

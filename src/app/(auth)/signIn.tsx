@@ -38,7 +38,7 @@ export default function SignInScreen() {
         <View className="flex flex-col justify-start items-center gap-4 w-[80%]">
           <Text className="text-4xl font-bold">Welcome to the Voyx</Text>
           {/* 画像 */}
-          <View className="bg-light-secondary-clear h-96 w-96 rounded-xl mb-4"></View>
+          <View className="bg-light-theme h-96 w-96 rounded-xl mb-4"></View>
           {/* form */}
           <TextInput
             className="w-full h-10 p-2 border border-gray-50 dark:border-gray-70 rounded-lg bg-gray-100 dark:bg-dark-primary-base dark:text-gray-100 shadow-md"

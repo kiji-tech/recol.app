@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../libs/supabase';
 
 // Use imperatively
-//  | 'light' | 'system'
+// 'dark  | 'light' | 'system'
 colorScheme.set('light');
 
 const RouteLayout = () => {

@@ -6,9 +6,7 @@ const app = new Hono().basePath('/plan');
 
 const generateSupabase = (c: Hono.Context) => {
   // @ts-ignore
-  return createClient(
-    Deno.env.get('SUPABASE_URL') ?? '',
-    Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+  return createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     // {
     //     global: { headers: { Authorization: c.headers.get('Authorization')! } },
     // }
