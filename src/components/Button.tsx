@@ -1,20 +1,27 @@
 import React from 'react';
-import { Pressable, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 interface Props {
   text: string;
-  theme?: 'primary' | 'secondary' | 'info' | 'warn' | 'danger';
+  theme?: 'theme' | 'info' | 'warn' | 'danger' | 'background';
+  disabled: boolean;
   onPress: () => void;
 }
-const Button = ({ text, theme = 'primary', onPress = () => void 0 }: Props) => {
+const Button = ({
+  text,
+  theme = 'background',
+  disabled = false,
+  onPress = () => void 0,
+}: Props) => {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} disabled={disabled}>
       <View
         className={`
-            rounded-md w-full flex justify-center item-center py-2 px-4 bg-light-theme dark:bg-dark-theme shadow-md
+            ${disabled ? 'opacity-20' : ''}
+            rounded-md w-full flex justify-center item-center py-4 px-8 bg-light-${theme} dark:bg-dark-${theme}
             `}
       >
-        <Text className={`text-light-text dark:text-dark-text text-md text-center`}>{text}</Text>
+              <Text className={`text-light-text dark:text-dark-text text-md text-center`}>{text} {disabled ? ' 非活性' : ' 活性'}</Text>
       </View>
     </TouchableOpacity>
   );

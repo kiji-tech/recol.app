@@ -5,32 +5,58 @@ import { createClient } from 'jsr:@supabase/supabase-js@2';
 const app = new Hono().basePath('/plan');
 
 const generateSupabase = (c: Hono.Context) => {
-  // @ts-ignore
-  return createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+  return createClient(
+    // @ts-ignore
+    Deno.env.get('SUPABASE_URL') ?? '',
+    // @ts-ignore
+    Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     // {
     //     global: { headers: { Authorization: c.headers.get('Authorization')! } },
     // }
   );
 };
 
+/**
+ * 
+ * @param c 
+ * @returns 
+ */
 const create = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
-  const { from, to, locations } = await c.req.json();
-
+  const { title, from, to, locations } = await c.req.json();
+  console.log({ title, from, to, locations });
   // planを作成
-  const { data, error } = await supabase.from('plan').insert([{ from, to, locations }]).select('*');
+  const { data, error } = await supabase
+    .from('plan')
+    .insert({ title, from, to, locations })
+    .select('*');
+
+  if (error) {
+    console.error(error);
+    return c.json({ error }, 403);
+  }
 
   return c.json({ data, error });
 };
 
+/**
+ * 
+ * @param c 
+ * @returns 
+ */
 const get = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
-  const id = c.req.param('id');
-  console.log('plan/' + id);
-  const { data, error } = await supabase.from('plan').select('*').eq('id', id).maybeSingle();
+  const uid = c.req.param('uid');
+  console.log('plan/' + uid);
+  const { data, error } = await supabase.from('plan').select('*').eq('uid', uid).maybeSingle();
   return c.json({ data, error });
 };
 
+/**
+ * 
+ * @param c 
+ * @returns 
+ */
 const list = async (c: Hono.Context) => {
   console.log('plan/list');
   const supabase = generateSupabase(c);
@@ -40,7 +66,7 @@ const list = async (c: Hono.Context) => {
 };
 
 app.post('/list', list);
-app.get('/:id', get);
+app.get('/:uid', get);
 app.post('/', create);
 
 //@ts-ignore

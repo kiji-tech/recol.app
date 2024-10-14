@@ -33,10 +33,14 @@ const DatePicker = ({ label, value, onChange }: Props) => {
 
   return (
     <View className={`flex flex-col justify-start max-w-40 w-[40%]`}>
-      {label && <Text className={`${textColor}`}>{label}</Text>}
+      {label && <Text className={`text-light-text dark:text-dark-text`}>{label}</Text>}
       <TouchableOpacity onPress={showDatePicker}>
-        <View className={`border py-4 px-4 rounded-xl ${bgFormColor}  ${borderColor}`}>
-          <Text className={`text-md ${textColor}`}>{value.format('YYYY-MM-DD')}</Text>
+        <View
+          className={`border py-4 px-4 rounded-xl bg-light-background dark:bg-dark-background `}
+        >
+          <Text className={`text-md text-light-text dark:text-dark-text`}>
+            {value.format('YYYY-MM-DD')}
+          </Text>
         </View>
       </TouchableOpacity>
       <DateTimePickerModal

@@ -1,3 +1,6 @@
+Need to install the following packages:
+supabase@1.204.3
+Ok to proceed? (y) 
 export type Json =
   | string
   | number
@@ -14,27 +17,30 @@ export type Database = {
           created_at: string
           delete_flag: boolean | null
           from: string | null
-          id: number
           locations: string[] | null
+          title: string | null
           to: string | null
+          uid: string
           updated_at: string | null
         }
         Insert: {
           created_at?: string
           delete_flag?: boolean | null
           from?: string | null
-          id?: number
           locations?: string[] | null
+          title?: string | null
           to?: string | null
+          uid?: string
           updated_at?: string | null
         }
         Update: {
           created_at?: string
           delete_flag?: boolean | null
           from?: string | null
-          id?: number
           locations?: string[] | null
+          title?: string | null
           to?: string | null
+          uid?: string
           updated_at?: string | null
         }
         Relationships: []

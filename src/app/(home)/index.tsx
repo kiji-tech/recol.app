@@ -6,11 +6,13 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { usePlan } from '@/src/contexts/PlanContext';
+import { bgFormColor } from '@/src/themes/ColorUtil';
 
 export default function Events() {
   const router = useRouter();
   const [plans, setPlans] = useState<Tables<'plan'>[]>([]);
-
+  const { setPlan } = usePlan();
   useEffect(() => {
     (async () => {
       const res = await fetch(process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL + '/plan/list', {
@@ -19,7 +21,6 @@ export default function Events() {
           'Content-Type': 'application/json',
         },
       }).then((res) => res.json());
-      console.log({ data: res.data });
       setPlans(res.data);
     })();
   }, []);
@@ -27,7 +28,7 @@ export default function Events() {
   const addButton = () => {
     return (
       <TouchableOpacity>
-        <View className="">
+        <View>
           <IconButton
             icon="add"
             onPress={() => {
@@ -55,27 +56,28 @@ export default function Events() {
     <SafeAreaView>
       <BackgroundView>
         <View className="flex flex-row justify-center flex-wrap gap-4 mb-4">
-          {plans.map((p, i) => (
+          {plans.map((p) => (
             <TouchableOpacity
-              key={p.id}
+              key={p.uid}
               className={`
-                bg-light-theme
-                dark:bg-dark-theme
-                shadow-lg
+                ${bgFormColor()}
                 p-4
                 w-full rounded-lg`}
               onPress={() => {
+                setPlan(p);
                 router.push({
-                  pathname: '/(plan)/[id]/map',
+                  pathname: '/(plan)/map',
                   params: {
-                    id: p.id,
+                    uid: p.uid,
                   },
                 });
               }}
             >
               <View className="flex flex-col gap-2 justify-start items-start">
                 <View className="flex flex-row justify-between items-center w-full">
-                  <Text className={`font-bold text-xl`}>{p.locations?.join(' ')}</Text>
+                  <Text className={`font-bold text-xl text-light-text dark:text-dark-text`}>
+                    {p.title}
+                  </Text>
                   <Text className={`text-md text-light-text dark:text-dark-text`}>
                     {dayjs(p.from).format('M/D')} - {dayjs(p.to).format('M/D')}
                   </Text>

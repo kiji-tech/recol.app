@@ -1,5 +1,5 @@
 import { Text, TouchableOpacity, View } from 'react-native';
-import { backgroundColor } from '../themes/ColorUtil';
+import { backgroundColor, bgThemeColor } from '../themes/ColorUtil';
 
 type Props = {
   children: React.ReactNode;
@@ -7,7 +7,7 @@ type Props = {
 export default function BackgroundView({ children }: Props) {
   return (
     <View
-      className={`flex flex-col justify-start items-start h-screen p-8 gap-8  bg-[#fff] dark:bg-[#1A0927]`}
+      className={`flex flex-col justify-start items-start h-screen p-8 gap-8 bg-light-theme dark:bg-dark-theme`}
     >
       {children}
     </View>

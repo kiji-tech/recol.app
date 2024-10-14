@@ -5,9 +5,10 @@ import { bgFormColor, bgThemeColor, borderColor, textColor } from '../themes/Col
 
 type Props = {
   icon: string;
+  checked: boolean;
   onPress: () => void;
 };
-export default function IconButton({ icon, onPress }: Props) {
+export default function IconCheckButton({ icon, checked, onPress }: Props) {
   return (
     <TouchableOpacity onPress={onPress}>
       <View
@@ -15,6 +16,7 @@ export default function IconButton({ icon, onPress }: Props) {
         h-12 w-12 rounded-full
         flex justify-center items-center
         bg-light-background dark:bg-dark-background
+        ${checked ? 'opacity-100' : 'opacity-50'}
      `}
       >
         {/* TODO  color . dark mode */}
