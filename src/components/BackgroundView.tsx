@@ -1,15 +1,18 @@
-import { Text, TouchableOpacity, View } from 'react-native';
-import { backgroundColor, bgThemeColor } from '../themes/ColorUtil';
+import React from 'react';
+import { ScrollView, View } from 'react-native';
 
 type Props = {
   children: React.ReactNode;
 };
 export default function BackgroundView({ children }: Props) {
   return (
-    <View
-      className={`flex flex-col justify-start items-start h-screen p-8 gap-8 bg-light-theme dark:bg-dark-theme`}
-    >
-      {children}
+    <View className={`h-screen bg-light-theme dark:bg-dark-theme`}>
+      <ScrollView
+        // bounces={false}
+        contentContainerClassName="gap-4 px-8 pt-8 pb-22"
+      >
+        {children}
+      </ScrollView>
     </View>
   );
 }

@@ -66,7 +66,7 @@ export default function Events() {
               onPress={() => {
                 setPlan(p);
                 router.push({
-                  pathname: '/(plan)/map',
+                  pathname: '/(plan)/MapScreen',
                   params: {
                     uid: p.uid,
                   },

@@ -1,16 +1,19 @@
-import { Image, Modal, Text, Touchable, TouchableOpacity, View } from 'react-native';
+'use client';
+import React from 'react';
+import { Image, Modal, Text, TouchableOpacity, View } from 'react-native';
 import Button from '../Button';
 import { reviewAIAnalyze } from '@/src/apis/OpenAI';
 import { useState } from 'react';
-import BackButtonHeader from '../BackButtonHeader';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import IconButton from '../IconButton';
+import { usePlan } from '@/src/contexts/PlanContext';
+import { Tables } from '@/src/libs/database.types';
 
 type Props = {
   place: any;
   onPress: (place: any) => void;
 };
 export default function PlaceInfo({ place, onPress }: Props) {
+  const { plan, setPlan } = usePlan();
   const [isAiNavigation, setIsAiNavigation] = useState(false);
   const [isAiText, setIsAiText] = useState('');
 
@@ -33,7 +36,10 @@ export default function PlaceInfo({ place, onPress }: Props) {
     });
   };
 
-  const handleAddPlan = () => {};
+  const handleAddPlan = () => {
+    const newPlan = { ...plan, locations: [...plan!.locations!, JSON.stringify(place.location)] };
+    setPlan(newPlan as Tables<'plan'>);
+  };
 
   return (
     <TouchableOpacity key={place.id} onPress={() => onPress(place)}>
@@ -61,7 +67,7 @@ export default function PlaceInfo({ place, onPress }: Props) {
           </Text>
           <View className="mt-4 flex flex-row justify-center items-center gap-2">
             <Button text="AIレビュー" theme="theme" onPress={handleAiAnalyze} />
-            <Button text="プランに追加" theme="theme" onPress={handleAiAnalyze} />
+            <Button text="プランに追加" theme="theme" onPress={handleAddPlan} />
           </View>
           {/* <Text className={`text-md text-light-text dark:text-dark-text`}>{place.phoneNumber}</Text> */}
           {/* rating */}

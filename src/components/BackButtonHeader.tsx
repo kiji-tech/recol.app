@@ -1,5 +1,4 @@
-import { TouchableOpacity, View, Text, Dimensions } from 'react-native';
-import { bgFormColor, borderColor, shadowColor, textColor } from '../themes/ColorUtil';
+import { View } from 'react-native';
 import IconButton from './IconButton';
 type Props = {
   onPress: () => void;
@@ -11,7 +10,6 @@ export default function BackButtonHeader({ onPress, children, isDummy = false }:
     <View className="flex flex-row justify-center items-center w-full">
       <IconButton icon="arrow-back" onPress={onPress}></IconButton>
       <View className={`flex-1 w-full `}>{children}</View>
-      {/* ダミー */}
       {isDummy && <View className="w-12 h-12"></View>}
     </View>
   );
