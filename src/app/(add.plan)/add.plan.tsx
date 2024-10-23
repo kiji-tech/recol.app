@@ -1,7 +1,7 @@
 import { Button } from '@/src/components';
 import { BackgroundView } from '@/src/components';
 import DatePicker from '@/src/components/DatePicker';
-import { bgFormColor, borderColor, textColor } from '@/src/themes/ColorUtil';
+import { borderColor } from '@/src/themes/ColorUtil';
 import dayjs, { Dayjs } from 'dayjs';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -26,7 +26,7 @@ export default function AddPlan() {
   useEffect(() => {
     const getLocationPermissions = async () => {
       try {
-        let {
+        const {
           coords: { latitude, longitude },
         } = await Location.getCurrentPositionAsync({});
         console.log({ latitude, longitude });

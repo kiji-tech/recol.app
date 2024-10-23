@@ -1,5 +1,4 @@
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
-
 const coffeeShopsCategory = ['cafe', 'coffee_shop', 'restaurant'];
 
 const hotels = [
@@ -15,6 +14,20 @@ const hotels = [
 
 const FiledMaskValue =
   'places.id,places.types,places.reviews,places.displayName,places.formattedAddress,places.rating,places.location,places.photos,places.websiteUri';
+
+async function searchId(placeId: string) {
+  const response = await fetch(`${GOOGLE_MAPS_API_URL}/${placeId}`, {
+    method: 'GET',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || '',
+      'X-Goog-FieldMask': 'id,types,reviews,displayName,formattedAddress,rating,location,photos,websiteUri',
+    }),
+  })
+    .then((response) => response.json())
+    .catch((e) => console.log(e));
+  return response;
+}
 
 async function searchNearby(
   latitude: number,
@@ -89,4 +102,4 @@ async function searchText(latitude: number, longitude: number, text: string) {
     .catch((e) => console.log(JSON.stringify(e)));
   return response.places;
 }
-export { searchNearby, searchText };
+export { searchId, searchNearby, searchText };

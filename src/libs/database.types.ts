@@ -1,6 +1,3 @@
-Need to install the following packages:
-supabase@1.204.3
-Ok to proceed? (y) 
 export type Json =
   | string
   | number
@@ -18,6 +15,7 @@ export type Database = {
           delete_flag: boolean | null
           from: string | null
           locations: string[] | null
+          place_id_list: string[] | null
           title: string | null
           to: string | null
           uid: string
@@ -28,6 +26,7 @@ export type Database = {
           delete_flag?: boolean | null
           from?: string | null
           locations?: string[] | null
+          place_id_list?: string[] | null
           title?: string | null
           to?: string | null
           uid?: string
@@ -38,6 +37,7 @@ export type Database = {
           delete_flag?: boolean | null
           from?: string | null
           locations?: string[] | null
+          place_id_list?: string[] | null
           title?: string | null
           to?: string | null
           uid?: string
@@ -141,4 +141,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never

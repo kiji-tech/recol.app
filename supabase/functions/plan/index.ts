@@ -17,9 +17,9 @@ const generateSupabase = (c: Hono.Context) => {
 };
 
 /**
- * 
- * @param c 
- * @returns 
+ *
+ * @param c
+ * @returns
  */
 const create = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
@@ -39,10 +39,29 @@ const create = async (c: Hono.Context) => {
   return c.json({ data, error });
 };
 
+const update = async (c: Hono.Context) => {
+  const supabase = generateSupabase(c);
+  const { uid, title, from, to, locations, place_id_list } = await c.req.json();
+  console.log({ uid, title, from, to, locations, place_id_list });
+  // planを更新
+  const { data, error } = await supabase
+    .from('plan')
+    .update({ title, from, to, locations, place_id_list })
+    .eq('uid', uid)
+    .select('*');
+
+  if (error) {
+    console.error(error);
+    return c.json({ error }, 403);
+  }
+
+  return c.json({ data, error });
+};
+
 /**
- * 
- * @param c 
- * @returns 
+ *
+ * @param c
+ * @returns
  */
 const get = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
@@ -53,9 +72,9 @@ const get = async (c: Hono.Context) => {
 };
 
 /**
- * 
- * @param c 
- * @returns 
+ *
+ * @param c
+ * @returns
  */
 const list = async (c: Hono.Context) => {
   console.log('plan/list');
@@ -68,6 +87,7 @@ const list = async (c: Hono.Context) => {
 app.post('/list', list);
 app.get('/:uid', get);
 app.post('/', create);
+app.put('/', update);
 
 //@ts-ignore
 Deno.serve(app.fetch);
