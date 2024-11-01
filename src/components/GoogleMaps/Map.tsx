@@ -1,14 +1,24 @@
+import { CafeType, HotelsType, ParkType } from '@/src/apis/GoogleMaps';
+import { Place } from '@/src/entities/Place';
 import React, { useMemo } from 'react';
 import { Image, View, Text, TouchableOpacity } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE, type Region } from 'react-native-maps';
+import MapView, {
+  Callout,
+  LatLng,
+  MapMarker,
+  Marker,
+  PROVIDER_GOOGLE,
+  type Region,
+} from 'react-native-maps';
 
+const ICON_SIZE = 24;
 type Props = {
   region?: Region;
   centerRegion?: Region;
-  places?: any;
+  places?: Place[];
   setRegion?: (region: Region) => void;
-  selectPlace?: (place: any) => void;
-  selectedPlace?: any;
+  selectPlace?: (place: Place) => void;
+  selectedPlace?: Place;
   isMarker?: boolean;
   onPressReSearch?: () => void;
 };
@@ -17,17 +27,25 @@ export default function Map({
   places,
   centerRegion,
   setRegion = () => void 0,
-    selectPlace = () => void 0,
+  selectPlace = () => void 0,
   onPressReSearch = () => void 0,
   selectedPlace,
   isMarker = false,
 }: Props) {
+  const markerRef: { [id: string]: MapMarker | null } = {};
+
+  React.useEffect(() => {
+    if (selectedPlace && markerRef[selectedPlace.id] != null) {
+      markerRef[selectedPlace.id]?.showCallout();
+    }
+  }, [selectedPlace]);
+
   // ズームレベルに応じた閾値を決定する関数
   const getThresholdDistanceByZoom = (zoom: number): number => {
     // 一般的にズームレベルに応じて距離を調整する
     // ズームが低いほど大きな範囲が表示されるので閾値を大きくする
     if (zoom > 15) {
-      return 0.5; // 近距離での閾値 (ズームイン時、500m)
+      return 0.3; // 近距離での閾値 (ズームイン時、500m)
     } else if (zoom > 10) {
       return 2; // 中距離での閾値 (ズーム中、2km)
     } else {
@@ -51,11 +69,6 @@ export default function Map({
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c;
-    console.log({
-      distance,
-      log: Math.log2(360 / region!.latitudeDelta),
-      flag: distance > getThresholdDistanceByZoom(Math.log2(360 / region!.latitudeDelta)),
-    });
     return distance > getThresholdDistanceByZoom(Math.log2(360 / region!.latitudeDelta)); // 距離をキロメートルで返す
   }, [region, centerRegion]);
 
@@ -70,29 +83,41 @@ export default function Map({
           if (isGesture) setRegion(region);
         }}
       >
-        {places?.map((place: any) => {
+        {places?.map((place: Place) => {
           return (
             <Marker
               key={place.id}
+              ref={(ref) => {
+                markerRef[place.id] = ref;
+              }}
+              title={place.displayName.text}
               onPress={() => selectPlace(place)}
               coordinate={{ ...place.location }}
             >
-              {place && place.types && place.types.findIndex((t: any) => t == 'cafe') >= 0 && (
+              {place && place.types && place.types.some((p: string) => CafeType.includes(p)) && (
                 <Image
                   source={require('@/assets/images/mapicons/cafe.png')}
-                  style={{ width: 40, height: 40 }}
+                  style={{ width: ICON_SIZE, height: ICON_SIZE }}
                 />
               )}
-              {place && place.types && place.types.findIndex((t: any) => t == 'hotel') >= 0 && (
+              {place && place.types && place.types.some((p: string) => HotelsType.includes(p)) && (
                 <Image
                   source={require('@/assets/images/mapicons/hotel.png')}
-                  style={{ width: 40, height: 40 }}
+                  style={{ width: ICON_SIZE, height: ICON_SIZE }}
+                />
+              )}
+              {place && place.types && place.types.some((p: string) => ParkType.includes(p)) && (
+                <Image
+                  source={require('@/assets/images/mapicons/park.png')}
+                  style={{ width: ICON_SIZE, height: ICON_SIZE }}
                 />
               )}
             </Marker>
           );
         })}
+        <Callout tooltip={true} />
       </MapView>
+      {/* 再検索ボタン */}
       {isResearched && (
         <View className="w-full absolute top-0 left-0">
           <TouchableOpacity

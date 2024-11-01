@@ -1,5 +1,6 @@
 {
     "expo": {
+        "packageName": "com.libetech.voyz",
         "name": "Voyz",
         "slug": "voyz",
         "version": "1.0.0",
@@ -19,16 +20,20 @@
             }
         },
         "android": {
+            "package": "com.libetech.voyz",
             "adaptiveIcon": {
                 "foregroundImage": "./assets/adaptive-icon.png",
                 "backgroundColor": "#ffffff"
             },
-            "package": "com.libetech.voyz"
+            "config": {
+                "googleMaps": {
+                    "apiKey": "AIzaSyB3kyCKbNsUC_mcyeZpiiT3OWISKfe2Joo"
+                }
+            }
         },
         "web": {
             "favicon": "./assets/favicon.png",
-            "bundler": "metro",
-            "output": "server"
+            "bundler": "metro"
         },
         "plugins": [
             [
@@ -39,13 +44,14 @@
                 {
                     "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
                 }
-            ]
+            ],
+            "expo-font",
+            "expo-build-properties"
         ],
         "experiments": {
             "typedRoutes": true
         },
         "extra": {
-            "scheme": "voyz",
             "router": {
                 "origin": false
             },

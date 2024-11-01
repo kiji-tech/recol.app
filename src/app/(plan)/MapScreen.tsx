@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import type { Region } from 'react-native-maps';
 import { searchNearby, searchText } from '@/src/apis/GoogleMaps';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { ScrollView, TextInput, View, Text } from 'react-native';
+import { TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BackgroundView } from '@/src/components';
 import BackButtonHeader from '@/src/components/BackButtonHeader';
@@ -14,7 +14,6 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import IconCheckButton from '@/src/components/IconCheckButton';
 import PlaceInfoBottomSheet from '@/src/components/GoogleMaps/PlaceInfoBottomSheet';
 import { Place } from '@/src/entities/Place';
-import BottomSheet from '@/src/components/BottomSheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const MapScreen = () => {
@@ -56,7 +55,8 @@ const MapScreen = () => {
         isCoords.longitude,
         40000 * isCoords.latitudeDelta,
         isCoffee,
-        isHotel
+        isHotel,
+        isPark
       )
         .then((response) => {
           settingPlaces(response);
@@ -81,8 +81,9 @@ const MapScreen = () => {
       latitude,
       longitude,
       6371 * isCoords.latitudeDelta,
-      true,
-      false
+      isCoffee,
+      isHotel,
+      isPark
     );
     settingPlaces(response);
   };
@@ -117,7 +118,6 @@ const MapScreen = () => {
 
   /** 場所を選択したときのイベントハンドラ */
   const handleSelectedPlace = (place: Place) => {
-    console.log(place);
     setSelectedPlace(place);
     setIsCoords((prev) => {
       return {
@@ -129,7 +129,7 @@ const MapScreen = () => {
     const index = places!.findIndex((p: Place) => p.id === place.id);
     if (index !== -1) {
       (ref.current! as any).scrollTo({
-        x: Math.max((384 - 24) * index, 0),
+        y: Math.max(130 * index, 0),
         animation: true,
       });
     }
@@ -140,8 +140,8 @@ const MapScreen = () => {
   }
 
   return (
-    <SafeAreaView>
-      <GestureHandlerRootView className="flex-1 size-full">
+    <GestureHandlerRootView>
+      <SafeAreaView>
         <BackgroundView>
           {/* 検索バー */}
           <BackButtonHeader onPress={() => router.back()}>
@@ -181,22 +181,25 @@ const MapScreen = () => {
             />
           </View>
           {/* マップオブジェクト */}
-          <View className=" w-full h-[60%]">
+          <View className=" w-full h-[40%]">
             <Map
               places={places}
               region={isCoords}
+              selectedPlace={selectedPlace}
               centerRegion={centerCords}
-              selectPlace={(place) => handleSelectedPlace(place)}
+              selectPlace={(place: Place) => handleSelectedPlace(place)}
               setRegion={handleChangeMap}
               onPressReSearch={handleResearch}
             />
           </View>
-          <PlaceInfoBottomSheet places={places} onPress={(p) => handleSelectedPlace(p)} />
+          <PlaceInfoBottomSheet
+            sheetRef={ref}
+            places={places}
+            onPress={(p: Place) => handleSelectedPlace(p)}
+          />
         </BackgroundView>
-      </GestureHandlerRootView>
-      {/* 検索結果一覧 */}
-      {/* <BottomSheet /> */}
-    </SafeAreaView>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 export default MapScreen;

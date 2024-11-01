@@ -1,7 +1,8 @@
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
-const coffeeShopsCategory = ['cafe', 'coffee_shop', 'restaurant'];
 
-const hotels = [
+export const ParkType = ['park', 'amusement_park', 'campground', 'rv_park'];
+export const CafeType = ['cafe', 'coffee_shop', 'restaurant'];
+export const HotelsType = [
   'bed_and_breakfast',
   'extended_stay_hotel',
   'guest_house',
@@ -21,7 +22,8 @@ async function searchId(placeId: string) {
     headers: new Headers({
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-      'X-Goog-FieldMask': 'id,types,reviews,displayName,formattedAddress,rating,location,photos,websiteUri',
+      'X-Goog-FieldMask':
+        'id,types,reviews,displayName,formattedAddress,rating,location,photos,websiteUri',
     }),
   })
     .then((response) => response.json())
@@ -33,17 +35,21 @@ async function searchNearby(
   latitude: number,
   longitude: number,
   radius: number,
-  coffee: boolean,
-  hotel: boolean
+  coffee: boolean = true,
+  hotel: boolean = true,
+  park: boolean = true
 ) {
   console.log({ latitude, longitude, radius });
 
   let includedTypes: string[] = [];
   if (coffee) {
-    includedTypes = includedTypes.concat(coffeeShopsCategory);
+    includedTypes = includedTypes.concat(CafeType);
   }
   if (hotel) {
-    includedTypes = includedTypes.concat(hotels);
+    includedTypes = includedTypes.concat(HotelsType);
+  }
+  if (park) {
+    includedTypes = includedTypes.concat(ParkType);
   }
 
   console.log({ includedTypes });
@@ -56,7 +62,7 @@ async function searchNearby(
       'X-Goog-FieldMask': FiledMaskValue,
     }),
     body: JSON.stringify({
-      maxResultCount: 10,
+      maxResultCount: 20,
       includedTypes,
       languageCode: 'ja',
       locationRestriction: {

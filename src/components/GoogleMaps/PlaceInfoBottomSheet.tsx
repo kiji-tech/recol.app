@@ -7,29 +7,34 @@ import { useState } from 'react';
 import IconButton from '../IconButton';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Tables } from '@/src/libs/database.types';
-import { Place } from '@/src/entities/Place';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Place, Review } from '@/src/entities/Place';
 import BottomSheet, { BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { CafeType, HotelsType, ParkType } from '@/src/apis/GoogleMaps';
 
 type Props = {
+  sheetRef: any;
   places?: Place[];
-  onPress: (place: any) => void;
+  onPress: (place: Place) => void;
 };
-export default function PlaceInfoBottomSheet({ places = [], onPress }: Props) {
-  const { height: SCREEN_HEIGHT } = useWindowDimensions();
+export default function PlaceInfoBottomSheet({ sheetRef, places = [], onPress }: Props) {
   const { bottom: bottomSafeArea } = useSafeAreaInsets();
   const { plan, setPlan } = usePlan();
   const [isAiNavigation, setIsAiNavigation] = useState(false);
   const [isAiText, setIsAiText] = useState('');
-  const sheetRef = React.useRef(null);
+
+  const iconSize = 28;
 
   const handleAiAnalyze = async (place: Place) => {
     setIsAiText('');
     // reviewをまとめる
+    if (!place.reviews) {
+      alert('レビューがありません');
+      return;
+    }
     const reviews = place.reviews
-      .map((review: any) => {
+      .map((review: Review) => {
         return `いつ： ${review.publishTime}
 評価：${review.rating}
 
@@ -61,22 +66,26 @@ export default function PlaceInfoBottomSheet({ places = [], onPress }: Props) {
     }
   };
 
+  const handleSelectedPlace = async (place: Place) => {
+    onPress(place);
+  };
+
   return (
     <>
-      <BottomSheet ref={sheetRef} index={1} snapPoints={['25%', '75%', '25%']} bottomInset={120}>
-        <BottomSheetView>
-          <View>
-            <Text className="text-3xl font-bold text-light-text">検索結果</Text>
-          </View>
+      <BottomSheet index={1} snapPoints={['30%']} bottomInset={64}>
+        <BottomSheetView className="px-4">
+          <Text className="text-3xl font-bold text-light-text">検索結果</Text>
         </BottomSheetView>
         <BottomSheetScrollView
+          ref={sheetRef}
           bounces={true}
           contentContainerStyle={{ paddingBottom: bottomSafeArea }}
           contentContainerClassName="bg-light-background dark:bg-dark-background"
         >
           {places.map((place) => (
-            <View
+            <TouchableOpacity
               key={place.id}
+              onPress={() => handleSelectedPlace(place)}
               className="flex flex-row p-4 w-screen border-b-[1px] border-b-light-border  dark:border-b-dark-border"
             >
               <View className="w-1/4 flex-1 justify-center items-center">
@@ -101,13 +110,39 @@ export default function PlaceInfoBottomSheet({ places = [], onPress }: Props) {
                 >
                   {place.formattedAddress}
                 </Text>
-                <View className="w-full flex flex-row justify-end items-end gap-8 pt-2">
-                  <TouchableOpacity onPress={() => handleAiAnalyze(place)}>
-                    <FontAwesome5 name="robot" size={32} color="black" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleAddPlan(place)}>
-                    <MaterialIcons name="check-box-outline-blank" size={32} color="black" />
-                  </TouchableOpacity>
+                <View className="w-full flex flex-row justify-between items-end gap-8 pt-2">
+                  {place &&
+                    place.types &&
+                    place.types.some((p: string) => CafeType.includes(p)) && (
+                      <Image
+                        source={require('@/assets/images/mapicons/cafe.png')}
+                        style={{ width: iconSize, height: iconSize }}
+                      />
+                    )}
+                  {place &&
+                    place.types &&
+                    place.types.some((p: string) => HotelsType.includes(p)) && (
+                      <Image
+                        source={require('@/assets/images/mapicons/hotel.png')}
+                        style={{ width: iconSize, height: iconSize }}
+                      />
+                    )}
+                  {place &&
+                    place.types &&
+                    place.types.some((p: string) => ParkType.includes(p)) && (
+                      <Image
+                        source={require('@/assets/images/mapicons/park.png')}
+                        style={{ width: iconSize, height: iconSize }}
+                      />
+                    )}
+                  <View className="flex flex-row justify-end gap-8">
+                    <TouchableOpacity onPress={() => handleAiAnalyze(place)}>
+                      <FontAwesome5 name="robot" size={iconSize} color="black" />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleAddPlan(place)}>
+                      <MaterialIcons name="check-box-outline-blank" size={iconSize} color="black" />
+                    </TouchableOpacity>
+                  </View>
                   {/* <Button
                       text="AIレビュー"
                       theme="theme"
@@ -120,7 +155,7 @@ export default function PlaceInfoBottomSheet({ places = [], onPress }: Props) {
                       /> */}
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </BottomSheetScrollView>
       </BottomSheet>
