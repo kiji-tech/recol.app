@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { MutableRefObject, useRef } from 'react';
 import { Image, Modal, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { reviewAIAnalyze } from '@/src/apis/OpenAI';
@@ -19,10 +19,12 @@ type Props = {
   onPress: (place: Place) => void;
 };
 export default function PlaceInfoBottomSheet({ sheetRef, places = [], onPress }: Props) {
+  const ref = useRef<BottomSheet>(null);
   const { bottom: bottomSafeArea } = useSafeAreaInsets();
   const { plan, setPlan } = usePlan();
   const [isAiNavigation, setIsAiNavigation] = useState(false);
   const [isAiText, setIsAiText] = useState('');
+  const snapPoints = [100, '50%', 100];
 
   const iconSize = 28;
 
@@ -72,7 +74,7 @@ export default function PlaceInfoBottomSheet({ sheetRef, places = [], onPress }:
 
   return (
     <>
-      <BottomSheet index={1} snapPoints={['30%']} bottomInset={64}>
+      <BottomSheet ref={ref} index={1} snapPoints={snapPoints} bottomInset={100}>
         <BottomSheetView className="px-4">
           <Text className="text-3xl font-bold text-light-text">検索結果</Text>
         </BottomSheetView>

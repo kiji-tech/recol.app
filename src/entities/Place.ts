@@ -1,3 +1,5 @@
+import { LatLng } from 'react-native-maps';
+
 export interface Review {
   name: string;
   text: { text: string; languageCode: string };
@@ -34,10 +36,10 @@ export interface Place {
     wheelchairAccessibleParking: boolean;
     wheelchairAccessibleEntrance: boolean;
   };
-  location: { lattiude: number; longitude: number };
+  location: LatLng;
   viewport: {
-    low: { lattiude: number; longitude: number };
-    high: { lattiude: number; longitude: number };
+    low: LatLng;
+    high: LatLng;
   };
   displayName: {
     text: string;

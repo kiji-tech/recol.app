@@ -181,7 +181,7 @@ const MapScreen = () => {
             />
           </View>
           {/* マップオブジェクト */}
-          <View className=" w-full h-[40%]">
+          <View className=" w-full h-[64%]">
             <Map
               places={places}
               region={isCoords}
