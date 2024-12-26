@@ -7,7 +7,7 @@ const EventsLayout = () => {
       <Tabs.Screen name="index" options={{ title: 'ホーム', headerShown: false }} />
       <Tabs.Screen name="planList" options={{ title: '旅行計画', headerShown: false }} />
       <Tabs.Screen name="settings" options={{ title: '設定', headerShown: false }} />
-      <Tabs.Screen name="sample" options={{ title: 'サンプル', headerShown: true }} />
+      {/* <Tabs.Screen name="sample" options={{ title: 'サンプル', headerShown: true }} /> */}
     </Tabs>
   );
 };

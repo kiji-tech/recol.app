@@ -14,7 +14,7 @@ export const HotelsType = [
 ];
 
 const FiledMaskValue =
-  'places.id,places.types,places.reviews,places.displayName,places.formattedAddress,places.rating,places.location,places.photos,places.websiteUri';
+  'places.id,places.types,places.reviews,places.displayName,places.formattedAddress,places.rating,places.location,places.photos,places.websiteUri,places.editorialSummary';
 
 async function searchId(placeId: string) {
   const response = await fetch(`${GOOGLE_MAPS_API_URL}/${placeId}`, {
@@ -31,29 +31,7 @@ async function searchId(placeId: string) {
   return response;
 }
 
-async function searchNearby(
-  latitude: number,
-  longitude: number,
-  radius: number,
-  coffee: boolean = true,
-  hotel: boolean = true,
-  park: boolean = true
-) {
-  console.log({ latitude, longitude, radius });
-
-  let includedTypes: string[] = [];
-  if (coffee) {
-    includedTypes = includedTypes.concat(CafeType);
-  }
-  if (hotel) {
-    includedTypes = includedTypes.concat(HotelsType);
-  }
-  if (park) {
-    includedTypes = includedTypes.concat(ParkType);
-  }
-
-  console.log({ includedTypes });
-
+async function searchNearby(latitude: number, longitude: number, radius: number) {
   const response = await fetch(`${GOOGLE_MAPS_API_URL}:searchNearby`, {
     method: 'POST',
     headers: new Headers({
@@ -63,8 +41,8 @@ async function searchNearby(
     }),
     body: JSON.stringify({
       maxResultCount: 20,
-      includedTypes,
       languageCode: 'ja',
+      includedTypes: [...ParkType, ...CafeType, ...HotelsType],
       locationRestriction: {
         circle: {
           center: {

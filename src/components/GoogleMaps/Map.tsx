@@ -16,23 +16,33 @@ type Props = {
   region?: Region;
   centerRegion?: Region;
   places?: Place[];
+  selectedPlaces?: Place[];
   setRegion?: (region: Region) => void;
   selectPlace?: (place: Place) => void;
-  selectedPlace?: Place;
+  selectedPlace: Place | null;
   isMarker?: boolean;
+  onMarkerDeselect?: () => void;
   onPressReSearch?: () => void;
 };
 export default function Map({
   region,
   places,
+  selectedPlaces,
   centerRegion,
   setRegion = () => void 0,
   selectPlace = () => void 0,
   onPressReSearch = () => void 0,
+  onMarkerDeselect = () => void 0,
   selectedPlace,
   isMarker = false,
 }: Props) {
   const markerRef: { [id: string]: MapMarker | null } = {};
+
+  // selectedPlacesにある場合は､placesから除外する
+  const filteredPlaces = useMemo(() => {
+    if (!selectedPlaces || !places) return places;
+    return places.filter((place) => !selectedPlaces.some((p) => p.id === place.id));
+  }, [places, selectedPlaces]);
 
   React.useEffect(() => {
     if (selectedPlace && markerRef[selectedPlace.id] != null) {
@@ -47,9 +57,9 @@ export default function Map({
     if (zoom > 15) {
       return 0.3; // 近距離での閾値 (ズームイン時、500m)
     } else if (zoom > 10) {
-      return 2; // 中距離での閾値 (ズーム中、2km)
+      return 1; // 中距離での閾値 (ズーム中、2km)
     } else {
-      return 10; // 遠距離での閾値 (ズームアウト時、10km)
+      return 3; // 遠距離での閾値 (ズームアウト時、10km)
     }
   };
 
@@ -82,8 +92,41 @@ export default function Map({
         onRegionChangeComplete={(region, { isGesture }) => {
           if (isGesture) setRegion(region);
         }}
+        onMarkerDeselect={onMarkerDeselect}
       >
-        {places?.map((place: Place) => {
+        {filteredPlaces?.map((place: Place) => {
+          return (
+            <Marker
+              key={place.id}
+              ref={(ref) => {
+                markerRef[place.id] = ref;
+              }}
+              title={place.displayName.text}
+              onPress={() => selectPlace(place)}
+              coordinate={{ ...place.location }}
+            >
+              {place && place.types && place.types.some((p: string) => CafeType.includes(p)) && (
+                <Image
+                  source={require('@/assets/images/mapicons/cafe.png')}
+                  style={{ width: ICON_SIZE, height: ICON_SIZE }}
+                />
+              )}
+              {place && place.types && place.types.some((p: string) => HotelsType.includes(p)) && (
+                <Image
+                  source={require('@/assets/images/mapicons/hotel.png')}
+                  style={{ width: ICON_SIZE, height: ICON_SIZE }}
+                />
+              )}
+              {place && place.types && place.types.some((p: string) => ParkType.includes(p)) && (
+                <Image
+                  source={require('@/assets/images/mapicons/park.png')}
+                  style={{ width: ICON_SIZE, height: ICON_SIZE }}
+                />
+              )}
+            </Marker>
+          );
+        })}
+        {selectedPlaces?.map((place: Place) => {
           return (
             <Marker
               key={place.id}
@@ -119,7 +162,7 @@ export default function Map({
       </MapView>
       {/* 再検索ボタン */}
       {isResearched && (
-        <View className="w-full absolute top-0 left-0">
+        <View className="w-full absolute top-28">
           <TouchableOpacity
             className="w-4/6 py-2 px-4 mt-2 mx-auto rounded-xl  bg-light-background dark:bg-dark-background"
             onPress={onPressReSearch}

@@ -1,20 +1,17 @@
 import Map from '@components/GoogleMaps/Map';
+import { CheckBox } from 'react-native-elements';
 import * as Location from 'expo-location';
-import { useRouter } from 'expo-router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { Region } from 'react-native-maps';
 import { searchNearby, searchText } from '@/src/apis/GoogleMaps';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { BackgroundView } from '@/src/components';
-import BackButtonHeader from '@/src/components/BackButtonHeader';
+import { TextInput, View, Text, Image, TouchableOpacity } from 'react-native';
 import Loading from '@/src/components/Loading';
 import { usePlan } from '@/src/contexts/PlanContext';
-import IconCheckButton from '@/src/components/IconCheckButton';
-import PlaceInfoBottomSheet from '@/src/components/GoogleMaps/PlaceInfoBottomSheet';
 import { Place } from '@/src/entities/Place';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import BackButton from '@/src/components/BackButton';
+import { router } from 'expo-router';
 
 const MapScreen = () => {
   const { plan } = usePlan();
@@ -29,16 +26,10 @@ const MapScreen = () => {
     latitudeDelta: 0.01,
     longitudeDelta: 0.03,
   });
-  const router = useRouter();
-
-  const [isCoffee, setIsCoffee] = useState(true);
-  const [isHotel, setIsHotel] = useState(true);
-  const [isPark, setIsPark] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [text, setText] = useState('');
-  const [selectedPlace, setSelectedPlace] = useState<Place>();
+  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [places, setPlaces] = useState<Place[]>();
-  const ref = useRef(null);
 
   // Location Permissions
   const [status, requestPermission] = Location.useForegroundPermissions();
@@ -46,26 +37,9 @@ const MapScreen = () => {
     requestPermission();
   }
 
-  // 条件が変わったら再検索
   useEffect(() => {
-    if (isCoords) {
-      // 旅行先のロケーションを検索する
-      searchNearby(
-        isCoords.latitude,
-        isCoords.longitude,
-        40000 * isCoords.latitudeDelta,
-        isCoffee,
-        isHotel,
-        isPark
-      )
-        .then((response) => {
-          settingPlaces(response);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
-  }, [isCoffee, isHotel, isPark]);
+    if (isCoords) fetchLocation(isCoords.latitude, isCoords.longitude);
+  }, []);
 
   const settingPlaces = (places: Place[]) => {
     if (!places || places.length == 0) {
@@ -77,15 +51,14 @@ const MapScreen = () => {
   };
 
   const fetchLocation = async (latitude: number, longitude: number) => {
-    const response = await searchNearby(
-      latitude,
-      longitude,
-      6371 * isCoords.latitudeDelta,
-      isCoffee,
-      isHotel,
-      isPark
-    );
-    settingPlaces(response);
+    setIsLoading(true);
+    try {
+      const response = await searchNearby(latitude, longitude, 6371 * isCoords.latitudeDelta);
+      settingPlaces(response);
+    } catch (e) {
+      console.error(e);
+    }
+    setIsLoading(false);
   };
 
   const handleTextSearch = async () => {
@@ -125,81 +98,87 @@ const MapScreen = () => {
         ...place.location,
       } as Region;
     });
-    // refでスクールの位置を変更する
-    const index = places!.findIndex((p: Place) => p.id === place.id);
-    if (index !== -1) {
-      (ref.current! as any).scrollTo({
-        y: Math.max(130 * index, 0),
-        animation: true,
-      });
-    }
   };
 
-  if (isLoading && !selectedPlace) {
+  if (isLoading) {
     return <Loading />;
   }
 
   return (
-    <GestureHandlerRootView>
-      <SafeAreaView>
-        <BackgroundView>
-          {/* 検索バー */}
-          <BackButtonHeader onPress={() => router.back()}>
-            <View
-              className={`
-                    flex flex-row justify-between rounded-xl items-center
-                    px-4 py-2 ml-4 bg-light-background dark:bg-dark-background `}
-            >
-              {/* TODO ダークモードのときの色変更 */}
-              <MaterialIcons className={`opacity-30`} name="search" size={24} color="#25292e" />
-              <TextInput
-                defaultValue={text}
-                onChangeText={(n) => setText(n)}
-                placeholder="検索"
-                onBlur={() => handleTextSearch()}
-                returnKeyType="search"
-                className={`w-full rounded-xl text-md pl-2 text-light-text dark:text-dark-text`}
-              />
+    <>
+      <View className=" w-full h-full">
+        <Map
+          places={places}
+          region={isCoords}
+          selectedPlace={selectedPlace}
+          centerRegion={centerCords}
+          selectPlace={(place: Place) => handleSelectedPlace(place)}
+          setRegion={handleChangeMap}
+          onPressReSearch={handleResearch}
+          onMarkerDeselect={() => {
+            // setSelectedPlace(null);
+          }}
+        />
+      </View>
+      <View className="absolute top-10 left-4">
+        {/* バックボタン */}
+        <View className="flex flex-row justify-start">
+          <BackButton url="/planList" />
+          <View
+            className={`
+                flex flex-row justify-start rounded-xl items-center
+                px-4 py-2 bg-light-background dark:bg-dark-background `}
+          >
+            {/* 検索バー */}
+            {/* TODO ダークモードのときの色変更 */}
+            <MaterialIcons className={`opacity-30`} name="search" size={24} color="#25292e" />
+            <TextInput
+              defaultValue={text}
+              onChangeText={(n) => setText(n)}
+              placeholder="検索"
+              onBlur={() => handleTextSearch()}
+              returnKeyType="search"
+              className={`w-[70%] ml-2 rounded-xl text-m text-light-text dark:text-dark-text`}
+            />
+          </View>
+        </View>
+      </View>
+      {/* 選択対象の表示 */}
+      {selectedPlace && (
+        <View className="absolute bottom-24 w-full">
+          <View className="w-4/5 h-80 mx-auto  rounded-xl bg-light-background dark:bg-dark-background">
+            {/* イメージ画像 */}
+            <Image
+              className={`w-full h-32 rounded-t-xl`}
+              src={
+                selectedPlace.photos
+                  ? `https://places.googleapis.com/v1/${selectedPlace.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`
+                  : ''
+              }
+            />
+            {/* body */}
+            <View className="py-2 px-4 h-48">
+              {/* /title */}
+              <Text className="text-lg font-bold">{selectedPlace.displayName.text}</Text>
+              {/* rate */}
+              <Text>{selectedPlace.rating}</Text>
+              {/* description */}
+              <Text>{selectedPlace.editorialSummary?.text || ''}</Text>
+              {/* button group */}
+              <View className="m-4 flex flex-row justify-start items-center gap-2 absolute bottom-0">
+                <TouchableOpacity className="py-2 px-4 bg-light-theme dark:bg-dark-theme rounded-3xl" onPress={() => router.}>
+                  <Text className="text-sm">ウェブサイト</Text>
+                </TouchableOpacity>
+                <TouchableOpacity className="py-2 px-4 bg-light-theme dark:bg-dark-theme rounded-3xl">
+                  <Text className="text-sm">AI</Text>
+                </TouchableOpacity>
+                <CheckBox title="" checked={false} onPress={() => {}} />
+              </View>
             </View>
-          </BackButtonHeader>
-          {/* TODO ボタン群 */}
-          <View className="w-full flex flex-row justify-center items-center gap-8 ">
-            <IconCheckButton
-              icon="coffee"
-              checked={isCoffee}
-              onPress={() => setIsCoffee((prev) => !prev)}
-            />
-            <IconCheckButton
-              icon="hotel"
-              checked={isHotel}
-              onPress={() => setIsHotel((prev) => !prev)}
-            />
-            <IconCheckButton
-              icon="park"
-              checked={isPark}
-              onPress={() => setIsPark((prev) => !prev)}
-            />
           </View>
-          {/* マップオブジェクト */}
-          <View className=" w-full h-[64%]">
-            <Map
-              places={places}
-              region={isCoords}
-              selectedPlace={selectedPlace}
-              centerRegion={centerCords}
-              selectPlace={(place: Place) => handleSelectedPlace(place)}
-              setRegion={handleChangeMap}
-              onPressReSearch={handleResearch}
-            />
-          </View>
-          <PlaceInfoBottomSheet
-            sheetRef={ref}
-            places={places}
-            onPress={(p: Place) => handleSelectedPlace(p)}
-          />
-        </BackgroundView>
-      </SafeAreaView>
-    </GestureHandlerRootView>
+        </View>
+      )}
+    </>
   );
 };
 export default MapScreen;

@@ -25,6 +25,7 @@ export interface Place {
   id: string;
   name: string;
   types: string[];
+  rating: number;
   formattedAddress: string;
   internationalPhonNumber: string;
   nationanlPhoneNumber: string;
@@ -49,4 +50,5 @@ export interface Place {
   primaryType: string;
   googleMapUrl: string;
   websiteUrl: string;
+  editorialSummary: { text: string };
 }
