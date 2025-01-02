@@ -11,7 +11,7 @@ import MapView, {
   type Region,
 } from 'react-native-maps';
 
-const ICON_SIZE = 24;
+
 type Props = {
   region?: Region;
   centerRegion?: Region;
@@ -23,6 +23,7 @@ type Props = {
   isMarker?: boolean;
   onMarkerDeselect?: () => void;
   onPressReSearch?: () => void;
+  iconSize?: number; // 追加: アイコンサイズをプロパティとして受け取る
 };
 export default function Map({
   region,
@@ -35,11 +36,13 @@ export default function Map({
   onMarkerDeselect = () => void 0,
   selectedPlace,
   isMarker = false,
+  iconSize = 32, // デフォルトサイズを設定
 }: Props) {
   const markerRef: { [id: string]: MapMarker | null } = {};
 
   // selectedPlacesにある場合は､placesから除外する
   const filteredPlaces = useMemo(() => {
+    console.log('filteredPlaces');
     if (!selectedPlaces || !places) return places;
     return places.filter((place) => !selectedPlaces.some((p) => p.id === place.id));
   }, [places, selectedPlaces]);

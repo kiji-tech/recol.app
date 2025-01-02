@@ -1,0 +1,7 @@
+agent:
+  model:
+    name: gpt-4o
+    per_instance_cost_limit: 2.00
+env:
+  repo:
+    github_url: https://github.com/kiji-tech/voyz

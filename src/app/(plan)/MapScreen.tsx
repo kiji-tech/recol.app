@@ -166,7 +166,10 @@ const MapScreen = () => {
               <Text>{selectedPlace.editorialSummary?.text || ''}</Text>
               {/* button group */}
               <View className="m-4 flex flex-row justify-start items-center gap-2 absolute bottom-0">
-                <TouchableOpacity className="py-2 px-4 bg-light-theme dark:bg-dark-theme rounded-3xl" onPress={() => router.}>
+                <TouchableOpacity
+                  className="py-2 px-4 bg-light-theme dark:bg-dark-theme rounded-3xl"
+                  onPress={() => router.push('/planList')}
+                >
                   <Text className="text-sm">ウェブサイト</Text>
                 </TouchableOpacity>
                 <TouchableOpacity className="py-2 px-4 bg-light-theme dark:bg-dark-theme rounded-3xl">
