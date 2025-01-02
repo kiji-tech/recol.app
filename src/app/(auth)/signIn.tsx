@@ -35,7 +35,7 @@ export default function SignInScreen() {
   return (
     <SafeAreaView>
       <BackgroundView>
-        <View className="flex flex-col justify-start items-center gap-4 w-[80%]">
+        <View className="flex flex-col items-center gap-8 w-full">
           <Text className="text-4xl font-bold">Welcome to the Voyx</Text>
           {/* 画像 */}
           <View className="bg-light-theme h-96 w-96 rounded-xl mb-4"></View>
@@ -56,12 +56,8 @@ export default function SignInScreen() {
           />
           {/* サインイン */}
           <View className="w-full flex flex-col gap-4 ">
-            <Button theme="primary" text="サインイン" onPress={signInWithPassword} />
-            <Button
-              theme="secondary"
-              text="新規登録"
-              onPress={() => router.push('/(auth)/signUp')}
-            />
+            <Button theme={'theme'} text="サインイン" onPress={signInWithPassword} />
+            <Button theme={'theme'} text="新規登録" onPress={() => router.push('/(auth)/signUp')} />
             {/* TODO: Googleでサインイン */}
             {/* 新規登録 */}
           </View>

@@ -9,7 +9,7 @@ export default function BackgroundView({ children }: Props) {
     <View className={`w-screen h-screen`}>
       <ScrollView
         // bounces={false}
-        contentContainerClassName="gap-4 py-2 px-8 flex-1"
+        contentContainerClassName="py-2 px-4 flex-1"
       >
         {children}
       </ScrollView>
