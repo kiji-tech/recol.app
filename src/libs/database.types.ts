@@ -9,6 +9,41 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      messages: {
+        Row: {
+          created_at: string
+          is_view: string[] | null
+          message: string | null
+          plan_id: string | null
+          sender_id: string | null
+          uid: string
+        }
+        Insert: {
+          created_at?: string
+          is_view?: string[] | null
+          message?: string | null
+          plan_id?: string | null
+          sender_id?: string | null
+          uid?: string
+        }
+        Update: {
+          created_at?: string
+          is_view?: string[] | null
+          message?: string | null
+          plan_id?: string | null
+          sender_id?: string | null
+          uid?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plan"
+            referencedColumns: ["uid"]
+          },
+        ]
+      }
       plan: {
         Row: {
           created_at: string

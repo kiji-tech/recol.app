@@ -83,3 +83,7 @@ yarn-error.*
 
 expo-env.d.ts
 # @end expo-cli
+
+
+# agent用?
+/voyz/
