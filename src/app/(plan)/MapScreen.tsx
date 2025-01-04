@@ -12,6 +12,7 @@ import { Place } from '@/src/entities/Place';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BackButton from '@/src/components/BackButton';
 import { router } from 'expo-router';
+import IconButton from '@/src/components/IconButton';
 
 const MapScreen = () => {
   const { plan } = usePlan();
@@ -181,6 +182,18 @@ const MapScreen = () => {
           </View>
         </View>
       )}
+
+      {/* チャットボタン */}
+      <TouchableOpacity>
+        <View className="absolute bottom-10 right-4">
+          <IconButton
+            icon="chat"
+            onPress={() => {
+              router.push('/(chat)/ChatScreen');
+            }}
+          />
+        </View>
+      </TouchableOpacity>
     </>
   );
 };

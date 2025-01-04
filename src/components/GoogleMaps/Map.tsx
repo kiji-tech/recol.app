@@ -1,6 +1,6 @@
+import React, { useMemo } from 'react';
 import { CafeType, HotelsType, ParkType } from '@/src/apis/GoogleMaps';
 import { Place } from '@/src/entities/Place';
-import React, { useMemo } from 'react';
 import { Image, View, Text, TouchableOpacity } from 'react-native';
 import MapView, {
   Callout,

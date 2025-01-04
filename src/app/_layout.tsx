@@ -30,6 +30,7 @@ const RouteLayout = () => {
         <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
         <Stack.Screen name="(add.plan)" options={{ title: '計画作成', headerShown: false }} />
         <Stack.Screen name="(plan)" options={{ title: '計画表示', headerShown: false }} />
+        <Stack.Screen name="(chat)" options={{ title: 'チャット', headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ title: 'ログイン', headerShown: false }} />
       </Stack>
     </PlanProvider>
