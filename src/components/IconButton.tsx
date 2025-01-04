@@ -12,7 +12,7 @@ export default function IconButton({ icon, onPress }: Props) {
     <TouchableOpacity onPress={onPress}>
       <View
         className={`
-        h-16 w-16 rounded-full
+        h-12 w-12 rounded-full
         flex justify-center items-center
         bg-light-background dark:bg-dark-background
      `}

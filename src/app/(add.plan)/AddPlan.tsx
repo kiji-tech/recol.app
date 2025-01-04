@@ -1,4 +1,4 @@
-import { Button } from '@/src/components';
+import { Button, Header } from '@/src/components';
 import { BackgroundView } from '@/src/components';
 import DatePicker from '@/src/components/DatePicker';
 import { borderColor } from '@/src/themes/ColorUtil';
@@ -9,7 +9,7 @@ import { View, Text, TextInput, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
-import BackButtonHeader from '@/src/components/BackButton';
+import { BackButton } from '@/src/components';
 
 export default function AddPlan() {
   const [title, setTitle] = useState<string>('');
@@ -66,9 +66,13 @@ export default function AddPlan() {
     <SafeAreaView>
       <ScrollView>
         <BackgroundView>
-          <BackButtonHeader onPress={() => router.back()} isDummy={true}>
-            <Text className=" w-full text-3xl ml-4 font-bold text-center">旅行計画の作成</Text>
-          </BackButtonHeader>
+          <Header
+            title="旅行計画の作成"
+            onBack={() => {
+              //TODO 編集チェック
+              router.back();
+            }}
+          />
           {/* タイトル */}
           <View className="w-full flex flex-col justify-start items-start">
             <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>

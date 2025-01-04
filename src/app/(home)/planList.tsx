@@ -32,7 +32,7 @@ export default function Events() {
           <IconButton
             icon="add"
             onPress={() => {
-              router.push('/(add.plan)/add.plan');
+              router.push('/(add.plan)/AddPlan');
             }}
           />
         </View>

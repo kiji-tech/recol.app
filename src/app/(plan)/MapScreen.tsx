@@ -1,17 +1,15 @@
-import Map from '@components/GoogleMaps/Map';
-import { CheckBox } from 'react-native-elements';
-import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
-import type { Region } from 'react-native-maps';
-import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { TextInput, View, Text, Image, TouchableOpacity } from 'react-native';
-import Loading from '@/src/components/Loading';
+import Map from '@components/GoogleMaps/Map';
+import * as Location from 'expo-location';
+import type { Region } from 'react-native-maps';
+import { CheckBox } from 'react-native-elements';
+import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Place } from '@/src/entities/Place';
-import BackButton from '@/src/components/BackButton';
 import { router } from 'expo-router';
-import IconButton from '@/src/components/IconButton';
+import { Header, Loading } from '@/src/components';
+import ChatButton from '@/src/components/Header/ChatButton';
 
 const MapScreen = () => {
   const { plan } = usePlan();
@@ -27,7 +25,6 @@ const MapScreen = () => {
     longitudeDelta: 0.03,
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [searchText, setSearchText] = useState('');
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [places, setPlaces] = useState<Place[]>();
 
@@ -41,6 +38,7 @@ const MapScreen = () => {
     if (isCoords) fetchLocation(isCoords.latitude, isCoords.longitude);
   }, []);
 
+  /** 施設情報設定処理 */
   const settingPlaces = (places: Place[]) => {
     if (!places || places.length == 0) {
       alert('検索結果がありません.');
@@ -50,6 +48,7 @@ const MapScreen = () => {
     setSelectedPlace(places[0]);
   };
 
+  /** 座標の施設情報取得 */
   const fetchLocation = async (latitude: number, longitude: number) => {
     setIsLoading(true);
     try {
@@ -61,7 +60,8 @@ const MapScreen = () => {
     setIsLoading(false);
   };
 
-  const handleTextSearch = async () => {
+  /** テキスト検索 実行処理 */
+  const handleTextSearch = async (searchText: string) => {
     setIsLoading(true);
     try {
       const response = await searchPlaceByText(
@@ -77,6 +77,7 @@ const MapScreen = () => {
     }
   };
 
+  /** 再検索 実行処理 */
   const handleResearch = async () => {
     setIsLoading(true);
     try {
@@ -87,10 +88,6 @@ const MapScreen = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleChangeMap = async (region: Region) => {
-    setIsCoords((prev) => ({ ...prev, ...region }));
   };
 
   /** 場所を選択したときのイベントハンドラ */
@@ -106,6 +103,7 @@ const MapScreen = () => {
 
   return (
     <>
+      {/* Map */}
       <View className=" w-full h-full">
         <Map
           places={places}
@@ -113,7 +111,7 @@ const MapScreen = () => {
           selectedPlace={selectedPlace}
           centerRegion={centerCords}
           selectPlace={(place: Place) => handleSelectedPlace(place)}
-          setRegion={handleChangeMap}
+          setRegion={(region: Region) => setIsCoords((prev) => ({ ...prev, ...region }))}
           onPressReSearch={handleResearch}
           isSearch={true}
           onMarkerDeselect={() => {
@@ -121,28 +119,13 @@ const MapScreen = () => {
           }}
         />
       </View>
-      <View className="absolute top-20 left-4">
-        {/* バックボタン */}
-        <View className="flex flex-row justify-start">
-          <BackButton url="/planList" />
-          <View
-            className={`
-                flex flex-row justify-start rounded-xl items-center
-                px-4 py-2 bg-light-background dark:bg-dark-background `}
-          >
-            {/* 検索バー */}
-            {/* TODO ダークモードのときの色変更 */}
-            <MaterialIcons className={`opacity-30`} name="search" size={24} color="#25292e" />
-            <TextInput
-              defaultValue={searchText}
-              onChangeText={(n) => setSearchText(n)}
-              placeholder="検索"
-              onBlur={() => handleTextSearch()}
-              returnKeyType="search"
-              className={`w-[70%] ml-2 rounded-xl text-m text-light-text dark:text-dark-text`}
-            />
-          </View>
-        </View>
+      {/* 検索ヘッダー */}
+      <View className="absolute top-16 px-4">
+        <Header
+          onBack={() => router.back()}
+          onSearch={(text: string) => handleTextSearch(text)}
+          rightComponent={<ChatButton />}
+        />
       </View>
       {/* 選択対象の表示 */}
       {selectedPlace && (
@@ -169,7 +152,7 @@ const MapScreen = () => {
               <View className="m-4 flex flex-row justify-start items-center gap-2 absolute bottom-0">
                 <TouchableOpacity
                   className="py-2 px-4 bg-light-theme dark:bg-dark-theme rounded-3xl"
-                  //   onPress={() => router.navigate('/planList')}
+                  onPress={() => router.navigate('/PlanList')}
                 >
                   <Text className="text-sm">ウェブサイト</Text>
                 </TouchableOpacity>
@@ -183,17 +166,6 @@ const MapScreen = () => {
         </View>
       )}
 
-      {/* チャットボタン */}
-      <TouchableOpacity>
-        <View className="absolute bottom-10 right-4">
-          <IconButton
-            icon="chat"
-            onPress={() => {
-              router.push('/(chat)/ChatScreen');
-            }}
-          />
-        </View>
-      </TouchableOpacity>
       {/* ローディング */}
       {isLoading && <Loading />}
     </>

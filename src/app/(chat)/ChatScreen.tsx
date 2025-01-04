@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/src/components';
+import { Button, Header } from '@/src/components';
 import {
   View,
   TextInput,
@@ -14,13 +14,14 @@ import { BackgroundView } from '@/src/components';
 import { Tables } from '@/src/libs/database.types';
 import { borderColor } from '@/src/themes/ColorUtil';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView } from 'react-native-gesture-handler';
 import MessageViewer from './component/MessagesViewer';
+import { useRouter } from 'expo-router';
 const supabaseUrl = 'https://xyzcompany.supabase.co';
 const supabaseAnonKey = 'public-anon-key';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function ChatScreen() {
+  const router = useRouter();
   const [messages, setMessages] = useState<Tables<'messages'>[]>([
     {
       uid: '1',
@@ -134,18 +135,15 @@ export default function ChatScreen() {
   return (
     <SafeAreaView>
       <BackgroundView>
+        <Header
+          title="Chat"
+          onBack={() => {
+            router.back();
+          }}
+        />
         <View className="flex flex-col justify-between h-full">
           {/* ヘッダー */}
           <View className="flex-1 gap-4">
-            <View className="flex flex-row justify-between items-center">
-              <View className="flex-row items-center">
-                {/* <Image
-              source={require('@/assets/images/logo.png')}
-              className="w-12 h-12 rounded-full"
-              /> */}
-                <Text className="text-xl font-bold ml-4">Chat</Text>
-              </View>
-            </View>
             {/* メッセージエリア */}
             <View className="p-4 rounded-xl flex-1 mb-4 bg-light-theme dark:bg-dark-theme">
               <MessageViewer messages={messages} />
