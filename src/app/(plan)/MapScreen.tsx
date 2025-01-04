@@ -3,13 +3,12 @@ import { CheckBox } from 'react-native-elements';
 import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
 import type { Region } from 'react-native-maps';
-import { searchNearby, searchText } from '@/src/apis/GoogleMaps';
+import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { TextInput, View, Text, Image, TouchableOpacity } from 'react-native';
 import Loading from '@/src/components/Loading';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Place } from '@/src/entities/Place';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BackButton from '@/src/components/BackButton';
 import { router } from 'expo-router';
 import IconButton from '@/src/components/IconButton';
@@ -28,7 +27,7 @@ const MapScreen = () => {
     longitudeDelta: 0.03,
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [text, setText] = useState('');
+  const [searchText, setSearchText] = useState('');
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [places, setPlaces] = useState<Place[]>();
 
@@ -65,7 +64,11 @@ const MapScreen = () => {
   const handleTextSearch = async () => {
     setIsLoading(true);
     try {
-      const response = await searchText(isCoords?.latitude || 0, isCoords?.longitude || 0, text);
+      const response = await searchPlaceByText(
+        isCoords?.latitude || 0,
+        isCoords?.longitude || 0,
+        searchText
+      );
       settingPlaces(response);
     } catch (e) {
       console.error(e);
@@ -101,10 +104,6 @@ const MapScreen = () => {
     });
   };
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
     <>
       <View className=" w-full h-full">
@@ -116,12 +115,13 @@ const MapScreen = () => {
           selectPlace={(place: Place) => handleSelectedPlace(place)}
           setRegion={handleChangeMap}
           onPressReSearch={handleResearch}
+          isSearch={true}
           onMarkerDeselect={() => {
             // setSelectedPlace(null);
           }}
         />
       </View>
-      <View className="absolute top-10 left-4">
+      <View className="absolute top-20 left-4">
         {/* バックボタン */}
         <View className="flex flex-row justify-start">
           <BackButton url="/planList" />
@@ -134,8 +134,8 @@ const MapScreen = () => {
             {/* TODO ダークモードのときの色変更 */}
             <MaterialIcons className={`opacity-30`} name="search" size={24} color="#25292e" />
             <TextInput
-              defaultValue={text}
-              onChangeText={(n) => setText(n)}
+              defaultValue={searchText}
+              onChangeText={(n) => setSearchText(n)}
               placeholder="検索"
               onBlur={() => handleTextSearch()}
               returnKeyType="search"
@@ -194,6 +194,8 @@ const MapScreen = () => {
           />
         </View>
       </TouchableOpacity>
+      {/* ローディング */}
+      {isLoading && <Loading />}
     </>
   );
 };

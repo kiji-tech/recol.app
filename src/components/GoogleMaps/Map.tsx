@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CafeType, HotelsType, ParkType } from '@/src/apis/GoogleMaps';
 import { Place } from '@/src/entities/Place';
 import { Image, View, Text, TouchableOpacity } from 'react-native';
@@ -20,7 +20,8 @@ type Props = {
   setRegion?: (region: Region) => void;
   selectPlace?: (place: Place) => void;
   selectedPlace: Place | null;
-  isMarker?: boolean;
+    isMarker?: boolean;
+    isSearch?: boolean;
   onMarkerDeselect?: () => void;
   onPressReSearch?: () => void;
 };
@@ -33,22 +34,36 @@ export default function Map({
   selectPlace = () => void 0,
   onPressReSearch = () => void 0,
   onMarkerDeselect = () => void 0,
-  selectedPlace,
+    selectedPlace,
+  isSearch = false,
   isMarker = false,
 }: Props) {
   const markerRef: { [id: string]: MapMarker | null } = {};
+  const [searchTimer, setSearchTimer] = useState<boolean>(false);
+
+  const reSearchTimer = () => {
+    if (!searchTimer) {
+      setTimeout(() => {
+        setSearchTimer(true);
+      }, 5000);
+    }
+  };
+
+  useEffect(() => {
+    reSearchTimer();
+  }, []);
+
+  useEffect(() => {
+    if (selectedPlace && markerRef[selectedPlace.id] != null) {
+      markerRef[selectedPlace.id]?.showCallout();
+    }
+  }, [selectedPlace]);
 
   // selectedPlacesにある場合は､placesから除外する
   const filteredPlaces = useMemo(() => {
     if (!selectedPlaces || !places) return places;
     return places.filter((place) => !selectedPlaces.some((p) => p.id === place.id));
   }, [places, selectedPlaces]);
-
-  React.useEffect(() => {
-    if (selectedPlace && markerRef[selectedPlace.id] != null) {
-      markerRef[selectedPlace.id]?.showCallout();
-    }
-  }, [selectedPlace]);
 
   // ズームレベルに応じた閾値を決定する関数
   const getThresholdDistanceByZoom = (zoom: number): number => {
@@ -79,6 +94,7 @@ export default function Map({
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c;
+    reSearchTimer();
     return distance > getThresholdDistanceByZoom(Math.log2(360 / region!.latitudeDelta)); // 距離をキロメートルで返す
   }, [region, centerRegion]);
 
@@ -92,7 +108,6 @@ export default function Map({
         onRegionChangeComplete={(region, { isGesture }) => {
           if (isGesture) setRegion(region);
         }}
-        onMarkerDeselect={onMarkerDeselect}
       >
         {filteredPlaces?.map((place: Place) => {
           return (
@@ -104,26 +119,7 @@ export default function Map({
               title={place.displayName.text}
               onPress={() => selectPlace(place)}
               coordinate={{ ...place.location }}
-            >
-              {place && place.types && place.types.some((p: string) => CafeType.includes(p)) && (
-                <Image
-                  source={require('@/assets/images/mapicons/cafe.png')}
-                  style={{ width: ICON_SIZE, height: ICON_SIZE }}
-                />
-              )}
-              {place && place.types && place.types.some((p: string) => HotelsType.includes(p)) && (
-                <Image
-                  source={require('@/assets/images/mapicons/hotel.png')}
-                  style={{ width: ICON_SIZE, height: ICON_SIZE }}
-                />
-              )}
-              {place && place.types && place.types.some((p: string) => ParkType.includes(p)) && (
-                <Image
-                  source={require('@/assets/images/mapicons/park.png')}
-                  style={{ width: ICON_SIZE, height: ICON_SIZE }}
-                />
-              )}
-            </Marker>
+            ></Marker>
           );
         })}
         {selectedPlaces?.map((place: Place) => {
@@ -136,36 +132,21 @@ export default function Map({
               title={place.displayName.text}
               onPress={() => selectPlace(place)}
               coordinate={{ ...place.location }}
-            >
-              {place && place.types && place.types.some((p: string) => CafeType.includes(p)) && (
-                <Image
-                  source={require('@/assets/images/mapicons/cafe.png')}
-                  style={{ width: ICON_SIZE, height: ICON_SIZE }}
-                />
-              )}
-              {place && place.types && place.types.some((p: string) => HotelsType.includes(p)) && (
-                <Image
-                  source={require('@/assets/images/mapicons/hotel.png')}
-                  style={{ width: ICON_SIZE, height: ICON_SIZE }}
-                />
-              )}
-              {place && place.types && place.types.some((p: string) => ParkType.includes(p)) && (
-                <Image
-                  source={require('@/assets/images/mapicons/park.png')}
-                  style={{ width: ICON_SIZE, height: ICON_SIZE }}
-                />
-              )}
-            </Marker>
+            ></Marker>
           );
         })}
         <Callout tooltip={true} />
       </MapView>
       {/* 再検索ボタン */}
-      {isResearched && (
-        <View className="w-full absolute top-28">
+      {isSearch && (isResearched || searchTimer) && (
+        <View className="w-full absolute top-36">
           <TouchableOpacity
             className="w-4/6 py-2 px-4 mt-2 mx-auto rounded-xl  bg-light-background dark:bg-dark-background"
-            onPress={onPressReSearch}
+            onPress={() => {
+              setSearchTimer(false);
+              reSearchTimer();
+              onPressReSearch();
+            }}
           >
             <Text className="text-center text-lg text-light-text dark:text-dark-text">
               エリアで再度検索する

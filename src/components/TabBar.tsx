@@ -50,7 +50,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
             onPress={onPress}
             onLongPress={onLongPress}
           >
-            <Text className={`${isFocused ? 'text-[#673ab7]' : 'text-[#222]'} text-xl`}>
+            <Text className={`${isFocused ? 'text-[#673ab7]' : 'text-[#222]'} text-xl font-semibold`}>
               {label as string}
             </Text>
           </TouchableOpacity>

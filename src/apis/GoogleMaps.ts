@@ -59,7 +59,7 @@ async function searchNearby(latitude: number, longitude: number, radius: number)
   return response.places;
 }
 
-async function searchText(latitude: number, longitude: number, text: string) {
+async function searchPlaceByText(latitude: number, longitude: number, text: string) {
   const response = await fetch(`${GOOGLE_MAPS_API_URL}:searchText`, {
     method: 'POST',
     headers: new Headers({
@@ -86,4 +86,4 @@ async function searchText(latitude: number, longitude: number, text: string) {
     .catch((e) => console.log(JSON.stringify(e)));
   return response.places;
 }
-export { searchId, searchNearby, searchText };
+export { searchId, searchNearby, searchPlaceByText };
