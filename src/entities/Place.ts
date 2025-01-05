@@ -49,6 +49,6 @@ export interface Place {
   primaryTypeDisplayName: { text: string; languageCode: string };
   primaryType: string;
   googleMapUrl: string;
-  websiteUrl: string;
   editorialSummary: { text: string };
+  websiteUri: string;
 }

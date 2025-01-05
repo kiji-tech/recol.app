@@ -31,7 +31,7 @@ async function searchId(placeId: string) {
   return response;
 }
 
-async function searchNearby(latitude: number, longitude: number, radius: number) {
+async function searchNearby(latitude: number, longitude: number, radius?: number) {
   const response = await fetch(`${GOOGLE_MAPS_API_URL}:searchNearby`, {
     method: 'POST',
     headers: new Headers({
@@ -49,7 +49,7 @@ async function searchNearby(latitude: number, longitude: number, radius: number)
             latitude,
             longitude,
           },
-          radius,
+          radius: 2000,
         },
       },
     }),

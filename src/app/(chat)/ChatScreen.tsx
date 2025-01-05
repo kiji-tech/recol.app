@@ -135,29 +135,25 @@ export default function ChatScreen() {
   return (
     <SafeAreaView>
       <BackgroundView>
+        {/* ヘッダー */}
         <Header
           title="Chat"
           onBack={() => {
             router.back();
           }}
         />
-        <View className="flex flex-col justify-between h-full">
-          {/* ヘッダー */}
-          <View className="flex-1 gap-4">
-            {/* メッセージエリア */}
-            <View className="p-4 rounded-xl flex-1 mb-4 bg-light-theme dark:bg-dark-theme">
-              <MessageViewer messages={messages} />
-            </View>
-          </View>
-          {/* 入力エリア */}
-          {Platform.OS === 'ios' ? (
-            <KeyboardAvoidingView className="flex w-full" behavior={'padding'}>
-              {renderMessage()}
-            </KeyboardAvoidingView>
-          ) : (
-            renderMessage()
-          )}
+        {/* メッセージエリア */}
+        <View className="flex-1 p-4 rounded-xl my-4 bg-light-theme dark:bg-dark-theme">
+          <MessageViewer messages={messages} />
         </View>
+        {/* 入力エリア */}
+        {Platform.OS === 'ios' ? (
+          <KeyboardAvoidingView className="flex w-full" behavior={'padding'}>
+            {renderMessage()}
+          </KeyboardAvoidingView>
+        ) : (
+          renderMessage()
+        )}
       </BackgroundView>
     </SafeAreaView>
   );

@@ -10,23 +10,29 @@ import { Place } from '@/src/entities/Place';
 import { router } from 'expo-router';
 import { Header, Loading } from '@/src/components';
 import ChatButton from '@/src/components/Header/ChatButton';
+import PlaceCard from '@/src/components/PlaceCard';
 
+/**
+ * 初期表示
+ *   1. プランの初期位置を取得
+ *   2. 初期位置の施設情報を取得
+ */
 const MapScreen = () => {
+  // ==== Member ====
   const { plan } = usePlan();
   const [isCoords, setIsCoords] = useState<Region>({
     ...JSON.parse(plan!.locations![0]),
     latitudeDelta: 0.05,
     longitudeDelta: 0.03,
   });
-
   const [centerCords, setCenterCords] = useState<Region>({
     ...JSON.parse(plan!.locations![0]),
     latitudeDelta: 0.01,
     longitudeDelta: 0.03,
   });
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [places, setPlaces] = useState<Place[]>();
+  const [isLoading, setIsLoading] = useState(true);
 
   // Location Permissions
   const [status, requestPermission] = Location.useForegroundPermissions();
@@ -34,6 +40,7 @@ const MapScreen = () => {
     requestPermission();
   }
 
+  // ==== Method ====
   useEffect(() => {
     if (isCoords) fetchLocation(isCoords.latitude, isCoords.longitude);
   }, []);
@@ -52,12 +59,13 @@ const MapScreen = () => {
   const fetchLocation = async (latitude: number, longitude: number) => {
     setIsLoading(true);
     try {
-      const response = await searchNearby(latitude, longitude, 6371 * isCoords.latitudeDelta);
+      const response = await searchNearby(latitude, longitude);
       settingPlaces(response);
     } catch (e) {
       console.error(e);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   /** テキスト検索 実行処理 */
@@ -101,6 +109,7 @@ const MapScreen = () => {
     });
   };
 
+  // ==== Render ====
   return (
     <>
       {/* Map */}
@@ -128,43 +137,7 @@ const MapScreen = () => {
         />
       </View>
       {/* 選択対象の表示 */}
-      {selectedPlace && (
-        <View className="absolute bottom-24 w-full">
-          <View className="w-4/5 h-80 mx-auto  rounded-xl bg-light-background dark:bg-dark-background">
-            {/* イメージ画像 */}
-            <Image
-              className={`w-full h-32 rounded-t-xl`}
-              src={
-                selectedPlace.photos
-                  ? `https://places.googleapis.com/v1/${selectedPlace.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`
-                  : ''
-              }
-            />
-            {/* body */}
-            <View className="py-2 px-4 h-48">
-              {/* /title */}
-              <Text className="text-lg font-bold">{selectedPlace.displayName.text}</Text>
-              {/* rate */}
-              <Text>{selectedPlace.rating}</Text>
-              {/* description */}
-              <Text>{selectedPlace.editorialSummary?.text || ''}</Text>
-              {/* button group */}
-              <View className="m-4 flex flex-row justify-start items-center gap-2 absolute bottom-0">
-                <TouchableOpacity
-                  className="py-2 px-4 bg-light-theme dark:bg-dark-theme rounded-3xl"
-                  onPress={() => router.navigate('/PlanList')}
-                >
-                  <Text className="text-sm">ウェブサイト</Text>
-                </TouchableOpacity>
-                <TouchableOpacity className="py-2 px-4 bg-light-theme dark:bg-dark-theme rounded-3xl">
-                  <Text className="text-sm">AI</Text>
-                </TouchableOpacity>
-                <CheckBox title="" checked={false} onPress={() => {}} />
-              </View>
-            </View>
-          </View>
-        </View>
-      )}
+      <PlaceCard place={selectedPlace} />
 
       {/* ローディング */}
       {isLoading && <Loading />}
