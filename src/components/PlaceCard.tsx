@@ -62,7 +62,7 @@ export default function PlaceCard({ place }: Props) {
   return (
     <View>
       <View className="absolute bottom-24 w-full">
-        <View className="w-4/5 h-80 mx-auto  rounded-xl bg-light-background dark:bg-dark-background">
+        <View className="w-4/5 mx-auto  rounded-xl bg-light-background dark:bg-dark-background">
           {/* イメージ画像 */}
           <Image
             className={`w-full h-32 rounded-t-xl`}
@@ -73,28 +73,29 @@ export default function PlaceCard({ place }: Props) {
             }
           />
           {/* body */}
-          <View className="py-2 px-4 h-48">
+          <View className="flex flex-col gap-2 p-2">
             {/* /title */}
             <Text className="text-lg font-bold">{place.displayName.text}</Text>
             {/* rate */}
             <RateViewer rating={place.rating} />
             {/* description */}
+            {/* TODO maxの指定 */}
             <Text>{place.editorialSummary?.text || ''}</Text>
             {/* button group */}
-            <View className="m-4 flex flex-row justify-start items-center gap-2 absolute bottom-0">
+            <View className="flex flex-row justify-start items-center gap-4">
               <TouchableOpacity
-                className="py-2 px-4 bg-light-theme dark:bg-dark-theme rounded-2xl"
+                className="p-4 w-32 bg-light-theme dark:bg-dark-theme rounded-3xl"
                 onPress={() => {
                   Linking.openURL(place.websiteUri);
                 }}
               >
-                <Text className="text-md">ウェブサイト</Text>
+                <Text className="text-sm text-center font-semibold">ウェブサイト</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="py-2 px-4 bg-light-theme dark:bg-dark-theme rounded-2xl"
+                className="p-4 w-32 bg-light-theme dark:bg-dark-theme rounded-3xl"
                 onPress={() => handleAiAnalyze()}
               >
-                <Text className="text-sm">AI</Text>
+                <Text className="text-sm text-center font-semibold">AI要約</Text>
               </TouchableOpacity>
               <CheckBox title="" checked={false} onPress={() => {}} />
             </View>
