@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { TextInput, View, Text, Image, TouchableOpacity } from 'react-native';
+import { View } from 'react-native';
 import Map from '@components/GoogleMaps/Map';
 import * as Location from 'expo-location';
 import type { Region } from 'react-native-maps';
-import { CheckBox } from 'react-native-elements';
 import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Place } from '@/src/entities/Place';

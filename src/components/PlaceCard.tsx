@@ -84,7 +84,7 @@ export default function PlaceCard({ place }: Props) {
             {/* button group */}
             <View className="flex flex-row justify-start items-center gap-4">
               <TouchableOpacity
-                className="p-4 w-32 bg-light-theme dark:bg-dark-theme rounded-3xl"
+                className="p-2 w-32 bg-light-theme dark:bg-dark-theme rounded-3xl"
                 onPress={() => {
                   Linking.openURL(place.websiteUri);
                 }}
@@ -92,7 +92,7 @@ export default function PlaceCard({ place }: Props) {
                 <Text className="text-sm text-center font-semibold">ウェブサイト</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="p-4 w-32 bg-light-theme dark:bg-dark-theme rounded-3xl"
+                className="p-2 w-32 bg-light-theme dark:bg-dark-theme rounded-3xl"
                 onPress={() => handleAiAnalyze()}
               >
                 <Text className="text-sm text-center font-semibold">AI要約</Text>
