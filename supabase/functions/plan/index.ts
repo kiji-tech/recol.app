@@ -77,10 +77,11 @@ const get = async (c: Hono.Context) => {
  * @returns
  */
 const list = async (c: Hono.Context) => {
-  console.log('plan/list');
+  console.log('list');
   const supabase = generateSupabase(c);
   // TODO filter by user
-  const { data, error } = await supabase.from('plan').select('*');
+  const { data, error } = await supabase.from('plan').select('*, schedule(*)');
+  console.log({ data, error });
   return c.json({ data, error });
 };
 

@@ -3,14 +3,16 @@ import { createContext, useContext, useState } from 'react';
 import { Tables } from '../libs/database.types';
 
 type PlanContextType = {
-  plan: Tables<'plan'> | null;
-  setPlan: (plan: Tables<'plan'>) => void;
+  plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
+  setPlan: (plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => void;
 };
 
 const PlanContext = createContext<PlanContextType | null>(null);
 
 const PlanProvider = ({ children }: { children: React.ReactNode }) => {
-  const [plan, setPlan] = useState<Tables<'plan'> | null>(null);
+  const [plan, setPlan] = useState<(Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null>(
+    null
+  );
   return <PlanContext.Provider value={{ plan, setPlan }}>{children}</PlanContext.Provider>;
 };
 

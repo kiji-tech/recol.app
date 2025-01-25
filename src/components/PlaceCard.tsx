@@ -1,10 +1,12 @@
-import { View, Image, Text, TouchableOpacity, Linking } from 'react-native';
-import { CheckBox } from 'react-native-elements';
+import { View, Image, Text, TouchableOpacity, Linking, Touchable } from 'react-native';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Place, Review } from '../entities/Place';
 import { reviewAIAnalyze } from '../apis/OpenAI';
 import { useState } from 'react';
 import AIAnalyzeModal from './Modal/AIAnalyzeModal';
 import RateViewer from './RateViewer';
+import IconButton from './IconButton';
+import AddScheduleModal from './Modal/AddScheduleModal';
 
 type Props = {
   place: Place | null;
@@ -13,6 +15,7 @@ export default function PlaceCard({ place }: Props) {
   // ==== Member ====
   const [isAiNavigation, setIsAiNavigation] = useState(false);
   const [isAiText, setIsAiText] = useState('');
+  const [isAddScheduleModal, setIsAddScheduleModal] = useState(false);
 
   // ==== Method ====
   const handleAiAnalyze = async () => {
@@ -37,6 +40,10 @@ export default function PlaceCard({ place }: Props) {
       console.log(text);
       setIsAiText(text || '');
     });
+  };
+
+  const handleCreateSchedule = async () => {
+    setIsAddScheduleModal(true);
   };
 
   //   const handleAddPlan = async (place: Place) => {
@@ -83,26 +90,39 @@ export default function PlaceCard({ place }: Props) {
             <Text>{place.editorialSummary?.text || ''}</Text>
             {/* button group */}
             <View className="flex flex-row justify-start items-center gap-4">
+              <IconButton
+                icon={
+                  <MaterialCommunityIcons
+                    name="web"
+                    size={18}
+                    className={`text-light-text dark:text-dark-text`}
+                  />
+                }
+                theme="theme"
+                onPress={() => Linking.openURL(place.websiteUri)}
+              />
+              <IconButton
+                icon={
+                  <MaterialCommunityIcons
+                    name="robot"
+                    size={18}
+                    className={`text-light-text dark:text-dark-text`}
+                  />
+                }
+                onPress={handleAiAnalyze}
+              />
               <TouchableOpacity
                 className="p-2 w-32 bg-light-theme dark:bg-dark-theme rounded-3xl"
-                onPress={() => {
-                  Linking.openURL(place.websiteUri);
-                }}
+                onPress={handleCreateSchedule}
               >
-                <Text className="text-sm text-center font-semibold">ウェブサイト</Text>
+                <Text className="text-sm text-center font-semibold">プランに追加</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                className="p-2 w-32 bg-light-theme dark:bg-dark-theme rounded-3xl"
-                onPress={() => handleAiAnalyze()}
-              >
-                <Text className="text-sm text-center font-semibold">AI要約</Text>
-              </TouchableOpacity>
-              <CheckBox title="" checked={false} onPress={() => {}} />
             </View>
           </View>
         </View>
       </View>
 
+      {/* モーダル */}
       {isAiNavigation && (
         <AIAnalyzeModal
           open={isAiNavigation}
@@ -110,6 +130,13 @@ export default function PlaceCard({ place }: Props) {
           text={isAiText}
         />
       )}
+      <AddScheduleModal
+        open={isAddScheduleModal}
+        onClose={() => {
+          // TODO: 確認
+          setIsAddScheduleModal(false);
+        }}
+      />
     </View>
   );
 }

@@ -69,11 +69,11 @@ export default function SignUpScreen() {
           />
           <View className="w-full flex flex-col gap-4 ">
             {/* 新規登録 */}
-            <Button theme="primary" text="新規登録" onPress={signUpWithPassword} />
+            <Button theme="theme" text="新規登録" onPress={signUpWithPassword} />
             {/* TODO: Googleでサインイン */}
             {/* ログイン画面に戻る */}
           </View>
-          <Link href="/(auth)/signIn" className="text-xs border-b-[1px] ">
+          <Link href="/(auth)/SignIn" className="text-xs border-b-[1px] ">
             ログイン画面に戻る
           </Link>
         </View>

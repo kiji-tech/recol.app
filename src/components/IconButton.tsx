@@ -1,29 +1,22 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
-import { bgFormColor, bgThemeColor, borderColor, textColor } from '../themes/ColorUtil';
 
 type Props = {
-  icon: string;
+  icon: any;
+  theme?: 'info' | 'danger' | 'warn' | 'theme' | 'background';
   onPress: () => void;
 };
-export default function IconButton({ icon, onPress }: Props) {
+export default function IconButton({ icon, theme = 'theme', onPress }: Props) {
   return (
     <TouchableOpacity onPress={onPress}>
       <View
         className={`
         h-12 w-12 rounded-full
         flex justify-center items-center
-        bg-light-background dark:bg-dark-background
+        bg-light-${theme} dark:bg-dark-${theme}
      `}
       >
-        {/* TODO  color . dark mode */}
-        <MaterialIcons
-          name={icon as any}
-          size={18}
-          className={`text-light-text dark:text-dark-text`}
-          color="#000"
-        />
+        {icon}
       </View>
     </TouchableOpacity>
   );

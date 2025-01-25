@@ -19,7 +19,7 @@ const RouteLayout = () => {
         error,
       } = await supabase.auth.getSession();
       if (!session) {
-        router.navigate('/(auth)/signIn');
+        router.navigate('/(auth)/SignIn');
       }
     })();
   }, []);

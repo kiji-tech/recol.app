@@ -1,3 +1,4 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { BackgroundView } from '@/src/components';
 import IconButton from '@/src/components/IconButton';
 import { Tables } from '@/src/libs/database.types';
@@ -11,17 +12,19 @@ import { bgFormColor } from '@/src/themes/ColorUtil';
 
 export default function Events() {
   const router = useRouter();
-  const [plans, setPlans] = useState<Tables<'plan'>[]>([]);
   const { setPlan } = usePlan();
+  const [plans, setPlans] = useState<any[]>([]);
+
+  // === Method ===
   useEffect(() => {
     (async () => {
-      const res = await fetch(process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL + '/plan/list', {
+      const { data } = await fetch(process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL + '/plan/list', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
       }).then((res) => res.json());
-      setPlans(res.data);
+      setPlans(data);
     })();
   }, []);
 
@@ -30,7 +33,14 @@ export default function Events() {
       <TouchableOpacity>
         <View>
           <IconButton
-            icon="add"
+            icon={
+              <MaterialIcons
+                name="add"
+                size={18}
+                className={`text-light-text dark:text-dark-text`}
+                color="#000"
+              />
+            }
             onPress={() => {
               router.push('/(add.plan)/AddPlan');
             }}
@@ -39,6 +49,20 @@ export default function Events() {
       </TouchableOpacity>
     );
   };
+
+  const handleSelectPlan = (plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => {
+    // スケジュールを取得して設定
+
+    setPlan(plan);
+    router.push({
+      pathname: '/(plan)/MapScreen',
+      params: {
+        uid: plan.uid,
+      },
+    });
+  };
+
+  // === Render ===
 
   // プランがない場合
   if (plans.length === 0) {
@@ -63,15 +87,7 @@ export default function Events() {
                 ${bgFormColor()}
                 p-4
                 w-full rounded-lg`}
-              onPress={() => {
-                setPlan(p);
-                router.push({
-                  pathname: '/(plan)/MapScreen',
-                  params: {
-                    uid: p.uid,
-                  },
-                });
-              }}
+              onPress={() => handleSelectPlan(p)}
             >
               <View className="flex flex-col gap-2 justify-start items-start">
                 <View className="flex flex-row justify-between items-center w-full">

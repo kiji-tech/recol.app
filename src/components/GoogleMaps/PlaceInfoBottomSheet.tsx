@@ -168,7 +168,17 @@ export default function PlaceInfoBottomSheet({ sheetRef, places = [], onPress }:
             className={`flex-1 justify-center items-center p-8 bg-light-background dark:bg-dark-background`}
           >
             <View className="absolute top-10 left-4">
-              <IconButton icon="close" onPress={() => setIsAiNavigation(false)} />
+              <IconButton
+                icon={
+                  <MaterialIcons
+                    name="close"
+                    size={18}
+                    className={`text-light-text dark:text-dark-text`}
+                    color="#000"
+                  />
+                }
+                onPress={() => setIsAiNavigation(false)}
+              />
             </View>
             {isAiText ? <Text>{isAiText}</Text> : <Text>AI解析中...</Text>}
           </View>

@@ -57,12 +57,12 @@ export default function SignInScreen() {
           {/* サインイン */}
           <View className="w-full flex flex-col gap-4 ">
             <Button theme={'theme'} text="サインイン" onPress={signInWithPassword} />
-            <Button theme={'theme'} text="新規登録" onPress={() => router.push('/(auth)/signUp')} />
+            <Button theme={'theme'} text="新規登録" onPress={() => router.push('/(auth)/SignUp')} />
             {/* TODO: Googleでサインイン */}
             {/* 新規登録 */}
           </View>
           {/* パスワードを忘れた */}
-          <Link href="/(auth)/forget.password" className="text-xs border-b-[1px] ">
+          <Link href="/(auth)/ForgetPassword" className="text-xs border-b-[1px] ">
             パスワードを忘れた方はこちら
           </Link>
         </View>

@@ -1,3 +1,6 @@
+Need to install the following packages:
+supabase@2.6.8
+Ok to proceed? (y) 
 export type Json =
   | string
   | number
@@ -79,6 +82,50 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      schedule: {
+        Row: {
+          created_at: string
+          description: string | null
+          from: string | null
+          place_id: string | null
+          plan_id: string | null
+          title: string | null
+          to: string | null
+          uid: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          from?: string | null
+          place_id?: string | null
+          plan_id?: string | null
+          title?: string | null
+          to?: string | null
+          uid?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          from?: string | null
+          place_id?: string | null
+          plan_id?: string | null
+          title?: string | null
+          to?: string | null
+          uid?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schedule_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plan"
+            referencedColumns: ["uid"]
+          },
+        ]
       }
     }
     Views: {

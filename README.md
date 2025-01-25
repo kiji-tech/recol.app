@@ -9,6 +9,13 @@
 
 
 ## デプロイコマンド
+### supabase edge function
+```
+$ npm run functions:deploy
+```
+
+
+### アプリケーション
 ```shell
 $ eas build --platform android
 ```

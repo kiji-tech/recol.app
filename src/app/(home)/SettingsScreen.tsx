@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function Settings() {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    router.navigate('/(auth)/signIn');
+    router.navigate('/(auth)/SignIn');
   };
 
   return (
