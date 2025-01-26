@@ -1,12 +1,12 @@
 import React, { ReactNode, useEffect } from 'react';
-import { BackgroundView } from '@/src/components';
+import { BackgroundView, Header } from '@/src/components';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { searchId } from '@/src/apis/GoogleMaps';
-import { Text, View } from 'react-native';
-import TripCalendar from '@/src/components/Schedule/TripCalendar';
+import Schedule from '@/src/components/Schedule';
+import { useRouter } from 'expo-router';
 
 export default function ScheduleScreen(): ReactNode {
+  const router = useRouter();
   const { plan } = usePlan();
 
   useEffect(() => {
@@ -19,7 +19,14 @@ export default function ScheduleScreen(): ReactNode {
   return (
     <SafeAreaView>
       <BackgroundView>
-        <TripCalendar plan={plan} />
+        {/* ヘッダー */}
+        <Header
+          title={`${plan?.title}のスケジュール`}
+          onBack={() => {
+            router.back();
+          }}
+        />
+        <Schedule plan={plan} />
       </BackgroundView>
     </SafeAreaView>
   );

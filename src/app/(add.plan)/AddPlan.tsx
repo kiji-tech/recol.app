@@ -9,7 +9,6 @@ import { View, Text, TextInput, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
-import { BackButton } from '@/src/components';
 
 export default function AddPlan() {
   const [title, setTitle] = useState<string>('');

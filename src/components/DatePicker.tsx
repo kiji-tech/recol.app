@@ -1,21 +1,16 @@
 import dayjs, { Dayjs } from 'dayjs';
 import { useState } from 'react';
-import { TextInput, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import {
-  backgroundColor,
-  bgFormColor,
-  borderColor,
-  shadowColor,
-  textColor,
-} from '../themes/ColorUtil';
 
 type Props = {
   label?: string;
   value: Dayjs;
+  mode?: 'date' | 'time';
   onChange: (date: Date) => void;
 };
-const DatePicker = ({ label, value, onChange }: Props) => {
+const DatePicker = ({ label, mode = 'date', value, onChange }: Props) => {
+  const format = mode === 'date' ? 'YYYY-MM-DD' : 'HH:mm';
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -26,7 +21,7 @@ const DatePicker = ({ label, value, onChange }: Props) => {
   };
 
   const handleConfirm = (date: Date) => {
-    console.warn('A date has been picked: ', date);
+    console.info('A date has been picked: ', date);
     onChange(date);
     hideDatePicker();
   };
@@ -39,13 +34,14 @@ const DatePicker = ({ label, value, onChange }: Props) => {
           className={`border py-4 px-4 rounded-xl bg-light-background dark:bg-dark-background `}
         >
           <Text className={`text-md text-light-text dark:text-dark-text`}>
-            {value.format('YYYY-MM-DD')}
+            {value.format(format)}
           </Text>
         </View>
       </TouchableOpacity>
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
-        mode="date"
+        mode={mode}
+        date={value.toDate()}
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
       />

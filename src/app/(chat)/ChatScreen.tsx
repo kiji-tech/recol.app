@@ -116,6 +116,7 @@ export default function ChatScreen() {
     else setInputText('');
   };
 
+  // ==== Render ====
   const renderMessage = () => {
     return (
       <View className="w-full flex flex-row">
