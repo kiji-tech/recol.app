@@ -1,9 +1,10 @@
 import { Tables } from '@/src/libs/database.types';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Text, ScrollView, TouchableOpacity } from 'react-native';
 import ScheduleItem from './ScheduleItem';
 import dayjs from 'dayjs';
 import ScheduleEditorModal from './ScheduleEditorModal';
+import { fetchSchedule } from '@/src/libs/ApiService';
 
 type Props = {
   plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
@@ -11,9 +12,27 @@ type Props = {
 
 export default function TripCalendar({ plan }: Props): ReactNode {
   const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+  const [schedule, setSchedule] = useState<Tables<'schedule'>[]>([]);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editSchedule, setEditSchedule] = useState<Tables<'schedule'> | null>(null);
   const [selectedSchedule, setSelectedSchedule] = useState<Tables<'schedule'> | null>(null);
+
+  // === Effect ===
+  useEffect(() => {
+    if (!plan) return;
+    const ctrl = new AbortController();
+
+    fetchSchedule(plan.uid, ctrl).then((data) => {
+      if (data) {
+        setSchedule(data);
+      }
+    });
+
+    return () => {
+      ctrl.abort();
+    };
+  }, []);
+
   // === Method ====
   /** 時間軸クリックイベント */
   const handleHourPress = (hour: string) => {
@@ -38,6 +57,12 @@ export default function TripCalendar({ plan }: Props): ReactNode {
   const handleModalClose = () => {
     setIsEditorOpen(false);
     setEditSchedule(null);
+
+    fetchSchedule(plan!.uid).then((data) => {
+      if (data) {
+        setSchedule(data);
+      }
+    });
   };
 
   // === Render ===
@@ -61,15 +86,14 @@ export default function TripCalendar({ plan }: Props): ReactNode {
         );
       })}
       {/* スケジュールアイテム（タスク）の表示 */}
-      {plan &&
-        plan.schedule.map((s) => (
-          <ScheduleItem
-            key={s.uid}
-            item={s}
-            active={selectedSchedule ? selectedSchedule.uid == s.uid : false}
-            onPress={handleSchedulePress}
-          />
-        ))}
+      {schedule.map((s) => (
+        <ScheduleItem
+          key={s.uid}
+          item={s}
+          active={selectedSchedule ? selectedSchedule.uid == s.uid : false}
+          onPress={handleSchedulePress}
+        />
+      ))}
 
       {/* スケジュール編集モーダル */}
       <ScheduleEditorModal

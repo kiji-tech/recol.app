@@ -1,8 +1,9 @@
 import { Tables } from '@/src/libs/database.types';
 import { useEffect, useState } from 'react';
-import { Alert, Modal, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
+import { Alert, Modal, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import DatePicker from '../DatePicker';
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
+import dayjs from '@/src/libs/dayjs';
 import ModalLayout from '../Modal/ModalLayout';
 
 type Props = {
@@ -26,10 +27,11 @@ export default function ScheduleEditorModal({ initSchedule, open, onClose }: Pro
     if (!schedule) return;
     const res = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/schedule`, {
       method: 'POST',
-      body: JSON.stringify(schedule),
+      body: JSON.stringify({ schedule }),
     });
     if (!res.ok) {
       // TODO: エラーハンドリング
+      console.log(res);
       alert('登録に失敗しました');
       return;
     }
@@ -82,16 +84,25 @@ export default function ScheduleEditorModal({ initSchedule, open, onClose }: Pro
               label="from"
               mode="time"
               value={schedule.from ? dayjs(schedule.from) : dayjs()}
-              onChange={(date) => setSchedule({ ...schedule, from: dayjs(date).toString() })}
+              onChange={(date) => {
+                setSchedule({
+                  ...schedule,
+                  from: date.format('YYYY-MM-DDTHH:mm:ss.000Z'),
+                });
+              }}
             />
             <DatePicker
               label="to"
               mode="time"
               value={schedule.to ? dayjs(schedule.to) : dayjs(schedule.from).add(1, 'hour')}
-              onChange={(date) => setSchedule({ ...schedule, to: dayjs(date).toString() })}
+              onChange={(date) =>
+                setSchedule({ ...schedule, to: date.format('YYYY-MM-DDTHH:mm:ss.000Z') })
+              }
             />
           </View>
         </View>
+
+        {/* 保存ボタン */}
         <TouchableOpacity
           onPress={handleScheduleSubmit}
           className={` w-full p-4

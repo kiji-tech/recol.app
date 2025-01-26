@@ -1,17 +1,21 @@
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from '@/src/libs/dayjs';
+import { Dayjs } from 'dayjs';
 import { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 type Props = {
   label?: string;
   value: Dayjs;
   mode?: 'date' | 'time';
-  onChange: (date: Date) => void;
+  onChange: (date: Dayjs) => void;
 };
 const DatePicker = ({ label, mode = 'date', value, onChange }: Props) => {
   const format = mode === 'date' ? 'YYYY-MM-DD' : 'HH:mm';
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const { i18n } = useTranslation();
+
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -21,8 +25,7 @@ const DatePicker = ({ label, mode = 'date', value, onChange }: Props) => {
   };
 
   const handleConfirm = (date: Date) => {
-    console.info('A date has been picked: ', date);
-    onChange(date);
+    onChange(dayjs(date));
     hideDatePicker();
   };
 
@@ -41,6 +44,7 @@ const DatePicker = ({ label, mode = 'date', value, onChange }: Props) => {
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode={mode}
+        locale={'ja'}
         date={value.toDate()}
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}

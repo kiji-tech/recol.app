@@ -5,6 +5,7 @@ import { colorScheme, useColorScheme } from 'nativewind';
 import { useEffect, useState } from 'react';
 import { supabase } from '../libs/supabase';
 import { PlanProvider } from '../contexts/PlanContext';
+require('dayjs/locale/ja');
 
 // Use imperatively
 // 'dark  | 'light' | 'system'

@@ -24,7 +24,6 @@ const generateSupabase = (c: Hono.Context) => {
 const create = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
   const { title, from, to, locations } = await c.req.json();
-  console.log({ title, from, to, locations });
   // planを作成
   const { data, error } = await supabase
     .from('plan')
@@ -55,7 +54,7 @@ const update = async (c: Hono.Context) => {
     return c.json({ error }, 403);
   }
 
-  return c.json({ data, error });
+  return c.json(data);
 };
 
 /**
