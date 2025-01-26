@@ -18,15 +18,29 @@ const generateSupabase = (c: Hono.Context) => {
 
 const get = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
+  const scheduleId = c.req.param('scheduleId');
   const planId = c.req.param('planId');
-  const { data, error } = await supabase.from('schedule').select('*').eq('plan_id', planId);
+  if (planId != null) {
+    const { data, error } = await supabase.from('schedule').select('*').eq('plan_id', planId);
 
-  if (error) {
-    console.error(error);
-    return c.json({ error }, 403);
+    if (error) {
+      console.error(error);
+      return c.json({ error }, 403);
+    }
+    return c.json(data);
+  } else if (!scheduleId) {
+    const { data, error } = await supabase
+      .from('schedule')
+      .select('*')
+      .eq('id', scheduleId)
+      .maybeSingle();
+
+    if (error) {
+      console.error(error);
+      return c.json({ error }, 403);
+    }
+    return c.json(data);
   }
-
-  return c.json(data);
 };
 
 const upsert = async (c: Hono.Context) => {

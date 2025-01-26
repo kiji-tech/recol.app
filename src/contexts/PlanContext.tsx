@@ -5,6 +5,8 @@ import { Tables } from '../libs/database.types';
 type PlanContextType = {
   plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
   setPlan: (plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => void;
+  editSchedule: Tables<'schedule'> | null;
+  setEditSchedule: (schedule: Tables<'schedule'>) => void;
 };
 
 const PlanContext = createContext<PlanContextType | null>(null);
@@ -13,7 +15,12 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
   const [plan, setPlan] = useState<(Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null>(
     null
   );
-  return <PlanContext.Provider value={{ plan, setPlan }}>{children}</PlanContext.Provider>;
+  const [editSchedule, setEditSchedule] = useState<Tables<'schedule'> | null>(null);
+  return (
+    <PlanContext.Provider value={{ plan, setPlan, editSchedule, setEditSchedule }}>
+      {children}
+    </PlanContext.Provider>
+  );
 };
 
 const usePlan = () => {

@@ -28,12 +28,11 @@ export default function ScheduleItem({ item, active, onPress }: Props) {
   return (
     <TouchableOpacity
       style={{ top: Math.round(fromPosition), height: Math.round(range) }}
-      className={`absolute left-20 w-80 bg-light-theme dark:bg-dark-theme rounded-lg ${active ? 'opacity-100' : 'opacity-70 '}`}
+      className={`absolute left-20 w-80 bg-light-theme dark:bg-dark-theme rounded-xl ${active ? 'opacity-100' : 'opacity-70 '}`}
       onPress={() => onPress(item)}
     >
       <View className="p-4">
-        <Text className="font-bold">{item.title}</Text>
-        <Text>{item.description}</Text>
+        <Text className="font-bold text-light-text dark:text-dark-text">{item.title}</Text>
       </View>
     </TouchableOpacity>
   );

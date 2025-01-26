@@ -18,7 +18,7 @@ export default function Header({
 }: Props) {
   const [searchText, setSearchText] = useState<string>('');
   return (
-    <View className="w-full h-12 flex flex-row items-center justify-between gap-4">
+    <View className="w-full h-12 flex flex-row items-center justify-between gap-4 mt-4">
       {/* 戻るボタン */}
       {onBack && <BackButton onPress={() => onBack()} />}
       {/* タイトル */}

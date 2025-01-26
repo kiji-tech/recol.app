@@ -2,7 +2,6 @@ import dayjs from '@/src/libs/dayjs';
 import { Dayjs } from 'dayjs';
 import { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 type Props = {
@@ -14,7 +13,6 @@ type Props = {
 const DatePicker = ({ label, mode = 'date', value, onChange }: Props) => {
   const format = mode === 'date' ? 'YYYY-MM-DD' : 'HH:mm';
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const { i18n } = useTranslation();
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);

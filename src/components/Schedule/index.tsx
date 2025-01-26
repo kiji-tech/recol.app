@@ -3,8 +3,9 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Text, ScrollView, TouchableOpacity } from 'react-native';
 import ScheduleItem from './ScheduleItem';
 import dayjs from 'dayjs';
-import ScheduleEditorModal from './ScheduleEditorModal';
-import { fetchSchedule } from '@/src/libs/ApiService';
+import { fetchScheduleList } from '@/src/libs/ApiService';
+import { useRouter } from 'expo-router';
+import { usePlan } from '@/src/contexts/PlanContext';
 
 type Props = {
   plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
@@ -13,16 +14,15 @@ type Props = {
 export default function TripCalendar({ plan }: Props): ReactNode {
   const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
   const [schedule, setSchedule] = useState<Tables<'schedule'>[]>([]);
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [editSchedule, setEditSchedule] = useState<Tables<'schedule'> | null>(null);
   const [selectedSchedule, setSelectedSchedule] = useState<Tables<'schedule'> | null>(null);
-
+  const { setEditSchedule } = usePlan();
+  const router = useRouter();
   // === Effect ===
   useEffect(() => {
     if (!plan) return;
     const ctrl = new AbortController();
 
-    fetchSchedule(plan.uid, ctrl).then((data) => {
+    fetchScheduleList(plan.uid, ctrl).then((data) => {
       if (data) {
         setSchedule(data);
       }
@@ -37,32 +37,20 @@ export default function TripCalendar({ plan }: Props): ReactNode {
   /** 時間軸クリックイベント */
   const handleHourPress = (hour: string) => {
     setEditSchedule({
-      from: dayjs()
-        .set('hour', Number(hour.split(':')[0]))
+      plan_id: plan!.uid,
+      from: dayjs().set('hour', parseInt(hour)).set('minute', 0).format('YYYY-MM-DDTHH:mm:ss.000Z'),
+      to: dayjs()
+        .set('hour', parseInt(hour) + 1)
         .set('minute', 0)
-        .toString(),
+        .format('YYYY-MM-DDTHH:mm:ss.000Z'),
     } as Tables<'schedule'>);
-    setSelectedSchedule(null);
-    setIsEditorOpen(true);
+    router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
 
   /** アイテムクリックイベント */
   const handleSchedulePress = (schedule: Tables<'schedule'>) => {
-    setSelectedSchedule(schedule);
     setEditSchedule(schedule);
-    setIsEditorOpen(true);
-  };
-
-  /** スケジュール編集モーダルの修正 */
-  const handleModalClose = () => {
-    setIsEditorOpen(false);
-    setEditSchedule(null);
-
-    fetchSchedule(plan!.uid).then((data) => {
-      if (data) {
-        setSchedule(data);
-      }
-    });
+    router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
 
   // === Render ===
@@ -78,10 +66,10 @@ export default function TripCalendar({ plan }: Props): ReactNode {
               handleHourPress(hour);
             }}
             className={`w-full flex flex-row items-center 
-                border-t-[1px] last-child:border-b-[1px]  h-[40px]                
+                border-t-[1px] last-child:border-b-[1px]  h-[40px]
                 border-light-border dark:border-dark-border`}
           >
-            <Text className="w-1/6 pl-2">{hour}</Text>
+            <Text className="w-1/6 pl-2 text-light-text dark:text-dark-text">{hour}</Text>
           </TouchableOpacity>
         );
       })}
@@ -94,13 +82,6 @@ export default function TripCalendar({ plan }: Props): ReactNode {
           onPress={handleSchedulePress}
         />
       ))}
-
-      {/* スケジュール編集モーダル */}
-      <ScheduleEditorModal
-        initSchedule={editSchedule!}
-        open={isEditorOpen}
-        onClose={() => handleModalClose()}
-      />
     </ScrollView>
   );
 }

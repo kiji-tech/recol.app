@@ -10,7 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { bgFormColor } from '@/src/themes/ColorUtil';
 
-export default function Events() {
+export default function PlanListScreen() {
   const router = useRouter();
   const { setPlan } = usePlan();
   const [plans, setPlans] = useState<any[]>([]);
@@ -84,9 +84,9 @@ export default function Events() {
             <TouchableOpacity
               key={p.uid}
               className={`
-                ${bgFormColor()}
-                p-4
-                w-full rounded-lg`}
+                p-4 border-b-[1px] 
+                w-full rounded-lg
+                border-light-border dark:border-dark-border`}
               onPress={() => handleSelectPlan(p)}
             >
               <View className="flex flex-col gap-2 justify-start items-start">
