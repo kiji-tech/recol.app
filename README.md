@@ -19,3 +19,22 @@ $ npm run functions:deploy
 ```shell
 $ eas build --platform android
 ```
+
+
+## DBマイグレーションについて
+[migrationのについて](https://supabase.com/docs/reference/cli/supabase-migration)
+```
+# ローカルとリモートの差分を確認する
+$ supabase db diff
+
+# 差分をmigrationンファイルに書き込む
+$ supabase db diff -f [migrationファイル名]
+
+# migrationファイルの反映状況を確認する
+$ supabase migration list
+
+# migrationファイルを反映させる
+$ supabase db push
+```
+
+
