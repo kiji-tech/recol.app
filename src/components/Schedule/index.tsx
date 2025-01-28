@@ -14,7 +14,6 @@ type Props = {
 export default function TripCalendar({ plan }: Props): ReactNode {
   const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
   const [schedule, setSchedule] = useState<Tables<'schedule'>[]>([]);
-  const [selectedSchedule, setSelectedSchedule] = useState<Tables<'schedule'> | null>(null);
   const { setEditSchedule } = usePlan();
   const router = useRouter();
   // === Effect ===
@@ -75,12 +74,7 @@ export default function TripCalendar({ plan }: Props): ReactNode {
       })}
       {/* スケジュールアイテム（タスク）の表示 */}
       {schedule.map((s) => (
-        <ScheduleItem
-          key={s.uid}
-          item={s}
-          active={selectedSchedule ? selectedSchedule.uid == s.uid : false}
-          onPress={handleSchedulePress}
-        />
+        <ScheduleItem key={s.uid} item={s} onPress={handleSchedulePress} />
       ))}
     </ScrollView>
   );

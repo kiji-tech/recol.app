@@ -5,10 +5,9 @@ import { Text, TouchableOpacity, View } from 'react-native';
 
 type Props = {
   item: Tables<'schedule'>;
-  active: boolean;
   onPress: (schedule: Tables<'schedule'>) => void;
 };
-export default function ScheduleItem({ item, active, onPress }: Props) {
+export default function ScheduleItem({ item, onPress }: Props) {
   const CELL_HEIGHT = 40;
   // 時間
   const { from, to } = item;
@@ -28,7 +27,7 @@ export default function ScheduleItem({ item, active, onPress }: Props) {
   return (
     <TouchableOpacity
       style={{ top: Math.round(fromPosition), height: Math.round(range) }}
-      className={`absolute left-20 w-80 bg-light-theme dark:bg-dark-theme rounded-xl ${active ? 'opacity-100' : 'opacity-70 '}`}
+      className={`absolute left-20 w-80 bg-light-theme dark:bg-dark-theme rounded-xl`}
       onPress={() => onPress(item)}
     >
       <View className="p-4">

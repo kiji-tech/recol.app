@@ -8,14 +8,14 @@ import { useEffect, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { bgFormColor } from '@/src/themes/ColorUtil';
 
 export default function PlanListScreen() {
+  // === Member ===
   const router = useRouter();
   const { setPlan } = usePlan();
   const [plans, setPlans] = useState<any[]>([]);
 
-  // === Method ===
+  // === Effect ===
   useEffect(() => {
     (async () => {
       const { data } = await fetch(process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL + '/plan/list', {
@@ -28,6 +28,7 @@ export default function PlanListScreen() {
     })();
   }, []);
 
+  // === Method ===
   const addButton = () => {
     return (
       <TouchableOpacity>
@@ -55,7 +56,7 @@ export default function PlanListScreen() {
 
     setPlan(plan);
     router.push({
-      pathname: '/(plan)/MapScreen',
+      pathname: '/(plan)/ScheduleScreen',
       params: {
         uid: plan.uid,
       },

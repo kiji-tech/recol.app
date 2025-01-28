@@ -1,6 +1,3 @@
-Need to install the following packages:
-supabase@2.6.8
-Ok to proceed? (y) 
 export type Json =
   | string
   | number
@@ -58,6 +55,7 @@ export type Database = {
           to: string | null
           uid: string
           updated_at: string | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -69,6 +67,7 @@ export type Database = {
           to?: string | null
           uid?: string
           updated_at?: string | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -80,6 +79,7 @@ export type Database = {
           to?: string | null
           uid?: string
           updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -88,7 +88,7 @@ export type Database = {
           created_at: string
           description: string | null
           from: string | null
-          place_id: string | null
+          place_list: Json[] | null
           plan_id: string | null
           title: string | null
           to: string | null
@@ -99,7 +99,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           from?: string | null
-          place_id?: string | null
+          place_list?: Json[] | null
           plan_id?: string | null
           title?: string | null
           to?: string | null
@@ -110,7 +110,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           from?: string | null
-          place_id?: string | null
+          place_list?: Json[] | null
           plan_id?: string | null
           title?: string | null
           to?: string | null
@@ -239,3 +239,4 @@ export type CompositeTypes<
   : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
     ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
+

@@ -1,55 +1,59 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { CafeType, HotelsType, ParkType } from '@/src/apis/GoogleMaps';
 import { Place } from '@/src/entities/Place';
-import { Image, View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import MapView, {
   Callout,
-  LatLng,
   MapMarker,
   Marker,
   PROVIDER_GOOGLE,
   type Region,
 } from 'react-native-maps';
+import Header from '../Header/Header';
+import Loading from '../Loading';
+import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
+import { usePlan } from '@/src/contexts/PlanContext';
 
 const ICON_SIZE = 24;
 type Props = {
-  region?: Region;
-  centerRegion?: Region;
-  places?: Place[];
-  selectedPlaces?: Place[];
-  setRegion?: (region: Region) => void;
-  selectPlace?: (place: Place) => void;
   selectedPlace: Place | null;
-    isMarker?: boolean;
-    isSearch?: boolean;
+  selectedPlaceList?: Place[];
+  isSearch?: boolean;
+  isMarker?: boolean;
+  onSelectPlace?: (place: Place) => void;
   onMarkerDeselect?: () => void;
-  onPressReSearch?: () => void;
 };
 export default function Map({
-  region,
-  places,
-  selectedPlaces,
-  centerRegion,
-  setRegion = () => void 0,
-  selectPlace = () => void 0,
-  onPressReSearch = () => void 0,
-  onMarkerDeselect = () => void 0,
-    selectedPlace,
+  selectedPlace,
+  selectedPlaceList,
   isSearch = false,
   isMarker = false,
+  onMarkerDeselect = () => void 0,
+  onSelectPlace = () => void 0,
 }: Props) {
   const markerRef: { [id: string]: MapMarker | null } = {};
+  const { plan } = usePlan();
+  const [places, setPlaces] = useState<Place[]>();
+  const [isLoading, setIsLoading] = useState(true);
   const [searchTimer, setSearchTimer] = useState<boolean>(false);
+  const [isCoords, setIsCoords] = useState<Region>({
+    ...JSON.parse(plan!.locations![0]),
+    latitudeDelta: 0.05,
+    longitudeDelta: 0.03,
+  });
+  const [centerCords, setCenterCords] = useState<Region>({
+    ...JSON.parse(plan!.locations![0]),
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.03,
+  });
 
-  const reSearchTimer = () => {
-    if (!searchTimer) {
-      setTimeout(() => {
-        setSearchTimer(true);
-      }, 5000);
-    }
-  };
-
+  // selectedPlaceListにある場合は､placesから除外する
+  const filteredPlaces = useMemo(() => {
+    if (!selectedPlaceList || !places) return places;
+    return places.filter((place) => !selectedPlaceList.some((p) => p.id === place.id));
+  }, [places, selectedPlaceList]);
+  // === Effect ===
   useEffect(() => {
+    if (isCoords) fetchLocation(isCoords.latitude, isCoords.longitude);
     reSearchTimer();
   }, []);
 
@@ -59,11 +63,38 @@ export default function Map({
     }
   }, [selectedPlace]);
 
-  // selectedPlacesにある場合は､placesから除外する
-  const filteredPlaces = useMemo(() => {
-    if (!selectedPlaces || !places) return places;
-    return places.filter((place) => !selectedPlaces.some((p) => p.id === place.id));
-  }, [places, selectedPlaces]);
+  // === Method ===
+  /** 施設情報設定処理 */
+  const settingPlaces = (places: Place[]) => {
+    if (!places || places.length == 0) {
+      alert('検索結果がありません.');
+      return;
+    }
+    setPlaces(places);
+    onSelectPlace(places[0]);
+  };
+
+  /** 座標の施設情報取得 */
+  const fetchLocation = async (latitude: number, longitude: number) => {
+    setIsLoading(true);
+    try {
+      const response = await searchNearby(latitude, longitude);
+      settingPlaces(response);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /** 再描画ボタン表示のまでの時間計測 */
+  const reSearchTimer = () => {
+    if (!searchTimer) {
+      setTimeout(() => {
+        setSearchTimer(true);
+      }, 5000);
+    }
+  };
 
   // ズームレベルに応じた閾値を決定する関数
   const getThresholdDistanceByZoom = (zoom: number): number => {
@@ -78,35 +109,82 @@ export default function Map({
     }
   };
 
+  /** 検索範囲の計算 */
   const isResearched = useMemo(() => {
     const R = 6371; // 地球の半径 (km)
-    const dLat = (centerRegion!.latitude - region!.latitude) * (Math.PI / 180);
-    const dLon = (centerRegion!.longitude - region!.longitude) * (Math.PI / 180);
+    const dLat = (centerCords!.latitude - isCoords!.latitude) * (Math.PI / 180);
+    const dLon = (centerCords!.longitude - isCoords!.longitude) * (Math.PI / 180);
 
-    if (!region || !centerRegion) return false;
+    if (!isCoords || !centerCords) return false;
 
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(region!.latitude * (Math.PI / 180)) *
-        Math.cos(centerRegion!.latitude * (Math.PI / 180)) *
+      Math.cos(isCoords!.latitude * (Math.PI / 180)) *
+        Math.cos(centerCords!.latitude * (Math.PI / 180)) *
         Math.sin(dLon / 2) *
         Math.sin(dLon / 2);
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c;
     reSearchTimer();
-    return distance > getThresholdDistanceByZoom(Math.log2(360 / region!.latitudeDelta)); // 距離をキロメートルで返す
-  }, [region, centerRegion]);
+    return distance > getThresholdDistanceByZoom(Math.log2(360 / isCoords!.latitudeDelta)); // 距離をキロメートルで返す
+  }, [isCoords, centerCords]);
+
+  /** テキスト検索 実行処理 */
+  const handleTextSearch = async (searchText: string) => {
+    setIsLoading(true);
+    try {
+      const response = await searchPlaceByText(
+        isCoords?.latitude || 0,
+        isCoords?.longitude || 0,
+        searchText
+      );
+      settingPlaces(response);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /** 場所を選択したときのイベントハンドラ */
+  const handleSelectedPlace = (place: Place) => {
+    setIsCoords((prev) => {
+      return {
+        ...prev,
+        ...place.location,
+      } as Region;
+    });
+    onSelectPlace(place);
+  };
+
+  /** 再検索 実行処理 */
+  const handleResearch = async () => {
+    setIsLoading(true);
+    setSearchTimer(false);
+    try {
+      await fetchLocation(isCoords.latitude, isCoords.longitude);
+      setCenterCords(isCoords);
+      reSearchTimer();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
       <MapView
         style={{ height: '100%', width: '100%', flex: 1, borderRadius: 10 }}
         provider={PROVIDER_GOOGLE}
-        initialRegion={region}
-        region={region}
+        initialRegion={isCoords}
+        region={isCoords}
         onRegionChangeComplete={(region, { isGesture }) => {
-          if (isGesture) setRegion(region);
+          if (isGesture)
+            setIsCoords((prev) => {
+              return { ...prev, ...region };
+            });
         }}
       >
         {filteredPlaces?.map((place: Place) => {
@@ -117,43 +195,47 @@ export default function Map({
                 markerRef[place.id] = ref;
               }}
               title={place.displayName.text}
-              onPress={() => selectPlace(place)}
+              onPress={() => handleSelectedPlace(place)}
               coordinate={{ ...place.location }}
             ></Marker>
           );
         })}
-        {selectedPlaces?.map((place: Place) => {
+        {/* 選択中のPlace */}
+        {selectedPlaceList?.map((place: Place) => {
           return (
             <Marker
               key={place.id}
               ref={(ref) => {
                 markerRef[place.id] = ref;
               }}
-              title={place.displayName.text}
-              onPress={() => selectPlace(place)}
+              pinColor={'#B5F3C3'}
+              title={`✔ ${place.displayName.text}`}
+              onPress={() => handleSelectedPlace(place)}
               coordinate={{ ...place.location }}
             ></Marker>
           );
         })}
         <Callout tooltip={true} />
       </MapView>
+
       {/* 再検索ボタン */}
       {isSearch && (isResearched || searchTimer) && (
-        <View className="w-full absolute top-36">
-          <TouchableOpacity
-            className="w-4/6 py-2 px-4 mt-2 mx-auto rounded-xl  bg-light-background dark:bg-dark-background"
-            onPress={() => {
-              setSearchTimer(false);
-              reSearchTimer();
-              onPressReSearch();
-            }}
-          >
-            <Text className="text-center text-lg text-light-text dark:text-dark-text">
-              エリアで再度検索する
-            </Text>
-          </TouchableOpacity>
+        <View className="w-full absolute top-0">
+          <View className="flex flex-col justify-center items-center w-full">
+            {/* 検索ヘッダー */}
+            <Header onSearch={(text: string) => handleTextSearch(text)} />
+            <TouchableOpacity
+              className="w-4/6 py-2 px-4 mt-2 mx-auto rounded-xl  bg-light-background dark:bg-dark-background"
+              onPress={handleResearch}
+            >
+              <Text className="text-center text-lg text-light-text dark:text-dark-text">
+                エリアで再度検索する
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
+      {isLoading && <Loading />}
     </>
   );
 }

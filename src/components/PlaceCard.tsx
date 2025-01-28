@@ -6,16 +6,18 @@ import { useState } from 'react';
 import AIAnalyzeModal from './Modal/AIAnalyzeModal';
 import RateViewer from './RateViewer';
 import IconButton from './IconButton';
-import AddScheduleModal from './Modal/AddScheduleModal';
+import React from 'react';
 
 type Props = {
   place: Place | null;
+  selected: boolean;
+  onAddPlace: (place: Place) => void;
+  onRemovePlace: (place: Place) => void;
 };
-export default function PlaceCard({ place }: Props) {
+export default function PlaceCard({ place, selected = false, onAddPlace, onRemovePlace }: Props) {
   // ==== Member ====
   const [isAiNavigation, setIsAiNavigation] = useState(false);
   const [isAiText, setIsAiText] = useState('');
-  const [isAddScheduleModal, setIsAddScheduleModal] = useState(false);
 
   // ==== Method ====
   const handleAiAnalyze = async () => {
@@ -42,82 +44,74 @@ export default function PlaceCard({ place }: Props) {
     });
   };
 
-  const handleCreateSchedule = async () => {
-    setIsAddScheduleModal(true);
+  const handleAddPlace = async () => {
+    if (place) onAddPlace(place);
   };
-
-  //   const handleAddPlan = async (place: Place) => {
-  //     const newPlan = { ...plan, place_id_list: [place.id] };
-  //     const res = await fetch(process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL + '/plan', {
-  //       method: 'PUT',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(newPlan),
-  //     });
-
-  //     if (res.ok) {
-  //       setPlan(newPlan as Tables<'plan'>);
-  //     } else {
-  //       alert(JSON.stringify(await res.json()));
-  //     }
-  //   };
+  const handleRemovePlace = async () => {
+    if (place) onRemovePlace(place);
+  };
 
   // ==== Render ====
   if (!place) return null;
 
   return (
-    <View>
-      <View className="absolute bottom-24 w-full">
-        <View className="w-4/5 mx-auto  rounded-xl bg-light-background dark:bg-dark-background">
-          {/* イメージ画像 */}
-          <Image
-            className={`w-full h-32 rounded-t-xl`}
-            src={
-              place.photos
-                ? `https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`
-                : ''
-            }
-          />
-          {/* body */}
-          <View className="flex flex-col gap-2 p-2">
-            {/* /title */}
-            <Text className="text-lg font-bold">{place.displayName.text}</Text>
-            {/* rate */}
-            <RateViewer rating={place.rating} />
-            {/* description */}
-            {/* TODO maxの指定 */}
-            <Text>{place.editorialSummary?.text || ''}</Text>
-            {/* button group */}
-            <View className="flex flex-row justify-start items-center gap-4">
-              <IconButton
-                icon={
-                  <MaterialCommunityIcons
-                    name="web"
-                    size={18}
-                    className={`text-light-text dark:text-dark-text`}
-                  />
-                }
-                theme="theme"
-                onPress={() => Linking.openURL(place.websiteUri)}
-              />
-              <IconButton
-                icon={
-                  <MaterialCommunityIcons
-                    name="robot"
-                    size={18}
-                    className={`text-light-text dark:text-dark-text`}
-                  />
-                }
-                onPress={handleAiAnalyze}
-              />
+    <>
+      <View className="w-full mx-auto rounded-xl bg-light-background dark:bg-dark-background border border-light-border dark:border-dark-border">
+        {/* イメージ画像 */}
+        <Image
+          className={`w-full h-32 rounded-t-xl`}
+          src={
+            place.photos
+              ? `https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`
+              : ''
+          }
+        />
+        <View className="flex flex-col gap-2 p-2">
+          {/* /title */}
+          <Text className="text-lg font-bold">{place.displayName.text}</Text>
+          {/* rate */}
+          <RateViewer rating={place.rating} />
+          {/* description */}
+          {/* TODO maxの指定 */}
+          <Text>{place.editorialSummary?.text || ''}</Text>
+          {/* button group */}
+          <View className="flex flex-row justify-start items-center gap-4">
+            <IconButton
+              icon={
+                <MaterialCommunityIcons
+                  name="web"
+                  size={18}
+                  className={`text-light-text dark:text-dark-text`}
+                />
+              }
+              theme="theme"
+              onPress={() => Linking.openURL(place.websiteUri)}
+            />
+            <IconButton
+              icon={
+                <MaterialCommunityIcons
+                  name="robot"
+                  size={18}
+                  className={`text-light-text dark:text-dark-text`}
+                />
+              }
+              onPress={handleAiAnalyze}
+            />
+            {selected ? (
               <TouchableOpacity
-                className="p-2 w-32 bg-light-theme dark:bg-dark-theme rounded-3xl"
-                onPress={handleCreateSchedule}
+                className="p-2 w-32 bg-light-danger dark:bg-dark-danger rounded-3xl"
+                onPress={handleRemovePlace}
               >
-                <Text className="text-sm text-center font-semibold">プランに追加</Text>
+                <Text className="text-md p-2 text-center font-semibold">- 削除</Text>
               </TouchableOpacity>
-            </View>
+            ) : (
+              <TouchableOpacity
+                className="p-2 w-32 bg-light-info dark:bg-dark-info rounded-3xl"
+                onPress={handleAddPlace}
+              >
+                <Text className="text-md p-2 text-center font-semibold">＋追加</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>
@@ -130,13 +124,6 @@ export default function PlaceCard({ place }: Props) {
           text={isAiText}
         />
       )}
-      <AddScheduleModal
-        open={isAddScheduleModal}
-        onClose={() => {
-          // TODO: 確認
-          setIsAddScheduleModal(false);
-        }}
-      />
-    </View>
+    </>
   );
 }

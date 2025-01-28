@@ -30,7 +30,7 @@ export default function Header({
       {/* 検索バー */}
       {onSearch && (
         <View
-          className={`flex-1 flex-row justify-start rounded-xl items-center px-4 py-2 bg-light-background dark:bg-dark-background `}
+          className={`flex-1 flex-row justify-start items-center  rounded-xl px-4 mx-2 py-2 bg-light-background dark:bg-dark-background `}
         >
           {/* TODO ダークモードのときの色変更 */}
           <MaterialIcons className={`opacity-30`} name="search" size={24} color="#25292e" />
@@ -40,7 +40,9 @@ export default function Header({
             placeholder="検索"
             onBlur={() => onSearch(searchText)}
             returnKeyType="search"
-            className={`w-full rounded-xl text-m text-light-text dark:text-dark-text`}
+            className={`w-full rounded-xl text-m 
+                        border-light-border dark:border-dark-border
+                        text-light-text dark:text-dark-text`}
           />
         </View>
       )}

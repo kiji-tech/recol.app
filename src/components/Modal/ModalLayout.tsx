@@ -9,7 +9,7 @@ type Props = {
 export default function ModalLayout({ children, size, onClose }: Props): ReactNode {
   return (
     <View
-      style={{ height: size == 'full' ? '90%' : size == 'half' ? '50%' : Number(size) }}
+      style={{ height: size == 'full' ? '92%' : size == 'half' ? '50%' : Number(size) }}
       className={`p-4 w-full flex flex-col justify-start items-start gap-8
         shadow-lg
         bottom-0 absolute
