@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Hono } from 'jsr:@hono/hono';
 // @ts-ignore
-import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { createClient, SupabaseClient } from 'jsr:@supabase/supabase-js@2';
 const app = new Hono().basePath('/schedule');
 
 const generateSupabase = (c: Hono.Context) => {
@@ -10,10 +10,19 @@ const generateSupabase = (c: Hono.Context) => {
     Deno.env.get('SUPABASE_URL') ?? '',
     // @ts-ignore
     Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-    // {
-    //     global: { headers: { Authorization: c.headers.get('Authorization')! } },
-    // }
   );
+};
+
+const getUser = async (c: Hono.Context, supabase: SupabaseClient) => {
+  const authHeader = c.req.header('Authorization');
+  if (!authHeader) {
+    return c.json({ error: 'Authorization header is missing' }, 401);
+  }
+  const token = authHeader.replace('Bearer ', '');
+  const {
+    data: { user },
+  } = await supabase.auth.getUser(token);
+  return user;
 };
 
 const get = async (c: Hono.Context) => {

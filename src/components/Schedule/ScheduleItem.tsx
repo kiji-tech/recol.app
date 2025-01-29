@@ -8,7 +8,7 @@ type Props = {
   onPress: (schedule: Tables<'schedule'>) => void;
 };
 export default function ScheduleItem({ item, onPress }: Props) {
-  const CELL_HEIGHT = 40;
+  const CELL_HEIGHT = 64;
   // 時間
   const { from, to } = item;
   const fromPosition = useMemo(

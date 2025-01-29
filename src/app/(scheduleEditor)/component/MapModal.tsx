@@ -40,7 +40,7 @@ export default function MapModal({ isOpen, placeList, onSuccess, onClose }: Prop
     <>
       <Modal visible={isOpen} animationType={'slide'} transparent={true}>
         <ModalLayout size={'full'} onClose={handleClose}>
-          <View className=" w-full h-[50%]">
+          <View className=" w-full h-[50%] shadow-xl">
             <Map
               isSearch={true}
               selectedPlace={selectedPlace}

@@ -7,10 +7,12 @@ import { useRouter } from 'expo-router';
 import { fetchPlan } from '@/src/libs/ApiService';
 import { useFocusEffect } from '@react-navigation/native';
 import { Tables } from '@/src/libs/database.types';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
-  const { plan, setPlan } = usePlan();
+  const { plan } = usePlan();
+  const { session } = useAuth();
   const [viewPlan, setViewPlan] = useState<
     (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null
   >(null);
@@ -21,10 +23,16 @@ export default function ScheduleScreen(): ReactNode {
       setIsLoading(true);
       setViewPlan(null);
       const ctrl = new AbortController();
-      fetchPlan(plan!.uid, ctrl).then((data) => {
-        setViewPlan({ ...data } as Tables<'plan'> & { schedule: Tables<'schedule'>[] });
-        setIsLoading(false);
-      });
+      fetchPlan(plan!.uid, session, ctrl)
+        .then((data) => {
+          console.log({ data });
+          setViewPlan({ ...data } as Tables<'plan'> & { schedule: Tables<'schedule'>[] });
+          setIsLoading(false);
+        })
+        .catch((e) => {
+          console.error(e);
+        })
+        .finally(() => {});
       return () => {
         ctrl.abort();
       };
@@ -36,14 +44,14 @@ export default function ScheduleScreen(): ReactNode {
       <BackgroundView>
         {/* ヘッダー */}
         <Header
-          title={`${viewPlan?.title}のスケジュール`}
+          title={`${viewPlan?.title || plan?.title}のスケジュール`}
           onBack={() => {
             router.back();
           }}
         />
         {viewPlan && <Schedule plan={viewPlan} />}
-        {/* {isLoading && <Loading />} */}
       </BackgroundView>
+      {isLoading && <Loading />}
     </SafeAreaView>
   );
 }

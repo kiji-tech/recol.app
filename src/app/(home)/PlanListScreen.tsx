@@ -8,24 +8,26 @@ import { useEffect, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePlan } from '@/src/contexts/PlanContext';
+import { useAuth } from '@/src/contexts/AuthContext';
+import { fetchPlanList } from '@/src/libs/ApiService';
 
 export default function PlanListScreen() {
   // === Member ===
   const router = useRouter();
   const { setPlan } = usePlan();
+  const { session } = useAuth();
   const [plans, setPlans] = useState<any[]>([]);
 
   // === Effect ===
   useEffect(() => {
-    (async () => {
-      const data = await fetch(process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL + '/plan/list', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then((res) => res.json());
+    const ctrl = new AbortController();
+    fetchPlanList(session, ctrl).then((data) => {
+      if (!data) return;
       setPlans(data);
-    })();
+    });
+    return () => {
+      ctrl.abort();
+    };
   }, []);
 
   // === Method ===
@@ -81,33 +83,34 @@ export default function PlanListScreen() {
     <SafeAreaView>
       <BackgroundView>
         <View className="flex flex-row justify-center flex-wrap gap-4 mb-4">
-          {plans.map((p) => (
-            <TouchableOpacity
-              key={p.uid}
-              className={`
+          {plans &&
+            plans.map((p) => (
+              <TouchableOpacity
+                key={p.uid}
+                className={`
                 p-4 border-b-[1px] 
                 w-full rounded-lg
                 border-light-border dark:border-dark-border`}
-              onPress={() => handleSelectPlan(p)}
-            >
-              <View className="flex flex-col gap-2 justify-start items-start">
-                <View className="flex flex-row justify-between items-center w-full">
-                  <Text className={`font-bold text-xl text-light-text dark:text-dark-text`}>
-                    {p.title}
-                  </Text>
-                  <Text className={`text-md text-light-text dark:text-dark-text`}>
-                    {dayjs(p.from).format('M/D')} - {dayjs(p.to).format('M/D')}
-                  </Text>
+                onPress={() => handleSelectPlan(p)}
+              >
+                <View className="flex flex-col gap-2 justify-start items-start">
+                  <View className="flex flex-row justify-between items-center w-full">
+                    <Text className={`font-bold text-xl text-light-text dark:text-dark-text`}>
+                      {p.title}
+                    </Text>
+                    <Text className={`text-md text-light-text dark:text-dark-text`}>
+                      {dayjs(p.from).format('M/D')} - {dayjs(p.to).format('M/D')}
+                    </Text>
+                  </View>
+                  {/* TODO: メンバー */}
+                  <View className="flex flex-row justify-start items-center gap-2">
+                    <View className={`h-8 w-8 bg-light-info rounded-full `}></View>
+                    <View className={`h-8 w-8 bg-light-warn rounded-full `}></View>
+                    <View className={`h-8 w-8 bg-light-danger rounded-full `}></View>
+                  </View>
                 </View>
-                {/* TODO: メンバー */}
-                <View className="flex flex-row justify-start items-center gap-2">
-                  <View className={`h-8 w-8 bg-light-info rounded-full `}></View>
-                  <View className={`h-8 w-8 bg-light-warn rounded-full `}></View>
-                  <View className={`h-8 w-8 bg-light-danger rounded-full `}></View>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))}
+              </TouchableOpacity>
+            ))}
         </View>
         {addButton()}
       </BackgroundView>

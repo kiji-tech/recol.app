@@ -9,6 +9,7 @@ import { View, Text, TextInput, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 export default function AddPlan() {
   // === Member ===
@@ -16,6 +17,7 @@ export default function AddPlan() {
   const [fromDate, setFromDate] = useState<Dayjs>(dayjs());
   const [toDate, setToDate] = useState<Dayjs>(dayjs());
   const [region, setRegion] = useState<Region>();
+  const { session } = useAuth();
 
   // Location Permissions
   const [status, requestPermission] = Location.useForegroundPermissions();
@@ -53,6 +55,10 @@ export default function AddPlan() {
     const res = await fetch(process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL + '/plan', {
       body,
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${session?.access_token}`,
+      },
     });
     if (res.ok) {
       alert(`${title}`);

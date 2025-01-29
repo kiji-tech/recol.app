@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import { fetchScheduleList } from '@/src/libs/ApiService';
 import { useRouter } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 type Props = {
   plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
@@ -14,6 +15,7 @@ type Props = {
 export default function TripCalendar({ plan }: Props): ReactNode {
   const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
   const { setEditSchedule } = usePlan();
+  const { session } = useAuth();
   const [schedule, setSchedule] = useState<Tables<'schedule'>[]>([]);
   const router = useRouter();
   // === Effect ===
@@ -21,7 +23,7 @@ export default function TripCalendar({ plan }: Props): ReactNode {
     if (!plan) return;
     const ctrl = new AbortController();
 
-    fetchScheduleList(plan.uid, ctrl).then((data) => {
+    fetchScheduleList(plan.uid, session, ctrl).then((data) => {
       if (data) {
         setSchedule(data);
       }
@@ -55,7 +57,7 @@ export default function TripCalendar({ plan }: Props): ReactNode {
 
   // === Render ===
   return (
-    <ScrollView className="w-full my-12">
+    <ScrollView className="w-full my-4">
       {/* 時間軸の表示 */}
       {hours.map((hour) => {
         // 時間内にあるスケジュールを取得する
@@ -65,8 +67,8 @@ export default function TripCalendar({ plan }: Props): ReactNode {
             onPress={() => {
               handleHourPress(hour);
             }}
-            className={`w-full flex flex-row items-center 
-                border-t-[1px] last-child:border-b-[1px]  h-[40px]
+            className={`w-full flex flex-row items-center
+                border-t-[1px] last-child:border-b-[1px]  h-[64px]
                 border-light-border dark:border-dark-border`}
           >
             <Text className="w-1/6 pl-2 text-light-text dark:text-dark-text">{hour}</Text>

@@ -56,7 +56,7 @@ export default function PlaceCard({ place, selected = false, onAddPlace, onRemov
 
   return (
     <>
-      <View className="w-full mx-auto rounded-xl bg-light-background dark:bg-dark-background border border-light-border dark:border-dark-border">
+      <View className="w-full mx-auto rounded-xl shadow-md bg-light-background dark:bg-dark-background">
         {/* イメージ画像 */}
         <Image
           className={`w-full h-32 rounded-t-xl`}
