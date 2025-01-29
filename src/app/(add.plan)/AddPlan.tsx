@@ -11,6 +11,7 @@ import * as Location from 'expo-location';
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 
 export default function AddPlan() {
+  // === Member ===
   const [title, setTitle] = useState<string>('');
   const [fromDate, setFromDate] = useState<Dayjs>(dayjs());
   const [toDate, setToDate] = useState<Dayjs>(dayjs());
@@ -22,13 +23,13 @@ export default function AddPlan() {
     requestPermission();
   }
 
+  // === Effect ===
   useEffect(() => {
     const getLocationPermissions = async () => {
       try {
         const {
           coords: { latitude, longitude },
         } = await Location.getCurrentPositionAsync({});
-        console.log({ latitude, longitude });
         setRegion({ latitude, longitude, latitudeDelta: 0.09, longitudeDelta: 0.04 } as Region);
       } catch (e) {
         console.error(e);
@@ -37,6 +38,7 @@ export default function AddPlan() {
     getLocationPermissions();
   }, []);
 
+  // === Method ===
   /**
    * 登録
    */
@@ -131,7 +133,7 @@ export default function AddPlan() {
             </View>
           </View>
           <View className="w-full justify-center">
-            <Button theme="theme" text="登録する" onPress={() => handlerSubmit()} />
+            <Button theme="theme" text="登録する" onPress={handlerSubmit} />
           </View>
         </BackgroundView>
       </ScrollView>

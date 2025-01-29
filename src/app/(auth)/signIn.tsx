@@ -5,11 +5,15 @@ import { useState } from 'react';
 import { Link, router } from 'expo-router';
 import { supabase } from '@/src/libs/supabase';
 import { Alert } from 'react-native';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 export default function SignInScreen() {
+  // ==== Member ===
+  const { setUser } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // ==== Method ===
   const verify = (): boolean => {
     if (!email || !password) {
       alert('入力してください');
@@ -29,31 +33,37 @@ export default function SignInScreen() {
       Alert.alert(error.message);
       return;
     }
+    const user = session?.user;
+    setUser(user!);
     router.navigate('/(home)');
   };
 
   return (
     <SafeAreaView>
       <BackgroundView>
-        <View className="flex flex-col items-center gap-8 w-full">
+        <View className="flex flex-col items-center w-full gap-8 ">
           <Text className="text-4xl font-bold">Welcome to the Voyx</Text>
           {/* 画像 */}
           <View className="bg-light-theme h-96 w-96 rounded-xl mb-4"></View>
           {/* form */}
           <TextInput
-            className="w-full h-10 p-2 border border-gray-50 dark:border-gray-70 rounded-lg bg-gray-100 dark:bg-dark-primary-base dark:text-gray-100 shadow-md"
-            keyboardType="email-address"
-            placeholder={'メールアドレス'}
+            placeholder="メールアドレス"
+            className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
+                text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
+                `}
             value={email}
             onChangeText={(text) => setEmail(text)}
           />
           <TextInput
-            className="w-full h-10 p-2 border border-gray-50 dark:border-gray-70 rounded-lg bg-gray-100 dark:bg-dark-primary-base dark:text-gray-100 shadow-md"
-            keyboardType="visible-password"
-            placeholder={'パスワード'}
+            placeholder="パスワード"
+            className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
+                text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
+                `}
             value={password}
+            secureTextEntry={true}
             onChangeText={(text) => setPassword(text)}
           />
+
           {/* サインイン */}
           <View className="w-full flex flex-col gap-4 ">
             <Button theme={'theme'} text="サインイン" onPress={signInWithPassword} />

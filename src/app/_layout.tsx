@@ -5,6 +5,7 @@ import { colorScheme, useColorScheme } from 'nativewind';
 import { useEffect, useState } from 'react';
 import { supabase } from '../libs/supabase';
 import { PlanProvider } from '../contexts/PlanContext';
+import { AuthProvider, useAuth } from '../contexts/AuthContext';
 require('dayjs/locale/ja');
 
 // Use imperatively
@@ -13,7 +14,6 @@ require('dayjs/locale/ja');
 colorScheme.set('light');
 
 const RouteLayout = () => {
-  const [session, setSession] = useState<Session | null>(null);
   useEffect(() => {
     (async () => {
       const {
@@ -22,24 +22,27 @@ const RouteLayout = () => {
       } = await supabase.auth.getSession();
       if (!session) {
         router.navigate('/(auth)/SignIn');
+        return;
       }
     })();
   }, []);
 
   return (
-    <PlanProvider>
-      <Stack>
-        <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
-        <Stack.Screen name="(add.plan)" options={{ title: '計画作成', headerShown: false }} />
-        <Stack.Screen name="(plan)" options={{ title: '計画表示', headerShown: false }} />
-        <Stack.Screen name="(chat)" options={{ title: 'チャット', headerShown: false }} />
-        <Stack.Screen
-          name="(scheduleEditor)"
-          options={{ title: 'スケジュール編集', headerShown: false }}
-        />
-        <Stack.Screen name="(auth)" options={{ title: 'ログイン', headerShown: false }} />
-      </Stack>
-    </PlanProvider>
+    <AuthProvider>
+      <PlanProvider>
+        <Stack>
+          <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
+          <Stack.Screen name="(add.plan)" options={{ title: '計画作成', headerShown: false }} />
+          <Stack.Screen name="(plan)" options={{ title: '計画表示', headerShown: false }} />
+          <Stack.Screen name="(chat)" options={{ title: 'チャット', headerShown: false }} />
+          <Stack.Screen
+            name="(scheduleEditor)"
+            options={{ title: 'スケジュール編集', headerShown: false }}
+          />
+          <Stack.Screen name="(auth)" options={{ title: 'ログイン', headerShown: false }} />
+        </Stack>
+      </PlanProvider>
+    </AuthProvider>
   );
 };
 export default RouteLayout;
