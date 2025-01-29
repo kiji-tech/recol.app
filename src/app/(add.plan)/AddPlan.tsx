@@ -68,7 +68,6 @@ export default function AddPlan() {
           <Header
             title="旅行計画の作成"
             onBack={() => {
-              //TODO 編集チェック
               router.back();
             }}
           />
@@ -103,7 +102,7 @@ export default function AddPlan() {
             <Text className="text-lg font-bold text-light-text dark:text-dark-text">
               友達を追加する
             </Text>
-            <Button text="選択" onPress={() => alert('準備中')} />
+            <Button theme="info" text="選択" onPress={() => alert('準備中')} />
           </View>
           {/* 場所 */}
           <View className="w-full">
@@ -132,7 +131,7 @@ export default function AddPlan() {
             </View>
           </View>
           <View className="w-full justify-center">
-            <Button text="登録する" onPress={() => handlerSubmit()} />
+            <Button theme="theme" text="登録する" onPress={() => handlerSubmit()} />
           </View>
         </BackgroundView>
       </ScrollView>

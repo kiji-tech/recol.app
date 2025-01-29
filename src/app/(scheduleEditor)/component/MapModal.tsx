@@ -60,16 +60,6 @@ export default function MapModal({ isOpen, placeList, onSuccess, onClose }: Prop
               setSelectedPlaceList((prev) => prev.filter((p) => p.id !== place.id))
             }
           />
-          {/* 選択中の場所の数 */}
-          {selectedPlaceList.length > 0 && (
-            <View className="w-8 h-8 rounded-full bg-light-theme dark:bg-dark-theme">
-              <Text className="text-bold text-center text-lg text-light-text dark:text-dark-text">
-                {selectedPlaceList.length}
-              </Text>
-            </View>
-          )}
-
-          {/* ローディング */}
         </ModalLayout>
       </Modal>
     </>
