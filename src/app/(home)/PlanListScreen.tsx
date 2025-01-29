@@ -18,7 +18,7 @@ export default function PlanListScreen() {
   // === Effect ===
   useEffect(() => {
     (async () => {
-      const { data } = await fetch(process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL + '/plan/list', {
+      const data = await fetch(process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL + '/plan/list', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

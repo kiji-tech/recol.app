@@ -56,8 +56,12 @@ const upsert = async (c: Hono.Context) => {
     console.error(error);
     return c.json({ error }, 403);
   }
+  if (error) {
+    console.error(error);
+    return c.json({ error }, 403);
+  }
 
-  return c.json({ data, error });
+  return c.json(data);
 };
 
 app.get('/:planId', get);

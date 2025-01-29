@@ -7,11 +7,16 @@ import { useState, useEffect } from 'react';
 import { Modal, Text, View } from 'react-native';
 import * as Location from 'expo-location';
 
-type Props = { isOpen: boolean; onSuccess: (placeIdList: Place[]) => void; onClose: () => void };
+type Props = {
+  isOpen: boolean;
+  placeList: Place[];
+  onSuccess: (placeIdList: Place[]) => void;
+  onClose: () => void;
+};
 
-export default function MapModal({ isOpen, onSuccess, onClose }: Props) {
+export default function MapModal({ isOpen, placeList, onSuccess, onClose }: Props) {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-  const [selectedPlaceList, setSelectedPlaceList] = useState<Place[]>([]);
+  const [selectedPlaceList, setSelectedPlaceList] = useState<Place[]>(placeList);
 
   // Location Permissions
   const [status, requestPermission] = Location.useForegroundPermissions();

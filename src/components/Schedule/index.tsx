@@ -13,8 +13,8 @@ type Props = {
 
 export default function TripCalendar({ plan }: Props): ReactNode {
   const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
-  const [schedule, setSchedule] = useState<Tables<'schedule'>[]>([]);
   const { setEditSchedule } = usePlan();
+  const [schedule, setSchedule] = useState<Tables<'schedule'>[]>([]);
   const router = useRouter();
   // === Effect ===
   useEffect(() => {
@@ -35,14 +35,15 @@ export default function TripCalendar({ plan }: Props): ReactNode {
   // === Method ====
   /** 時間軸クリックイベント */
   const handleHourPress = (hour: string) => {
-    setEditSchedule({
+    const schedule = {
       plan_id: plan!.uid,
       from: dayjs().set('hour', parseInt(hour)).set('minute', 0).format('YYYY-MM-DDTHH:mm:ss.000Z'),
       to: dayjs()
         .set('hour', parseInt(hour) + 1)
         .set('minute', 0)
         .format('YYYY-MM-DDTHH:mm:ss.000Z'),
-    } as Tables<'schedule'>);
+    } as Tables<'schedule'>;
+    setEditSchedule(schedule);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
 

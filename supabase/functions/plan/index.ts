@@ -66,8 +66,17 @@ const get = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
   const uid = c.req.param('uid');
   console.log('plan/' + uid);
-  const { data, error } = await supabase.from('plan').select('*').eq('uid', uid).maybeSingle();
-  return c.json({ data, error });
+  const { data, error } = await supabase
+    .from('plan')
+    .select('*, schedule(*)')
+    .eq('uid', uid)
+    .maybeSingle();
+  if (error) {
+    console.error(error);
+    return c.json({ error }, 403);
+  }
+
+  return c.json(data);
 };
 
 /**
@@ -81,7 +90,12 @@ const list = async (c: Hono.Context) => {
   // TODO filter by user
   const { data, error } = await supabase.from('plan').select('*, schedule(*)');
   console.log({ data, error });
-  return c.json({ data, error });
+  if (error) {
+    console.error(error);
+    return c.json(error, 403);
+  }
+
+  return c.json(data);
 };
 
 app.post('/list', list);
