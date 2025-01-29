@@ -115,12 +115,10 @@ export default function ScheduleEditor() {
           <View className="w-full flex flex-col justify-start items-start">
             <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>メモ</Text>
             <TextInput
-              placeholder="雨降ったら中止..."
               value={editSchedule.description!}
               multiline={true}
-              className={`
-            rounded-xl border px-4 py-4 w-full text-lg h-32 text-start
-            text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
+              className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start 
+                        border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
               onChangeText={(text) => {
                 setEditSchedule({ ...editSchedule, description: text });
               }}

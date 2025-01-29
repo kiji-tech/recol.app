@@ -41,16 +41,14 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
             key={route.key}
             className={`flex-1 justify-center items-center py-2 px-4 border-light-border dark:border-dark-border
                     ${index != state.routes.length - 1 && 'border-r-[1px]'}
-                    ${isFocused ? 'bg-light-info dark:bg-dark-info' : 'bg-[#fff]'}`}
+                    ${isFocused ? 'bg-light-background dark:bg-dark-background' : 'bg-light-shadow dark:bg-dark-shadow'}`}
             accessibilityRole="button"
             accessibilityState={isFocused ? { selected: true } : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
             onPress={onPress}
             onLongPress={onLongPress}
           >
-            <Text
-              className={`${isFocused ? 'text-light-text' : 'text-[#222]'} text-xl font-semibold`}
-            >
+            <Text className={`text-light-text dark:text-dark-text text-md font-semibold`}>
               {label as string}
             </Text>
           </TouchableOpacity>
