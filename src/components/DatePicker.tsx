@@ -32,7 +32,7 @@ const DatePicker = ({ label, mode = 'date', value, onChange }: Props) => {
       {label && <Text className={`text-light-text dark:text-dark-text`}>{label}</Text>}
       <TouchableOpacity onPress={showDatePicker}>
         <View
-          className={`border py-4 px-4 rounded-xl bg-light-background dark:bg-dark-background `}
+          className={`border py-4 px-4 rounded-xl bg-light-background dark:bg-dark-background  border-light-border dark:border-dark-border`}
         >
           <Text className={`text-md text-light-text dark:text-dark-text`}>
             {value.format(format)}
