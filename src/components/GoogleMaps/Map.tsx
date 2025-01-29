@@ -219,11 +219,11 @@ export default function Map({
       </MapView>
 
       {/* 再検索ボタン */}
-      {isSearch && (isResearched || searchTimer) && (
-        <View className="w-full absolute top-0">
-          <View className="flex flex-col justify-center items-center w-full">
-            {/* 検索ヘッダー */}
-            <Header onSearch={(text: string) => handleTextSearch(text)} />
+      <View className="w-full absolute top-0">
+        <View className="flex flex-col justify-center items-center w-full">
+          {/* 検索ヘッダー */}
+          <Header onSearch={(text: string) => handleTextSearch(text)} />
+          {isSearch && (isResearched || searchTimer) && (
             <TouchableOpacity
               className="w-4/6 py-2 px-4 mt-2 mx-auto rounded-xl  bg-light-background dark:bg-dark-background"
               onPress={handleResearch}
@@ -232,9 +232,9 @@ export default function Map({
                 エリアで再度検索する
               </Text>
             </TouchableOpacity>
-          </View>
+          )}
         </View>
-      )}
+      </View>
       {isLoading && <Loading />}
     </>
   );
