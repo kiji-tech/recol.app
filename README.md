@@ -8,6 +8,11 @@
 [Map関係のAPIまとめ](https://www.zenrin-datacom.net/solution/gmapsapi/media/g002)
 
 
+## テスト
+```
+$ npm run test
+```
+
 ## デプロイコマンド
 ### supabase edge function
 ```

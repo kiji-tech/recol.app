@@ -1,61 +1,65 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import Entypo from '@expo/vector-icons/Entypo';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
-    <SafeAreaView>
-      <View className="flex-row w-full bottom-0 border-[1px] border-light-border dark:border-dark-border mx-auto">
-        {state.routes.map((route, index) => {
-          const { options } = descriptors[route.key];
-          const label =
-            options.tabBarLabel !== undefined
-              ? options.tabBarLabel
-              : options.title !== undefined
-                ? options.title
-                : route.name || '';
+    <View className="flex-row w-full bottom-0 border-[1px] border-light-border dark:border-dark-border mx-auto">
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const label =
+          options.tabBarLabel !== undefined
+            ? options.tabBarLabel
+            : options.title !== undefined
+              ? options.title
+              : route.name || '';
 
-          const isFocused = state.index === index;
+        const isFocused = state.index === index;
 
-          const onPress = () => {
-            const event = navigation.emit({
-              type: 'tabPress',
-              target: route.key,
-              canPreventDefault: true,
-            });
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
 
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name, route.params);
-            }
-          };
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name, route.params);
+          }
+        };
 
-          const onLongPress = () => {
-            navigation.emit({
-              type: 'tabLongPress',
-              target: route.key,
-            });
-          };
+        const onLongPress = () => {
+          navigation.emit({
+            type: 'tabLongPress',
+            target: route.key,
+          });
+        };
 
-          if (label == 'サンプル') return;
+        if (label == 'サンプル') return;
 
-          return (
-            <TouchableOpacity
-              key={route.key}
-              className={`flex-1 justify-center items-center py-2 px-4 border-light-border dark:border-dark-border
+        return (
+          <TouchableOpacity
+            key={route.key}
+            className={`flex-1 flex-col justify-center items-center py-2 px-4 border-light-border dark:border-dark-border
                     ${index != state.routes.length - 1 && 'border-r-[1px]'}
-                    ${isFocused ? 'bg-light-background dark:bg-dark-background' : 'bg-light-shadow dark:bg-dark-shadow'}`}
-              accessibilityRole="button"
-              accessibilityState={isFocused ? { selected: true } : {}}
-              accessibilityLabel={options.tabBarAccessibilityLabel}
-              onPress={onPress}
-              onLongPress={onLongPress}
-            >
-              <Text className={`text-light-text dark:text-dark-text text-md font-semibold`}>
-                {label as string}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    </SafeAreaView>
+                    ${isFocused ? 'bg-light-theme dark:bg-dark-theme' : 'bg-light-background dark:bg-dark-background'}`}
+            accessibilityRole="button"
+            accessibilityState={isFocused ? { selected: true } : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            onPress={onPress}
+            onLongPress={onLongPress}
+          >
+            {label == 'ホーム' && <Entypo name="home" size={16} color="black" />}
+            {label == '旅行計画' && <Entypo name="calendar" size={16} color="black" />}
+            {label == '設定' && <Ionicons name="settings" size={16} color="black" />}
+
+            <Text className={`text-light-text dark:text-dark-text text-md font-semibold`}>
+              {label as string}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
   );
 }
