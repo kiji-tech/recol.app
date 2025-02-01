@@ -12,14 +12,11 @@
         "functions:deploy": "npx supabase functions deploy",
         "generate:types": "export $(cat .env | grep -v \"#\" | xargs) && npx supabase gen types typescript --project-id ${EXPO_PUBLIC_SUPABASE_REFERENCE_ID} --schema public > src/libs/database.types.ts",
         "generate:types:local": "export $(cat .env | grep -v \"#\" | xargs) &&  npx supabase gen types --lang typescript --local --schema public > src/libs/database.types.ts",
-        "test": "jest",
+        "test": "jest --coverage",
         "lint": "eslint src",
         "lint:fix": "eslint src --fix",
         "ios:simulator": "open -a Simulator",
         "agent": "docker run -it --rm --pull=always -e SANDBOX_RUNTIME_CONTAINER_IMAGE=docker.all-hands.dev/all-hands-ai/runtime:0.18-nikolaik -e LOG_ALL_EVENTS=true -e WORKSPACE_MOUNT_PATH=/Users/shinji5761/work/projects/voyz -e LLM_API_KEY=sk-_czcteUmW0KwIA2dtzhbhyFX5Ne3c4ncDSpO8ZXWLpT3BlbkFJx0m--hEUJhecKWLYBfTuo7MdYMS3o03KZnlyGdKjEA -e LLM_MODEL=gpt-4o -v /Users/shinji5761/work/projects/voyz:/opt/workspace_base -v /var/run/docker.sock:/var/run/docker.sock -v ~/.openhands-state:/.openhands-state -p 3000:3000 --add-host host.docker.internal:host-gateway --name openhands-app docker.all-hands.dev/all-hands-ai/openhands:0.18"
-    },
-    "jest": {
-        "preset": "jest-expo"
     },
     "dependencies": {
         "@expo/metro-runtime": "~3.2.3",
