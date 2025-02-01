@@ -18,6 +18,7 @@ export default function ScheduleScreen(): ReactNode {
   >(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // === Effect ===
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
@@ -25,7 +26,6 @@ export default function ScheduleScreen(): ReactNode {
       const ctrl = new AbortController();
       fetchPlan(plan!.uid, session, ctrl)
         .then((data) => {
-          console.log({ data });
           setViewPlan({ ...data } as Tables<'plan'> & { schedule: Tables<'schedule'>[] });
           setIsLoading(false);
         })
@@ -39,6 +39,7 @@ export default function ScheduleScreen(): ReactNode {
     }, [])
   );
 
+  // === Render ===
   return (
     <SafeAreaView>
       <BackgroundView>

@@ -3,8 +3,8 @@ import { BackgroundView } from '@/src/components';
 import IconButton from '@/src/components/IconButton';
 import { Tables } from '@/src/libs/database.types';
 import dayjs from 'dayjs';
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePlan } from '@/src/contexts/PlanContext';
@@ -17,18 +17,23 @@ export default function PlanListScreen() {
   const { setPlan } = usePlan();
   const { session } = useAuth();
   const [plans, setPlans] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // === Effect ===
-  useEffect(() => {
-    const ctrl = new AbortController();
-    fetchPlanList(session, ctrl).then((data) => {
-      if (!data) return;
-      setPlans(data);
-    });
-    return () => {
-      ctrl.abort();
-    };
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      setPlans([]);
+      const ctrl = new AbortController();
+      fetchPlanList(session, ctrl).then((data) => {
+        if (!data) return;
+        setPlans(data);
+      });
+      return () => {
+        ctrl.abort();
+      };
+    }, [])
+  );
 
   // === Method ===
   const addButton = () => {
