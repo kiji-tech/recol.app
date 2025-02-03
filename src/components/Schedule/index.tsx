@@ -1,12 +1,13 @@
 import { Tables } from '@/src/libs/database.types';
 import { ReactNode, useEffect, useState } from 'react';
-import { Text, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, ScrollView, TouchableOpacity, View } from 'react-native';
 import ScheduleItem from './ScheduleItem';
 import dayjs from 'dayjs';
 import { fetchScheduleList } from '@/src/libs/ApiService';
 import { useRouter } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useAuth } from '@/src/contexts/AuthContext';
+import Loading from '../Loading';
 
 type Props = {
   plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
@@ -17,16 +18,20 @@ export default function TripCalendar({ plan }: Props): ReactNode {
   const { setEditSchedule } = usePlan();
   const { session } = useAuth();
   const [schedule, setSchedule] = useState<Tables<'schedule'>[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   // === Effect ===
   useEffect(() => {
     if (!plan) return;
+
+    setIsLoading(true);
     const ctrl = new AbortController();
 
     fetchScheduleList(plan.uid, session, ctrl).then((data) => {
       if (data) {
         setSchedule(data);
       }
+      setIsLoading(false);
     });
 
     return () => {
@@ -76,6 +81,7 @@ export default function TripCalendar({ plan }: Props): ReactNode {
         );
       })}
       {/* スケジュールアイテム（タスク）の表示 */}
+      <View className="absolute w-full h-full">{isLoading && <Loading />}</View>
       {schedule.map((s) => (
         <ScheduleItem key={s.uid} item={s} onPress={handleSchedulePress} />
       ))}

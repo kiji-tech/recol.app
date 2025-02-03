@@ -117,7 +117,7 @@ export default function ScheduleEditor() {
             <TextInput
               value={editSchedule.description!}
               multiline={true}
-              className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start 
+              className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
                         border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
               onChangeText={(text) => {
                 setEditSchedule({ ...editSchedule, description: text });
