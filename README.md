@@ -1,34 +1,54 @@
+## 作業コマンド
 
-## React Native Maps
-[GitHub](https://github.com/react-native-maps/react-native-maps/tree/master)
+### 起動
 
-## Google Maps API
-[ドキュメント](https://developers.google.com/maps/documentation/javascript/places?hl=ja)
+`シミュレータ`
 
-[Map関係のAPIまとめ](https://www.zenrin-datacom.net/solution/gmapsapi/media/g002)
+```shell
+# ios
+$ npm run ios
 
-
-## テスト
+# android
+$ npm run android
 ```
+
+`Supabase Edge Function`
+
+```shell
+# ローカルサーバーでfunction起動
+$ npm run functions:dev
+```
+
+`Supabase DB Types Generation`
+
+```shell
+# DB - Table情報の更新
+$ npm run generate:types:local:
+```
+
+### テスト
+
+```shell
 $ npm run test
 ```
 
-## デプロイコマンド
-### supabase edge function
-```
+### デプロイコマンド
+
+`supabase edge function`
+
+```shell
 $ npm run functions:deploy
 ```
 
+`アプリケーション`
 
-### アプリケーション
 ```shell
 $ eas build --platform android
 ```
 
+`migration関係`
 
-## DBマイグレーションについて
-[migrationのについて](https://supabase.com/docs/reference/cli/supabase-migration)
-```
+```shell
 # ローカルとリモートの差分を確認する
 $ supabase db diff
 
@@ -42,4 +62,47 @@ $ supabase migration list
 $ supabase db push
 ```
 
+## トラブルシューティング
 
+### npm run ios
+
+`pod install でエラー`
+
+```shell
+# ロックファイルの削除
+$ rm -rf ios/Pods ios/Podfile.lock
+
+# iosライブラリの更新
+cd ios && pod repo updateい
+pod install --repo-update
+
+# react-nativeとexpoのバージョンがあっていない場合がある
+# package.jsonのバージョンとかをチェックして､node_modulesを削除・再インストールなど
+# ios/Podfile のiosバージョンがあっていないなど
+
+```
+
+`ios simulatorが更新されて見つからない`
+
+```
+# エラー内容
+CommandError: Failed to build iOS project. "xcodebuild" exited with error code 70.
+ ...
+    { platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device, error:iOS 18.2 is not installed. To use with Xcode, first download and install the platform }
+```
+
+## ドキュメント
+
+### React Native Maps
+
+[GitHub](https://github.com/react-native-maps/react-native-maps/tree/master)
+
+### Google Maps API
+
+[公式ドキュメント](https://developers.google.com/maps/documentation/javascript/places?hl=ja)
+
+[Map関係のAPIまとめ](https://www.zenrin-datacom.net/solution/gmapsapi/media/g002)
+
+### Supabase
+
+[migrationのについて](https://supabase.com/docs/reference/cli/supabase-migration)
