@@ -33,6 +33,7 @@ export default function Map({
   const markerRef: { [id: string]: MapMarker | null } = {};
   const { plan } = usePlan();
   const [places, setPlaces] = useState<Place[]>();
+  const [isOnlySelectedList, setIsOnlySelectedList] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTimer, setSearchTimer] = useState<boolean>(false);
   const [isCoords, setIsCoords] = useState<Region>({
@@ -187,19 +188,20 @@ export default function Map({
             });
         }}
       >
-        {filteredPlaces?.map((place: Place) => {
-          return (
-            <Marker
-              key={place.id}
-              ref={(ref) => {
-                markerRef[place.id] = ref;
-              }}
-              title={place.displayName.text}
-              onPress={() => handleSelectedPlace(place)}
-              coordinate={{ ...place.location }}
-            ></Marker>
-          );
-        })}
+        {!isOnlySelectedList &&
+          filteredPlaces?.map((place: Place) => {
+            return (
+              <Marker
+                key={place.id}
+                ref={(ref) => {
+                  markerRef[place.id] = ref;
+                }}
+                title={place.displayName.text}
+                onPress={() => handleSelectedPlace(place)}
+                coordinate={{ ...place.location }}
+              ></Marker>
+            );
+          })}
         {/* 選択中のPlace */}
         {selectedPlaceList?.map((place: Place) => {
           return (
@@ -218,23 +220,40 @@ export default function Map({
         <Callout tooltip={true} />
       </MapView>
 
-      {/* 再検索ボタン */}
+      {/* 検索関係 */}
       <View className="w-full absolute top-0">
         <View className="flex flex-col justify-center items-center w-full">
           {/* 検索ヘッダー */}
-          <Header onSearch={(text: string) => handleTextSearch(text)} />
-          {isSearch && (isResearched || searchTimer) && (
-            <TouchableOpacity
-              className="w-4/6 py-2 px-4 mt-2 mx-auto rounded-xl  bg-light-background dark:bg-dark-background"
-              onPress={handleResearch}
-            >
-              <Text className="text-center text-lg text-light-text dark:text-dark-text">
-                エリアで再度検索する
-              </Text>
-            </TouchableOpacity>
-          )}
+          {isSearch && <Header onSearch={(text: string) => handleTextSearch(text)} />}
         </View>
       </View>
+      <View className="w-full absolute bottom-4">
+        {isSearch && (isResearched || searchTimer) && (
+          <TouchableOpacity
+            className="w-1/2 py-2 px-4 mt-2 mx-auto rounded-xl  bg-light-background dark:bg-dark-background"
+            onPress={handleResearch}
+          >
+            {/* 再検索ボタン */}
+            <Text className="text-center text-md text-light-text dark:text-dark-text">
+              エリアで再度検索する
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
+      {/* TODO: ICONButtonにする */}
+      {selectedPlaceList && selectedPlaceList.length > 0 && (
+        <View className="absolute bottom-16 right-4">
+          <TouchableOpacity
+            className="py-2 px-4 mt-2 rounded-xl bg-light-background dark:bg-dark-background"
+            onPress={() => setIsOnlySelectedList((prev) => !prev)}
+          >
+            {/* 選択解除ボタン */}
+            <Text className="text-center text-md text-light-text dark:text-dark-text">
+              {isOnlySelectedList ? '全て表示' : '選択のみ表示'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
       {isLoading && <Loading />}
     </>
   );
