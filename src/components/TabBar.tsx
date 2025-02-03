@@ -2,7 +2,7 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
     <View className="flex-row w-full bottom-0 border-[1px] border-light-border dark:border-dark-border mx-auto">
@@ -50,9 +50,11 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
             onPress={onPress}
             onLongPress={onLongPress}
           >
-            {label == 'ホーム' && <Entypo name="home" size={16} color="black" />}
-            {label == '旅行計画' && <Entypo name="calendar" size={16} color="black" />}
-            {label == '設定' && <Ionicons name="settings" size={16} color="black" />}
+            {label == 'ホーム' && <Entypo name="home" size={20} color="black" />}
+            {label == '旅行計画' && <Entypo name="calendar" size={20} color="black" />}
+            {label == '設定' && <Ionicons name="settings" size={20} color="black" />}
+            {label == 'スケジュール' && <Entypo name="calendar" size={20} color="black" />}
+            {label == 'マップ' && <FontAwesome name="map-marker" size={20} color="black" />}
 
             <Text className={`text-light-text dark:text-dark-text text-md font-semibold`}>
               {label as string}
