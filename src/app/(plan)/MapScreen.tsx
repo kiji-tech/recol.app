@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
-import Map from '@components/GoogleMaps/Map';
 import * as Location from 'expo-location';
+import Map from '@components/GoogleMaps/Map';
 import type { Region } from 'react-native-maps';
 import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
 import { usePlan } from '@/src/contexts/PlanContext';

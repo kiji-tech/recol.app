@@ -14,6 +14,16 @@ import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
 import { usePlan } from '@/src/contexts/PlanContext';
 
 const ICON_SIZE = 24;
+/**
+ * GoogleMap Component
+ * 
+ * @param selectedPlace {Place | null} 選択中の施設情報
+ * @param selectedPlaceList {Place[] | undefined} 選択中の施設情報リスト
+ * @param isSearch {boolean | undefined} 検索機能の有無
+ * @param isMarker {boolean | undefined} マーカーの有無
+ * @param onSelectPlace {(place: Place) => void} 選択中の施設情報変更イベント
+ * @param onMarkerDeselect {() => void} マーカー選択解除イベント
+ */
 type Props = {
   selectedPlace: Place | null;
   selectedPlaceList?: Place[];
@@ -52,6 +62,7 @@ export default function Map({
     if (!selectedPlaceList || !places) return places;
     return places.filter((place) => !selectedPlaceList.some((p) => p.id === place.id));
   }, [places, selectedPlaceList]);
+
   // === Effect ===
   useEffect(() => {
     if (isCoords) fetchLocation(isCoords.latitude, isCoords.longitude);
@@ -227,27 +238,30 @@ export default function Map({
           {isSearch && <Header onSearch={(text: string) => handleTextSearch(text)} />}
         </View>
       </View>
+
+      {/* 再検索ボタン */}
       <View className="w-full absolute bottom-4">
         {isSearch && (isResearched || searchTimer) && (
           <TouchableOpacity
             className="w-1/2 py-2 px-4 mt-2 mx-auto rounded-xl  bg-light-background dark:bg-dark-background"
             onPress={handleResearch}
           >
-            {/* 再検索ボタン */}
             <Text className="text-center text-md text-light-text dark:text-dark-text">
               エリアで再度検索する
             </Text>
           </TouchableOpacity>
         )}
       </View>
+
       {/* TODO: ICONButtonにする */}
+
+      {/* 選択解除ボタン */}
       {selectedPlaceList && selectedPlaceList.length > 0 && (
         <View className="absolute bottom-16 right-4">
           <TouchableOpacity
             className="py-2 px-4 mt-2 rounded-xl bg-light-background dark:bg-dark-background"
             onPress={() => setIsOnlySelectedList((prev) => !prev)}
           >
-            {/* 選択解除ボタン */}
             <Text className="text-center text-md text-light-text dark:text-dark-text">
               {isOnlySelectedList ? '全て表示' : '選択のみ表示'}
             </Text>

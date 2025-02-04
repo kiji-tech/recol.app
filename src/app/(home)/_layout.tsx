@@ -1,3 +1,4 @@
+import React from 'react';
 import TabBar from '@/src/components/TabBar';
 import { Stack, Tabs } from 'expo-router';
 
