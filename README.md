@@ -34,7 +34,7 @@ $ npm run functions:dev
 
 ```shell
 # DB - Table情報の更新
-$ npm run generate:types:local:
+$ npm run generate:types:local
 ```
 
 ### テスト
