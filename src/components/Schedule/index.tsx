@@ -1,3 +1,4 @@
+import React from 'react';
 import { Tables } from '@/src/libs/database.types';
 import { ReactNode, useEffect, useState } from 'react';
 import { Text, ScrollView, TouchableOpacity, View } from 'react-native';

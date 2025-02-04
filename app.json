@@ -1,5 +1,6 @@
 {
     "expo": {
+        "scheme": "voyz",
         "packageName": "com.libetech.voyz",
         "name": "Voyz",
         "slug": "voyz",

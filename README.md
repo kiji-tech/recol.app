@@ -1,3 +1,14 @@
+## 技術スタック
+- expo
+- react-native
+- google map api
+- tailwindcss
+- nativewind
+- openai
+- jest
+- typescript
+- zod
+
 ## 作業コマンド
 
 ### 起動
@@ -65,6 +76,10 @@ $ supabase db push
 ## トラブルシューティング
 
 ### npm run ios
+`schema xxxx`
+```shell
+$ npx expo prebuild --clean
+```
 
 `pod install でエラー`
 

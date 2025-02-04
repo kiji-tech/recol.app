@@ -114,13 +114,7 @@ const MapScreen = () => {
       {/* Map */}
       <View className=" w-full h-full">
         <Map
-          places={places}
-          region={isCoords}
           selectedPlace={selectedPlace}
-          centerRegion={centerCords}
-          selectPlace={(place: Place) => handleSelectedPlace(place)}
-          setRegion={(region: Region) => setIsCoords((prev) => ({ ...prev, ...region }))}
-          onPressReSearch={handleResearch}
           isSearch={true}
           onMarkerDeselect={() => {
             // setSelectedPlace(null);
@@ -136,7 +130,16 @@ const MapScreen = () => {
         />
       </View>
       {/* 選択対象の表示 */}
-      <PlaceCard place={selectedPlace} />
+      <PlaceCard
+        place={selectedPlace}
+        selected={false}
+        onAddPlace={function (place: Place): void {
+          throw new Error('Function not implemented.');
+        }}
+        onRemovePlace={function (place: Place): void {
+          throw new Error('Function not implemented.');
+        }}
+      />
 
       {/* ローディング */}
       {isLoading && <Loading />}

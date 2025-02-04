@@ -1,7 +1,7 @@
-import { router } from 'expo-router';
 import React from 'react';
-import { Pressable, Text, TouchableOpacity, View } from 'react-native';
-import { backgroundColor, borderColor, textColor } from '../themes/ColorUtil';
+import { router } from 'expo-router';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { borderColor, textColor } from '../themes/ColorUtil';
 
 interface Props {
   onPress?: () => void;

@@ -1,3 +1,4 @@
+import React from 'react';
 import { BackgroundView, Button } from '@/src/components';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, TextInput, View } from 'react-native';

@@ -3,9 +3,6 @@ import { Button, Header } from '@/src/components';
 import {
   View,
   TextInput,
-  FlatList,
-  Text,
-  Image,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';

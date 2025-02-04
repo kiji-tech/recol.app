@@ -1,3 +1,4 @@
+import React from 'react';
 import { BackgroundView, Button } from '@/src/components';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { supabase } from '@/src/libs/supabase';

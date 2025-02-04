@@ -1,3 +1,4 @@
+import React from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { BackgroundView } from '@/src/components';
 import IconButton from '@/src/components/IconButton';

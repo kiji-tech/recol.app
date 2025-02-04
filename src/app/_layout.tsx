@@ -1,3 +1,4 @@
+import React from 'react';
 import '@/global.css';
 import { Session } from '@supabase/supabase-js';
 import { router, Stack } from 'expo-router';
