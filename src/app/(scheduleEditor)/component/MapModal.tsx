@@ -6,6 +6,7 @@ import { Place } from '@/src/entities/Place';
 import { useState, useEffect } from 'react';
 import { Modal, Text, View } from 'react-native';
 import * as Location from 'expo-location';
+import MapBottomSheet from '@/src/components/GoogleMaps/MapBottomSheet';
 
 type Props = {
   isOpen: boolean;
@@ -40,7 +41,7 @@ export default function MapModal({ isOpen, placeList, onSuccess, onClose }: Prop
     <>
       <Modal visible={isOpen} animationType={'slide'} transparent={true}>
         <ModalLayout size={'full'} onClose={handleClose}>
-          <View className=" w-full h-[50%] shadow-xl">
+          <View className=" w-screen h-[90%] shadow-xl absolute top-16 left-0 ">
             <Map
               isSearch={true}
               selectedPlace={selectedPlace}
@@ -52,15 +53,16 @@ export default function MapModal({ isOpen, placeList, onSuccess, onClose }: Prop
             />
           </View>
           {/* 選択対象の表示 */}
-          <PlaceCard
+          {/* <PlaceCard
             place={selectedPlace}
             selected={selectedPlaceList.some((p) => p.id === selectedPlace?.id)}
             onAddPlace={(place) => setSelectedPlaceList((prev) => [...prev, place])}
             onRemovePlace={(place) =>
               setSelectedPlaceList((prev) => prev.filter((p) => p.id !== place.id))
             }
-          />
+          /> */}
         </ModalLayout>
+        <MapBottomSheet />
       </Modal>
     </>
   );
