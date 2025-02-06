@@ -11,6 +11,19 @@
 
 ## 作業コマンド
 
+### ios androidプロジェクトのbuild packageのupdate
+
+``ios``
+```shell
+
+```
+
+``android``
+```shell
+cd android
+./gradlew clean
+```
+
 ### 起動
 
 `シミュレータ`

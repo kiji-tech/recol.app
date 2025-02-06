@@ -12,11 +12,12 @@ import Header from '../Header/Header';
 import Loading from '../Loading';
 import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
 import { usePlan } from '@/src/contexts/PlanContext';
+import MapBottomSheet from './BottomSheet/MapBottomSheet';
 
 const ICON_SIZE = 24;
 /**
  * GoogleMap Component
- * 
+ *
  * @param selectedPlace {Place | null} 選択中の施設情報
  * @param selectedPlaceList {Place[] | undefined} 選択中の施設情報リスト
  * @param isSearch {boolean | undefined} 検索機能の有無
@@ -31,6 +32,7 @@ type Props = {
   isMarker?: boolean;
   onSelectPlace?: (place: Place) => void;
   onMarkerDeselect?: () => void;
+  onBack?: () => void;
 };
 export default function Map({
   selectedPlace,
@@ -39,6 +41,7 @@ export default function Map({
   isMarker = false,
   onMarkerDeselect = () => void 0,
   onSelectPlace = () => void 0,
+  onBack = () => void 0,
 }: Props) {
   const markerRef: { [id: string]: MapMarker | null } = {};
   const { plan } = usePlan();
@@ -230,17 +233,17 @@ export default function Map({
         })}
         <Callout tooltip={true} />
       </MapView>
-
       {/* 検索関係 */}
-      <View className="w-full absolute top-0">
+      <View className="w-full absolute top-16 pl-4">
         <View className="flex flex-col justify-center items-center w-full">
           {/* 検索ヘッダー */}
-          {isSearch && <Header onSearch={(text: string) => handleTextSearch(text)} />}
+          {isSearch && (
+            <Header onBack={onBack} onSearch={(text: string) => handleTextSearch(text)} />
+          )}
         </View>
       </View>
-
       {/* 再検索ボタン */}
-      <View className="w-full absolute bottom-4">
+      <View className="w-full absolute top-36">
         {isSearch && (isResearched || searchTimer) && (
           <TouchableOpacity
             className="w-1/2 py-2 px-4 mt-2 mx-auto rounded-xl  bg-light-background dark:bg-dark-background"
@@ -252,25 +255,8 @@ export default function Map({
           </TouchableOpacity>
         )}
       </View>
-
-      {/* TODO: ICONButtonにする */}
-
-      {/* 選択解除ボタン */}
-      {selectedPlaceList && selectedPlaceList.length > 0 && (
-        <View className="absolute bottom-16 right-4">
-          <TouchableOpacity
-            className="py-2 px-4 mt-2 rounded-xl bg-light-background dark:bg-dark-background"
-            onPress={() => setIsOnlySelectedList((prev) => !prev)}
-          >
-            <Text className="text-center text-md text-light-text dark:text-dark-text">
-              {isOnlySelectedList ? '全て表示' : '選択のみ表示'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      <MapBottomSheet onSelectedList={() => setIsOnlySelectedList((prev) => !prev)} />
       {isLoading && <Loading />}
     </>
   );
 }
-
-

@@ -1,3 +1,4 @@
+import React from 'react';
 import { ReactNode } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
@@ -10,7 +11,7 @@ export default function ModalLayout({ children, size, onClose }: Props): ReactNo
   return (
     <View
       style={{ height: size == 'full' ? '92%' : size == 'half' ? '50%' : Number(size) }}
-      className={`p-4 w-full flex flex-col justify-start items-start gap-8
+      className={`p-4 w-screen flex flex-col justify-start items-start gap-8
         shadow-lg
         bottom-0 absolute
     bg-light-background dark:bg-dark-border`}

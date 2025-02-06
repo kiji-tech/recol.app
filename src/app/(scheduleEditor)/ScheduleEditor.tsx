@@ -128,16 +128,16 @@ export default function ScheduleEditor() {
           {/* 保存ボタン */}
           <Button theme="theme" onPress={handleScheduleSubmit} text="保存" />
         </BackgroundView>
-        {/* マップモーダル */}
-        {openMapModal && (
-          <MapModal
-            isOpen={openMapModal}
-            placeList={(editSchedule.place_list as unknown as Place[]) || []}
-            onSuccess={handleSelectedPlaceList}
-            onClose={() => setOpenMapModal(false)}
-          />
-        )}
       </ScrollView>
+      {/* マップモーダル */}
+      {openMapModal && (
+        <MapModal
+          isOpen={openMapModal}
+          placeList={(editSchedule.place_list as unknown as Place[]) || []}
+          onSuccess={handleSelectedPlaceList}
+          onClose={() => setOpenMapModal(false)}
+        />
+      )}
     </SafeAreaView>
   );
 }

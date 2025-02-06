@@ -1,3 +1,4 @@
+import React from 'react';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';

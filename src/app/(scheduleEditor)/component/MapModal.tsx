@@ -4,9 +4,9 @@ import ModalLayout from '@/src/components/Modal/ModalLayout';
 import PlaceCard from '@/src/components/PlaceCard';
 import { Place } from '@/src/entities/Place';
 import { useState, useEffect } from 'react';
-import { Modal, Text, View } from 'react-native';
+import { Modal, SafeAreaView, Text, View } from 'react-native';
 import * as Location from 'expo-location';
-import MapBottomSheet from '@/src/components/GoogleMaps/MapBottomSheet';
+import MapBottomSheet from '@/src/components/GoogleMaps/BottomSheet/MapBottomSheet';
 
 type Props = {
   isOpen: boolean;
@@ -37,33 +37,24 @@ export default function MapModal({ isOpen, placeList, onSuccess, onClose }: Prop
     onClose();
   };
 
+  if (!isOpen) {
+    return <></>;
+  }
+
   return (
     <>
-      <Modal visible={isOpen} animationType={'slide'} transparent={true}>
-        <ModalLayout size={'full'} onClose={handleClose}>
-          <View className=" w-screen h-[90%] shadow-xl absolute top-16 left-0 ">
-            <Map
-              isSearch={true}
-              selectedPlace={selectedPlace}
-              selectedPlaceList={selectedPlaceList}
-              onSelectPlace={(place: Place) => handleSelectedPlace(place)}
-              onMarkerDeselect={() => {
-                // setSelectedPlace(null);
-              }}
-            />
-          </View>
-          {/* 選択対象の表示 */}
-          {/* <PlaceCard
-            place={selectedPlace}
-            selected={selectedPlaceList.some((p) => p.id === selectedPlace?.id)}
-            onAddPlace={(place) => setSelectedPlaceList((prev) => [...prev, place])}
-            onRemovePlace={(place) =>
-              setSelectedPlaceList((prev) => prev.filter((p) => p.id !== place.id))
-            }
-          /> */}
-        </ModalLayout>
-        <MapBottomSheet />
-      </Modal>
+      <View className=" w-screen h-screen shadow-xl absolute top-0 left-0">
+        <Map
+          isSearch={true}
+          selectedPlace={selectedPlace}
+          selectedPlaceList={selectedPlaceList}
+          onSelectPlace={(place: Place) => handleSelectedPlace(place)}
+          onMarkerDeselect={() => {
+            // setSelectedPlace(null);
+          }}
+          onBack={onClose}
+        />
+      </View>
     </>
   );
 }

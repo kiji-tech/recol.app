@@ -32,7 +32,7 @@ const RouteLayout = () => {
   return (
     <AuthProvider>
       <PlanProvider>
-        <GestureHandlerRootView>
+        <GestureHandlerRootView style={{ flex: 1, pointerEvents: 'box-none' }}>
           <Stack>
             <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
             <Stack.Screen name="(add.plan)" options={{ title: '計画作成', headerShown: false }} />

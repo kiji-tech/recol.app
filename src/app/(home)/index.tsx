@@ -3,7 +3,6 @@ import { BackgroundView } from '@/src/components';
 import { useState } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MapBottomSheet from '@/src/components/GoogleMaps/MapBottomSheet';
 
 export default function Home() {
   const [viewCategory, setViewCategory] = useState<'new' | 'favorit'>('new');
@@ -36,7 +35,6 @@ export default function Home() {
             </View>
           </View>
         </ScrollView>
-        <MapBottomSheet />
       </BackgroundView>
     </SafeAreaView>
   );
