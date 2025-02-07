@@ -8,17 +8,19 @@ type Props = {
   placeList: Place[];
   selectedPlaceList: Place[];
   isSelected: boolean;
+  selectedCategory: string;
   onAddPlace: (place: Place) => void;
   onRemovePlace: (place: Place) => void;
-  onSelectedList: (selected: boolean) => void;
+  onSelectedCategory: (id: string) => void;
 };
 export default function MapBottomSheet({
   placeList,
   selectedPlaceList,
+  selectedCategory,
   isSelected = false,
   onAddPlace,
   onRemovePlace,
-  onSelectedList,
+  onSelectedCategory,
 }: Props) {
   // ==== Member ====
 
@@ -27,7 +29,10 @@ export default function MapBottomSheet({
   // ==== Render ====
   return (
     <BottomSheetLayout>
-      <MapBottomSheetHeader onSelectedList={onSelectedList} />
+      <MapBottomSheetHeader
+        selectedCategory={selectedCategory}
+        onSelectedCategory={onSelectedCategory}
+      />
       <MapBottomSheetBody
         placeList={isSelected ? selectedPlaceList : placeList}
         selectedPlaceList={selectedPlaceList}

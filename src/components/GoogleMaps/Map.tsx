@@ -14,7 +14,6 @@ import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
 import { usePlan } from '@/src/contexts/PlanContext';
 import MapBottomSheet from './BottomSheet/MapBottomSheet';
 
-const ICON_SIZE = 24;
 /**
  * GoogleMap Component
  *
@@ -46,9 +45,9 @@ export default function Map({
   const markerRef: { [id: string]: MapMarker | null } = {};
   const { plan } = usePlan();
   const [places, setPlaces] = useState<Place[]>([]);
-  const [isOnlySelectedList, setIsOnlySelectedList] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTimer, setSearchTimer] = useState<boolean>(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('meal');
   const [isCoords, setIsCoords] = useState<Region>({
     ...JSON.parse(plan!.locations![0]),
     latitudeDelta: 0.05,
@@ -59,6 +58,8 @@ export default function Map({
     latitudeDelta: 0.01,
     longitudeDelta: 0.03,
   });
+
+  const isOnlySelected = useMemo(() => selectedCategory === 'selected', [selectedCategory]);
 
   // selectedPlaceListにある場合は､placesから除外する
   const filteredPlaces = useMemo(() => {
@@ -188,6 +189,11 @@ export default function Map({
     }
   };
 
+  /** スポット表示カテゴリの変更 */
+  const handleSelectedCategory = (id: string) => {
+    setSelectedCategory(id);
+  };
+
   return (
     <>
       <MapView
@@ -202,7 +208,7 @@ export default function Map({
             });
         }}
       >
-        {!isOnlySelectedList &&
+        {!isOnlySelected &&
           filteredPlaces?.map((place: Place) => {
             return (
               <Marker
@@ -258,10 +264,11 @@ export default function Map({
       <MapBottomSheet
         placeList={places}
         selectedPlaceList={selectedPlaceList || []}
-        isSelected={isOnlySelectedList}
+        selectedCategory={selectedCategory}
+        isSelected={isOnlySelected}
         onAddPlace={(place: Place) => onSelectPlace(place)}
         onRemovePlace={(place: Place) => onSelectPlace(place)}
-        onSelectedList={(selected: boolean) => setIsOnlySelectedList(selected)}
+        onSelectedCategory={handleSelectedCategory}
       />
       {isLoading && <Loading />}
     </>

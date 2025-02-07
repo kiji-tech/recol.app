@@ -10,15 +10,14 @@ type SearchSelectedButtonProps = {
 };
 
 type Props = {
-  onSelectedList: (selected: boolean) => void;
+  selectedCategory: string;
+  onSelectedCategory: (id: string) => void;
 };
-export default function PlaceCardHeader({ onSelectedList }: Props) {
+export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }: Props) {
   // === Member ====
-  const [selectedCategory, setSelectedCategory] = useState('hotel');
   // === Method ====
   const handleOnSelectedCategory = (id: string) => {
-    setSelectedCategory(id);
-    onSelectedList(id === 'selected');
+    onSelectedCategory(id);
   };
   const checkSelectedCategory = useCallback(
     (id: string) => selectedCategory === id,
@@ -26,8 +25,8 @@ export default function PlaceCardHeader({ onSelectedList }: Props) {
   );
 
   const categoryButtonList = [
+    { id: 'meal', label: '食事・カフェ', selected: false, onPress: handleOnSelectedCategory },
     { id: 'hotel', label: 'ホテル・旅館', selected: true, onPress: handleOnSelectedCategory },
-    { id: 'cafe', label: '食事・カフェ', selected: false, onPress: handleOnSelectedCategory },
     { id: 'spot', label: '観光スポット', selected: false, onPress: handleOnSelectedCategory },
     { id: 'selected', label: '選択中', selected: false, onPress: handleOnSelectedCategory },
   ];
