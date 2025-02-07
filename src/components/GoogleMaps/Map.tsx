@@ -45,7 +45,7 @@ export default function Map({
 }: Props) {
   const markerRef: { [id: string]: MapMarker | null } = {};
   const { plan } = usePlan();
-  const [places, setPlaces] = useState<Place[]>();
+  const [places, setPlaces] = useState<Place[]>([]);
   const [isOnlySelectedList, setIsOnlySelectedList] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTimer, setSearchTimer] = useState<boolean>(false);
@@ -255,7 +255,14 @@ export default function Map({
           </TouchableOpacity>
         )}
       </View>
-      <MapBottomSheet onSelectedList={() => setIsOnlySelectedList((prev) => !prev)} />
+      <MapBottomSheet
+        placeList={places}
+        selectedPlaceList={selectedPlaceList || []}
+        isSelected={isOnlySelectedList}
+        onAddPlace={(place: Place) => onSelectPlace(place)}
+        onRemovePlace={(place: Place) => onSelectPlace(place)}
+        onSelectedList={(selected: boolean) => setIsOnlySelectedList(selected)}
+      />
       {isLoading && <Loading />}
     </>
   );

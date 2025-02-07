@@ -9,7 +9,7 @@ import { Place } from '@/src/entities/Place';
 import { router } from 'expo-router';
 import { Header, Loading } from '@/src/components';
 import ChatButton from '@/src/components/Header/ChatButton';
-import PlaceCard from '@/src/components/PlaceCard';
+import PlaceCard from '@/src/components/GoogleMaps/BottomSheet/PlaceCard';
 
 /**
  * 初期表示

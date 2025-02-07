@@ -10,7 +10,7 @@ type SearchSelectedButtonProps = {
 };
 
 type Props = {
-  onSelectedList: () => void;
+  onSelectedList: (selected: boolean) => void;
 };
 export default function PlaceCardHeader({ onSelectedList }: Props) {
   // === Member ====
@@ -18,10 +18,7 @@ export default function PlaceCardHeader({ onSelectedList }: Props) {
   // === Method ====
   const handleOnSelectedCategory = (id: string) => {
     setSelectedCategory(id);
-
-    if (id === 'selected') {
-      onSelectedList();
-    }
+    onSelectedList(id === 'selected');
   };
   const checkSelectedCategory = useCallback(
     (id: string) => selectedCategory === id,
@@ -38,15 +35,15 @@ export default function PlaceCardHeader({ onSelectedList }: Props) {
   // === Render ====
   const SearchSelectedButton = ({ id, label, onPress }: SearchSelectedButtonProps) => {
     return (
-      <>
-        <TouchableOpacity key={id} onPress={() => onPress(id)}>
+      <View key={id}>
+        <TouchableOpacity onPress={() => onPress(id)}>
           <View
             className={`px-4 py-2 rounded-xl ${checkSelectedCategory(id) ? 'bg-light-info dark:bg-dark-info' : 'bg-light-background dark:bg-dark-background'}`}
           >
             <Text>{label}</Text>
           </View>
         </TouchableOpacity>
-      </>
+      </View>
     );
   };
 

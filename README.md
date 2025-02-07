@@ -15,13 +15,12 @@
 
 ``ios``
 ```shell
-
+$ npm run install:ios
 ```
 
 ``android``
 ```shell
-cd android
-./gradlew clean
+$ npm run install:android
 ```
 
 ### 起動
