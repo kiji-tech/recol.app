@@ -261,15 +261,17 @@ export default function Map({
           </TouchableOpacity>
         )}
       </View>
-      <MapBottomSheet
-        placeList={places}
-        selectedPlaceList={selectedPlaceList || []}
-        selectedCategory={selectedCategory}
-        isSelected={isOnlySelected}
-        onAddPlace={(place: Place) => onSelectPlace(place)}
-        onRemovePlace={(place: Place) => onSelectPlace(place)}
-        onSelectedCategory={handleSelectedCategory}
-      />
+      {places.length > 0 && (
+        <MapBottomSheet
+          placeList={places}
+          selectedPlaceList={selectedPlaceList || []}
+          selectedCategory={selectedCategory}
+          isSelected={isOnlySelected}
+          onAddPlace={(place: Place) => onSelectPlace(place)}
+          onRemovePlace={(place: Place) => onSelectPlace(place)}
+          onSelectedCategory={handleSelectedCategory}
+        />
+      )}
       {isLoading && <Loading />}
     </>
   );

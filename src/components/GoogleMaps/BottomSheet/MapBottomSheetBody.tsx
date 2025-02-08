@@ -23,23 +23,21 @@ export default function PlaceCardBody({
 
   // ==== Render ====
   return (
-    <View className="flex flex-col w-full">
+    <BottomSheetScrollView className="w-full flex-1">
       {/* 詳細モードの場合は切り替え */}
-      <BottomSheetScrollView className="w-full h-full">
-        {placeList &&
-          placeList.map((place: Place) => (
-            <PlaceCard
-              key={place.id}
-              place={place}
-              selected={false}
-              // onDetailView={() => { }}
-              onAddPlace={onAddPlace}
-              onRemovePlace={onRemovePlace}
-            />
-          ))}
-        {/* 一番下がアクションバーに隠れるので高さ調整 */}
-        <View className="h-20"></View>
-      </BottomSheetScrollView>
-    </View>
+      {placeList &&
+        placeList.map((place: Place) => (
+          <PlaceCard
+            key={place.id}
+            place={place}
+            selected={false}
+            // onDetailView={() => { }}
+            onAddPlace={onAddPlace}
+            onRemovePlace={onRemovePlace}
+          />
+        ))}
+      {/* 一番下がアクションバーに隠れるので高さ調整 */}
+      <View className="h-20"></View>
+    </BottomSheetScrollView>
   );
 }
