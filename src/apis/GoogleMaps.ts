@@ -1,17 +1,22 @@
+import { MapCategory } from '../entities/MapCategory';
+
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
 
-export const ParkType = ['park', 'amusement_park', 'campground', 'rv_park'];
-export const CafeType = ['cafe', 'coffee_shop', 'restaurant'];
-export const HotelsType = [
-  'bed_and_breakfast',
-  'extended_stay_hotel',
-  'guest_house',
-  'hostel',
-  'hotel',
-  'lodging',
-  'motel',
-  'resort_hotel',
-];
+const INCLUDED_TYPES: Record<MapCategory, string[]> = {
+  meal: ['cafe', 'coffee_shop', 'restaurant'],
+  hotel: [
+    'bed_and_breakfast',
+    'extended_stay_hotel',
+    'guest_house',
+    'hostel',
+    'hotel',
+    'lodging',
+    'motel',
+    'resort_hotel',
+  ],
+  spot: ['park', 'amusement_park', 'campground', 'rv_park'],
+  selected: [],
+};
 
 const FiledMaskValue =
   'places.id,places.types,places.reviews,places.displayName,places.formattedAddress,places.rating,places.location,places.photos,places.websiteUri,places.editorialSummary';
@@ -31,7 +36,12 @@ async function searchId(placeId: string) {
   return response;
 }
 
-async function searchNearby(latitude: number, longitude: number, radius?: number) {
+async function searchNearby(
+  latitude: number,
+  longitude: number,
+  category: MapCategory,
+  radius?: number
+) {
   const response = await fetch(`${GOOGLE_MAPS_API_URL}:searchNearby`, {
     method: 'POST',
     headers: new Headers({
@@ -42,7 +52,7 @@ async function searchNearby(latitude: number, longitude: number, radius?: number
     body: JSON.stringify({
       maxResultCount: 20,
       languageCode: 'ja',
-      includedTypes: [...ParkType, ...CafeType, ...HotelsType],
+      includedTypes: INCLUDED_TYPES[category],
       locationRestriction: {
         circle: {
           center: {

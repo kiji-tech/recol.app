@@ -25,6 +25,7 @@ export default function BottomSheetLayout({ ref, children }: Props) {
         borderWidth: 0.5,
         borderColor: 'gray',
         borderRadius: 16,
+        marginTop: 64,
       }}
       onChange={handleSheetChange}
       snapPoints={['20%', '50%', '90%']}

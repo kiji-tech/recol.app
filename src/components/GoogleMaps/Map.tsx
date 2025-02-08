@@ -13,15 +13,16 @@ import Loading from '../Loading';
 import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
 import { usePlan } from '@/src/contexts/PlanContext';
 import MapBottomSheet from './BottomSheet/MapBottomSheet';
+import { MapCategory } from '@/src/entities/MapCategory';
 
 /**
  * GoogleMap Component
  *
- * @param selectedPlace {Place | null} 選択中の施設情報
- * @param selectedPlaceList {Place[] | undefined} 選択中の施設情報リスト
+ * @param selectedPlace {Place | null} 選択中のロケーション情報
+ * @param selectedPlaceList {Place[] | undefined} 選択中のロケーション情報リスト
  * @param isSearch {boolean | undefined} 検索機能の有無
  * @param isMarker {boolean | undefined} マーカーの有無
- * @param onSelectPlace {(place: Place) => void} 選択中の施設情報変更イベント
+ * @param onSelectPlace {(place: Place) => void} 選択中のロケーション情報変更イベント
  * @param onMarkerDeselect {() => void} マーカー選択解除イベント
  */
 type Props = {
@@ -46,8 +47,10 @@ export default function Map({
   const { plan } = usePlan();
   const [places, setPlaces] = useState<Place[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  // 検索結果の再描画ボタン表示までの時間
   const [searchTimer, setSearchTimer] = useState<boolean>(false);
-  const [selectedCategory, setSelectedCategory] = useState<string>('meal');
+  // 選択中のカテゴリ（meal, hotel, spot, selected）
+  const [selectedCategory, setSelectedCategory] = useState<MapCategory>('meal');
   const [isCoords, setIsCoords] = useState<Region>({
     ...JSON.parse(plan!.locations![0]),
     latitudeDelta: 0.05,
@@ -59,28 +62,8 @@ export default function Map({
     longitudeDelta: 0.03,
   });
 
-  const isOnlySelected = useMemo(() => selectedCategory === 'selected', [selectedCategory]);
-
-  // selectedPlaceListにある場合は､placesから除外する
-  const filteredPlaces = useMemo(() => {
-    if (!selectedPlaceList || !places) return places;
-    return places.filter((place) => !selectedPlaceList.some((p) => p.id === place.id));
-  }, [places, selectedPlaceList]);
-
-  // === Effect ===
-  useEffect(() => {
-    if (isCoords) fetchLocation(isCoords.latitude, isCoords.longitude);
-    reSearchTimer();
-  }, []);
-
-  useEffect(() => {
-    if (selectedPlace && markerRef[selectedPlace.id] != null) {
-      markerRef[selectedPlace.id]?.showCallout();
-    }
-  }, [selectedPlace]);
-
   // === Method ===
-  /** 施設情報設定処理 */
+  /** ロケーション情報設定処理 */
   const settingPlaces = (places: Place[]) => {
     if (!places || places.length == 0) {
       alert('検索結果がありません.');
@@ -90,11 +73,12 @@ export default function Map({
     onSelectPlace(places[0]);
   };
 
-  /** 座標の施設情報取得 */
+  /** 座標のロケーション情報取得 */
   const fetchLocation = async (latitude: number, longitude: number) => {
+    if (selectedCategory === 'selected') return;
     setIsLoading(true);
     try {
-      const response = await searchNearby(latitude, longitude);
+      const response = await searchNearby(latitude, longitude, selectedCategory);
       settingPlaces(response);
     } catch (e) {
       console.error(e);
@@ -125,27 +109,6 @@ export default function Map({
     }
   };
 
-  /** 検索範囲の計算 */
-  const isResearched = useMemo(() => {
-    const R = 6371; // 地球の半径 (km)
-    const dLat = (centerCords!.latitude - isCoords!.latitude) * (Math.PI / 180);
-    const dLon = (centerCords!.longitude - isCoords!.longitude) * (Math.PI / 180);
-
-    if (!isCoords || !centerCords) return false;
-
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(isCoords!.latitude * (Math.PI / 180)) *
-        Math.cos(centerCords!.latitude * (Math.PI / 180)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-    reSearchTimer();
-    return distance > getThresholdDistanceByZoom(Math.log2(360 / isCoords!.latitudeDelta)); // 距離をキロメートルで返す
-  }, [isCoords, centerCords]);
-
   /** テキスト検索 実行処理 */
   const handleTextSearch = async (searchText: string) => {
     setIsLoading(true);
@@ -163,7 +126,7 @@ export default function Map({
     }
   };
 
-  /** 場所を選択したときのイベントハンドラ */
+  /** ロケーションを選択したときのイベントハンドラ */
   const handleSelectedPlace = (place: Place) => {
     setIsCoords((prev) => {
       return {
@@ -190,9 +153,56 @@ export default function Map({
   };
 
   /** スポット表示カテゴリの変更 */
-  const handleSelectedCategory = (id: string) => {
+  const handleSelectedCategory = (id: MapCategory) => {
     setSelectedCategory(id);
   };
+
+  // ==== Memo ====
+  /** 検索範囲の計算 */
+  const isResearched = useMemo(() => {
+    const R = 6371; // 地球の半径 (km)
+    const dLat = (centerCords!.latitude - isCoords!.latitude) * (Math.PI / 180);
+    const dLon = (centerCords!.longitude - isCoords!.longitude) * (Math.PI / 180);
+
+    if (!isCoords || !centerCords) return false;
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(isCoords!.latitude * (Math.PI / 180)) *
+        Math.cos(centerCords!.latitude * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    reSearchTimer();
+    return distance > getThresholdDistanceByZoom(Math.log2(360 / isCoords!.latitudeDelta)); // 距離をキロメートルで返す
+  }, [isCoords, centerCords]);
+  // 選択中のロケーションのみ表示
+  const isOnlySelected = useMemo(() => selectedCategory === 'selected', [selectedCategory]);
+
+  // selectedPlaceListにある場合は､placesから除外する
+  const filteredPlaces = useMemo(() => {
+    if (!selectedPlaceList || !places) return places;
+    return places.filter((place) => !selectedPlaceList.some((p) => p.id === place.id));
+  }, [places, selectedPlaceList]);
+
+  // === Effect ===
+  useEffect(() => {
+    if (isCoords) fetchLocation(isCoords.latitude, isCoords.longitude);
+    reSearchTimer();
+  }, []);
+  useEffect(() => {
+    if (selectedPlace && markerRef[selectedPlace.id] != null) {
+      markerRef[selectedPlace.id]?.showCallout();
+    }
+  }, [selectedPlace]);
+
+  /** カテゴリが変更されたら､そのカテゴリだけのロケーションを検索する */
+  useEffect(() => {
+    if (selectedCategory === 'selected') return;
+    fetchLocation(isCoords.latitude, isCoords.longitude);
+  }, [selectedCategory]);
 
   return (
     <>

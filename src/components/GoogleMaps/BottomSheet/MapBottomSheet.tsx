@@ -3,15 +3,16 @@ import BottomSheetLayout from '../../BottomSheetLayout';
 import MapBottomSheetHeader from './MapBottomSheetHeader';
 import MapBottomSheetBody from './MapBottomSheetBody';
 import { Place } from '@/src/entities/Place';
+import { MapCategory } from '@/src/entities/MapCategory';
 
 type Props = {
   placeList: Place[];
   selectedPlaceList: Place[];
   isSelected: boolean;
-  selectedCategory: string;
+  selectedCategory: MapCategory;
   onAddPlace: (place: Place) => void;
   onRemovePlace: (place: Place) => void;
-  onSelectedCategory: (id: string) => void;
+  onSelectedCategory: (id: MapCategory) => void;
 };
 export default function MapBottomSheet({
   placeList,

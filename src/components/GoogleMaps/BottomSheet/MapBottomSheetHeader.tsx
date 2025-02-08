@@ -1,22 +1,22 @@
+import { MapCategory } from '@/src/entities/MapCategory';
 import React, { useCallback, useState } from 'react';
 import { View, Text } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 type SearchSelectedButtonProps = {
-  id: string;
+  id: MapCategory;
   label: string;
-  selected: boolean;
-  onPress: (id: string) => void;
+  onPress: (id: MapCategory) => void;
 };
 
 type Props = {
-  selectedCategory: string;
-  onSelectedCategory: (id: string) => void;
+  selectedCategory: MapCategory;
+  onSelectedCategory: (id: MapCategory) => void;
 };
 export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }: Props) {
   // === Member ====
   // === Method ====
-  const handleOnSelectedCategory = (id: string) => {
+  const handleOnSelectedCategory = (id: MapCategory) => {
     onSelectedCategory(id);
   };
   const checkSelectedCategory = useCallback(
@@ -24,11 +24,11 @@ export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }
     [selectedCategory]
   );
 
-  const categoryButtonList = [
-    { id: 'meal', label: '食事・カフェ', selected: false, onPress: handleOnSelectedCategory },
-    { id: 'hotel', label: 'ホテル・旅館', selected: true, onPress: handleOnSelectedCategory },
-    { id: 'spot', label: '観光スポット', selected: false, onPress: handleOnSelectedCategory },
-    { id: 'selected', label: '選択中', selected: false, onPress: handleOnSelectedCategory },
+  const categoryButtonList: SearchSelectedButtonProps[] = [
+    { id: 'meal', label: '食事・カフェ', onPress: handleOnSelectedCategory },
+    { id: 'hotel', label: 'ホテル・旅館', onPress: handleOnSelectedCategory },
+    { id: 'spot', label: '観光スポット', onPress: handleOnSelectedCategory },
+    { id: 'selected', label: '選択中', onPress: handleOnSelectedCategory },
   ];
 
   // === Render ====
