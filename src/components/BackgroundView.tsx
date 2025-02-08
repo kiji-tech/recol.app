@@ -6,7 +6,7 @@ type Props = {
 };
 export default function BackgroundView({ children }: Props) {
   return (
-    <View className="px-4 flex flex-col justify-start h-full bg-light-background dark:bg-dark-background gap-8">
+    <View className="px-4 flex flex-col justify-start h-screen bg-light-background dark:bg-dark-background gap-8 pb-32">
       {children}
     </View>
   );

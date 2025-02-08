@@ -35,8 +35,6 @@ export default function PlaceCardBody({
             onRemove={onRemove}
           />
         ))}
-      {/* 一番下がアクションバーに隠れるので高さ調整 */}
-      <View className="h-20"></View>
     </BottomSheetScrollView>
   );
 }

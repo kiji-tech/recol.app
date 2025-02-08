@@ -19,7 +19,7 @@ type Props = {
   onClose: () => void;
 };
 export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose }: Props) {
-  console.log(JSON.stringify(place));
+  //   console.log(JSON.stringify(place));
   // === Member ===
   const [isAiNavigation, setIsAiNavigation] = useState(false);
   const [aiText, setAiText] = useState('');

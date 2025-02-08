@@ -52,7 +52,7 @@ export default function MapModal({ isOpen, placeList, onSuccess, onClose }: Prop
 
   return (
     <>
-      <View className=" w-screen h-screen shadow-xl absolute top-0 left-0">
+      <View className=" w-screen h-screen absolute top-0 left-0">
         <Map
           isSearch={true}
           selectedPlace={selectedPlace}

@@ -52,9 +52,8 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
             onLongPress={onLongPress}
           >
             {label == 'ホーム' && <Entypo name="home" size={20} color="black" />}
-            {label == '旅行計画' && <Entypo name="calendar" size={20} color="black" />}
-            {label == '設定' && <Ionicons name="settings" size={20} color="black" />}
             {label == 'スケジュール' && <Entypo name="calendar" size={20} color="black" />}
+            {label == '設定' && <Ionicons name="settings" size={20} color="black" />}
             {label == 'マップ' && <FontAwesome name="map-marker" size={20} color="black" />}
 
             <Text className={`text-light-text dark:text-dark-text text-md font-semibold`}>

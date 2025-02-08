@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Place } from '@/src/entities/Place';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import MapView, {
   Callout,
   MapMarker,
@@ -211,7 +211,7 @@ export default function Map({
   return (
     <>
       <MapView
-        style={{ height: '100%', width: '100%', flex: 1, borderRadius: 10 }}
+        style={{ height: '100%', width: '100%', flex: 1, position: 'absolute', top: 0, left: 0 }}
         provider={PROVIDER_GOOGLE}
         initialRegion={isCoords}
         region={isCoords}
@@ -254,7 +254,7 @@ export default function Map({
         <Callout tooltip={true} />
       </MapView>
       {/* 検索関係 */}
-      <View className="w-full absolute top-16 pl-4">
+      <View className="w-full absolute top-0 pl-4">
         <View className="flex flex-col justify-center items-center w-full">
           {/* 検索ヘッダー */}
           {isSearch && (
@@ -263,7 +263,7 @@ export default function Map({
         </View>
       </View>
       {/* 再検索ボタン */}
-      <View className="w-full absolute top-36">
+      <View className="w-full absolute top-20">
         {isSearch && (isResearched || searchTimer) && (
           <TouchableOpacity
             className="w-1/2 py-2 px-4 mt-2 mx-auto rounded-xl  bg-light-background dark:bg-dark-background"
