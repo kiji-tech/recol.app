@@ -1,6 +1,8 @@
 import React, { useCallback, useImperativeHandle, useRef, useState } from 'react';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { View } from 'react-native';
+import { Platform } from 'react-native';
+const isIOS = Platform.OS === 'ios';
 
 type Props = {
   ref?: any;
@@ -27,8 +29,8 @@ export default function BottomSheetLayout({ ref, children }: Props) {
       enableDynamicSizing={true}
     >
       {children}
-      {/* IOSのみ,一番下がアクションバーに隠れるので高さ調整 */}
-      <View className="h-48"></View>
+      {/* ISOのほうがアクションバーでより隠れるため高くする */}
+      <View className={isIOS ? 'h-44' : 'h-16'}></View>
     </BottomSheet>
   );
 }

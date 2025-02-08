@@ -1,4 +1,5 @@
 ## 技術スタック
+
 - expo
 - react-native
 - google map api
@@ -13,12 +14,14 @@
 
 ### ios androidプロジェクトのbuild packageのupdate
 
-``ios``
+`ios`
+
 ```shell
 $ npm run install:ios
 ```
 
-``android``
+`android`
+
 ```shell
 $ npm run install:android
 ```
@@ -87,8 +90,27 @@ $ supabase db push
 
 ## トラブルシューティング
 
+### Scrollが動かない
+
+react-nativeのスクロール系のタグ（ScrollViewやFlatListView）は入れ子にできない｡
+→ react-native-gesture-handlerを使う
+
+```typescript
+import { ScrollView } from 'react-native';  ･･･ NG
+import { ScrollView } from 'react-native-gesture-handler'; ･･･ ◯
+
+
+...
+
+<ScrollView>
+  <ScrollView> </ScrollView>
+</ScrollView>
+```
+
 ### npm run ios
+
 `schema xxxx`
+
 ```shell
 $ npx expo prebuild --clean
 ```

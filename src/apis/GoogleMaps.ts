@@ -140,7 +140,6 @@ async function searchNearby(
   category: MapCategory,
   radius?: number
 ) {
-  console.log({ latitude, longitude, category, radius });
   const response = await fetch(`${GOOGLE_MAPS_API_URL}:searchNearby`, {
     method: 'POST',
     headers: new Headers({

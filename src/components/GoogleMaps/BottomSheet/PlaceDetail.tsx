@@ -11,6 +11,7 @@ import IconButton from '../../IconButton';
 import Header from '../../Header/Header';
 import { reviewAIAnalyze } from '@/src/apis/OpenAI';
 import Loading from '../../Loading';
+import ImageScrollView from '../../ImageScrollView';
 type Props = {
   place: Place;
   selected: boolean;
@@ -35,9 +36,8 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
     const reviews = place.reviews
       .map((review: Review) => {
         return `いつ： ${review.publishTime}
-        評価：${review.rating}
-        
-        コメント：${review.text.text}
+評価：${review.rating}
+コメント：${review.text.text}
         `;
       })
       .join('\n\n');
@@ -67,18 +67,14 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
       {/* TODO: スクロールできるようにする｡ */}
       {/* TODO: 画像を選択､拡大表示*/}
       {/* 写真一覧 */}
-      <View className="flex flex-row justify-start items-center gap-4 overflow-x-scroll">
-        {place.photos &&
-          place.photos.map((photo) => {
-            return (
-              <Image
-                key={photo.name}
-                className={`w-[80%] h-60 `}
-                src={`https://places.googleapis.com/v1/${photo.name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`}
-              />
-            );
-          })}
-      </View>
+      {place.photos && (
+        <ImageScrollView
+          images={place.photos.map((photo) => ({
+            src: `https://places.googleapis.com/v1/${photo.name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`,
+            alt: place.displayName.text,
+          }))}
+        />
+      )}
       <View className="flex flex-col justify-start items-start p-4 gap-4  pb-40">
         {/* ロケーション名 */}
         <Header
