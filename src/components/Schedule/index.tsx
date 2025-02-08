@@ -43,6 +43,7 @@ export default function TripCalendar({ plan }: Props): ReactNode {
   // === Method ====
   /** 時間軸クリックイベント */
   const handleHourPress = (hour: string) => {
+    console.log('handleHourPress', hour);
     const schedule = {
       plan_id: plan!.uid,
       from: dayjs().set('hour', parseInt(hour)).set('minute', 0).format('YYYY-MM-DDTHH:mm:ss.000Z'),

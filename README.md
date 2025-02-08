@@ -127,8 +127,8 @@ CommandError: Failed to build iOS project. "xcodebuild" exited with error code 7
 ### Google Maps API
 
 [公式ドキュメント](https://developers.google.com/maps/documentation/javascript/places?hl=ja)
-
 [Map関係のAPIまとめ](https://www.zenrin-datacom.net/solution/gmapsapi/media/g002)
+[プレイスタイプ](https://developers.google.com/maps/documentation/javascript/place-types?hl=ja)
 
 ### Supabase
 

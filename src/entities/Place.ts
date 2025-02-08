@@ -15,6 +15,7 @@ export interface Review {
 }
 
 export interface Photos {
+  id: string;
   name: string;
   widthPx: number;
   heightPx: number;
@@ -23,7 +24,6 @@ export interface Photos {
 
 export interface Place {
   id: string;
-  name: string;
   types: string[];
   rating: number;
   formattedAddress: string;
@@ -51,4 +51,8 @@ export interface Place {
   googleMapUrl: string;
   editorialSummary: { text: string };
   websiteUri: string;
+  currentOpeningHours: {
+    openNow: boolean;
+    weekdayDescriptions: string[];
+  };
 }

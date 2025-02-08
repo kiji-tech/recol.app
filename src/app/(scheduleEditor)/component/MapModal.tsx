@@ -17,7 +17,7 @@ type Props = {
 
 export default function MapModal({ isOpen, placeList, onSuccess, onClose }: Props) {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-  const [selectedPlaceList, setSelectedPlaceList] = useState<Place[]>(placeList);
+  const [selectedPlaceList, setSelectedPlaceList] = useState<Place[]>([]);
 
   // Location Permissions
   const [status, requestPermission] = Location.useForegroundPermissions();
@@ -31,11 +31,20 @@ export default function MapModal({ isOpen, placeList, onSuccess, onClose }: Prop
     setSelectedPlace(place);
   };
 
-  /** */
+  const handleAdd = (place: Place) => {
+    setSelectedPlaceList([...selectedPlaceList, place]);
+  };
+  const handleRemove = (place: Place) => {
+    setSelectedPlaceList(selectedPlaceList.filter((p) => p.id !== place.id));
+  };
+
   const handleClose = () => {
     onSuccess(selectedPlaceList);
-    onClose();
   };
+
+  useEffect(() => {
+    setSelectedPlaceList([...placeList]);
+  }, [placeList]);
 
   if (!isOpen) {
     return <></>;
@@ -52,7 +61,9 @@ export default function MapModal({ isOpen, placeList, onSuccess, onClose }: Prop
           onMarkerDeselect={() => {
             // setSelectedPlace(null);
           }}
-          onBack={onClose}
+          onAdd={handleAdd}
+          onRemove={handleRemove}
+          onBack={handleClose}
         />
       </View>
     </>

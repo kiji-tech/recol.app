@@ -32,6 +32,8 @@ type Props = {
   isMarker?: boolean;
   onSelectPlace?: (place: Place) => void;
   onMarkerDeselect?: () => void;
+  onAdd?: (place: Place) => void;
+  onRemove?: (place: Place) => void;
   onBack?: () => void;
 };
 export default function Map({
@@ -41,6 +43,8 @@ export default function Map({
   isMarker = false,
   onMarkerDeselect = () => void 0,
   onSelectPlace = () => void 0,
+  onAdd = () => void 0,
+  onRemove = () => void 0,
   onBack = () => void 0,
 }: Props) {
   const markerRef: { [id: string]: MapMarker | null } = {};
@@ -277,8 +281,9 @@ export default function Map({
           selectedPlaceList={selectedPlaceList || []}
           selectedCategory={selectedCategory}
           isSelected={isOnlySelected}
-          onAddPlace={(place: Place) => onSelectPlace(place)}
-          onRemovePlace={(place: Place) => onSelectPlace(place)}
+          onAdd={onAdd}
+          onRemove={onRemove}
+          onSelectedPlace={handleSelectedPlace}
           onSelectedCategory={handleSelectedCategory}
         />
       )}

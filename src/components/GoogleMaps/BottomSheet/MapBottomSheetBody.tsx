@@ -7,24 +7,22 @@ import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 type Props = {
   placeList: Place[];
   selectedPlaceList: Place[];
-  onAddPlace: (place: Place) => void;
-  onRemovePlace: (place: Place) => void;
+  onSelect: (place: Place) => void;
+  onAdd: (place: Place) => void;
+  onRemove: (place: Place) => void;
 };
 export default function PlaceCardBody({
   placeList,
   selectedPlaceList,
-  onAddPlace,
-  onRemovePlace,
+  onSelect,
+  onAdd,
+  onRemove,
 }: Props) {
   // ==== Member ====
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-
   // ==== Method ====
-
   // ==== Render ====
   return (
     <BottomSheetScrollView className="w-full flex-1">
-      {/* 詳細モードの場合は切り替え */}
       {placeList &&
         placeList.map((place: Place) => (
           <PlaceCard
@@ -32,8 +30,9 @@ export default function PlaceCardBody({
             place={place}
             selected={false}
             // onDetailView={() => { }}
-            onAddPlace={onAddPlace}
-            onRemovePlace={onRemovePlace}
+            onSelect={onSelect}
+            onAdd={onAdd}
+            onRemove={onRemove}
           />
         ))}
       {/* 一番下がアクションバーに隠れるので高さ調整 */}

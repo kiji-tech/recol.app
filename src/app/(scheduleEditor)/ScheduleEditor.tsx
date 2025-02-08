@@ -15,11 +15,6 @@ export default function ScheduleEditor() {
   const { plan, editSchedule, setEditSchedule } = usePlan();
   const [openMapModal, setOpenMapModal] = useState(false);
 
-  // === Effect ===
-  useEffect(() => {
-    if (!editSchedule) setEditSchedule({} as Tables<'schedule'>);
-  }, []);
-
   // === Method ===
   /** スケジュールの編集 */
   const handleScheduleSubmit = async () => {
@@ -41,6 +36,7 @@ export default function ScheduleEditor() {
   const handleSelectedPlaceList = (placeList: Place[]) => {
     const schedule = { ...editSchedule, place_list: placeList as unknown as Json[] };
     setEditSchedule({ ...schedule } as Tables<'schedule'>);
+    setOpenMapModal(false);
   };
 
   /** マップを表示する */
@@ -51,6 +47,11 @@ export default function ScheduleEditor() {
   const handleBack = () => {
     router.back();
   };
+
+  // === Effect ===
+  useEffect(() => {
+    if (!editSchedule) setEditSchedule({} as Tables<'schedule'>);
+  }, []);
 
   // === Render ===
   if (!editSchedule) return;

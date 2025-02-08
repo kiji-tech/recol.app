@@ -14,10 +14,6 @@ export default function BottomSheetLayout({ ref, children }: Props) {
     }));
   }
 
-  const handleSheetChange = useCallback((index: number) => {
-    console.log('handleSheetChange', index);
-  }, []);
-
   return (
     <BottomSheet
       ref={ref}
@@ -27,7 +23,6 @@ export default function BottomSheetLayout({ ref, children }: Props) {
         borderRadius: 16,
         marginTop: 64,
       }}
-      onChange={handleSheetChange}
       snapPoints={['20%', '50%', '90%']}
       enableDynamicSizing={true}
     >

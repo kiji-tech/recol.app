@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 
-const CoffeeShopReviewContent = `あなたは文章を読んで予約する天才です｡
+const CoffeeShopReviewContent = `あなたは文章を読んで要約する天才です｡
 
 ### 命令
 レビューの一覧を渡します｡
@@ -12,7 +12,7 @@ const CoffeeShopReviewContent = `あなたは文章を読んで予約する天�
     ・◯◯のメニューが美味しかったです｡
     ・店内は静かで､落ち着いた雰囲気でした｡
     ・店員さんが親切でした｡
-【ここがイマイチ】
+【ここが気になる】
     ・お値段が高いです｡
     ・お店が混んでいて､待ち時間が長かったです｡
     ・お店の雰囲気が暗かったです｡

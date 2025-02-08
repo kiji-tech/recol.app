@@ -1,27 +1,27 @@
-{
-    "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg",
-    "id": "ChIJv5pOEGa-GWARM1DJ3se3qGg",
+ LOG  {
+    "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ",
+    "id": "ChIJ_68aIORPGGARbUgyqc0iKFQ",
     "types": [
         "hotel",
         "lodging",
         "point_of_interest",
         "establishment"
     ],
-    "nationalPhoneNumber": "0557-81-0111",
-    "internationalPhoneNumber": "+81 557-81-0111",
-    "formattedAddress": "日本、〒413-0013 静岡県熱海市銀座町１−１６",
+    "nationalPhoneNumber": "0466-23-1116",
+    "internationalPhoneNumber": "+81 466-23-1116",
+    "formattedAddress": "日本、〒251-0055 神奈川県藤沢市南藤沢１９−１２",
     "addressComponents": [
         {
-            "longText": "１６",
-            "shortText": "１６",
+            "longText": "１２",
+            "shortText": "１２",
             "types": [
                 "premise"
             ],
             "languageCode": "ja"
         },
         {
-            "longText": "１",
-            "shortText": "１",
+            "longText": "１９",
+            "shortText": "１９",
             "types": [
                 "sublocality_level_4",
                 "sublocality",
@@ -30,8 +30,8 @@
             "languageCode": "ja"
         },
         {
-            "longText": "銀座町",
-            "shortText": "銀座町",
+            "longText": "南藤沢",
+            "shortText": "南藤沢",
             "types": [
                 "sublocality_level_2",
                 "sublocality",
@@ -40,8 +40,8 @@
             "languageCode": "ja"
         },
         {
-            "longText": "熱海市",
-            "shortText": "熱海市",
+            "longText": "藤沢市",
+            "shortText": "藤沢市",
             "types": [
                 "locality",
                 "political"
@@ -49,8 +49,8 @@
             "languageCode": "ja"
         },
         {
-            "longText": "静岡県",
-            "shortText": "静岡県",
+            "longText": "神奈川県",
+            "shortText": "神奈川県",
             "types": [
                 "administrative_area_level_1",
                 "political"
@@ -67,8 +67,8 @@
             "languageCode": "ja"
         },
         {
-            "longText": "413-0013",
-            "shortText": "413-0013",
+            "longText": "251-0055",
+            "shortText": "251-0055",
             "types": [
                 "postal_code"
             ],
@@ -76,272 +76,486 @@
         }
     ],
     "plusCode": {
-        "globalCode": "8Q7X33WC+WX",
-        "compoundCode": "33WC+WX 日本、静岡県熱海市"
+        "globalCode": "8Q7X8FPQ+RX",
+        "compoundCode": "8FPQ+RX 日本、神奈川県藤沢市"
     },
     "location": {
-        "latitude": 35.0972758,
-        "longitude": 139.0724481
+        "latitude": 35.337022499999996,
+        "longitude": 139.4899455
     },
     "viewport": {
         "low": {
-            "latitude": 35.095988269708506,
-            "longitude": 139.07116001970851
+            "latitude": 35.3356565197085,
+            "longitude": 139.4884481697085
         },
         "high": {
-            "latitude": 35.098686230291506,
-            "longitude": 139.07385798029148
+            "latitude": 35.3383544802915,
+            "longitude": 139.4911461302915
         }
     },
-    "rating": 3.3,
-    "googleMapsUri": "https://maps.google.com/?cid=7541479645096005683",
-    "websiteUri": "https://www.itoenhotel.com/atami_newfujiyahotel/",
+    "rating": 4.1,
+    "googleMapsUri": "https://maps.google.com/?cid=6064135164956657773",
+    "websiteUri": "https://smile-hotels.com/hotels/show/shonanfujisawa",
+    "regularOpeningHours": {
+        "openNow": true,
+        "periods": [
+            {
+                "open": {
+                    "day": 0,
+                    "hour": 0,
+                    "minute": 0
+                }
+            }
+        ],
+        "weekdayDescriptions": [
+            "月曜日: 24 時間営業",
+            "火曜日: 24 時間営業",
+            "水曜日: 24 時間営業",
+            "木曜日: 24 時間営業",
+            "金曜日: 24 時間営業",
+            "土曜日: 24 時間営業",
+            "日曜日: 24 時間営業"
+        ]
+    },
     "utcOffsetMinutes": 540,
-    "adrFormatAddress": "<span class=\"country-name\">日本</span>、<span class=\"postal-code\">〒413-0013</span> <span class=\"region\">静岡県</span><span class=\"street-address\">熱海市銀座町１−１６</span>",
+    "adrFormatAddress": "<span class=\"country-name\">日本</span>、<span class=\"postal-code\">〒251-0055</span> <span class=\"region\">神奈川県</span><span class=\"street-address\">藤沢市南藤沢１９−１２</span>",
     "businessStatus": "OPERATIONAL",
-    "userRatingCount": 3406,
+    "userRatingCount": 378,
     "iconMaskBaseUri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/hotel_pinlet",
     "iconBackgroundColor": "#909CE1",
     "displayName": {
-        "text": "熱海ニューフジヤホテル",
+        "text": "スマイルホテル湘南藤沢",
         "languageCode": "ja"
     },
     "primaryTypeDisplayName": {
         "text": "ホテル",
         "languageCode": "ja"
     },
+    "currentOpeningHours": {
+        "openNow": true,
+        "periods": [
+            {
+                "open": {
+                    "day": 6,
+                    "hour": 0,
+                    "minute": 0,
+                    "truncated": true,
+                    "date": {
+                        "year": 2025,
+                        "month": 2,
+                        "day": 8
+                    }
+                },
+                "close": {
+                    "day": 5,
+                    "hour": 23,
+                    "minute": 59,
+                    "truncated": true,
+                    "date": {
+                        "year": 2025,
+                        "month": 2,
+                        "day": 14
+                    }
+                }
+            }
+        ],
+        "weekdayDescriptions": [
+            "月曜日: 24 時間営業",
+            "火曜日: 24 時間営業",
+            "水曜日: 24 時間営業",
+            "木曜日: 24 時間営業",
+            "金曜日: 24 時間営業",
+            "土曜日: 24 時間営業",
+            "日曜日: 24 時間営業"
+        ]
+    },
     "primaryType": "hotel",
-    "shortFormattedAddress": "熱海市銀座町１−１６",
+    "shortFormattedAddress": "藤沢市南藤沢１９−１２",
     "editorialSummary": {
-        "text": "落ち着いた雰囲気の客室、温泉、室内プール、無料駐車場を備えた、くつろぎのホテル。",
+        "text": "Wi-Fi 付きの格式ばらない客室を備えた簡素なホテル。朝食を提供。コンビニエンス ストアを併設。",
         "languageCode": "ja"
     },
     "reviews": [
         {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/reviews/ChZDSUhNMG9nS0VJQ0FnSUNuaGFuU1VnEAE",
-            "relativePublishTimeDescription": "1 週間前",
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/reviews/ChdDSUhNMG9nS0VJQ0FnTUNBdmZDc2l3RRAB",
+            "relativePublishTimeDescription": "過去 1 週間以内",
             "rating": 3,
             "text": {
-                "text": "じゃらんのポイント消費も兼ねてこちらを利用。\nオーシャンビューの和室10帖。9階だったので眺めが良くていい。\n\n口コミでチェックイン、チェックアウトに非常に時間がかかるとあった。　この対策として13時にチェックイン、15時にカギを受け取るとスムーズ。　翌朝7時に会計を先に済ませておき、チェックアウト時はカギを返すだけにすれば待つことは無かった。\n\n1泊2食付きプラン。　食事は値段相応。　アルコール飲み放題の種類が多くて充実していたのは良かった。　朝食も十分満足。\n\n口コミで多く書かれている部屋に関する問題点。\n襖がビリビリに破れているのに修理されず放置されているのは如何なものか？　これはあり得ないだろうと思った。\nバストイレのドアノブのカギが壊れていて、取って付けたようなカギに驚いた。　なぜドアノブを交換修理しないのか？意味不明だ。\n施設自体が古いのは仕方ないとしても、破れた物をそのままにしている事、壊れたものを交換修理しないというのはおかしくないか？　経営者側は真摯に受け止めてこの辺りの改善をして頂きたい。",
+                "text": "駅近で同じビルにセブンイレブンがありとても便利。接客もスピーディで無駄がない。浴室に髪の毛1本残っていたこと、真冬にエアコンの設定が冷房になっていたことは残念でしたが、広いベッドでぐっすり休めました。加湿空気清浄機もデフォルト設置でありがたかったです。",
                 "languageCode": "ja"
             },
             "originalText": {
-                "text": "じゃらんのポイント消費も兼ねてこちらを利用。\nオーシャンビューの和室10帖。9階だったので眺めが良くていい。\n\n口コミでチェックイン、チェックアウトに非常に時間がかかるとあった。　この対策として13時にチェックイン、15時にカギを受け取るとスムーズ。　翌朝7時に会計を先に済ませておき、チェックアウト時はカギを返すだけにすれば待つことは無かった。\n\n1泊2食付きプラン。　食事は値段相応。　アルコール飲み放題の種類が多くて充実していたのは良かった。　朝食も十分満足。\n\n口コミで多く書かれている部屋に関する問題点。\n襖がビリビリに破れているのに修理されず放置されているのは如何なものか？　これはあり得ないだろうと思った。\nバストイレのドアノブのカギが壊れていて、取って付けたようなカギに驚いた。　なぜドアノブを交換修理しないのか？意味不明だ。\n施設自体が古いのは仕方ないとしても、破れた物をそのままにしている事、壊れたものを交換修理しないというのはおかしくないか？　経営者側は真摯に受け止めてこの辺りの改善をして頂きたい。",
+                "text": "駅近で同じビルにセブンイレブンがありとても便利。接客もスピーディで無駄がない。浴室に髪の毛1本残っていたこと、真冬にエアコンの設定が冷房になっていたことは残念でしたが、広いベッドでぐっすり休めました。加湿空気清浄機もデフォルト設置でありがたかったです。",
                 "languageCode": "ja"
             },
             "authorAttribution": {
-                "displayName": "airline yatapara",
-                "uri": "https://www.google.com/maps/contrib/100357135706696311375/reviews",
-                "photoUri": "https://lh3.googleusercontent.com/a/ACg8ocIrJXACv1PMdrPvhoGZRDdxMEamHO-G4fUiR0bm4AllumsEBQ=s128-c0x00000000-cc-rp-mo-ba8"
+                "displayName": "m s",
+                "uri": "https://www.google.com/maps/contrib/112715855575803752783/reviews",
+                "photoUri": "https://lh3.googleusercontent.com/a/ACg8ocKxWfPwWYq3zImJQr7UEo5pj6x7B-w2kVesh3uMGun07mw6wQ=s128-c0x00000000-cc-rp-mo"
             },
-            "publishTime": "2024-09-27T20:51:32.212536Z"
+            "publishTime": "2025-02-03T12:34:21.284924Z",
+            "flagContentUri": "https://www.google.com/local/review/rap/report?postId=ChdDSUhNMG9nS0VJQ0FnTUNBdmZDc2l3RRAB&d=17924085&t=1",
+            "googleMapsUri": "https://www.google.com/maps/reviews/data=!4m6!14m5!1m4!2m3!1sChdDSUhNMG9nS0VJQ0FnTUNBdmZDc2l3RRAB!2m1!1s0x60184fe4201aafff:0x542822cda932486d"
         },
         {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/reviews/ChdDSUhNMG9nS0VJQ0FnSUM3MmJyQ2d3RRAB",
-            "relativePublishTimeDescription": "1 か月前",
-            "rating": 4,
-            "text": {
-                "text": "8月4日に一泊しました。ビーチが近く、プールがあるホテルで検索しこちらに決めました。\nお財布に優しいホテルです。12畳の和室・懐石を希望しました。料金にしては部屋の広さも食事もよかったです。\n部屋の古さも・・施設に関しても全て料金で妥協できます。お風呂は露天がちょっと掃除忘れたのかなって思いましたけど・・この料金で泊らせて頂かせてもらえる、努力してるんだなと思いました。\n夕食の係の人がとても感じよく孫にも優しく声かけて頂きとても感じが良かったです。・・\n\nチェックアウト後のお風呂利用が出来ませんので、海は当日に入った方が良いと思います。ビーチに個室シャワーがなくて・・孫の水着の中の砂がきれいに落ちなく、近くの浴場は3時からで空いてなく困りました。",
-                "languageCode": "ja"
-            },
-            "originalText": {
-                "text": "8月4日に一泊しました。ビーチが近く、プールがあるホテルで検索しこちらに決めました。\nお財布に優しいホテルです。12畳の和室・懐石を希望しました。料金にしては部屋の広さも食事もよかったです。\n部屋の古さも・・施設に関しても全て料金で妥協できます。お風呂は露天がちょっと掃除忘れたのかなって思いましたけど・・この料金で泊らせて頂かせてもらえる、努力してるんだなと思いました。\n夕食の係の人がとても感じよく孫にも優しく声かけて頂きとても感じが良かったです。・・\n\nチェックアウト後のお風呂利用が出来ませんので、海は当日に入った方が良いと思います。ビーチに個室シャワーがなくて・・孫の水着の中の砂がきれいに落ちなく、近くの浴場は3時からで空いてなく困りました。",
-                "languageCode": "ja"
-            },
-            "authorAttribution": {
-                "displayName": "小嶋惠美子",
-                "uri": "https://www.google.com/maps/contrib/101813083368929915623/reviews",
-                "photoUri": "https://lh3.googleusercontent.com/a/ACg8ocK_rYvWi8cf-LsgxRdP8AT1shLincDYtWvHmNGtPDgwchFsPA=s128-c0x00000000-cc-rp-mo"
-            },
-            "publishTime": "2024-08-17T02:16:51.543745Z"
-        },
-        {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/reviews/ChdDSUhNMG9nS0VJQ0FnSUNuNl92TThBRRAB",
-            "relativePublishTimeDescription": "1 週間前",
-            "rating": 1,
-            "text": {
-                "text": "今まで、宿泊したホテルの中でも、間違いなくワースト1です、\n部屋が臭すぎて、窒息するかと思いました\nあまりにヒドイ異臭と悪臭、息苦しく、具合が悪くなりました。不衛生、不潔、部屋に戻るのが、ストレスでしたので、ロビーで過ごしたり、外の空気をすいに行きました\n\n長年のタバコの匂いが壁に染み付き、窓も空かなく換気が出来なかったです。\nすっぱい匂いとタバコ、湿気が入り混ざった\n強烈な異臭\n\n恐らく、規模の割に人手不足で、掃除やサービスが全く行き届いてないのだと思います。\n半分以下に規模を縮小して隅々まで、掃除の行き届く清潔なホテルにした方がいいのでは\nお客様に不快感を与える客室であってはならない\n予約したことを後悔\n思い出したくないです\n全くオススメできないです",
-                "languageCode": "ja"
-            },
-            "originalText": {
-                "text": "今まで、宿泊したホテルの中でも、間違いなくワースト1です、\n部屋が臭すぎて、窒息するかと思いました\nあまりにヒドイ異臭と悪臭、息苦しく、具合が悪くなりました。不衛生、不潔、部屋に戻るのが、ストレスでしたので、ロビーで過ごしたり、外の空気をすいに行きました\n\n長年のタバコの匂いが壁に染み付き、窓も空かなく換気が出来なかったです。\nすっぱい匂いとタバコ、湿気が入り混ざった\n強烈な異臭\n\n恐らく、規模の割に人手不足で、掃除やサービスが全く行き届いてないのだと思います。\n半分以下に規模を縮小して隅々まで、掃除の行き届く清潔なホテルにした方がいいのでは\nお客様に不快感を与える客室であってはならない\n予約したことを後悔\n思い出したくないです\n全くオススメできないです",
-                "languageCode": "ja"
-            },
-            "authorAttribution": {
-                "displayName": "細ゆう",
-                "uri": "https://www.google.com/maps/contrib/107325285054393395909/reviews",
-                "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjWHN4COz_FlhYT-iq7RMeDI88nHTNCNyZlSuMkpjbR7FDYPkjq6=s128-c0x00000000-cc-rp-mo"
-            },
-            "publishTime": "2024-10-02T02:39:25.567525Z"
-        },
-        {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/reviews/ChZDSUhNMG9nS0VJQ0FnSUM3dnRqNk1REAE",
-            "relativePublishTimeDescription": "1 か月前",
-            "rating": 4,
-            "text": {
-                "text": "8月のハイシーズンに二泊三日で利用しました。総じて素晴らしいホテルでした。\n①料理が素晴らしい！懐石コースを利用しました一言で言うならバブル時代のご馳走です。事前に苦手なものを伝えておけば可能なレベルで対応してくれます。最上階の眺めも良かった。\n②お風呂が素晴らしい！三箇所あり地下の大浴場は広々です。露天風呂は狭めですが\n許容範囲です。\n③スタッフが素晴らしい！他の系列と比べて日本人スタッフが多い気がします。その為コミュ二ケーションも楽でした。\n④立地が素晴らしい！熱海駅から徒歩でも行けるレベルです。ビーチも近い！\n⑤値段が安い！ハイシーズンで1人1.5万でこのサービスは破格です。設備がボロいという人は値段を上げて他の所に行けばいいかと思います。個人的には同系列の大野屋より好き。",
-                "languageCode": "ja"
-            },
-            "originalText": {
-                "text": "8月のハイシーズンに二泊三日で利用しました。総じて素晴らしいホテルでした。\n①料理が素晴らしい！懐石コースを利用しました一言で言うならバブル時代のご馳走です。事前に苦手なものを伝えておけば可能なレベルで対応してくれます。最上階の眺めも良かった。\n②お風呂が素晴らしい！三箇所あり地下の大浴場は広々です。露天風呂は狭めですが\n許容範囲です。\n③スタッフが素晴らしい！他の系列と比べて日本人スタッフが多い気がします。その為コミュ二ケーションも楽でした。\n④立地が素晴らしい！熱海駅から徒歩でも行けるレベルです。ビーチも近い！\n⑤値段が安い！ハイシーズンで1人1.5万でこのサービスは破格です。設備がボロいという人は値段を上げて他の所に行けばいいかと思います。個人的には同系列の大野屋より好き。",
-                "languageCode": "ja"
-            },
-            "authorAttribution": {
-                "displayName": "小柳津哲",
-                "uri": "https://www.google.com/maps/contrib/101466108265405377213/reviews",
-                "photoUri": "https://lh3.googleusercontent.com/a/ACg8ocKq7YuQB-44R7w5iVtwpJyyOsV-92T7FzuAwBmnUj_r7KuAjw=s128-c0x00000000-cc-rp-mo"
-            },
-            "publishTime": "2024-08-16T12:23:16.905255Z"
-        },
-        {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/reviews/ChZDSUhNMG9nS0VJQ0FnSURIdnRDc2N3EAE",
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/reviews/ChZDSUhNMG9nS0VJQ0FnSUNfc29ESVRBEAE",
             "relativePublishTimeDescription": "3 週間前",
-            "rating": 3,
+            "rating": 4,
             "text": {
-                "text": "１泊2食付きのプランでの予約。\n部屋は全体的に設備が古め\n客室も古め。\n食事は\n1番遅い時間の18時50分〜20時20分の時間に行きました。\n会場は広く豪華な感じ。\n中央にいろんな食べ物があり、再度に鉄板焼き、中華、ソフトドリンク、アルコールの飲み放題もある。\n\nお寿司、揚げ物、麺、中華、洋食、和食、デザートと幅広い内容でした。\n\nホテルのバイキングだからそこそこは美味しいと思っていました。\n決して美味しくないわけではないが、別段これと言って、、、と言うものばかり。\nなんか勿体無い感じでした。\n1番美味しかったのがミルク棒アイス。\n\nでもお腹いっぱいいただきました。\nご馳走様でした。",
+                "text": "2025年1月日曜日 1泊\nJR藤沢駅から近く予約もとりやすく、旅行移動や観光の宿泊拠点として便利です\n江ノ電、小田急線、JR線と ３社鉄道が利用できて、江ノ電に乗車したら江の島、湘南海岸、スラムダンクで有名な 鎌倉高校前駅、鎌倉を 湘南海岸を見ながら、移動できる、最高の宿で利便性の高いロケーションにあります。\nホテルのフロントスタッフの応対は、ホスピタリティーが高く満足のいく滞在ができました。\nエレベーターからフロント、そして客室まで 清潔で 新しい設備で 快適な滞在がてきました\n宿泊費用も高額で無く合理的な価格でした\nホテル周辺には、多くの飲食店や レストランが多くあり、様々な食事の希望に対応できると思います\nオススメの宿です",
                 "languageCode": "ja"
             },
             "originalText": {
-                "text": "１泊2食付きのプランでの予約。\n部屋は全体的に設備が古め\n客室も古め。\n食事は\n1番遅い時間の18時50分〜20時20分の時間に行きました。\n会場は広く豪華な感じ。\n中央にいろんな食べ物があり、再度に鉄板焼き、中華、ソフトドリンク、アルコールの飲み放題もある。\n\nお寿司、揚げ物、麺、中華、洋食、和食、デザートと幅広い内容でした。\n\nホテルのバイキングだからそこそこは美味しいと思っていました。\n決して美味しくないわけではないが、別段これと言って、、、と言うものばかり。\nなんか勿体無い感じでした。\n1番美味しかったのがミルク棒アイス。\n\nでもお腹いっぱいいただきました。\nご馳走様でした。",
+                "text": "2025年1月日曜日 1泊\nJR藤沢駅から近く予約もとりやすく、旅行移動や観光の宿泊拠点として便利です\n江ノ電、小田急線、JR線と ３社鉄道が利用できて、江ノ電に乗車したら江の島、湘南海岸、スラムダンクで有名な 鎌倉高校前駅、鎌倉を 湘南海岸を見ながら、移動できる、最高の宿で利便性の高いロケーションにあります。\nホテルのフロントスタッフの応対は、ホスピタリティーが高く満足のいく滞在ができました。\nエレベーターからフロント、そして客室まで 清潔で 新しい設備で 快適な滞在がてきました\n宿泊費用も高額で無く合理的な価格でした\nホテル周辺には、多くの飲食店や レストランが多くあり、様々な食事の希望に対応できると思います\nオススメの宿です",
                 "languageCode": "ja"
             },
             "authorAttribution": {
-                "displayName": "のぱぱ",
-                "uri": "https://www.google.com/maps/contrib/107077396757454998535/reviews",
-                "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjW1ibnSPK1PXLBl7MYrq1wcYb0o8wprWPe84SlItsIqgRhVuQRWxA=s128-c0x00000000-cc-rp-mo-ba5"
+                "displayName": "sky nayuda",
+                "uri": "https://www.google.com/maps/contrib/110608961575392846033/reviews",
+                "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjW9ReUp8ynNVDABg1Qy6vH69oXZG7LV-_Po9xZsvLOcSdpoE2Kb=s128-c0x00000000-cc-rp-mo-ba6"
             },
-            "publishTime": "2024-09-16T12:22:23.149646Z"
+            "publishTime": "2025-01-14T16:54:13.517194Z",
+            "flagContentUri": "https://www.google.com/local/review/rap/report?postId=ChZDSUhNMG9nS0VJQ0FnSUNfc29ESVRBEAE&d=17924085&t=1",
+            "googleMapsUri": "https://www.google.com/maps/reviews/data=!4m6!14m5!1m4!2m3!1sChZDSUhNMG9nS0VJQ0FnSUNfc29ESVRBEAE!2m1!1s0x60184fe4201aafff:0x542822cda932486d"
+        },
+        {
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/reviews/ChdDSUhNMG9nS0VJQ0FnSURfNmNtYTJ3RRAB",
+            "relativePublishTimeDescription": "1 週間前",
+            "rating": 5,
+            "text": {
+                "text": "仕事で利用しました。藤沢駅から徒歩2.3分でアクセスも良く、全室禁煙、ホテル内はとても清潔感があってフロントのスタッフさんも感じよかったです！帰りが遅かったのもあり大浴場は入れなかったので今度はプライベートでも利用したいです。ありがとうございました！",
+                "languageCode": "ja"
+            },
+            "originalText": {
+                "text": "仕事で利用しました。藤沢駅から徒歩2.3分でアクセスも良く、全室禁煙、ホテル内はとても清潔感があってフロントのスタッフさんも感じよかったです！帰りが遅かったのもあり大浴場は入れなかったので今度はプライベートでも利用したいです。ありがとうございました！",
+                "languageCode": "ja"
+            },
+            "authorAttribution": {
+                "displayName": "on mark",
+                "uri": "https://www.google.com/maps/contrib/106262912601777785432/reviews",
+                "photoUri": "https://lh3.googleusercontent.com/a/ACg8ocKoxdOL9YsJCgaMVTN1gijN_1ICf8I-ayXRoNr-GZp2wdnGkg=s128-c0x00000000-cc-rp-mo"
+            },
+            "publishTime": "2025-01-25T08:50:09.113131Z",
+            "flagContentUri": "https://www.google.com/local/review/rap/report?postId=ChdDSUhNMG9nS0VJQ0FnSURfNmNtYTJ3RRAB&d=17924085&t=1",
+            "googleMapsUri": "https://www.google.com/maps/reviews/data=!4m6!14m5!1m4!2m3!1sChdDSUhNMG9nS0VJQ0FnSURfNmNtYTJ3RRAB!2m1!1s0x60184fe4201aafff:0x542822cda932486d"
+        },
+        {
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/reviews/ChZDSUhNMG9nS0VJQ0FnSUN2X2V2SklREAE",
+            "relativePublishTimeDescription": "1 か月前",
+            "rating": 3,
+            "text": {
+                "text": "お部屋は綺麗でコンビニも下にありよかったです。\nただ、私は朝食をとても楽しみにしておりましたが、チェックイン時には何も説明がなく、夜ふっと何時までかと調べようにもお部屋に説明もなく、ネットで調べたところ10時とあったので、9:40頃に行ったら既にclose……\nラストオーダーが9:30とのこと。\nプランに付けているくらいなら、チェックイン時に説明して欲しかったし、とても残念。\nこのホテルを選んだ意味がありませんでしたね。",
+                "languageCode": "ja"
+            },
+            "originalText": {
+                "text": "お部屋は綺麗でコンビニも下にありよかったです。\nただ、私は朝食をとても楽しみにしておりましたが、チェックイン時には何も説明がなく、夜ふっと何時までかと調べようにもお部屋に説明もなく、ネットで調べたところ10時とあったので、9:40頃に行ったら既にclose……\nラストオーダーが9:30とのこと。\nプランに付けているくらいなら、チェックイン時に説明して欲しかったし、とても残念。\nこのホテルを選んだ意味がありませんでしたね。",
+                "languageCode": "ja"
+            },
+            "authorAttribution": {
+                "displayName": "M .K",
+                "uri": "https://www.google.com/maps/contrib/106004459460835504878/reviews",
+                "photoUri": "https://lh3.googleusercontent.com/a/ACg8ocKqZyca0wv3BB74zpltK01q2XuS4ZSlZRrBleBAkGfkqoeOmw=s128-c0x00000000-cc-rp-mo"
+            },
+            "publishTime": "2024-12-14T00:55:28.926393Z",
+            "flagContentUri": "https://www.google.com/local/review/rap/report?postId=ChZDSUhNMG9nS0VJQ0FnSUN2X2V2SklREAE&d=17924085&t=1",
+            "googleMapsUri": "https://www.google.com/maps/reviews/data=!4m6!14m5!1m4!2m3!1sChZDSUhNMG9nS0VJQ0FnSUN2X2V2SklREAE!2m1!1s0x60184fe4201aafff:0x542822cda932486d"
+        },
+        {
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/reviews/ChZDSUhNMG9nS0VJQ0FnSUNIa0liSUl3EAE",
+            "relativePublishTimeDescription": "5 か月前",
+            "rating": 3,
+            "text": {
+                "text": "投稿が遅くなりましたが、今年の3月に家族で泊まりました。\n藤沢駅南口から近く、同じビル内にコンビニ、ファミレスがある為とても便利。\n\n建物自体は新しいのですが、バスルーム独特の匂いが少し気になりました。\n\n朝ごはんはあまり利用されている方がおらず、でも種類も多く、大変満足でした。\n\nよい滞在になったと思います。ありがとうございました。",
+                "languageCode": "ja"
+            },
+            "originalText": {
+                "text": "投稿が遅くなりましたが、今年の3月に家族で泊まりました。\n藤沢駅南口から近く、同じビル内にコンビニ、ファミレスがある為とても便利。\n\n建物自体は新しいのですが、バスルーム独特の匂いが少し気になりました。\n\n朝ごはんはあまり利用されている方がおらず、でも種類も多く、大変満足でした。\n\nよい滞在になったと思います。ありがとうございました。",
+                "languageCode": "ja"
+            },
+            "authorAttribution": {
+                "displayName": "HitoMi S",
+                "uri": "https://www.google.com/maps/contrib/104525277289965346791/reviews",
+                "photoUri": "https://lh3.googleusercontent.com/a/ACg8ocLdODokcRO-0hbaAkz-g2ljjDKkl5rOEdwva2YtmOHtzuPv7N8=s128-c0x00000000-cc-rp-mo"
+            },
+            "publishTime": "2024-08-31T01:38:41.040664Z",
+            "flagContentUri": "https://www.google.com/local/review/rap/report?postId=ChZDSUhNMG9nS0VJQ0FnSUNIa0liSUl3EAE&d=17924085&t=1",
+            "googleMapsUri": "https://www.google.com/maps/reviews/data=!4m6!14m5!1m4!2m3!1sChZDSUhNMG9nS0VJQ0FnSUNIa0liSUl3EAE!2m1!1s0x60184fe4201aafff:0x542822cda932486d"
         }
     ],
     "photos": [
         {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/photos/AdCG2DO64BrQrimZfS6rr82UnWVSzrruGnUMOCNNYmV5vQ2-M78j2Ta-uEXpJ7GYxf5BCQfaqVpXtehADqSiTwTl5LF6cUUwBzdaQcBB2f5srtv88uzqX7UdUvmeBAmbrOy9FQf3P_ABxtG94_9D_jT2slAtvSbupY_58CEt",
-            "widthPx": 1120,
-            "heightPx": 840,
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/photos/AVzFdbmCWXihntPQErrlftOrDnLXK-gOoc2ftwo9LNWiHBfplkp59UVo0QRWXCO-cAOGnJBHlnIqAcVa5tMVaQNQgcdcjIxvXxO1B5bSeCECRHx-vQqS1z71YIPm1PGGaayEM2hjH5QODPxHyipBFNENFOs8DLszlgNuwKzm",
+            "widthPx": 3112,
+            "heightPx": 3438,
             "authorAttributions": [
                 {
-                    "displayName": "熱海ニューフジヤホテル",
-                    "uri": "https://maps.google.com/maps/contrib/102384941690881840125",
-                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXZ9pR3nDYgQZ-npJ8J0GaYGg-Mb5GkIoyivDQZnm3tscMdrhE=s100-p-k-no-mo"
+                    "displayName": "スマイルホテル湘南藤沢",
+                    "uri": "https://maps.google.com/maps/contrib/114530942615905748163",
+                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXE2KrPLj3i3R241SpgWwSjoebXQ11CXOfaBhY-15nO0g9Bs0I=s100-p-k-no-mo"
                 }
-            ]
+            ],
+            "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sAF1QipPhc5BB6OLRBof98YjWLQ2-KaYGD_v4LbONtBwK&hl=ja",
+            "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sAF1QipPhc5BB6OLRBof98YjWLQ2-KaYGD_v4LbONtBwK!2e10!4m2!3m1!1s0x60184fe4201aafff:0x542822cda932486d"
         },
         {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/photos/AdCG2DMifNsbmoOJRDAQD926ZxKEVSl_k0CvaQ1yM1UxfsX0m9PeSlgwtRwR0fjZD-aRDzauAyz6oMTm65WGNK1inF9sxA8CWZivdrtv8P0CQ-KKDhj55yn56DPAQeea_pyyJT0yUKhFpL7bEFsm1abjr86Ub1w_wJuWnDFe",
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/photos/AVzFdbliOlV-JM7gDjjZiB6kxyvQxintnJQaJWMpc1tQ0vHFUbwn-t7g2CHuNn2ALrd6kHfnhfxvrnyyHJamjIcmwPt-tfg6QRPFVXZu-fQdIpISk2fzaCW2w46FdZHznbF0wRb-YmEDbLT5wEodynmeidJociHsbzQLf1fD",
+            "widthPx": 3200,
+            "heightPx": 2400,
+            "authorAttributions": [
+                {
+                    "displayName": "スマイルホテル湘南藤沢",
+                    "uri": "https://maps.google.com/maps/contrib/114530942615905748163",
+                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXE2KrPLj3i3R241SpgWwSjoebXQ11CXOfaBhY-15nO0g9Bs0I=s100-p-k-no-mo"
+                }
+            ],
+            "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sAF1QipOONfkbIwDAcDRRF-2q9xMGaOzNaUMQy84gGhXk&hl=ja",
+            "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sAF1QipOONfkbIwDAcDRRF-2q9xMGaOzNaUMQy84gGhXk!2e10!4m2!3m1!1s0x60184fe4201aafff:0x542822cda932486d"
+        },
+        {
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/photos/AVzFdbmWLcZdkEt26wUnATB47Dzpn7F4Ys8JEyCFYlscwD2kivqbd9BBMtM_Zx8kBfrzWAukEX_ez9lvACy7Tgbeqa4-QInttAf6hFY5pWBKHrEZY0ftR4qAqmt6o5LALWG3W1WmSO08yOvw2oCpwN6pdo5Pp_IcjGWXcnxL",
+            "widthPx": 4800,
+            "heightPx": 3200,
+            "authorAttributions": [
+                {
+                    "displayName": "スマイルホテル湘南藤沢",
+                    "uri": "https://maps.google.com/maps/contrib/114530942615905748163",
+                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXE2KrPLj3i3R241SpgWwSjoebXQ11CXOfaBhY-15nO0g9Bs0I=s100-p-k-no-mo"
+                }
+            ],
+            "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sAF1QipPpPsncebfGCrfmCARyOf28EugaFIAV_yl4FyUO&hl=ja",
+            "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sAF1QipPpPsncebfGCrfmCARyOf28EugaFIAV_yl4FyUO!2e10!4m2!3m1!1s0x60184fe4201aafff:0x542822cda932486d"
+        },
+        {
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/photos/AVzFdbklLvhEXMU_z2xfoC_ihlRdDqAB2w5dznJf-Jo1qzFwlvmRGMu3PLyUIktPwzQqhESNZaM8zboLoUG9Anbxt6B9SO_hzATCKn6gPEyoZWahBBQntJrV_TLtIptTDOf-x6z1HB__vpLQMmuNs5Z4vO3_AQb4GUWmobOi",
+            "widthPx": 3200,
+            "heightPx": 2400,
+            "authorAttributions": [
+                {
+                    "displayName": "スマイルホテル湘南藤沢",
+                    "uri": "https://maps.google.com/maps/contrib/114530942615905748163",
+                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXE2KrPLj3i3R241SpgWwSjoebXQ11CXOfaBhY-15nO0g9Bs0I=s100-p-k-no-mo"
+                }
+            ],
+            "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sAF1QipNl9Fr-tAHUloW0l-w7iXIGGekSbGo2KY104dOD&hl=ja",
+            "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sAF1QipNl9Fr-tAHUloW0l-w7iXIGGekSbGo2KY104dOD!2e10!4m2!3m1!1s0x60184fe4201aafff:0x542822cda932486d"
+        },
+        {
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/photos/AVzFdbkp2lQfzav1vNaLNormI_L_E22HGFk7L3rnTKPhrCCjqmKwE--Yrbt-e9PM0ZXylWugbAk8XUnTD3XReOXrjuUoxBtqvamaObtuELeufyxFXC9fzwA4SfFIPNeiZx-bJuYF4k9oEuCn2-NMUotGAxmcBQgIAB891nMZ",
             "widthPx": 1200,
             "heightPx": 900,
             "authorAttributions": [
                 {
-                    "displayName": "熱海ニューフジヤホテル",
-                    "uri": "https://maps.google.com/maps/contrib/102384941690881840125",
-                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXZ9pR3nDYgQZ-npJ8J0GaYGg-Mb5GkIoyivDQZnm3tscMdrhE=s100-p-k-no-mo"
+                    "displayName": "スマイルホテル湘南藤沢",
+                    "uri": "https://maps.google.com/maps/contrib/114530942615905748163",
+                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXE2KrPLj3i3R241SpgWwSjoebXQ11CXOfaBhY-15nO0g9Bs0I=s100-p-k-no-mo"
                 }
-            ]
+            ],
+            "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sAF1QipP_qjyW6pHdaelr54dm_8WWHrVvwPyuxOUNBHv-&hl=ja",
+            "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sAF1QipP_qjyW6pHdaelr54dm_8WWHrVvwPyuxOUNBHv-!2e10!4m2!3m1!1s0x60184fe4201aafff:0x542822cda932486d"
         },
         {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/photos/AdCG2DME0x5NEvysnc_oQas7oYS7rNz8LYkhXmnNwwCKprjHUMuktIs1AcjsI0izFBajAEVYBcb-N9YrbNN2kPYGMwfzih9-nTqa4Thn2o2ZBh7i725lCTjIiZp2Hwr9tRbrTyR1Xd7W1AZE_PKt1hZUJahMb1QSt7bXZKf6",
-            "widthPx": 4624,
-            "heightPx": 3468,
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/photos/AVzFdbkEpaQTENa0mfp_it_Fg9flyHxCnFHxlsq1x3DJVgW7UaVGPBwbNcasQdpqvGb6HNFnWibNvddbJF2xrz8k24VX8_107Lozzypn0gzC4m61HdA5CXhEu59lM-_2PwxppAj27oUuym1vvuIMnOF2dyr2Sy22Uwp9KDjD",
+            "widthPx": 4800,
+            "heightPx": 3200,
             "authorAttributions": [
                 {
-                    "displayName": "shin shino",
-                    "uri": "https://maps.google.com/maps/contrib/115237746952389623310",
-                    "photoUri": "https://lh3.googleusercontent.com/a/ACg8ocItH8HZhEoJoGwZW0OFwIoouqjX1cPXJIiEJerQbjhLyER4AA=s100-p-k-no-mo"
+                    "displayName": "スマイルホテル湘南藤沢",
+                    "uri": "https://maps.google.com/maps/contrib/114530942615905748163",
+                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXE2KrPLj3i3R241SpgWwSjoebXQ11CXOfaBhY-15nO0g9Bs0I=s100-p-k-no-mo"
                 }
-            ]
+            ],
+            "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sAF1QipMF4r7HbTN_4UR8B7yDEmywGkcFOcNSaNZ9IB_Y&hl=ja",
+            "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sAF1QipMF4r7HbTN_4UR8B7yDEmywGkcFOcNSaNZ9IB_Y!2e10!4m2!3m1!1s0x60184fe4201aafff:0x542822cda932486d"
         },
         {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/photos/AdCG2DOojrm9ipWlREtXnwnsAjILQP3GEeAPeT2CbXUADcvlw8Xsv0mP7DLo0HuZfoYrLShX63L9lTTvtgmRtYUXi4-cWm4WlVtAsGbtp4LPGL1BfmQbBJdBCfiVHPlUS1B0lmhMzebxYuXhsf1nkbnxK1PoZd0syYjQJe0-",
-            "widthPx": 2048,
-            "heightPx": 1363,
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/photos/AVzFdbmbLaWZEjp15miXTLVo4fOwkuV__qURCi3QJjbdqr2OyBt4hEe4OBB521uJaZDbLEXCxyx5r8KFtjpyxkN_aCwhHD3NR4sXs64A8b5lQzN24fl-OCxWR8KWuo8Y5ADINTUigQHtZ9AbL3TqIYquMPqP4acH-CLsK6t5",
+            "widthPx": 4800,
+            "heightPx": 3200,
             "authorAttributions": [
                 {
-                    "displayName": "そうめん。",
-                    "uri": "https://maps.google.com/maps/contrib/102824686437177557608",
-                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjUuZ_T2mDjNP9WHKb2PGBXPqQM7lC4bGAghRK0DHbtcZvVMKHqn=s100-p-k-no-mo"
+                    "displayName": "スマイルホテル湘南藤沢",
+                    "uri": "https://maps.google.com/maps/contrib/114530942615905748163",
+                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXE2KrPLj3i3R241SpgWwSjoebXQ11CXOfaBhY-15nO0g9Bs0I=s100-p-k-no-mo"
                 }
-            ]
+            ],
+            "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sAF1QipOVo4SkTI8JoHnki5UKqg7teqCA9VzPfrGKj0mG&hl=ja",
+            "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sAF1QipOVo4SkTI8JoHnki5UKqg7teqCA9VzPfrGKj0mG!2e10!4m2!3m1!1s0x60184fe4201aafff:0x542822cda932486d"
         },
         {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/photos/AdCG2DPpFQ21er7G53q74jsKKw6zRAOCQY7bSiu9WtInsZgmRq57zE8hOu_5CxwQam-qMqfhIX16_j75apetQJkjPyxSt4sAJpqqaolr3_YfTew1k29ZE_HmLkmjv8rICPwOYzi8fW7PzQfC9OYHBSKI016YWfTzUzmFD0rS",
-            "widthPx": 1200,
-            "heightPx": 900,
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/photos/AVzFdbl4PYZXRjX1kS7yxMHdLAjXnJizwXvLuqxip0v6dV2twm5-GBaiKL7tokBQZsEPhwEWaLqtXfVmkbsjjy_9P5T8KZ-Zj8Ses3m4VZTZ0rUrm7W67A0i_8vYDKRzIoqvJO3Ztrc6t5yc5n5TGx4ViyHDcaJQDzOniQDh",
+            "widthPx": 4800,
+            "heightPx": 3200,
             "authorAttributions": [
                 {
-                    "displayName": "熱海ニューフジヤホテル",
-                    "uri": "https://maps.google.com/maps/contrib/102384941690881840125",
-                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXZ9pR3nDYgQZ-npJ8J0GaYGg-Mb5GkIoyivDQZnm3tscMdrhE=s100-p-k-no-mo"
+                    "displayName": "スマイルホテル湘南藤沢",
+                    "uri": "https://maps.google.com/maps/contrib/114530942615905748163",
+                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXE2KrPLj3i3R241SpgWwSjoebXQ11CXOfaBhY-15nO0g9Bs0I=s100-p-k-no-mo"
                 }
-            ]
+            ],
+            "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sAF1QipMW2mH_7CESaNXD1Z8m9YbhsHiv9gYKCrFrDfpk&hl=ja",
+            "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sAF1QipMW2mH_7CESaNXD1Z8m9YbhsHiv9gYKCrFrDfpk!2e10!4m2!3m1!1s0x60184fe4201aafff:0x542822cda932486d"
         },
         {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/photos/AdCG2DN-ZSAArlHw4MGHZRnpxYmXQ6iOwwXmT_tzmxtvEkWrfXC2NqjWz5fj28QLIPWOi9qIuH40YZRSK62-3Zj1bHrrW0m7UlV6bp7kWKHwsmMQcZqseT9qOCSgNK78rPRA69Gt6BdZV8LLT1e_ifOcUE6hgwTdNhMwLDwB",
-            "widthPx": 1200,
-            "heightPx": 900,
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/photos/AVzFdbn-xSODBcmwefTJ3KXxk-z5Pk101ZXp-rIl0hzp6tx4F_3ezfq53eyZdZNE33tJJpM8Ob76fQmSJ712jpWXQNIzzEnrE9NviaOsZKXLche_qCXYoVvVh80npZ5NzckDMGbui6-o6Mxr-AjqxyKPHvrVZAvO_qExcbgA",
+            "widthPx": 3200,
+            "heightPx": 4800,
             "authorAttributions": [
                 {
-                    "displayName": "熱海ニューフジヤホテル",
-                    "uri": "https://maps.google.com/maps/contrib/102384941690881840125",
-                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXZ9pR3nDYgQZ-npJ8J0GaYGg-Mb5GkIoyivDQZnm3tscMdrhE=s100-p-k-no-mo"
+                    "displayName": "スマイルホテル湘南藤沢",
+                    "uri": "https://maps.google.com/maps/contrib/114530942615905748163",
+                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXE2KrPLj3i3R241SpgWwSjoebXQ11CXOfaBhY-15nO0g9Bs0I=s100-p-k-no-mo"
                 }
-            ]
+            ],
+            "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sAF1QipNor2SfCUNnWDhoctRoThFeRnblpOataPsAXGT2&hl=ja",
+            "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sAF1QipNor2SfCUNnWDhoctRoThFeRnblpOataPsAXGT2!2e10!4m2!3m1!1s0x60184fe4201aafff:0x542822cda932486d"
         },
         {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/photos/AdCG2DO4hPB9um378QuQ9f6-SC13rzYHBdRinfg-xQMwhuWsU5w6qlvQ0p74_5TauKQRQwdJ8oMqoACYiYcqtuehSbZ0ZUa0LeTE-Af03V_eO-1diB4Hq4iJ4L16zhfkSGhzfTFZ1QaPuiMwdJV2hd6ujJHXYdPBxS8Ymvke",
-            "widthPx": 1200,
-            "heightPx": 900,
+            "name": "places/ChIJ_68aIORPGGARbUgyqc0iKFQ/photos/AVzFdbnQ01M6htuyyG97eA5aw_McOW9jTh88AkEnYkN-wNemZeCjJij1z7m9Nf8bTflzWpIO97-wGUcIjJ48pASulcY4pLGsN4ZN3z0cXUk9GlaXTshhq7NlP5S2kVGJtry-HbiGoMaJ7KdkYD8fb4KrlG_J_DDlBFHR58_v",
+            "widthPx": 4800,
+            "heightPx": 3200,
             "authorAttributions": [
                 {
-                    "displayName": "熱海ニューフジヤホテル",
-                    "uri": "https://maps.google.com/maps/contrib/102384941690881840125",
-                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXZ9pR3nDYgQZ-npJ8J0GaYGg-Mb5GkIoyivDQZnm3tscMdrhE=s100-p-k-no-mo"
+                    "displayName": "スマイルホテル湘南藤沢",
+                    "uri": "https://maps.google.com/maps/contrib/114530942615905748163",
+                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXE2KrPLj3i3R241SpgWwSjoebXQ11CXOfaBhY-15nO0g9Bs0I=s100-p-k-no-mo"
                 }
-            ]
-        },
-        {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/photos/AdCG2DNA78MyGwU0Yx4EbI4D0WT5SKOYETp18Sivaan2bSV9GG9uvEEMTxKGQqxU7EpCf6h6g0_juip7EH7SW90zO6m0Y_aJKqQb9guBYnJmoC8ZtFRvoL7Ghx-n7EXzSA2BvPQ-SuKXvdLUgdRogyW8tXaIIqe_mb3yWHYw",
-            "widthPx": 1200,
-            "heightPx": 900,
-            "authorAttributions": [
-                {
-                    "displayName": "熱海ニューフジヤホテル",
-                    "uri": "https://maps.google.com/maps/contrib/102384941690881840125",
-                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXZ9pR3nDYgQZ-npJ8J0GaYGg-Mb5GkIoyivDQZnm3tscMdrhE=s100-p-k-no-mo"
-                }
-            ]
-        },
-        {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/photos/AdCG2DNxlBz6F5RGyRYeUMUShvPlrTj7hQf6h0I4dos4qTX3ZGOoUjZpZ83uMujMD7W12Dh1agB5UTZn-prLic5rnONhcff-Ogk6zCOyJkyyLBTzXShtXODBsSpvy1shAB7jAKd3H_eEZB9jS-vkx4dgCPNLW2ZPeQtPtoIZ",
-            "widthPx": 1200,
-            "heightPx": 900,
-            "authorAttributions": [
-                {
-                    "displayName": "熱海ニューフジヤホテル",
-                    "uri": "https://maps.google.com/maps/contrib/102384941690881840125",
-                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXZ9pR3nDYgQZ-npJ8J0GaYGg-Mb5GkIoyivDQZnm3tscMdrhE=s100-p-k-no-mo"
-                }
-            ]
-        },
-        {
-            "name": "places/ChIJv5pOEGa-GWARM1DJ3se3qGg/photos/AdCG2DP1q1SV_ZyThdOtnmgWVWQ2qMelhX227jFy60XM2LCSDGtC4VXyGevGQr4e-gUMTiHRE5rOrZ57huQD0SpV847FUj4SU9AV9POj25g-fEMco6PDnWDDkci7XAkegk6mUGrGYZ-nxuNNTP_oGD1OORtioSEecN1fLybL",
-            "widthPx": 1200,
-            "heightPx": 900,
-            "authorAttributions": [
-                {
-                    "displayName": "熱海ニューフジヤホテル",
-                    "uri": "https://maps.google.com/maps/contrib/102384941690881840125",
-                    "photoUri": "https://lh3.googleusercontent.com/a-/ALV-UjXZ9pR3nDYgQZ-npJ8J0GaYGg-Mb5GkIoyivDQZnm3tscMdrhE=s100-p-k-no-mo"
-                }
-            ]
+            ],
+            "flagContentUri": "https://www.google.com/local/imagery/report/?cb_client=maps_api_places.places_api&image_key=!1e10!2sAF1QipNgvQ6PnPdKkRH6DYyU7PUMASJ91GcWXW_-P6do&hl=ja",
+            "googleMapsUri": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sAF1QipNgvQ6PnPdKkRH6DYyU7PUMASJ91GcWXW_-P6do!2e10!4m2!3m1!1s0x60184fe4201aafff:0x542822cda932486d"
         }
     ],
-    "goodForChildren": true,
     "paymentOptions": {
-        "acceptsCreditCards": true,
         "acceptsCashOnly": false
     },
     "accessibilityOptions": {
-        "wheelchairAccessibleParking": true,
         "wheelchairAccessibleEntrance": true
+    },
+    "addressDescriptor": {
+        "landmarks": [
+            {
+                "name": "places/ChIJTxpptstPGGAR9w9eD0RYLIo",
+                "placeId": "ChIJTxpptstPGGAR9w9eD0RYLIo",
+                "displayName": {
+                    "text": "藤沢市役所",
+                    "languageCode": "ja"
+                },
+                "types": [
+                    "city_hall",
+                    "establishment",
+                    "local_government_office",
+                    "point_of_interest"
+                ],
+                "straightLineDistanceMeters": 224.94228,
+                "travelDistanceMeters": 692.50256
+            },
+            {
+                "name": "places/ChIJj5FleZVPGGARhb6fZ0XzLBk",
+                "placeId": "ChIJj5FleZVPGGARhb6fZ0XzLBk",
+                "displayName": {
+                    "text": "しゃぶ葉 藤沢駅南口店",
+                    "languageCode": "ja"
+                },
+                "types": [
+                    "establishment",
+                    "food",
+                    "meal_takeaway",
+                    "point_of_interest",
+                    "restaurant"
+                ],
+                "spatialRelationship": "BESIDE",
+                "straightLineDistanceMeters": 18.735909,
+                "travelDistanceMeters": 32.641357
+            },
+            {
+                "name": "places/ChIJDVAWRspPGGAR08Eqv1Zo0io",
+                "placeId": "ChIJDVAWRspPGGAR08Eqv1Zo0io",
+                "displayName": {
+                    "text": "オーケー 藤沢店",
+                    "languageCode": "ja"
+                },
+                "types": [
+                    "establishment",
+                    "food",
+                    "grocery_or_supermarket",
+                    "point_of_interest",
+                    "store",
+                    "supermarket"
+                ],
+                "straightLineDistanceMeters": 155.03842,
+                "travelDistanceMeters": 166.83401
+            },
+            {
+                "name": "places/ChIJz0uk-spPGGARppv6XW_A6Tc",
+                "placeId": "ChIJz0uk-spPGGARppv6XW_A6Tc",
+                "displayName": {
+                    "text": "ドン・キホーテ 藤沢駅南口店",
+                    "languageCode": "ja"
+                },
+                "types": [
+                    "establishment",
+                    "food",
+                    "furniture_store",
+                    "home_goods_store",
+                    "point_of_interest",
+                    "store"
+                ],
+                "spatialRelationship": "DOWN_THE_ROAD",
+                "straightLineDistanceMeters": 76.15695,
+                "travelDistanceMeters": 89.32463
+            },
+            {
+                "name": "places/ChIJDYb41cpPGGARH3Shd9rGtBg",
+                "placeId": "ChIJDYb41cpPGGARH3Shd9rGtBg",
+                "displayName": {
+                    "text": "ODAKYU 湘南 GATE",
+                    "languageCode": "ja"
+                },
+                "types": [
+                    "department_store",
+                    "establishment",
+                    "point_of_interest",
+                    "shopping_mall",
+                    "store"
+                ],
+                "straightLineDistanceMeters": 198.10974,
+                "travelDistanceMeters": 206.60936
+            }
+        ],
+        "areas": [
+            {
+                "name": "places/ChIJfVOP9MpPGGARDx80g8K-Zw8",
+                "placeId": "ChIJfVOP9MpPGGARDx80g8K-Zw8",
+                "displayName": {
+                    "text": "１９",
+                    "languageCode": "ja"
+                },
+                "containment": "OUTSKIRTS"
+            },
+            {
+                "name": "places/ChIJn1GBYcpPGGARsf8ZfvmCe9s",
+                "placeId": "ChIJn1GBYcpPGGARsf8ZfvmCe9s",
+                "displayName": {
+                    "text": "南藤沢",
+                    "languageCode": "ja"
+                },
+                "containment": "OUTSKIRTS"
+            },
+            {
+                "name": "places/ChIJ1UnrlcpPGGARPOaS6j_dwdA",
+                "placeId": "ChIJ1UnrlcpPGGARPOaS6j_dwdA",
+                "displayName": {
+                    "text": "４",
+                    "languageCode": "ja"
+                },
+                "containment": "NEAR"
+            }
+        ]
+    },
+    "googleMapsLinks": {
+        "directionsUri": "https://www.google.com/maps/dir//''/data=!4m7!4m6!1m1!4e2!1m2!1m1!1s0x60184fe4201aafff:0x542822cda932486d!3e0",
+        "placeUri": "https://maps.google.com/?cid=6064135164956657773",
+        "writeAReviewUri": "https://www.google.com/maps/place//data=!4m3!3m2!1s0x60184fe4201aafff:0x542822cda932486d!12e1",
+        "reviewsUri": "https://www.google.com/maps/place//data=!4m4!3m3!1s0x60184fe4201aafff:0x542822cda932486d!9m1!1b1",
+        "photosUri": "https://www.google.com/maps/place//data=!4m3!3m2!1s0x60184fe4201aafff:0x542822cda932486d!10e5"
     }
 }
