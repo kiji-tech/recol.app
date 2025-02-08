@@ -117,7 +117,7 @@ const INCLUDED_TYPES: Record<MapCategory, string[]> = {
 
 // 取得するフィールド
 const FiledMaskValue =
-  'places.id,places.types,place .s.reviews,places.displayName,places.formattedAddress,places.rating,places.location,places.photos,places.websiteUri,places.editorialSummary,places.currentOpeningHours.openNow,places.currentOpeningHours.weekdayDescriptions';
+  'places.id,places.types,places.reviews,places.displayName,places.formattedAddress,places.rating,places.location,places.photos,places.websiteUri,places.editorialSummary,places.currentOpeningHours.openNow,places.currentOpeningHours.weekdayDescriptions';
 //   '*';
 
 async function searchId(placeId: string) {
@@ -140,6 +140,7 @@ async function searchNearby(
   category: MapCategory,
   radius?: number
 ) {
+  console.log({ latitude, longitude, category, radius });
   const response = await fetch(`${GOOGLE_MAPS_API_URL}:searchNearby`, {
     method: 'POST',
     headers: new Headers({
@@ -165,7 +166,7 @@ async function searchNearby(
     .then((response) => response.json())
     .catch((e) => console.log(e));
   if (response.error) {
-    console.error(response.error);
+    console.error(JSON.stringify(response));
   }
 
   return response.places;

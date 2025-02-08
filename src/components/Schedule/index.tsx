@@ -83,7 +83,12 @@ export default function TripCalendar({ plan }: Props): ReactNode {
         );
       })}
       {/* スケジュールアイテム（タスク）の表示 */}
-      <View className="absolute w-full h-full">{isLoading && <Loading />}</View>
+
+      {isLoading && (
+        <View className="absolute w-screen h-screen top-0 left-0">
+          <Loading />
+        </View>
+      )}
       {schedule.map((s) => (
         <ScheduleItem key={s.uid} item={s} onPress={handleSchedulePress} />
       ))}

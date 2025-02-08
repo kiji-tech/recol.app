@@ -107,7 +107,7 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
         <Text className="text-ellipsis">{place.editorialSummary?.text || ''}</Text>
 
         {/* AIレビュー */}
-        <Text className="text-xl font-semibold">AIレビュー要約</Text>
+        <Text className="text-xl font-semibold">AIレビュー要約({place.reviews.length}件)</Text>
         {isAiNavigation ? (
           <Text>{aiText}</Text>
         ) : (
