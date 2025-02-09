@@ -1,5 +1,5 @@
-import React, { useCallback, useImperativeHandle, useRef, useState } from 'react';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { forwardRef, useImperativeHandle } from 'react';
+import BottomSheet from '@gorhom/bottom-sheet';
 import { View } from 'react-native';
 import { Platform } from 'react-native';
 const isIOS = Platform.OS === 'ios';
@@ -8,24 +8,26 @@ type Props = {
   ref?: any;
   children: React.ReactNode;
 };
-export default function BottomSheetLayout({ ref, children }: Props) {
+const BottomSheetLayout = forwardRef(({ children }: Props, ref) => {
   const bottomSheetRef = React.useRef<BottomSheet>(null);
 
   if (ref) {
     useImperativeHandle(ref, () => ({
       snapToIndex: (index: number) => bottomSheetRef.current?.snapToIndex(index),
+      expand: () => bottomSheetRef.current?.expand(),
     }));
   }
 
   return (
     <BottomSheet
-      ref={ref}
+      enableOverDrag={false}
+      ref={bottomSheetRef}
       style={{
         borderRadius: 16,
         marginTop: 64,
         backgroundColor: 'black',
       }}
-      snapPoints={['20%', '50%', '90%']}
+      snapPoints={['20%', '50%']}
       enableDynamicSizing={true}
     >
       {children}
@@ -33,4 +35,6 @@ export default function BottomSheetLayout({ ref, children }: Props) {
       <View className={isIOS ? 'h-44' : 'h-16'}></View>
     </BottomSheet>
   );
-}
+});
+
+export default BottomSheetLayout;

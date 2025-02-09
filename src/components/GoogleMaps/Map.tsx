@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Place } from '@/src/entities/Place';
-import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import MapView, {
   Callout,
   MapMarker,
@@ -14,6 +14,7 @@ import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
 import { usePlan } from '@/src/contexts/PlanContext';
 import MapBottomSheet from './BottomSheet/MapBottomSheet';
 import { MapCategory } from '@/src/entities/MapCategory';
+import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 
 /**
  * GoogleMap Component
@@ -48,6 +49,8 @@ export default function Map({
   onBack = () => void 0,
 }: Props) {
   const markerRef: { [id: string]: MapMarker | null } = {};
+  const bottomSheetRef = useRef<BottomSheet | null>(null);
+  const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
   const { plan } = usePlan();
   const [places, setPlaces] = useState<Place[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -191,6 +194,20 @@ export default function Map({
     return places.filter((place) => !selectedPlaceList.some((p) => p.id === place.id));
   }, [places, selectedPlaceList]);
 
+  const calcScrollHeight = (selectedPlace: Place) => {
+    const PLACE_HEIGHT = 113;
+    const index = places.findIndex((place) => place.id === selectedPlace.id);
+    const selectedIndex = selectedPlaceList
+      ? selectedPlaceList.findIndex((place) => place.id === selectedPlace.id)
+      : -1;
+    console.log({ index, selectedIndex });
+    if (selectedIndex !== -1) {
+      setSelectedCategory('selected');
+      return selectedIndex * PLACE_HEIGHT;
+    }
+    return index * PLACE_HEIGHT;
+  };
+
   // === Effect ===
   useEffect(() => {
     if (isCoords) fetchLocation(isCoords.latitude, isCoords.longitude);
@@ -199,6 +216,10 @@ export default function Map({
   useEffect(() => {
     if (selectedPlace && markerRef[selectedPlace.id] != null) {
       markerRef[selectedPlace.id]?.showCallout();
+      bottomSheetRef.current?.expand({});
+      setTimeout(() => {
+        scrollRef.current?.scrollTo({ x: 0, y: calcScrollHeight(selectedPlace), animated: true });
+      }, 1000);
     }
   }, [selectedPlace]);
 
@@ -208,6 +229,7 @@ export default function Map({
     fetchLocation(isCoords.latitude, isCoords.longitude);
   }, [selectedCategory]);
 
+  // === Render ===
   return (
     <>
       <MapView
@@ -278,6 +300,7 @@ export default function Map({
       {places.length > 0 && (
         <MapBottomSheet
           placeList={places}
+          selectedPlace={selectedPlace}
           selectedPlaceList={selectedPlaceList || []}
           selectedCategory={selectedCategory}
           isSelected={isOnlySelected}
@@ -285,6 +308,8 @@ export default function Map({
           onRemove={onRemove}
           onSelectedPlace={handleSelectedPlace}
           onSelectedCategory={handleSelectedCategory}
+          bottomSheetRef={bottomSheetRef}
+          scrollRef={scrollRef}
         />
       )}
       {isLoading && <Loading />}

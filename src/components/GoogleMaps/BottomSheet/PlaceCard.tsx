@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { View, Image, Text, TouchableOpacity, Linking, Touchable } from 'react-native';
 import { Place, Review } from '../../../entities/Place';
 import { reviewAIAnalyze } from '../../../apis/OpenAI';
@@ -14,23 +14,24 @@ type Props = {
 };
 export default function PlaceCard({ place, selected = false, onSelect, onAdd, onRemove }: Props) {
   // ==== Member ====
-  const [isAiNavigation, setIsAiNavigation] = useState(false);
-  const [isAiText, setIsAiText] = useState('');
-
+  const ref = useRef<any>(null);
   // ==== Method ====
 
   const handleSelect = () => {
     if (place) onSelect(place);
+    console.log(ref.current.measureLayout);
+    // ref.current.topScroll({ behavior: 'smooth' });
   };
-
 
   // ==== Render ====
   if (!place) return null;
 
   return (
-    <TouchableOpacity onPress={handleSelect}>
-      <View className="w-full bg-light-background dark:bg-dark-background border-b border-light-border dark:border-dark-border p-4">
-        <View className="flex flex-row justify-start items-start gap-4">
+    <TouchableOpacity onPress={handleSelect} ref={ref}>
+      <View
+        className={`w-full ${selected ? 'bg-light-info dark:bg-dark-info' : 'bg-light-background dark:bg-dark-background'} border-b border-light-border dark:border-dark-border`}
+      >
+        <View className="flex flex-row justify-start items-start gap-4 h-32">
           {/* イメージ画像 */}
           <Image
             className={`w-32 h-32`}

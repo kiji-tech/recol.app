@@ -5,9 +5,11 @@ import MapBottomSheetBody from './MapBottomSheetBody';
 import { Place } from '@/src/entities/Place';
 import { MapCategory } from '@/src/entities/MapCategory';
 import PlaceDetail from './PlaceDetail';
+import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 
 type Props = {
   placeList: Place[];
+  selectedPlace: Place | null;
   selectedPlaceList: Place[];
   isSelected: boolean;
   selectedCategory: MapCategory;
@@ -15,9 +17,12 @@ type Props = {
   onRemove: (place: Place) => void;
   onSelectedPlace: (place: Place) => void;
   onSelectedCategory: (id: MapCategory) => void;
+  bottomSheetRef?: React.RefObject<BottomSheet>;
+  scrollRef?: React.RefObject<BottomSheetScrollViewMethods>;
 };
 export default function MapBottomSheet({
   placeList,
+  selectedPlace,
   selectedPlaceList,
   selectedCategory,
   isSelected = false,
@@ -25,26 +30,28 @@ export default function MapBottomSheet({
   onRemove,
   onSelectedPlace,
   onSelectedCategory,
+  bottomSheetRef,
+  scrollRef,
 }: Props) {
   // ==== Member ====
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+  const [detailPlace, setDetailPlace] = useState<Place | null>(null);
 
   // ==== Method ====
   const handleSelect = (place: Place) => {
     onSelectedPlace(place);
-    setSelectedPlace(place);
+    setDetailPlace(place);
   };
 
   // ==== Render ====
   return (
-    <BottomSheetLayout>
-      {selectedPlace ? (
+    <BottomSheetLayout ref={bottomSheetRef}>
+      {detailPlace ? (
         <PlaceDetail
-          place={selectedPlace}
-          selected={selectedPlaceList.findIndex((place) => place.id === selectedPlace.id) >= 0}
+          place={detailPlace}
+          selected={selectedPlaceList.findIndex((place) => place.id === detailPlace.id) >= 0}
           onAdd={onAdd}
           onRemove={onRemove}
-          onClose={() => setSelectedPlace(null)}
+          onClose={() => setDetailPlace(null)}
         />
       ) : (
         <>
@@ -54,10 +61,12 @@ export default function MapBottomSheet({
           />
           <MapBottomSheetBody
             placeList={isSelected ? selectedPlaceList : placeList}
+            selectedPlace={selectedPlace}
             selectedPlaceList={selectedPlaceList}
             onSelect={handleSelect}
             onAdd={onAdd}
             onRemove={onRemove}
+            ref={scrollRef}
           />
         </>
       )}
