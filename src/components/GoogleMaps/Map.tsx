@@ -200,7 +200,6 @@ export default function Map({
     const selectedIndex = selectedPlaceList
       ? selectedPlaceList.findIndex((place) => place.id === selectedPlace.id)
       : -1;
-    console.log({ index, selectedIndex });
     if (selectedIndex !== -1) {
       setSelectedCategory('selected');
       return selectedIndex * PLACE_HEIGHT;
@@ -233,7 +232,14 @@ export default function Map({
   return (
     <>
       <MapView
-        style={{ height: SCREEN_HEIGHT, width: '100%', flex: 1, position: 'absolute', top: 0, left: 0 }}
+        style={{
+          height: SCREEN_HEIGHT,
+          width: '100%',
+          flex: 1,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+        }}
         provider={PROVIDER_GOOGLE}
         initialRegion={isCoords}
         region={isCoords}
@@ -244,35 +250,39 @@ export default function Map({
             });
         }}
       >
-        {!isOnlySelected &&
-          filteredPlaces?.map((place: Place) => {
-            return (
-              <Marker
-                key={place.id}
-                ref={(ref) => {
-                  markerRef[place.id] = ref;
-                }}
-                title={place.displayName.text}
-                onPress={() => handleSelectedPlace(place)}
-                coordinate={{ ...place.location }}
-              ></Marker>
-            );
-          })}
-        {/* 選択中のPlace */}
-        {selectedPlaceList?.map((place: Place) => {
-          return (
-            <Marker
-              key={place.id}
-              ref={(ref) => {
-                markerRef[place.id] = ref;
-              }}
-              pinColor={'#B5F3C3'}
-              title={`✔ ${place.displayName.text}`}
-              onPress={() => handleSelectedPlace(place)}
-              coordinate={{ ...place.location }}
-            ></Marker>
-          );
-        })}
+        {isMarker && (
+          <>
+            {!isOnlySelected &&
+              filteredPlaces?.map((place: Place) => {
+                return (
+                  <Marker
+                    key={place.id}
+                    ref={(ref) => {
+                      markerRef[place.id] = ref;
+                    }}
+                    title={place.displayName.text}
+                    onPress={() => handleSelectedPlace(place)}
+                    coordinate={{ ...place.location }}
+                  ></Marker>
+                );
+              })}
+            {/* 選択中のPlace */}
+            {selectedPlaceList?.map((place: Place) => {
+              return (
+                <Marker
+                  key={place.id}
+                  ref={(ref) => {
+                    markerRef[place.id] = ref;
+                  }}
+                  pinColor={'#B5F3C3'}
+                  title={`✔ ${place.displayName.text}`}
+                  onPress={() => handleSelectedPlace(place)}
+                  coordinate={{ ...place.location }}
+                ></Marker>
+              );
+            })}
+          </>
+        )}
         <Callout tooltip={true} />
       </MapView>
       {/* 検索関係 */}

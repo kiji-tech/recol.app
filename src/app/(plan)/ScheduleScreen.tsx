@@ -1,5 +1,5 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
-import { BackgroundView, Header, Loading } from '@/src/components';
+import React, { ReactNode, useCallback, useState } from 'react';
+import { BackgroundView, Header } from '@/src/components';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePlan } from '@/src/contexts/PlanContext';
 import Schedule from '@/src/components/Schedule';

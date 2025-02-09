@@ -1,6 +1,6 @@
 import React from 'react';
 import TabBar from '@/src/components/TabBar';
-import { Stack, Tabs } from 'expo-router';
+import { Tabs } from 'expo-router';
 
 const EventsLayout = () => {
   return (
@@ -8,7 +8,7 @@ const EventsLayout = () => {
       <Tabs.Screen name="index" options={{ title: 'ホーム', headerShown: false }} />
       <Tabs.Screen name="PlanListScreen" options={{ title: 'スケジュール', headerShown: false }} />
       <Tabs.Screen name="SettingsScreen" options={{ title: '設定', headerShown: false }} />
-      {/* <Tabs.Screen name="sample" options={{ title: 'サンプル', headerShown: true }} /> */}
+      <Tabs.Screen name="SampleScreen" options={{ title: 'サンプル', headerShown: true }} />
     </Tabs>
   );
 };
