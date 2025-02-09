@@ -13,6 +13,7 @@ export default function RateViewer({ rating }: Props) {
             {index < rating - 1 ? '★' : '☆'}
           </Text>
         ))}
+        （{rating}）
       </Text>
     </View>
   );

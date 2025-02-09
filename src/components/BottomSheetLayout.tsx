@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
-import BottomSheet from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetHandle } from '@gorhom/bottom-sheet';
 import { View } from 'react-native';
 import { Platform } from 'react-native';
 const isIOS = Platform.OS === 'ios';
@@ -20,19 +20,15 @@ const BottomSheetLayout = forwardRef(({ children }: Props, ref) => {
 
   return (
     <BottomSheet
-      enableOverDrag={false}
       ref={bottomSheetRef}
-      style={{
-        borderRadius: 16,
-        marginTop: 64,
-        backgroundColor: 'black',
-      }}
-      snapPoints={['20%', '50%']}
-      enableDynamicSizing={true}
+      snapPoints={['20%', '40%', '85%']}
+      enableOverDrag={false}
+      enableDynamicSizing={false}
     >
       {children}
       {/* ISOのほうがアクションバーでより隠れるため高くする */}
-      <View className={isIOS ? 'h-44' : 'h-16'}></View>
+      {/* <View className={isIOS ? 'h-[92px]' : 'h-16'}></View> */}
+      {isIOS && <View className="h-16"></View>}
     </BottomSheet>
   );
 });

@@ -14,7 +14,7 @@ import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
 import { usePlan } from '@/src/contexts/PlanContext';
 import MapBottomSheet from './BottomSheet/MapBottomSheet';
 import { MapCategory } from '@/src/entities/MapCategory';
-import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetScrollViewMethods, SCREEN_HEIGHT } from '@gorhom/bottom-sheet';
 
 /**
  * GoogleMap Component
@@ -219,7 +219,7 @@ export default function Map({
       bottomSheetRef.current?.expand({});
       setTimeout(() => {
         scrollRef.current?.scrollTo({ x: 0, y: calcScrollHeight(selectedPlace), animated: true });
-      }, 1000);
+      }, 800);
     }
   }, [selectedPlace]);
 
@@ -233,7 +233,7 @@ export default function Map({
   return (
     <>
       <MapView
-        style={{ height: '100%', width: '100%', flex: 1, position: 'absolute', top: 0, left: 0 }}
+        style={{ height: SCREEN_HEIGHT, width: '100%', flex: 1, position: 'absolute', top: 0, left: 0 }}
         provider={PROVIDER_GOOGLE}
         initialRegion={isCoords}
         region={isCoords}

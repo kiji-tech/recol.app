@@ -29,7 +29,7 @@ export default function PlaceCard({ place, selected = false, onSelect, onAdd, on
   return (
     <TouchableOpacity onPress={handleSelect} ref={ref}>
       <View
-        className={`w-full ${selected ? 'bg-light-info dark:bg-dark-info' : 'bg-light-background dark:bg-dark-background'} border-b border-light-border dark:border-dark-border`}
+        className={`w-full bg-light-background dark:bg-dark-background border-b border-light-border dark:border-dark-border`}
       >
         <View className="flex flex-row justify-start items-start gap-4 h-32">
           {/* イメージ画像 */}
@@ -44,9 +44,17 @@ export default function PlaceCard({ place, selected = false, onSelect, onAdd, on
           <View className="flex-1 flex flex-col gap-2">
             <View className="flex flex-row justify-between items-center pr-4">
               {/* /title */}
-              <Text className="text-lg font-bold">{place.displayName.text}</Text>
-              {/* 評価 */}
-              <RateViewer rating={place.rating} />
+              <View className="w-3/5">
+                <Text
+                  className={`text-lg ${selected ? 'font-bold text-light-danger dark:text-dark-danger' : 'font-semibold'}`}
+                >
+                  {place.displayName.text}
+                </Text>
+              </View>
+              <View className="flex-1 flex-row justify-end items-center">
+                {/* 評価 */}
+                <RateViewer rating={place.rating} />
+              </View>
             </View>
             {/* description */}
             <Text className="text-ellipsis line-clamp-2">{place.editorialSummary?.text || ''}</Text>

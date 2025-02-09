@@ -1,12 +1,9 @@
 import React from 'react';
 import Map from '@/src/components/GoogleMaps/Map';
-import ModalLayout from '@/src/components/Modal/ModalLayout';
-import PlaceCard from '@/src/components/GoogleMaps/BottomSheet/PlaceCard';
 import { Place } from '@/src/entities/Place';
 import { useState, useEffect } from 'react';
-import { Modal, SafeAreaView, Text, View } from 'react-native';
+import {  View } from 'react-native';
 import * as Location from 'expo-location';
-import MapBottomSheet from '@/src/components/GoogleMaps/BottomSheet/MapBottomSheet';
 
 type Props = {
   isOpen: boolean;

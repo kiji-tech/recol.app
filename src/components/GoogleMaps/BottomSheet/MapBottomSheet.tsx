@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BottomSheetLayout from '../../BottomSheetLayout';
 import MapBottomSheetHeader from './MapBottomSheetHeader';
 import MapBottomSheetBody from './MapBottomSheetBody';
@@ -35,23 +35,29 @@ export default function MapBottomSheet({
 }: Props) {
   // ==== Member ====
   const [detailPlace, setDetailPlace] = useState<Place | null>(null);
+  const [isDetailPlace, setIsDetailPlace] = useState(false);
 
   // ==== Method ====
   const handleSelect = (place: Place) => {
     onSelectedPlace(place);
     setDetailPlace(place);
+    setIsDetailPlace(true);
   };
+
+  useEffect(() => {
+    setDetailPlace(selectedPlace);
+  }, [selectedPlace]);
 
   // ==== Render ====
   return (
     <BottomSheetLayout ref={bottomSheetRef}>
-      {detailPlace ? (
+      {isDetailPlace && detailPlace ? (
         <PlaceDetail
           place={detailPlace}
           selected={selectedPlaceList.findIndex((place) => place.id === detailPlace.id) >= 0}
           onAdd={onAdd}
           onRemove={onRemove}
-          onClose={() => setDetailPlace(null)}
+          onClose={() => setIsDetailPlace(false)}
         />
       ) : (
         <>
