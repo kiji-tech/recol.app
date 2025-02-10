@@ -68,10 +68,12 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
       {/* 写真一覧 */}
       {place.photos && (
         <ImageScrollView
-          images={place.photos.map((photo) => ({
-            src: `https://places.googleapis.com/v1/${photo.name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`,
-            alt: place.displayName.text,
-          }))}
+          images={place.photos
+            .filter((photo) => photo.name)
+            .map((photo) => ({
+              src: `https://places.googleapis.com/v1/${photo.name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`,
+              alt: place.displayName.text,
+            }))}
         />
       )}
       <View className="flex flex-col justify-start items-start p-4 gap-4  pb-40">

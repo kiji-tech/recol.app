@@ -35,7 +35,7 @@ export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }
   const SearchSelectedButton = ({ id, label, onPress }: SearchSelectedButtonProps) => {
     if (id === 'text' && selectedCategory != 'text') return;
     return (
-      <TouchableOpacity className="" onPress={() => onPress(id)}>
+      <TouchableOpacity key={id} className="" onPress={() => onPress(id)}>
         <View
           className={`px-4 py-2 rounded-xl ${checkSelectedCategory(id) ? 'bg-light-info dark:bg-dark-info' : 'bg-light-background dark:bg-dark-background'}`}
         >

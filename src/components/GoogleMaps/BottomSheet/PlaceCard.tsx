@@ -27,14 +27,19 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
       >
         <View className="flex flex-row justify-start items-start gap-4 h-32">
           {/* イメージ画像 */}
-          <Image
-            className={`w-32 h-32`}
-            src={
-              place.photos
-                ? `https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`
-                : ''
-            }
-          />
+          {place.photos && place.photos.length > 0 ? (
+            <Image
+              className={`w-32 h-32`}
+              src={
+                place.photos
+                  ? `https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`
+                  : ''
+              }
+            />
+          ) : (
+            // TODO: No Imageに差し替え
+            <View className="h-32 w-32 bg-light-shadow"></View>
+          )}
           <View className="flex-1 flex flex-col gap-2">
             <View className="flex flex-row justify-between items-center pr-4">
               {/* /title */}
