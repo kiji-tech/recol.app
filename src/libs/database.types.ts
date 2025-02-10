@@ -83,9 +83,35 @@ export type Database = {
         }
         Relationships: []
       }
+      profile: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          uid: string
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          uid: string
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          uid?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       schedule: {
         Row: {
+          category: Database["public"]["Enums"]["schedule_category"] | null
           created_at: string
+          delete_flag: boolean | null
           description: string | null
           from: string | null
           place_list: Json[] | null
@@ -96,7 +122,9 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          category?: Database["public"]["Enums"]["schedule_category"] | null
           created_at?: string
+          delete_flag?: boolean | null
           description?: string | null
           from?: string | null
           place_list?: Json[] | null
@@ -107,7 +135,9 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          category?: Database["public"]["Enums"]["schedule_category"] | null
           created_at?: string
+          delete_flag?: boolean | null
           description?: string | null
           from?: string | null
           place_list?: Json[] | null
@@ -135,7 +165,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      schedule_category: "movement" | "meals" | "sightseeing" | "other"
     }
     CompositeTypes: {
       [_ in never]: never

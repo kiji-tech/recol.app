@@ -2,17 +2,16 @@ import React from 'react';
 import Map from '@/src/components/GoogleMaps/Map';
 import { Place } from '@/src/entities/Place';
 import { useState, useEffect } from 'react';
-import {  View } from 'react-native';
+import { View } from 'react-native';
 import * as Location from 'expo-location';
 
 type Props = {
   isOpen: boolean;
   placeList: Place[];
-  onSuccess: (placeIdList: Place[]) => void;
-  onClose: () => void;
+  onClose: (placeIdList: Place[]) => void;
 };
 
-export default function MapModal({ isOpen, placeList, onSuccess, onClose }: Props) {
+export default function MapModal({ isOpen, placeList, onClose }: Props) {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [selectedPlaceList, setSelectedPlaceList] = useState<Place[]>([]);
 
@@ -36,7 +35,7 @@ export default function MapModal({ isOpen, placeList, onSuccess, onClose }: Prop
   };
 
   const handleClose = () => {
-    onSuccess(selectedPlaceList);
+    onClose(selectedPlaceList);
   };
 
   useEffect(() => {
@@ -52,6 +51,7 @@ export default function MapModal({ isOpen, placeList, onSuccess, onClose }: Prop
       <View className=" w-screen h-screen absolute top-0 left-0">
         <Map
           isSearch={true}
+          isMarker={true}
           selectedPlace={selectedPlace}
           selectedPlaceList={selectedPlaceList}
           onSelectPlace={(place: Place) => handleSelectedPlace(place)}

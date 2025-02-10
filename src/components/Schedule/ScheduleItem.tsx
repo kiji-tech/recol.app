@@ -1,13 +1,15 @@
 import { Tables } from '@/src/libs/database.types';
 import dayjs from 'dayjs';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 type Props = {
   item: Tables<'schedule'>;
   onPress: (schedule: Tables<'schedule'>) => void;
+  onLongPress: (schedule: Tables<'schedule'>) => void;
 };
-export default function ScheduleItem({ item, onPress }: Props) {
+export default function ScheduleItem({ item, onPress, onLongPress }: Props) {
+  // === Member ====
   const CELL_HEIGHT = 64;
   // 時間
   const { from, to } = item;
@@ -15,6 +17,7 @@ export default function ScheduleItem({ item, onPress }: Props) {
     () => (dayjs(from).hour() + dayjs(from).minute() / 60) * CELL_HEIGHT,
     [item]
   );
+
   const range = useMemo(
     () =>
       (dayjs(to).hour() +
@@ -29,6 +32,7 @@ export default function ScheduleItem({ item, onPress }: Props) {
       style={{ top: Math.round(fromPosition), height: Math.round(range) }}
       className={`absolute left-20 w-3/4 bg-light-theme dark:bg-dark-theme rounded-lg border border-light-border dark:border-dark-border`}
       onPress={() => onPress(item)}
+      onLongPress={() => onLongPress(item)}
     >
       <View className="p-4">
         <Text className="font-bold text-light-text dark:text-dark-text">{item.title}</Text>

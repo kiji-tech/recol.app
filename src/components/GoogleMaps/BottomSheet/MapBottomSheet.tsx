@@ -68,10 +68,7 @@ export default function MapBottomSheet({
           <MapBottomSheetBody
             placeList={isSelected ? selectedPlaceList : placeList}
             selectedPlace={selectedPlace}
-            selectedPlaceList={selectedPlaceList}
             onSelect={handleSelect}
-            onAdd={onAdd}
-            onRemove={onRemove}
             ref={scrollRef}
           />
         </>

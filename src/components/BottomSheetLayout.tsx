@@ -1,11 +1,10 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
-import BottomSheet, { BottomSheetHandle } from '@gorhom/bottom-sheet';
+import BottomSheet from '@gorhom/bottom-sheet';
 import { View } from 'react-native';
 import { Platform } from 'react-native';
 const isIOS = Platform.OS === 'ios';
 
 type Props = {
-  ref?: any;
   children: React.ReactNode;
 };
 const BottomSheetLayout = forwardRef(({ children }: Props, ref) => {
@@ -27,10 +26,12 @@ const BottomSheetLayout = forwardRef(({ children }: Props, ref) => {
     >
       {children}
       {/* ISOのほうがアクションバーでより隠れるため高くする */}
-      {/* <View className={isIOS ? 'h-[92px]' : 'h-16'}></View> */}
-      {isIOS && <View className="h-16"></View>}
+      <View className={isIOS ? 'h-[92px]' : 'h-[102px]'}></View>
+      {/* {isIOS && <View className="h-[92px]"></View>} */}
     </BottomSheet>
   );
 });
+
+BottomSheetLayout.displayName = 'BottomSheetLayout';
 
 export default BottomSheetLayout;

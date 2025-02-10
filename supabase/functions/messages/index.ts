@@ -1,28 +1,9 @@
-// @ts-ignore
 import { Hono } from 'jsr:@hono/hono';
-// @ts-ignore
-import { createClient, SupabaseClient } from 'jsr:@supabase/supabase-js@2';
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 const app = new Hono().basePath('/messages');
 
-const generateSupabase = (c: Hono.Context) => {
-  return createClient(
-    // @ts-ignore
-    Deno.env.get('SUPABASE_URL') ?? '',
-    // @ts-ignore
-    Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-  );
-};
-
-const getUser = async (c: Hono.Context, supabase: SupabaseClient) => {
-  const authHeader = c.req.header('Authorization');
-  if (!authHeader) {
-    return c.json({ error: 'Authorization header is missing' }, 401);
-  }
-  const token = authHeader.replace('Bearer ', '');
-  const {
-    data: { user },
-  } = await supabase.auth.getUser(token);
-  return user;
+const generateSupabase = () => {
+  return createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? '');
 };
 
 /**
@@ -31,7 +12,7 @@ const getUser = async (c: Hono.Context, supabase: SupabaseClient) => {
  * @returns
  */
 const create = async (c: Hono.Context) => {
-  const supabase = generateSupabase(c);
+  const supabase = generateSupabase();
   const { title, from, to, locations } = await c.req.json();
   console.log({ title, from, to, locations });
   // planを作成
@@ -49,7 +30,7 @@ const create = async (c: Hono.Context) => {
 };
 
 const update = async (c: Hono.Context) => {
-  const supabase = generateSupabase(c);
+  const supabase = generateSupabase();
   const { uid, title, from, to, locations, place_id_list } = await c.req.json();
   console.log({ uid, title, from, to, locations, place_id_list });
   // planを更新
@@ -73,7 +54,7 @@ const update = async (c: Hono.Context) => {
  * @returns
  */
 const get = async (c: Hono.Context) => {
-  const supabase = generateSupabase(c);
+  const supabase = generateSupabase();
   const uid = c.req.param('uid');
   const { data, error } = await supabase.from('plan').select('*').eq('uid', uid).maybeSingle();
   return c.json({ data, error });
@@ -85,7 +66,7 @@ const get = async (c: Hono.Context) => {
  * @returns
  */
 const list = async (c: Hono.Context) => {
-  const supabase = generateSupabase(c);
+  const supabase = generateSupabase();
   const { data, error } = await supabase.from('messages').select('*').limit(100);
   return c.json({ data, error });
 };
@@ -94,6 +75,4 @@ app.post('/list', list);
 app.get('/:uid', get);
 app.post('/', create);
 app.put('/', update);
-
-//@ts-ignore
 Deno.serve(app.fetch);

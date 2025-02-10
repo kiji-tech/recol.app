@@ -19,8 +19,7 @@ const fetchPlan = async (planId: string, session: Session | null, ctrl?: AbortCo
     signal: ctrl?.signal,
   });
   if (!res.ok) {
-    alert('プランの取得に失敗しました');
-    return;
+    throw res;
   }
   const data = await res.json();
   return data as Tables<'plan'> & { schedule: Tables<'schedule'>[] };
@@ -40,10 +39,10 @@ const fetchPlanList = async (session: Session | null, ctrl?: AbortController) =>
       'Content-Type': 'application/json',
       Authorization: `Bearer ${session?.access_token}`,
     },
+    signal: ctrl?.signal,
   });
   if (!res.ok) {
-    alert('プラン一覧の取得に失敗しました');
-    return;
+    throw res;
   }
   const data = await res.json();
   return data as Tables<'plan'> & { schedule: Tables<'schedule'>[] }[];
@@ -74,8 +73,7 @@ const fetchSchedule = async (
     }
   );
   if (!res.ok) {
-    alert('スケジュールの取得に失敗しました');
-    return;
+    throw res;
   }
   const data = await res.json();
   return data as Tables<'schedule'>;
@@ -103,11 +101,35 @@ const fetchScheduleList = async (
     signal: ctrl?.signal,
   });
   if (!res.ok) {
-    alert('スケジュール一覧の取得に失敗しました');
-    return;
+    throw res;
   }
   const data = await res.json();
   return data as Tables<'schedule'>[];
 };
 
-export { fetchPlan, fetchPlanList, fetchSchedule, fetchScheduleList };
+/**
+ * スケジュールの削除
+ *
+ * @param uid {string}
+ * @param session {Session | null}
+ * @param ctrl {AbortController}
+ */
+const deleteSchedule = async (uid: string, session: Session | null, ctrl?: AbortController) => {
+  const res = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/schedule/delete`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session?.access_token}`,
+    },
+    body: JSON.stringify({
+      uid,
+    }),
+    signal: ctrl?.signal,
+  });
+  if (!res.ok) {
+    throw res;
+  }
+  return;
+};
+
+export { fetchPlan, fetchPlanList, fetchSchedule, fetchScheduleList, deleteSchedule };

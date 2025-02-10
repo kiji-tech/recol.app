@@ -1,33 +1,27 @@
-import React, { useRef } from 'react';
-import { View, Image, Text, TouchableOpacity, Linking, Touchable } from 'react-native';
-import { Place, Review } from '../../../entities/Place';
-import { reviewAIAnalyze } from '../../../apis/OpenAI';
-import { useState } from 'react';
+import React from 'react';
+import { View, Image, Text, TouchableOpacity } from 'react-native';
+import { Place } from '../../../entities/Place';
 import RateViewer from '../../RateViewer';
 
 type Props = {
   place: Place | null;
   selected: boolean;
   onSelect: (place: Place) => void;
-  onAdd: (place: Place) => void;
-  onRemove: (place: Place) => void;
 };
-export default function PlaceCard({ place, selected = false, onSelect, onAdd, onRemove }: Props) {
+export default function PlaceCard({ place, selected = false, onSelect }: Props) {
   // ==== Member ====
-  const ref = useRef<any>(null);
+
   // ==== Method ====
 
   const handleSelect = () => {
     if (place) onSelect(place);
-    console.log(ref.current.measureLayout);
-    // ref.current.topScroll({ behavior: 'smooth' });
   };
 
   // ==== Render ====
   if (!place) return null;
 
   return (
-    <TouchableOpacity onPress={handleSelect} ref={ref}>
+    <TouchableOpacity onPress={handleSelect}>
       <View
         className={`w-full bg-light-background dark:bg-dark-background border-b border-light-border dark:border-dark-border`}
       >

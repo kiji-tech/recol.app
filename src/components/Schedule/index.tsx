@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tables } from '@/src/libs/database.types';
 import { ReactNode, useEffect, useState } from 'react';
-import { Text, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Text, ScrollView, TouchableOpacity, View, Alert } from 'react-native';
 import ScheduleItem from './ScheduleItem';
 import dayjs from 'dayjs';
 import { fetchScheduleList } from '@/src/libs/ApiService';
@@ -12,35 +12,18 @@ import Loading from '../Loading';
 
 type Props = {
   plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
+  onDelete?: (schedule: Tables<'schedule'>) => void;
 };
 
-export default function TripCalendar({ plan }: Props): ReactNode {
+export default function Schedule({ plan, onDelete }: Props): ReactNode {
   const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
   const { setEditSchedule } = usePlan();
   const { session } = useAuth();
   const [schedule, setSchedule] = useState<Tables<'schedule'>[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  // === Effect ===
-  useEffect(() => {
-    if (!plan) return;
-
-    setIsLoading(true);
-    const ctrl = new AbortController();
-
-    fetchScheduleList(plan.uid, session, ctrl).then((data) => {
-      if (data) {
-        setSchedule(data);
-      }
-      setIsLoading(false);
-    });
-
-    return () => {
-      ctrl.abort();
-    };
-  }, []);
-
   // === Method ====
+
   /** 時間軸クリックイベント */
   const handleHourPress = (hour: string) => {
     console.log('handleHourPress', hour);
@@ -61,6 +44,42 @@ export default function TripCalendar({ plan }: Props): ReactNode {
     setEditSchedule(schedule);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
+
+  /** アイテム長押しイベント */
+  const handleScheduleLongPress = (schedule: Tables<'schedule'>) => {
+    if (!onDelete) return;
+    // 削除アラート
+    Alert.alert('削除', 'このスケジュールを削除しますか？', [
+      { text: 'キャンセル', style: 'cancel' },
+      {
+        text: '削除',
+        style: 'destructive',
+        onPress: () => {
+          // 削除処理
+          onDelete(schedule);
+        },
+      },
+    ]);
+  };
+
+  // === Effect ===
+  useEffect(() => {
+    if (!plan) return;
+
+    setIsLoading(true);
+    const ctrl = new AbortController();
+
+    fetchScheduleList(plan.uid, session, ctrl).then((data) => {
+      if (data) {
+        setSchedule(data);
+      }
+      setIsLoading(false);
+    });
+
+    return () => {
+      ctrl.abort();
+    };
+  }, [plan]);
 
   // === Render ===
   return (
@@ -90,7 +109,12 @@ export default function TripCalendar({ plan }: Props): ReactNode {
         </View>
       )}
       {schedule.map((s) => (
-        <ScheduleItem key={s.uid} item={s} onPress={handleSchedulePress} />
+        <ScheduleItem
+          key={s.uid}
+          item={s}
+          onPress={handleSchedulePress}
+          onLongPress={handleScheduleLongPress}
+        />
       ))}
     </ScrollView>
   );

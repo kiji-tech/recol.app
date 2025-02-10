@@ -1,18 +1,19 @@
-import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef } from 'react';
 import { Place } from '@/src/entities/Place';
 import PlaceCard from './PlaceCard';
 import { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
+import { ScrollResponderMixin } from 'react-native';
 
 type Props = {
   placeList: Place[];
   selectedPlace: Place | null;
-  selectedPlaceList: Place[];
   onSelect: (place: Place) => void;
-  onAdd: (place: Place) => void;
-  onRemove: (place: Place) => void;
 };
 const MapBottomSheetBody = forwardRef(
-  ({ placeList, selectedPlace, selectedPlaceList, onSelect, onAdd, onRemove }: Props, ref: any) => {
+  (
+    { placeList, selectedPlace, onSelect }: Props,
+    ref: ForwardedRef<BottomSheetScrollViewMethods>
+  ) => {
     // ==== Member ====
     const scrollRef = useRef<BottomSheetScrollViewMethods>(null);
     if (ref) {
@@ -27,6 +28,11 @@ const MapBottomSheetBody = forwardRef(
         scrollToEnd: (options?: { animated: boolean }) => {
           scrollRef.current?.scrollToEnd(options);
         },
+        getScrollResponder: () =>
+          scrollRef.current?.getScrollResponder() || ({} as ScrollResponderMixin),
+        getScrollableNode: () => scrollRef.current?.getScrollableNode() || 0,
+        getInnerViewNode: () => scrollRef.current?.getInnerViewNode() || 0,
+        setNativeProps: (props: object) => scrollRef.current?.setNativeProps(props),
       }));
     }
 
@@ -41,10 +47,7 @@ const MapBottomSheetBody = forwardRef(
                 key={place.id}
                 place={place}
                 selected={selectedPlace ? selectedPlace.id === place.id : false}
-                // onDetailView={() => { }}
                 onSelect={onSelect}
-                onAdd={onAdd}
-                onRemove={onRemove}
               />
             ))}
         </BottomSheetScrollView>
@@ -52,5 +55,7 @@ const MapBottomSheetBody = forwardRef(
     );
   }
 );
+
+MapBottomSheetBody.displayName = 'MapBottomSheetBody';
 
 export default MapBottomSheetBody;

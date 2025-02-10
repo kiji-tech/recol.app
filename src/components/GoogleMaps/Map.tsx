@@ -3,6 +3,7 @@ import { Place } from '@/src/entities/Place';
 import { View, Text, TouchableOpacity } from 'react-native';
 import MapView, {
   Callout,
+  Circle,
   MapMarker,
   Marker,
   PROVIDER_GOOGLE,
@@ -42,12 +43,13 @@ export default function Map({
   selectedPlaceList,
   isSearch = false,
   isMarker = false,
-  onMarkerDeselect = () => void 0,
+  //   onMarkerDeselect = () => void 0,
   onSelectPlace = () => void 0,
   onAdd = () => void 0,
   onRemove = () => void 0,
   onBack = () => void 0,
 }: Props) {
+  const DEFAULT_RADIUS = 4200;
   const markerRef: { [id: string]: MapMarker | null } = {};
   const bottomSheetRef = useRef<BottomSheet | null>(null);
   const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
@@ -85,7 +87,7 @@ export default function Map({
     if (selectedCategory === 'selected') return;
     setIsLoading(true);
     try {
-      const response = await searchNearby(latitude, longitude, selectedCategory);
+      const response = await searchNearby(latitude, longitude, selectedCategory, radius);
       settingPlaces(response);
     } catch (e) {
       console.error(e);
@@ -103,19 +105,6 @@ export default function Map({
     }
   };
 
-  // ズームレベルに応じた閾値を決定する関数
-  const getThresholdDistanceByZoom = (zoom: number): number => {
-    // 一般的にズームレベルに応じて距離を調整する
-    // ズームが低いほど大きな範囲が表示されるので閾値を大きくする
-    if (zoom > 15) {
-      return 0.3; // 近距離での閾値 (ズームイン時、500m)
-    } else if (zoom > 10) {
-      return 1; // 中距離での閾値 (ズーム中、2km)
-    } else {
-      return 3; // 遠距離での閾値 (ズームアウト時、10km)
-    }
-  };
-
   /** テキスト検索 実行処理 */
   const handleTextSearch = async (searchText: string) => {
     setIsLoading(true);
@@ -123,7 +112,8 @@ export default function Map({
       const response = await searchPlaceByText(
         isCoords?.latitude || 0,
         isCoords?.longitude || 0,
-        searchText
+        searchText,
+        radius
       );
       settingPlaces(response);
     } catch (e) {
@@ -165,6 +155,11 @@ export default function Map({
   };
 
   // ==== Memo ====
+  /** Map上の半径の計算 */
+  const radius = useMemo(() => {
+    return DEFAULT_RADIUS * isCoords!.longitudeDelta * 10;
+  }, [isCoords]);
+
   /** 検索範囲の計算 */
   const isResearched = useMemo(() => {
     const R = 6371; // 地球の半径 (km)
@@ -183,8 +178,9 @@ export default function Map({
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c;
     reSearchTimer();
-    return distance > getThresholdDistanceByZoom(Math.log2(360 / isCoords!.latitudeDelta)); // 距離をキロメートルで返す
+    return distance > radius; // 距離をキロメートルで返す
   }, [isCoords, centerCords]);
+
   // 選択中のロケーションのみ表示
   const isOnlySelected = useMemo(() => selectedCategory === 'selected', [selectedCategory]);
 
@@ -233,7 +229,7 @@ export default function Map({
     <>
       <MapView
         style={{
-          height: SCREEN_HEIGHT,
+          height: SCREEN_HEIGHT - 200,
           width: '100%',
           flex: 1,
           position: 'absolute',
@@ -250,6 +246,12 @@ export default function Map({
             });
         }}
       >
+        <Circle
+          center={{ ...isCoords, latitude: isCoords.latitude }}
+          radius={radius}
+          fillColor="rgba(30,150,200,0.2)"
+          strokeColor="#C1EBEE"
+        />
         {isMarker && (
           <>
             {!isOnlySelected &&

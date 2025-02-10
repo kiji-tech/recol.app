@@ -1,6 +1,6 @@
 import React from 'react';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -37,7 +37,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
           });
         };
 
-        if (label == 'サンプル') return;
+        // if (label == 'サンプル' && process.env.EXPO_PUBLIC_APP_ENV != 'development') return;
 
         return (
           <TouchableOpacity

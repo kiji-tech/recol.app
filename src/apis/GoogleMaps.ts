@@ -138,7 +138,7 @@ async function searchNearby(
   latitude: number,
   longitude: number,
   category: MapCategory,
-  radius?: number
+  radius: number = 2000
 ) {
   const response = await fetch(`${GOOGLE_MAPS_API_URL}:searchNearby`, {
     method: 'POST',
@@ -157,7 +157,7 @@ async function searchNearby(
             latitude,
             longitude,
           },
-          radius: 2000,
+          radius: radius,
         },
       },
     }),
@@ -171,7 +171,12 @@ async function searchNearby(
   return response.places;
 }
 
-async function searchPlaceByText(latitude: number, longitude: number, text: string) {
+async function searchPlaceByText(
+  latitude: number,
+  longitude: number,
+  text: string,
+  radius: number = 2000
+) {
   const response = await fetch(`${GOOGLE_MAPS_API_URL}:searchText`, {
     method: 'POST',
     headers: new Headers({
@@ -189,7 +194,7 @@ async function searchPlaceByText(latitude: number, longitude: number, text: stri
             latitude,
             longitude,
           },
-          radius: 2000,
+          radius,
         },
       },
     }),

@@ -1,36 +1,22 @@
-// @ts-ignore
 import { Hono } from 'jsr:@hono/hono';
-// @ts-ignore
-import { createClient, SupabaseClient } from 'jsr:@supabase/supabase-js@2';
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 const app = new Hono().basePath('/schedule');
 
-const generateSupabase = (c: Hono.Context) => {
-  return createClient(
-    // @ts-ignore
-    Deno.env.get('SUPABASE_URL') ?? '',
-    // @ts-ignore
-    Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-  );
-};
-
-const getUser = async (c: Hono.Context, supabase: SupabaseClient) => {
-  const authHeader = c.req.header('Authorization');
-  if (!authHeader) {
-    return c.json({ error: 'Authorization header is missing' }, 401);
-  }
-  const token = authHeader.replace('Bearer ', '');
-  const {
-    data: { user },
-  } = await supabase.auth.getUser(token);
-  return user;
+const generateSupabase = () => {
+  return createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? '');
 };
 
 const get = async (c: Hono.Context) => {
-  const supabase = generateSupabase(c);
+  console.log('schedule get');
+  const supabase = generateSupabase();
   const scheduleId = c.req.param('scheduleId');
   const planId = c.req.param('planId');
   if (planId != null) {
-    const { data, error } = await supabase.from('schedule').select('*').eq('plan_id', planId);
+    const { data, error } = await supabase
+      .from('schedule')
+      .select('*')
+      .eq('plan_id', planId)
+      .eq('delete_flag', false);
 
     if (error) {
       console.error(error);
@@ -49,11 +35,13 @@ const get = async (c: Hono.Context) => {
       return c.json({ error }, 403);
     }
     return c.json(data);
+  } else {
+    return c.json({ error: 'Invalid request' }, 400);
   }
 };
 
 const upsert = async (c: Hono.Context) => {
-  const supabase = generateSupabase(c);
+  const supabase = generateSupabase();
   const { schedule } = await c.req.json();
   console.log(schedule);
   // scheduleの更新
@@ -73,8 +61,25 @@ const upsert = async (c: Hono.Context) => {
   return c.json(data);
 };
 
+const deleteSchedule = async (c: Hono.Context) => {
+  console.log('deleteSchedule');
+  const supabase = generateSupabase();
+  const { uid } = await c.req.json();
+
+  // 削除フラグの更新
+  const { data, error } = await supabase
+    .from('schedule')
+    .update({ delete_flag: true })
+    .eq('uid', uid);
+  if (error) {
+    console.error(error);
+    return c.json({ error }, 403);
+  }
+  return c.json(data);
+};
+
 app.get('/:planId', get);
+app.post('/delete', deleteSchedule);
 app.post('/', upsert);
 
-//@ts-ignore
 Deno.serve(app.fetch);

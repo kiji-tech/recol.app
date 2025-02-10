@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Place, Review } from '@/src/entities/Place';
-import { Image, Text, View, Linking, TouchableOpacity } from 'react-native';
+import { Text, View, Linking } from 'react-native';
 import RateViewer from '../../RateViewer';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -20,7 +20,6 @@ type Props = {
   onClose: () => void;
 };
 export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose }: Props) {
-  //   console.log(JSON.stringify(place));
   // === Member ===
   const [isAiNavigation, setIsAiNavigation] = useState(false);
   const [aiText, setAiText] = useState('');

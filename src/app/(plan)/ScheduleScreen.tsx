@@ -4,10 +4,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePlan } from '@/src/contexts/PlanContext';
 import Schedule from '@/src/components/Schedule';
 import { useRouter } from 'expo-router';
-import { fetchPlan } from '@/src/libs/ApiService';
+import { deleteSchedule, fetchPlan } from '@/src/libs/ApiService';
 import { useFocusEffect } from '@react-navigation/native';
 import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { Alert } from 'react-native';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
@@ -16,25 +17,55 @@ export default function ScheduleScreen(): ReactNode {
   const [viewPlan, setViewPlan] = useState<
     (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null
   >(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // === Method ===
+  const initView = () => {
+    if (!plan?.uid || !session) {
+      Alert.alert('エラー', 'プランの情報が取得できませんでした。');
+      router.back();
+      return;
+    }
+
+    setIsLoading(true);
+    setViewPlan(null);
+    const ctrl = new AbortController();
+
+    fetchPlan(plan.uid, session, ctrl)
+      .then((data) => {
+        if (!data) {
+          throw new Error('プランデータの取得に失敗しました');
+        }
+        setViewPlan({ ...data } as Tables<'plan'> & { schedule: Tables<'schedule'>[] });
+      })
+      .catch((e) => {
+        console.error('Plan fetch error:', e);
+        Alert.alert('エラー', 'プランの読み込み中にエラーが発生しました。もう一度お試しください。');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+
+    return () => {
+      ctrl.abort();
+    };
+  };
+
+  const handleDeleteSchedule = async (schedule: Tables<'schedule'>) => {
+    try {
+      if (!session) {
+        throw new Error('セッションが無効です');
+      }
+      await deleteSchedule(schedule.uid, session);
+      initView();
+    } catch (error) {
+      console.error('Schedule deletion error:', error);
+      Alert.alert('エラー', 'スケジュールの削除中にエラーが発生しました。もう一度お試しください。');
+    }
+  };
 
   // === Effect ===
-  useFocusEffect(
-    useCallback(() => {
-      setViewPlan(null);
-      const ctrl = new AbortController();
-      fetchPlan(plan!.uid, session, ctrl)
-        .then((data) => {
-          setViewPlan({ ...data } as Tables<'plan'> & { schedule: Tables<'schedule'>[] });
-        })
-        .catch((e) => {
-          console.error(e);
-        })
-        .finally(() => {});
-      return () => {
-        ctrl.abort();
-      };
-    }, [])
-  );
+  useFocusEffect(useCallback(initView, [plan]));
 
   // === Render ===
   return (
@@ -42,12 +73,10 @@ export default function ScheduleScreen(): ReactNode {
       <BackgroundView>
         {/* ヘッダー */}
         <Header
-          title={`${viewPlan?.title || plan?.title}のスケジュール`}
-          onBack={() => {
-            router.back();
-          }}
+          title={`${viewPlan?.title || plan?.title || 'スケジュール'}の予定`}
+          onBack={() => router.back()}
         />
-        {viewPlan && <Schedule plan={viewPlan} />}
+        {!isLoading && viewPlan && <Schedule plan={viewPlan} onDelete={handleDeleteSchedule} />}
       </BackgroundView>
     </SafeAreaView>
   );

@@ -1,16 +1,9 @@
-// @ts-ignore
 import { Hono } from 'jsr:@hono/hono';
-// @ts-ignore
 import { createClient, SupabaseClient } from 'jsr:@supabase/supabase-js@2';
 const app = new Hono().basePath('/plan');
 
-const generateSupabase = (c: Hono.Context) => {
-  return createClient(
-    // @ts-ignore
-    Deno.env.get('SUPABASE_URL') ?? '',
-    // @ts-ignore
-    Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-  );
+const generateSupabase = () => {
+  return createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? '');
 };
 
 const getUser = async (c: Hono.Context, supabase: SupabaseClient) => {
@@ -32,7 +25,7 @@ const getUser = async (c: Hono.Context, supabase: SupabaseClient) => {
  */
 const create = async (c: Hono.Context) => {
   console.log('[POST] plan');
-  const supabase = generateSupabase(c);
+  const supabase = generateSupabase();
   const { title, from, to, locations } = await c.req.json();
 
   const user = await getUser(c, supabase);
@@ -56,7 +49,7 @@ const create = async (c: Hono.Context) => {
 
 const update = async (c: Hono.Context) => {
   console.log('[PUT] plan');
-  const supabase = generateSupabase(c);
+  const supabase = generateSupabase();
   const { uid, title, from, to, locations, place_id_list } = await c.req.json();
 
   const user = await getUser(c, supabase);
@@ -86,7 +79,7 @@ const update = async (c: Hono.Context) => {
  */
 const get = async (c: Hono.Context) => {
   console.log('[GET] plan/');
-  const supabase = generateSupabase(c);
+  const supabase = generateSupabase();
   const uid = c.req.param('uid');
   const user = await getUser(c, supabase);
   if (!user) {
@@ -97,6 +90,8 @@ const get = async (c: Hono.Context) => {
     .select('*, schedule(*)')
     .eq('uid', uid)
     .eq('user_id', user.id)
+    .eq('delete_flag', false)
+    .eq('schedule.delete_flag', false)
     .maybeSingle();
   if (error) {
     console.error(error);
@@ -113,14 +108,11 @@ const get = async (c: Hono.Context) => {
  */
 const list = async (c: Hono.Context) => {
   console.log('[POST] plan/list');
-  const supabase = generateSupabase(c);
+  const supabase = generateSupabase();
   const user = await getUser(c, supabase);
   if (!user) {
     return c.json({ error: 'User not found' }, 403);
   }
-
-  console.log({ userId: user.id });
-
   const { data, error } = await supabase
     .from('plan')
     .select('*, schedule(*)')
@@ -138,6 +130,4 @@ app.post('/list', list);
 app.get('/:uid', get);
 app.post('/', create);
 app.put('/', update);
-
-//@ts-ignore
 Deno.serve(app.fetch);

@@ -12,21 +12,19 @@ import { Place } from '@/src/entities/Place';
 
 export default function ScheduleEditor() {
   // === Member ===
-  const { plan, editSchedule, setEditSchedule } = usePlan();
+  const { editSchedule, setEditSchedule } = usePlan();
   const [openMapModal, setOpenMapModal] = useState(false);
 
   // === Method ===
   /** スケジュールの編集 */
   const handleScheduleSubmit = async () => {
     if (!editSchedule) return;
-    console.log({ editSchedule });
     const res = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/schedule`, {
       method: 'POST',
       body: JSON.stringify({ schedule: editSchedule }),
     });
     if (!res.ok) {
       // TODO: エラーハンドリング
-      console.log(res);
       alert('登録に失敗しました');
       return;
     }
@@ -134,8 +132,7 @@ export default function ScheduleEditor() {
             <MapModal
               isOpen={openMapModal}
               placeList={(editSchedule.place_list as unknown as Place[]) || []}
-              onSuccess={handleSelectedPlaceList}
-              onClose={() => setOpenMapModal(false)}
+              onClose={handleSelectedPlaceList}
             />
           )}
         </BackgroundView>
