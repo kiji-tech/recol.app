@@ -1,7 +1,6 @@
 import { MapCategory } from '@/src/entities/MapCategory';
-import React, { useCallback, useState } from 'react';
-import { View, Text } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import React, { useCallback } from 'react';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 
 type SearchSelectedButtonProps = {
   id: MapCategory;
@@ -25,6 +24,7 @@ export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }
   );
 
   const categoryButtonList: SearchSelectedButtonProps[] = [
+    { id: 'text', label: '検索結果', onPress: () => {} },
     { id: 'meal', label: '食事・カフェ', onPress: handleOnSelectedCategory },
     { id: 'hotel', label: 'ホテル・旅館', onPress: handleOnSelectedCategory },
     { id: 'spot', label: '観光スポット', onPress: handleOnSelectedCategory },
@@ -33,22 +33,27 @@ export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }
 
   // === Render ====
   const SearchSelectedButton = ({ id, label, onPress }: SearchSelectedButtonProps) => {
+    if (id === 'text' && selectedCategory != 'text') return;
     return (
-      <View key={id}>
-        <TouchableOpacity onPress={() => onPress(id)}>
-          <View
-            className={`px-4 py-2 rounded-xl ${checkSelectedCategory(id) ? 'bg-light-info dark:bg-dark-info' : 'bg-light-background dark:bg-dark-background'}`}
-          >
-            <Text>{label}</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity className="" onPress={() => onPress(id)}>
+        <View
+          className={`px-4 py-2 rounded-xl ${checkSelectedCategory(id) ? 'bg-light-info dark:bg-dark-info' : 'bg-light-background dark:bg-dark-background'}`}
+        >
+          <Text>{label}</Text>
+        </View>
+      </TouchableOpacity>
     );
   };
 
   return (
-    <View className="flex flex-row justify-between items-center w-full px-4 py-2">
-      {categoryButtonList.map((button) => SearchSelectedButton(button))}
+    <View className="py-4 px-2">
+      <ScrollView
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+      >
+        {categoryButtonList.map((button) => SearchSelectedButton(button))}
+      </ScrollView>
     </View>
   );
 }

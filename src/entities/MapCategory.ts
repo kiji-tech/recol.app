@@ -1,2 +1,2 @@
-type MapCategory = 'meal' | 'hotel' | 'spot' | 'selected';
+type MapCategory = 'meal' | 'hotel' | 'spot' | 'selected' | 'text';
 export type { MapCategory };

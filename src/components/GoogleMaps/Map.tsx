@@ -108,6 +108,7 @@ export default function Map({
   /** テキスト検索 実行処理 */
   const handleTextSearch = async (searchText: string) => {
     setIsLoading(true);
+    setSelectedCategory('text');
     try {
       const response = await searchPlaceByText(
         isCoords?.latitude || 0,
@@ -229,7 +230,7 @@ export default function Map({
     <>
       <MapView
         style={{
-          height: SCREEN_HEIGHT - 200,
+          height: SCREEN_HEIGHT - 100,
           width: '100%',
           flex: 1,
           position: 'absolute',
