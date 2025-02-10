@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback, useState } from 'react';
-import { BackgroundView, Header } from '@/src/components';
+import { Header } from '@/src/components';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePlan } from '@/src/contexts/PlanContext';
 import Schedule from '@/src/components/Schedule';
@@ -8,7 +8,9 @@ import { deleteSchedule, fetchPlan } from '@/src/libs/ApiService';
 import { useFocusEffect } from '@react-navigation/native';
 import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
-import { Alert } from 'react-native';
+import { Alert, View } from 'react-native';
+import { Platform } from 'react-native';
+const isIOS = Platform.OS === 'ios';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
@@ -17,7 +19,6 @@ export default function ScheduleScreen(): ReactNode {
   const [viewPlan, setViewPlan] = useState<
     (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null
   >(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   // === Method ===
   const initView = () => {
@@ -27,7 +28,6 @@ export default function ScheduleScreen(): ReactNode {
       return;
     }
 
-    setIsLoading(true);
     setViewPlan(null);
     const ctrl = new AbortController();
 
@@ -41,9 +41,6 @@ export default function ScheduleScreen(): ReactNode {
       .catch((e) => {
         console.error('Plan fetch error:', e);
         Alert.alert('エラー', 'プランの読み込み中にエラーが発生しました。もう一度お試しください。');
-      })
-      .finally(() => {
-        setIsLoading(false);
       });
 
     return () => {
@@ -70,14 +67,18 @@ export default function ScheduleScreen(): ReactNode {
   // === Render ===
   return (
     <SafeAreaView>
-      <BackgroundView>
+      <View
+        className={`px-4 flex flex-col justify-start h-screen bg-light-background dark:bg-dark-background  ${isIOS ? 'pb-36' : 'pb-24'}`}
+      >
         {/* ヘッダー */}
         <Header
           title={`${viewPlan?.title || plan?.title || 'スケジュール'}の予定`}
           onBack={() => router.back()}
+          //   TODO: アクションボタン（共有・予定の削除など）
+          //   rightComponent={<></>}
         />
-        {!isLoading && viewPlan && <Schedule plan={viewPlan} onDelete={handleDeleteSchedule} />}
-      </BackgroundView>
+        <Schedule plan={viewPlan} onDelete={handleDeleteSchedule} />
+      </View>
     </SafeAreaView>
   );
 }
