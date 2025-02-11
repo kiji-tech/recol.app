@@ -1,9 +1,8 @@
 import chalk from 'chalk';
 import { readFile, writeFile, copyFile } from 'node:fs/promises';
-const chalkInstance = new chalk.Chalk({ level: 3 });
 
 function log(...args) {
-  console.log(chalkInstance.yellow('[react-native-maps]'), ...args);
+  console.log(chalk.yellow('[react-native-maps]'), ...args);
 }
 
 const reactNativeMaps = async () => {
