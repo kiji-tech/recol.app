@@ -1,64 +1,76 @@
 {
-    "expo": {
-        "scheme": "voyz",
-        "packageName": "com.libetech.voyz",
-        "name": "Voyz",
-        "slug": "voyz",
-        "version": "1.0.0",
-        "orientation": "portrait",
-        "icon": "./assets/icon.png",
-        "userInterfaceStyle": "automatic",
-        "splash": {
-            "image": "./assets/splash.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#fff"
-        },
-        "ios": {
-            "supportsTablet": true,
-            "bundleIdentifier": "com.libetech.voyz",
-            "config": {
-                "googleMapsApiKey": "AIzaSyDZg8Pd1pIXO0NWl1lWo0JJM1UCixBqarQ"
-            }
-        },
-        "android": {
-            "package": "com.libetech.voyz",
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/adaptive-icon.png",
-                "backgroundColor": "#ffffff"
-            },
-            "config": {
-                "googleMaps": {
-                    "apiKey": "AIzaSyB3kyCKbNsUC_mcyeZpiiT3OWISKfe2Joo"
-                }
-            }
-        },
-        "web": {
-            "favicon": "./assets/favicon.png",
-            "bundler": "metro"
-        },
-        "plugins": [
-            [
-                "expo-router"
-            ],
-            [
-                "expo-location",
-                {
-                    "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
-                }
-            ],
-            "expo-font",
-            "expo-build-properties"
-        ],
-        "experiments": {
-            "typedRoutes": true
-        },
-        "extra": {
-            "router": {
-                "origin": false
-            },
-            "eas": {
-                "projectId": "d0f16b33-31f2-4574-a7ab-9e3318729003"
-            }
+  "expo": {
+    "scheme": "voyz",
+    "packageName": "com.libetech.voyz",
+    "name": "Voyz",
+    "slug": "voyz",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#fff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.libetech.voyz",
+      "config": {
+        "googleMapsApiKey": "AIzaSyDZg8Pd1pIXO0NWl1lWo0JJM1UCixBqarQ"
+      }
+    },
+    "android": {
+      "package": "com.libetech.voyz",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyB3kyCKbNsUC_mcyeZpiiT3OWISKfe2Joo"
         }
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-router"
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ],
+      "expo-font",
+      "expo-build-properties"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "d0f16b33-31f2-4574-a7ab-9e3318729003"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/d0f16b33-31f2-4574-a7ab-9e3318729003"
     }
+  }
 }

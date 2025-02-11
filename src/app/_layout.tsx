@@ -1,14 +1,13 @@
 import React from 'react';
 import '@/global.css';
-import { Session } from '@supabase/supabase-js';
 import { router, Stack } from 'expo-router';
-import { colorScheme, useColorScheme } from 'nativewind';
-import { useEffect, useState } from 'react';
+import { colorScheme } from 'nativewind';
+import { useEffect } from 'react';
 import { supabase } from '../libs/supabase';
 import { PlanProvider } from '../contexts/PlanContext';
-import { AuthProvider, useAuth } from '../contexts/AuthContext';
+import { AuthProvider } from '../contexts/AuthContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-require('dayjs/locale/ja');
+import 'expo-dev-client';
 
 // Use imperatively
 // 'dark  | 'light' | 'system'
@@ -20,7 +19,6 @@ const RouteLayout = () => {
     (async () => {
       const {
         data: { session },
-        error,
       } = await supabase.auth.getSession();
       if (!session) {
         router.navigate('/(auth)/SignIn');
