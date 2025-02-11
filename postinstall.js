@@ -1,12 +1,12 @@
-const Chalk = require('chalk').Chalk;
-const { readFile, writeFile, copyFile } = require('node:fs').promises;
+import { Chalk } from 'chalk';
+import { readFile, writeFile, copyFile } from 'node:fs/promises';
 const chalk = new Chalk({ level: 3 });
 
 function log(...args) {
   console.log(chalk.yellow('[react-native-maps]'), ...args);
 }
 
-reactNativeMaps = async () => {
+const reactNativeMaps = async () => {
   log(
     '📦 Creating web compatibility of react-native-maps using an empty module loaded on web builds'
   );
