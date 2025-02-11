@@ -7,7 +7,7 @@
         "android": "expo run:android",
         "ios": "expo run:ios",
         "web": "expo start --web",
-        "postinstall": "node postinstall.js",
+        "postinstall": "node postinstall.mjs",
         "install:ios": "cd ios && pod update && pod install --repo-update --ansi && cd..",
         "install:android": "cd android && ./gradlew clean && cd..",
         "functions:dev": "npx supabase functions serve --env-file .env --no-verify-jwt",
