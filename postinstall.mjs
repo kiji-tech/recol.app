@@ -1,5 +1,5 @@
-import { Chalk } from 'chalk';
-import { readFile, writeFile, copyFile } from 'node:fs/promises';
+const Chalk = require('chalk').Chalk;
+const { readFile, writeFile, copyFile } = require('node:fs').promises;
 const chalk = new Chalk({ level: 3 });
 
 function log(...args) {
