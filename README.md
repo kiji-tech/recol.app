@@ -60,16 +60,19 @@ $ npm run test
 
 ### デプロイコマンド
 
+`アプリケーション`
+
+```shell
+$ eas build --local
+# profileは､eas.jsonに定義しているものに依存する
+$ eas build --profile development --platform android
+$ eas build --profile production --platform all
+```
+
 `supabase edge function`
 
 ```shell
 $ npm run functions:deploy
-```
-
-`アプリケーション`
-
-```shell
-$ eas build --platform android
 ```
 
 `migration関係`
