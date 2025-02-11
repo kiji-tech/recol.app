@@ -48,7 +48,8 @@ export interface Place {
   };
   primaryTypeDisplayName: { text: string; languageCode: string };
   primaryType: string;
-  googleMapUrl: string;
+    googleMapsUri: string;
+    googleMapsLinks: {placeUri: string}[]
   editorialSummary: { text: string };
   websiteUri: string;
   currentOpeningHours: {

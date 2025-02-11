@@ -18,6 +18,9 @@
       "bundleIdentifier": "com.libetech.voyz",
       "config": {
         "googleMapsApiKey": "AIzaSyDZg8Pd1pIXO0NWl1lWo0JJM1UCixBqarQ"
+      },
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -32,8 +35,6 @@
         }
       },
       "permissions": [
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ]

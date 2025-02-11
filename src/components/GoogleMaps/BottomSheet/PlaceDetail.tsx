@@ -6,7 +6,6 @@ import RateViewer from '../../RateViewer';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-
 import IconButton from '../../IconButton';
 import Header from '../../Header/Header';
 import { reviewAIAnalyze } from '@/src/apis/OpenAI';
@@ -124,18 +123,27 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
         {/* 予約 */}
 
         {/* ボタングループ */}
-        <View className="flex flex-row justify-start items-center gap-4">
+              <View className="flex flex-row justify-start items-center gap-4">
+                  {place.websiteUri &&
           <IconButton
-            icon={
+          icon={
               <MaterialCommunityIcons
-                name="web"
-                size={18}
-                className={`text-light-text dark:text-dark-text`}
+              name="web"
+              size={18}
+              className={`text-light-text dark:text-dark-text`}
               />
             }
             theme="theme"
             onPress={() => Linking.openURL(place.websiteUri)}
-          />
+            />
+        }
+        {place.googleMapsUri && 
+          <IconButton
+            icon={<FontAwesome5 name="map-marked-alt" size={18} className={`text-light-text dark:text-dark-text`} />}
+            theme="theme"
+            onPress={() => Linking.openURL(place.googleMapsUri)}
+            />
+        }
         </View>
       </View>
     </BottomSheetScrollView>

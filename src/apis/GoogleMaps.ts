@@ -113,11 +113,12 @@ const INCLUDED_TYPES: Record<MapCategory, string[]> = {
     'auditorium',
   ],
   selected: [],
+  text: [],
 };
 
 // 取得するフィールド
 const FiledMaskValue =
-  'places.id,places.types,places.reviews,places.displayName,places.formattedAddress,places.rating,places.location,places.photos,places.websiteUri,places.editorialSummary,places.currentOpeningHours.openNow,places.currentOpeningHours.weekdayDescriptions';
+  'places.id,places.types,places.reviews,places.displayName,places.formattedAddress,places.rating,places.location,places.photos,places.websiteUri,places.editorialSummary,places.currentOpeningHours.openNow,places.currentOpeningHours.weekdayDescriptions,places.googleMapsUri,places.googleMapsLinks.*';
 //   '*';
 
 async function searchId(placeId: string) {

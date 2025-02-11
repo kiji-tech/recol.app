@@ -1,23 +1,25 @@
 import React from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { BackgroundView } from '@/src/components';
+import { BackgroundView, Loading } from '@/src/components';
 import IconButton from '@/src/components/IconButton';
 import { Tables } from '@/src/libs/database.types';
 import dayjs from 'dayjs';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { fetchPlanList } from '@/src/libs/ApiService';
 
+type PlanWithSchedule = Tables<'plan'> & { schedule: Tables<'schedule'>[] };
+
 export default function PlanListScreen() {
   // === Member ===
   const router = useRouter();
   const { setPlan } = usePlan();
   const { session } = useAuth();
-  const [plans, setPlans] = useState<any[]>([]);
+  const [plans, setPlans] = useState<PlanWithSchedule[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // === Effect ===
@@ -26,9 +28,10 @@ export default function PlanListScreen() {
       setIsLoading(true);
       setPlans([]);
       const ctrl = new AbortController();
-      fetchPlanList(session, ctrl).then((data) => {
+      fetchPlanList(session, ctrl).then((data: unknown) => {
         if (!data) return;
-        setPlans(data);
+        setPlans(data as PlanWithSchedule[]);
+        setIsLoading(false);
       });
       return () => {
         ctrl.abort();
@@ -89,8 +92,9 @@ export default function PlanListScreen() {
     <SafeAreaView>
       <BackgroundView>
         <View className="flex flex-row justify-center flex-wrap gap-4 mb-4">
+            {isLoading && <Loading />}
           {plans &&
-            plans.map((p) => (
+            plans.map((p : Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => (
               <TouchableOpacity
                 key={p.uid}
                 className={`

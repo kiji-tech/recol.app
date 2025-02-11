@@ -63,10 +63,11 @@ $ npm run test
 `アプリケーション`
 
 ```shell
-$ eas build --local
+# ローカルにビルドファイルを作成
+$ eas build --local --platform android
 # profileは､eas.jsonに定義しているものに依存する
-$ eas build --profile development --platform android
-$ eas build --profile production --platform all
+$ eas build --profile development --platform android ･･･ develop-build経由で表示できるようにする
+$ eas build --profile production --platform all      ･･･ Storeアプリにビルド
 ```
 
 `supabase edge function`
