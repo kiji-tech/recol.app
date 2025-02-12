@@ -12,6 +12,7 @@
             },
             "env": {
                 "EXPO_PUBLIC_APP_ENV": "develop",
+                "NEXT_PUBLIC_ENABLE_CONSOLE_LOG": "OFF",
                 "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY": "AIzaSyDZg8Pd1pIXO0NWl1lWo0JJM1UCixBqarQ",
                 "EXPO_PUBLIC_SUPABASE_REFERENCE_ID": "sxqfudbkpoymileoqdpr",
                 "EXPO_PUBLIC_SUPABASE_URL": "https://sxqfudbkpoymileoqdpr.supabase.co",

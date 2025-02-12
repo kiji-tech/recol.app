@@ -11,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { fetchPlanList } from '@/src/libs/ApiService';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 type PlanWithSchedule = Tables<'plan'> & { schedule: Tables<'schedule'>[] };
 
@@ -27,6 +28,7 @@ export default function PlanListScreen() {
     useCallback(() => {
       setIsLoading(true);
       setPlans([]);
+      LogUtil.log('planを取得します', { level: 'info' });
       const ctrl = new AbortController();
       fetchPlanList(session, ctrl).then((data: unknown) => {
         if (!data) return;
@@ -92,9 +94,9 @@ export default function PlanListScreen() {
     <SafeAreaView>
       <BackgroundView>
         <View className="flex flex-row justify-center flex-wrap gap-4 mb-4">
-            {isLoading && <Loading />}
+          {isLoading && <Loading />}
           {plans &&
-            plans.map((p : Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => (
+            plans.map((p: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => (
               <TouchableOpacity
                 key={p.uid}
                 className={`
