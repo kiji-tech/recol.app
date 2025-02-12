@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Header } from '@/src/components';
-import {
-  View,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import { View, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { createClient } from '@supabase/supabase-js';
 import { BackgroundView } from '@/src/components';
 import { Tables } from '@/src/libs/database.types';
 import { borderColor } from '@/src/themes/ColorUtil';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import MessageViewer from './component/MessagesViewer';
 import { useRouter } from 'expo-router';
 const supabaseUrl = 'https://xyzcompany.supabase.co';
@@ -131,28 +125,26 @@ export default function ChatScreen() {
   };
 
   return (
-    <SafeAreaView>
-      <BackgroundView>
-        {/* ヘッダー */}
-        <Header
-          title="Chat"
-          onBack={() => {
-            router.back();
-          }}
-        />
-        {/* メッセージエリア */}
-        <View className="flex-1 p-4 rounded-xl my-4 bg-light-theme dark:bg-dark-theme">
-          <MessageViewer messages={messages} />
-        </View>
-        {/* 入力エリア */}
-        {Platform.OS === 'ios' ? (
-          <KeyboardAvoidingView className="flex w-full" behavior={'padding'}>
-            {renderMessage()}
-          </KeyboardAvoidingView>
-        ) : (
-          renderMessage()
-        )}
-      </BackgroundView>
-    </SafeAreaView>
+    <BackgroundView>
+      {/* ヘッダー */}
+      <Header
+        title="Chat"
+        onBack={() => {
+          router.back();
+        }}
+      />
+      {/* メッセージエリア */}
+      <View className="flex-1 p-4 rounded-xl my-4 bg-light-theme dark:bg-dark-theme">
+        <MessageViewer messages={messages} />
+      </View>
+      {/* 入力エリア */}
+      {Platform.OS === 'ios' ? (
+        <KeyboardAvoidingView className="flex w-full" behavior={'padding'}>
+          {renderMessage()}
+        </KeyboardAvoidingView>
+      ) : (
+        renderMessage()
+      )}
+    </BackgroundView>
   );
 }

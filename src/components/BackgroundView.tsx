@@ -5,11 +5,12 @@ const isIOS = Platform.OS === 'ios';
 
 type Props = {
   children: React.ReactNode;
+  isTabbar?: boolean;
 };
-export default function BackgroundView({ children }: Props) {
+export default function BackgroundView({ children, isTabbar = true }: Props) {
   return (
     <View
-      className={`px-4 flex flex-col justify-start h-screen bg-light-background dark:bg-dark-background gap-8 ${isIOS ? 'pb-36' : 'pb-24'}`}
+      className={`px-4 flex flex-col justify-start h-screen bg-light-background dark:bg-dark-background gap-8 pt-20 ${isTabbar && isIOS ? 'pb-64' : 'pb-72'}`}
     >
       {children}
     </View>

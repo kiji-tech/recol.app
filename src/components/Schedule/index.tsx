@@ -122,58 +122,63 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
   return (
     <>
       {/* 日付選択タブ */}
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} className="pt-8">
-        {dateList.map((date, index) => {
-          return (
-            <TouchableOpacity key={date.format(DATE_FORMAT)} onPress={() => handleDatePress(date)}>
-              <View
-                className={`border-t-[1px] border-x-[1px] 
+      <View>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          {dateList.map((date, index) => {
+            return (
+              <TouchableOpacity
+                key={date.format(DATE_FORMAT)}
+                onPress={() => handleDatePress(date)}
+              >
+                <View
+                  className={`border-t-[1px] border-x-[1px] 
                     flex justify-start items-start h-20 w-32 p-2 ${index == 0 && 'rounded-l-xl'} ${index === dateList.length - 1 && 'rounded-r-xl'}
                     border-light-border dark:border-dark-border ${date.isSame(selectedDate) && 'bg-light-info dark:bg-dark-info'}`}
-              >
-                <Text className="text-center font-semibold ">{date.format('M/D')}</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
-      {/* 日付の予定 */}
-      <ScrollView className="w-full">
-        {/* 時間軸の表示 */}
-        {hours.map((hour) => {
-          // 時間内にあるスケジュールを取得する
-          return (
-            <TouchableOpacity
-              key={hour}
-              onPress={() => {
-                handleHourPress(hour);
-              }}
-              className={`w-full flex flex-row items-center
+                >
+                  <Text className="text-center font-semibold ">{date.format('M/D')}</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+        {/* 日付の予定 */}
+        <ScrollView className="w-full">
+          {/* 時間軸の表示 */}
+          {hours.map((hour) => {
+            // 時間内にあるスケジュールを取得する
+            return (
+              <TouchableOpacity
+                key={hour}
+                onPress={() => {
+                  handleHourPress(hour);
+                }}
+                className={`w-full flex flex-row items-center
                 border-t-[1px] last-child:border-b-[1px]  h-[64px]
                 border-light-border dark:border-dark-border`}
-            >
-              <Text className="w-1/6 pl-2 text-light-text dark:text-dark-text">{hour}</Text>
-            </TouchableOpacity>
-          );
-        })}
-        {/* スケジュールアイテム（タスク）の表示 */}
+              >
+                <Text className="w-1/6 pl-2 text-light-text dark:text-dark-text">{hour}</Text>
+              </TouchableOpacity>
+            );
+          })}
+          {/* スケジュールアイテム（タスク）の表示 */}
 
-        {schedule
-          .filter((s) => dayjs(s.from).format(DATE_FORMAT) === selectedDate?.format(DATE_FORMAT))
-          .map((s) => (
-            <ScheduleItem
-              key={s.uid}
-              item={s}
-              onPress={handleSchedulePress}
-              onLongPress={handleScheduleLongPress}
-            />
-          ))}
-        {isLoading && (
-          <View className="absolute w-screen h-full top-0 left-0">
-            <Loading />
-          </View>
-        )}
-      </ScrollView>
+          {schedule
+            .filter((s) => dayjs(s.from).format(DATE_FORMAT) === selectedDate?.format(DATE_FORMAT))
+            .map((s) => (
+              <ScheduleItem
+                key={s.uid}
+                item={s}
+                onPress={handleSchedulePress}
+                onLongPress={handleScheduleLongPress}
+              />
+            ))}
+          {isLoading && (
+            <View className="absolute w-screen h-full top-0 left-0">
+              <Loading />
+            </View>
+          )}
+        </ScrollView>
+      </View>
     </>
   );
 }

@@ -1,6 +1,5 @@
 import React, { ReactNode, useCallback, useState } from 'react';
-import { Header } from '@/src/components';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { BackgroundView, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
 import Schedule from '@/src/components/Schedule';
 import { useRouter } from 'expo-router';
@@ -8,9 +7,7 @@ import { deleteSchedule, fetchPlan } from '@/src/libs/ApiService';
 import { useFocusEffect } from '@react-navigation/native';
 import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
-import { Alert, View } from 'react-native';
-import { Platform } from 'react-native';
-const isIOS = Platform.OS === 'ios';
+import { Alert } from 'react-native';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
@@ -66,19 +63,15 @@ export default function ScheduleScreen(): ReactNode {
 
   // === Render ===
   return (
-    <SafeAreaView>
-      <View
-        className={`px-4 flex flex-col justify-start h-screen bg-light-background dark:bg-dark-background  ${isIOS ? 'pb-36' : 'pb-24'}`}
-      >
-        {/* ヘッダー */}
-        <Header
-          title={`${viewPlan?.title || plan?.title || 'スケジュール'}の予定`}
-          onBack={() => router.back()}
-          //   TODO: アクションボタン（共有・予定の削除など）
-          //   rightComponent={<></>}
-        />
-        <Schedule plan={viewPlan} onDelete={handleDeleteSchedule} />
-      </View>
-    </SafeAreaView>
+    <BackgroundView>
+      {/* ヘッダー */}
+      <Header
+        title={`${viewPlan?.title || plan?.title || 'スケジュール'}の予定`}
+        onBack={() => router.back()}
+        //   TODO: アクションボタン（共有・予定の削除など）
+        //   rightComponent={<></>}
+      />
+      <Schedule plan={viewPlan} onDelete={handleDeleteSchedule} />
+    </BackgroundView>
   );
 }

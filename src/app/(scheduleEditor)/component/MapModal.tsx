@@ -48,7 +48,7 @@ export default function MapModal({ isOpen, placeList, onClose }: Props) {
 
   return (
     <>
-      <View className=" w-screen h-screen absolute top-0 left-0">
+      <View className=" w-screen h-screen absolute top-0 left-0 mt-20">
         <Map
           isSearch={true}
           isMarker={true}

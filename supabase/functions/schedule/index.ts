@@ -1,10 +1,6 @@
 import { Hono } from 'jsr:@hono/hono';
-import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { generateSupabase } from '../libs/supabase.ts';
 const app = new Hono().basePath('/schedule');
-
-const generateSupabase = () => {
-  return createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? '');
-};
 
 const get = async (c: Hono.Context) => {
   console.log('schedule get');
