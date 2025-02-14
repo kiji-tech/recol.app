@@ -37,7 +37,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
           });
         };
 
-        // if (label == 'サンプル' && process.env.EXPO_PUBLIC_APP_ENV != 'development') return;
+        if (label == 'サンプル' && process.env.EXPO_PUBLIC_APP_ENV != 'development') return;
 
         return (
           <TouchableOpacity

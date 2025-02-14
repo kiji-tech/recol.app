@@ -7,16 +7,18 @@ import { supabase } from '../libs/supabase';
 import { PlanProvider } from '../contexts/PlanContext';
 import { AuthProvider } from '../contexts/AuthContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'expo-dev-client';
 
-// Use imperatively
-// 'dark  | 'light' | 'system'
-// colorScheme.set('dark');
+const THEME_STORAGE_KEY = '@theme_mode';
+
+// デフォルトはライトモード
 colorScheme.set('light');
 
 const RouteLayout = () => {
   useEffect(() => {
-    (async () => {
+    const initializeApp = async () => {
+      // セッションチェック
       const {
         data: { session },
       } = await supabase.auth.getSession();
@@ -24,7 +26,19 @@ const RouteLayout = () => {
         router.navigate('/(auth)/SignIn');
         return;
       }
-    })();
+
+      // テーマ設定の読み込み
+      try {
+        const savedTheme = await AsyncStorage.getItem(THEME_STORAGE_KEY);
+        if (savedTheme) {
+          colorScheme.set(savedTheme as 'dark' | 'light');
+        }
+      } catch (error) {
+        console.error('テーマ設定の読み込みに失敗しました:', error);
+      }
+    };
+
+    initializeApp();
   }, []);
 
   return (

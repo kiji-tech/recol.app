@@ -230,7 +230,7 @@ export default function Map({
     <>
       <MapView
         style={{
-          height: SCREEN_HEIGHT,
+          height: SCREEN_HEIGHT - 160,
           width: '100%',
           flex: 1,
           position: 'absolute',
