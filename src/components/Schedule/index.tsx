@@ -122,7 +122,7 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
   return (
     <>
       {/* 日付選択タブ */}
-      <View className="h-4/5">
+      <View className="pb-40">
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           {dateList.map((date, index) => {
             return (

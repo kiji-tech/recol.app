@@ -28,13 +28,13 @@ export class LogUtil {
   /**
    * ログを出力し、必要に応じてSlackに通知する
    */
-  static async log(message: string, options: LogOptions = {}) {
+  static async log(message: unknown, options: LogOptions = {}) {
     const { level = 'info', notify = false, error, additionalInfo = {} } = options;
-
+    const m = typeof message == 'string' ? message : JSON.stringify(message);
     const logData: LogData = {
       timestamp: new Date().toISOString(),
       level,
-      message,
+      message: m,
       ...additionalInfo,
     };
 

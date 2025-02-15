@@ -48,7 +48,7 @@ const SCHEDULE_NOTIFICATION_KEY = '@schedule_notification_enabled';
 const CHAT_NOTIFICATION_KEY = '@chat_notification_enabled';
 
 export default function Settings() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { theme, setTheme } = useTheme();
   const [scheduleNotification, setScheduleNotification] = useState(true);
   const [chatNotification, setChatNotification] = useState(true);
@@ -112,17 +112,19 @@ export default function Settings() {
       <ScrollView className="h-screen gap-8 flex flex-col" showsVerticalScrollIndicator={false}>
         {/* プロフィールセクション */}
         <View className="items-center p-6 border-b border-light-border dark:border-dark-border">
-          <Image
-            source={{ uri: user?.user_metadata?.avatar_url || 'https://via.placeholder.com/100' }}
-            className="w-24 h-24 rounded-full mb-4"
-          />
+          <View className="w-24 h-24 rounded-full overflow-hidden border-2 border-light-border dark:border-dark-border">
+            {profile?.avatar_url ? (
+              <Image source={{ uri: profile?.avatar_url }} className="w-full h-full" />
+            ) : (
+              <View className="w-full h-full bg-light-shadow dark:bg-dark-shadow items-center justify-center">
+                <Ionicons name="person" size={40} color="gray" />
+              </View>
+            )}
+          </View>
           <Text className="text-xl font-bold text-light-text dark:text-dark-text">
-            {user?.user_metadata?.username || 'ユーザー名未設定'}
+            {profile?.display_name || 'ユーザー名未設定'}
           </Text>
-          <Text className="text-gray-600 dark:text-dark-text">{user?.email}</Text>
-          <Text className="text-sm text-light-text dark:text-light-text mt-1">
-            {user?.user_metadata?.role || 'ユーザー'}
-          </Text>
+          <Text className="text-light-text dark:text-dark-text">{user?.email}</Text>
         </View>
 
         {/* アカウント設定 */}
@@ -134,7 +136,7 @@ export default function Settings() {
             icon="person-outline"
             title="プロフィール編集"
             isDarkMode={isDarkMode}
-            // onPress={() => router.push('/(settings)/profile-edit')}
+            onPress={() => router.push('/(settings)/ProfileEditorScreen')}
           />
         </View>
 

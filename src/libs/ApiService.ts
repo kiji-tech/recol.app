@@ -1,6 +1,7 @@
 import { Session } from '@supabase/supabase-js';
 import { Tables } from './database.types';
 
+// ============ Plan ============
 /**
  * プラン情報の取得
  *
@@ -48,6 +49,7 @@ const fetchPlanList = async (session: Session | null, ctrl?: AbortController) =>
   return data as Tables<'plan'> & { schedule: Tables<'schedule'>[] }[];
 };
 
+// ============ Schedule ============
 /**
  * スケジュール情報の取得
  *
@@ -132,4 +134,55 @@ const deleteSchedule = async (uid: string, session: Session | null, ctrl?: Abort
   return;
 };
 
-export { fetchPlan, fetchPlanList, fetchSchedule, fetchScheduleList, deleteSchedule };
+// ============ Profile ============
+const getProfile = async (session: Session | null, ctrl?: AbortController) => {
+  console.log('get profile');
+  const res = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/profile`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session?.access_token}`,
+    },
+    signal: ctrl?.signal,
+  });
+  if (!res.ok) {
+    throw res;
+  }
+  const data = await res.json();
+  return data as Tables<'profile'>;
+};
+
+const updateProfile = async (
+  displayName: string,
+  avatarUrl: string | null,
+  session: Session | null,
+  ctrl?: AbortController
+) => {
+  const res = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/profile`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session?.access_token}`,
+    },
+    body: JSON.stringify({
+      display_name: displayName,
+      avatar_url: avatarUrl,
+    }),
+    signal: ctrl?.signal,
+  });
+  if (!res.ok) {
+    throw res;
+  }
+  const data = await res.json();
+  return data as Tables<'profile'>;
+};
+
+export {
+  fetchPlan,
+  fetchPlanList,
+  fetchSchedule,
+  fetchScheduleList,
+  deleteSchedule,
+  getProfile,
+  updateProfile,
+};

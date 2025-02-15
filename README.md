@@ -73,7 +73,11 @@ $ eas build --profile production --platform all      ･･･ Storeアプリに
 `supabase edge function`
 
 ```shell
+# 全functionsをデプロイ
 $ npm run functions:deploy
+
+# 特定のfunctionsをデプロイ
+$ npm run functions:deploy [functions名]
 ```
 
 `migration関係`

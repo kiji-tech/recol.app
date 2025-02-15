@@ -1,5 +1,6 @@
-import { Tables } from '@/src/libs/database.types';
+import React from 'react';
 import { View, Text, FlatList } from 'react-native';
+import { Tables } from '@/src/libs/database.types';
 
 export default function MessageViewer({ messages }: { messages: Tables<'messages'>[] }) {
   const renderItem = ({ item }: { item: Tables<'messages'> }) => (
