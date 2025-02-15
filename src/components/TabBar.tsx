@@ -4,7 +4,10 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useTheme } from '../contexts/ThemeContext';
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+  const { theme } = useTheme();
+  const isDarkMode = theme === 'dark';
   return (
     <View className="flex-row w-full bottom-0 border-[1px] border-light-border dark:border-dark-border mx-auto">
       {state.routes.map((route, index) => {
@@ -51,10 +54,18 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
             onPress={onPress}
             onLongPress={onLongPress}
           >
-            {label == 'ホーム' && <Entypo name="home" size={20} color="black" />}
-            {label == 'スケジュール' && <Entypo name="calendar" size={20} color="black" />}
-            {label == '設定' && <Ionicons name="settings" size={20} color="black" />}
-            {label == 'マップ' && <FontAwesome name="map-marker" size={20} color="black" />}
+            {label == 'ホーム' && (
+              <Entypo name="home" size={20} color={isDarkMode ? 'white' : 'black'} />
+            )}
+            {label == 'スケジュール' && (
+              <Entypo name="calendar" size={20} color={isDarkMode ? 'white' : 'black'} />
+            )}
+            {label == '設定' && (
+              <Ionicons name="settings" size={20} color={isDarkMode ? 'white' : 'black'} />
+            )}
+            {label == 'マップ' && (
+              <FontAwesome name="map-marker" size={20} color={isDarkMode ? 'white' : 'black'} />
+            )}
 
             <Text className={`text-light-text dark:text-dark-text text-md font-semibold`}>
               {label as string}

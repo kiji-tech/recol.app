@@ -45,7 +45,7 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
               {/* /title */}
               <View className="w-3/5">
                 <Text
-                  className={`text-lg ${selected ? 'font-bold text-light-danger dark:text-dark-danger' : 'font-semibold'}`}
+                  className={`text-lg ${selected ? 'font-bold text-light-danger dark:text-dark-danger' : 'text-light-text dark:text-dark-text font-semibold'}`}
                 >
                   {place.displayName.text}
                 </Text>
@@ -56,7 +56,9 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
               </View>
             </View>
             {/* description */}
-            <Text className="text-ellipsis line-clamp-2">{place.editorialSummary?.text || ''}</Text>
+            <Text className="text-ellipsis line-clamp-2 text-light-text dark:text-dark-text">
+              {place.editorialSummary?.text || ''}
+            </Text>
           </View>
         </View>
       </View>

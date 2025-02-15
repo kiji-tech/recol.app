@@ -11,6 +11,7 @@ import Header from '../../Header/Header';
 import { reviewAIAnalyze } from '@/src/apis/OpenAI';
 import Loading from '../../Loading';
 import ImageScrollView from '../../ImageScrollView';
+import { useTheme } from '@/src/contexts/ThemeContext';
 type Props = {
   place: Place;
   selected: boolean;
@@ -20,6 +21,7 @@ type Props = {
 };
 export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose }: Props) {
   // === Member ===
+  const { isDarkMode } = useTheme();
   const [isAiNavigation, setIsAiNavigation] = useState(false);
   const [aiText, setAiText] = useState('');
 
@@ -83,13 +85,15 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
           rightComponent={
             selected ? (
               <IconButton
-                icon={<FontAwesome5 name="trash" size={16} />}
+                icon={
+                  <FontAwesome5 name="trash" size={16} color={isDarkMode ? 'white' : 'black'} />
+                }
                 theme="danger"
                 onPress={handleRemove}
               />
             ) : (
               <IconButton
-                icon={<FontAwesome6 name="add" size={16} />}
+                icon={<FontAwesome6 name="add" size={16} color={isDarkMode ? 'white' : 'black'} />}
                 theme="info"
                 onPress={handleAdd}
               />
@@ -100,12 +104,16 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
         <RateViewer rating={place.rating} />
 
         {/* 詳細 */}
-        <Text className="text-ellipsis">{place.editorialSummary?.text || ''}</Text>
+        <Text className="text-ellipsis text-light-text dark:text-dark-text">
+          {place.editorialSummary?.text || ''}
+        </Text>
 
         {/* AIレビュー */}
-        <Text className="text-xl font-semibold">AIレビュー要約({place.reviews.length}件)</Text>
+        <Text className="text-xl font-semibold text-light-text dark:text-dark-text">
+          AIレビュー要約({place.reviews.length}件)
+        </Text>
         {isAiNavigation ? (
-          <Text>{aiText}</Text>
+          <Text className={`text-light-text dark:text-dark-text`}>{aiText}</Text>
         ) : (
           <View className="w-full h-36">
             <Loading />
@@ -113,37 +121,47 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
         )}
 
         {/* 営業時間 */}
-        {place.currentOpeningHours && <Text className="text-xl font-semibold">営業時間</Text>}
+        {place.currentOpeningHours && (
+          <Text className="text-xl font-semibold text-light-text dark:text-dark-text">
+            営業時間
+          </Text>
+        )}
         {place.currentOpeningHours &&
           place.currentOpeningHours.weekdayDescriptions.map((weekday) => (
-            <Text key={weekday} className="text-nowrap">
+            <Text key={weekday} className="text-nowrap text-light-text dark:text-dark-text">
               {weekday}
             </Text>
           ))}
         {/* 予約 */}
 
         {/* ボタングループ */}
-              <View className="flex flex-row justify-start items-center gap-4">
-                  {place.websiteUri &&
-          <IconButton
-          icon={
-              <MaterialCommunityIcons
-              name="web"
-              size={18}
-              className={`text-light-text dark:text-dark-text`}
-              />
-            }
-            theme="theme"
-            onPress={() => Linking.openURL(place.websiteUri)}
+        <View className="flex flex-row justify-start items-center gap-4">
+          {place.websiteUri && (
+            <IconButton
+              icon={
+                <MaterialCommunityIcons
+                  name="web"
+                  size={18}
+                  className={`text-light-text dark:text-dark-text`}
+                />
+              }
+              theme="theme"
+              onPress={() => Linking.openURL(place.websiteUri)}
             />
-        }
-        {place.googleMapsUri && 
-          <IconButton
-            icon={<FontAwesome5 name="map-marked-alt" size={18} className={`text-light-text dark:text-dark-text`} />}
-            theme="theme"
-            onPress={() => Linking.openURL(place.googleMapsUri)}
+          )}
+          {place.googleMapsUri && (
+            <IconButton
+              icon={
+                <FontAwesome5
+                  name="map-marked-alt"
+                  size={18}
+                  className={`text-light-text dark:text-dark-text`}
+                />
+              }
+              theme="theme"
+              onPress={() => Linking.openURL(place.googleMapsUri)}
             />
-        }
+          )}
         </View>
       </View>
     </BottomSheetScrollView>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BackgroundView, Button } from '@/src/components';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { useTheme } from '@/src/contexts/ThemeContext';
 import { supabase } from '@/src/libs/supabase';
 import { router } from 'expo-router';
 import { Text, View, Switch, Image, ScrollView, TouchableOpacity } from 'react-native';
@@ -8,7 +9,6 @@ import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { colorScheme } from 'nativewind';
 
 interface SettingItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -44,28 +44,26 @@ const SettingItem: React.FC<SettingItemProps> = ({
   </TouchableOpacity>
 );
 
-const THEME_STORAGE_KEY = '@theme_mode';
 const SCHEDULE_NOTIFICATION_KEY = '@schedule_notification_enabled';
 const CHAT_NOTIFICATION_KEY = '@chat_notification_enabled';
 
 export default function Settings() {
   const { user } = useAuth();
-  const [isDarkMode, setIsDarkMode] = useState(colorScheme.get() === 'dark');
+  const { theme, setTheme } = useTheme();
   const [scheduleNotification, setScheduleNotification] = useState(true);
   const [chatNotification, setChatNotification] = useState(true);
   const version = Constants.expoConfig?.version || '1.0.0';
+  const isDarkMode = theme === 'dark';
 
-  // 設定の読み込み
+  // 通知設定の読み込み
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const [savedTheme, scheduleEnabled, chatEnabled] = await Promise.all([
-          AsyncStorage.getItem(THEME_STORAGE_KEY),
+        const [scheduleEnabled, chatEnabled] = await Promise.all([
           AsyncStorage.getItem(SCHEDULE_NOTIFICATION_KEY),
           AsyncStorage.getItem(CHAT_NOTIFICATION_KEY),
         ]);
 
-        setIsDarkMode(savedTheme === 'dark');
         setScheduleNotification(scheduleEnabled !== 'false');
         setChatNotification(chatEnabled !== 'false');
       } catch (error) {
@@ -76,15 +74,8 @@ export default function Settings() {
   }, []);
 
   // テーマ切り替え処理
-  const handleThemeChange = async (value: boolean) => {
-    try {
-      const newTheme = value ? 'dark' : 'light';
-      await AsyncStorage.setItem(THEME_STORAGE_KEY, newTheme);
-      colorScheme.set(newTheme);
-      setIsDarkMode(value);
-    } catch (error) {
-      console.error('テーマ設定の保存に失敗しました:', error);
-    }
+  const handleThemeChange = (value: boolean) => {
+    setTheme(value ? 'dark' : 'light');
   };
 
   // スケジュール通知設定の変更

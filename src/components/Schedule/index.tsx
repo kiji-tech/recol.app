@@ -122,7 +122,7 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
   return (
     <>
       {/* 日付選択タブ */}
-      <View>
+      <View className="h-4/5">
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           {dateList.map((date, index) => {
             return (
@@ -133,9 +133,11 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
                 <View
                   className={`border-t-[1px] border-x-[1px] 
                     flex justify-start items-start h-20 w-32 p-2 ${index == 0 && 'rounded-l-xl'} ${index === dateList.length - 1 && 'rounded-r-xl'}
-                    border-light-border dark:border-dark-border ${date.isSame(selectedDate) && 'bg-light-info dark:bg-dark-info'}`}
+                    border-light-border dark:border-dark-border ${date.isSame(selectedDate) ? 'bg-light-info dark:bg-dark-info' : 'bg-light-background dark:bg-dark-background'}`}
                 >
-                  <Text className="text-center font-semibold ">{date.format('M/D')}</Text>
+                  <Text className="text-center font-semibold text-light-text dark:text-dark-text">
+                    {date.format('M/D')}
+                  </Text>
                 </View>
               </TouchableOpacity>
             );

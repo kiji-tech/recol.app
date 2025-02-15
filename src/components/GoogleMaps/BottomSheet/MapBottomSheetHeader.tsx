@@ -1,6 +1,8 @@
 import { MapCategory } from '@/src/entities/MapCategory';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import React, { useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 type SearchSelectedButtonProps = {
   id: MapCategory;
@@ -35,11 +37,11 @@ export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }
   const SearchSelectedButton = ({ id, label, onPress }: SearchSelectedButtonProps) => {
     if (id === 'text' && selectedCategory != 'text') return;
     return (
-      <TouchableOpacity key={id} className="" onPress={() => onPress(id)}>
+      <TouchableOpacity key={id} onPress={() => onPress(id)}>
         <View
-          className={`px-4 py-2 rounded-xl ${checkSelectedCategory(id) ? 'bg-light-info dark:bg-dark-info' : 'bg-light-background dark:bg-dark-background'}`}
+          className={`px-4 py-2 mr-2 rounded-xl ${checkSelectedCategory(id) ? 'bg-light-info dark:bg-dark-info' : 'bg-light-background dark:bg-dark-background'}`}
         >
-          <Text>{label}</Text>
+          <Text className={`text-light-text dark:text-dark-text`}>{label}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -47,13 +49,14 @@ export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }
 
   return (
     <View className="py-4 px-2">
-      <ScrollView
+      <BottomSheetScrollView
+        className="w-screen"
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
       >
         {categoryButtonList.map((button) => SearchSelectedButton(button))}
-      </ScrollView>
+      </BottomSheetScrollView>
     </View>
   );
 }

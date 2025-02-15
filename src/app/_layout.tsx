@@ -6,55 +6,12 @@ import { supabase } from '../libs/supabase';
 import { PlanProvider } from '../contexts/PlanContext';
 import { AuthProvider } from '../contexts/AuthContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useColorScheme, AppRegistry, Platform } from 'react-native';
-import { colorScheme } from 'nativewind';
+import { View } from 'react-native';
+import { ThemeProvider, useTheme } from '../contexts/ThemeContext';
 import 'expo-dev-client';
 
-const THEME_STORAGE_KEY = '@theme_mode';
-
-// 初期テーマを'light'に設定
-if (Platform.OS === 'android') {
-  AppRegistry.registerHeadlessTask('ThemeInitializer', () => {
-    colorScheme.set('light');
-    return () => Promise.resolve();
-  });
-} else {
-  colorScheme.set('light');
-}
-
-const RouteLayout = () => {
-  const systemColorScheme = useColorScheme();
-
-  useEffect(() => {
-    const loadTheme = async () => {
-      try {
-        const savedTheme = await AsyncStorage.getItem(THEME_STORAGE_KEY);
-        const themeToApply = savedTheme || systemColorScheme || 'light';
-
-        // 初期テーマと異なる場合のみ設定を変更
-        if (themeToApply !== 'light') {
-          if (Platform.OS === 'ios') {
-            colorScheme.set(themeToApply as 'dark' | 'light');
-          } else {
-            // Androidの場合は遅延実行
-            setTimeout(() => {
-              colorScheme.set(themeToApply as 'dark' | 'light');
-            }, 100);
-          }
-        }
-
-        // 保存されていない場合は保存
-        if (!savedTheme) {
-          await AsyncStorage.setItem(THEME_STORAGE_KEY, themeToApply);
-        }
-      } catch (error) {
-        console.error('テーマ設定の読み込みに失敗しました:', error);
-      }
-    };
-
-    loadTheme();
-  }, [systemColorScheme]);
+const Layout = () => {
+  const { isThemeLoaded } = useTheme();
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -70,24 +27,37 @@ const RouteLayout = () => {
     initializeApp();
   }, []);
 
+  if (!isThemeLoaded) {
+    return <View style={{ flex: 1 }} />;
+  }
+
+  return (
+    <Stack>
+      <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
+      <Stack.Screen name="(add.plan)" options={{ title: '計画作成', headerShown: false }} />
+      <Stack.Screen name="(plan)" options={{ title: '計画表示', headerShown: false }} />
+      <Stack.Screen name="(chat)" options={{ title: 'チャット', headerShown: false }} />
+      <Stack.Screen
+        name="(scheduleEditor)"
+        options={{ title: 'スケジュール編集', headerShown: false }}
+      />
+      <Stack.Screen name="(auth)" options={{ title: 'ログイン', headerShown: false }} />
+    </Stack>
+  );
+};
+
+const RouteLayout = () => {
   return (
     <AuthProvider>
       <PlanProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <Stack>
-            <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
-            <Stack.Screen name="(add.plan)" options={{ title: '計画作成', headerShown: false }} />
-            <Stack.Screen name="(plan)" options={{ title: '計画表示', headerShown: false }} />
-            <Stack.Screen name="(chat)" options={{ title: 'チャット', headerShown: false }} />
-            <Stack.Screen
-              name="(scheduleEditor)"
-              options={{ title: 'スケジュール編集', headerShown: false }}
-            />
-            <Stack.Screen name="(auth)" options={{ title: 'ログイン', headerShown: false }} />
-          </Stack>
+          <ThemeProvider>
+            <Layout />
+          </ThemeProvider>
         </GestureHandlerRootView>
       </PlanProvider>
     </AuthProvider>
   );
 };
+
 export default RouteLayout;

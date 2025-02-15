@@ -80,7 +80,7 @@ export default function ScheduleEditor() {
                 });
               }}
             />
-            <Text> ― </Text>
+            <Text className="text-light-text dark:text-dark-text"> ― </Text>
             <DatePicker
               label=""
               mode="time"
@@ -104,7 +104,7 @@ export default function ScheduleEditor() {
           <Button theme={'info'} onPress={handleMapModal} text={'マップから確認・追加'} />
 
           {/* 候補数 */}
-          <Text>
+          <Text className="text-light-text dark:text-dark-text">
             {(editSchedule.place_list && editSchedule.place_list!.length) || 0}件候補があります｡
           </Text>
         </View>
