@@ -5,7 +5,6 @@
     },
     "build": {
         "base": {
-            "node": "22.13.1",
             "env": {
                 "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY": "AIzaSyDZg8Pd1pIXO0NWl1lWo0JJM1UCixBqarQ",
                 "EXPO_PUBLIC_SUPABASE_REFERENCE_ID": "sxqfudbkpoymileoqdpr",
@@ -18,13 +17,11 @@
                 "EXPO_PUBLIC_OPEN_AI_API_KEY": "sk-_czcteUmW0KwIA2dtzhbhyFX5Ne3c4ncDSpO8ZXWLpT3BlbkFJx0m--hEUJhecKWLYBfTuo7MdYMS3o03KZnlyGdKjEA"
             },
             "android": {
-                "image": "default",
                 "env": {
                     "PLATFORM": "android"
                 }
             },
             "ios": {
-                "image": "latest",
                 "env": {
                     "PLATFORM": "ios"
                 }
