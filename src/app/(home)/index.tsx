@@ -4,8 +4,8 @@ import { View, Text, ScrollView } from 'react-native';
 
 export default function Home() {
   return (
-    <BackgroundView>
-      <ScrollView>
+    <ScrollView>
+      <BackgroundView>
         {/* 旅行ブログ */}
         <View className="flex-1 flex-row justify-between items-center w-full mt-4">
           <Text className="text-2xl font-bold">ブログ</Text>
@@ -30,7 +30,7 @@ export default function Home() {
             </View>
           </View>
         </View>
-      </ScrollView>
-    </BackgroundView>
+      </BackgroundView>
+    </ScrollView>
   );
 }

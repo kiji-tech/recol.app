@@ -1,3 +1,4 @@
+import React from 'react';
 import dayjs from '@/src/libs/dayjs';
 import { Dayjs } from 'dayjs';
 import { useState } from 'react';
@@ -7,13 +8,15 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 type Props = {
   label?: string;
   value: Dayjs;
-  mode?: 'date' | 'time';
+  mode?: 'date' | 'time' | 'datetime';
   onChange: (date: Dayjs) => void;
 };
 const DatePicker = ({ label, mode = 'date', value, onChange }: Props) => {
-  const format = mode === 'date' ? 'YYYY-MM-DD' : 'HH:mm';
+  // === Member ===
+  const format = mode === 'date' ? 'YYYY-MM-DD' : mode === 'time' ? 'HH:mm' : 'YYYY-MM-DD HH:mm';
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
+  // === Method ===
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -28,7 +31,7 @@ const DatePicker = ({ label, mode = 'date', value, onChange }: Props) => {
   };
 
   return (
-    <View className={`flex flex-col justify-start max-w-40 w-[40%]`}>
+    <View className={`flex flex-col justify-start`}>
       {label && <Text className={`text-light-text dark:text-dark-text`}>{label}</Text>}
       <TouchableOpacity onPress={showDatePicker}>
         <View

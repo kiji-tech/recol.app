@@ -148,6 +148,22 @@ CommandError: Failed to build iOS project. "xcodebuild" exited with error code 7
     { platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device, error:iOS 18.2 is not installed. To use with Xcode, first download and install the platform }
 ```
 
+### Possible unhandled promise rejection
+
+TryCatchなどで､Promise（非同期処理）をハンドリングされずにいると､warningとして出力される
+
+```typescript
+// -> catchがないため､失敗した際のハンドリングがない
+const response = await fetch(url);
+
+// TryCatch､もしくは.catch()でハンドリングする
+try {
+  const response = await fetch(url);
+} catch (error) {
+  console.error(error);
+}
+```
+
 ## ドキュメント
 
 ### React Native Maps

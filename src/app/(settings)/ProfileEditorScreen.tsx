@@ -14,7 +14,11 @@ export default function ProfileEditorScreen() {
   // === Member ===
   const router = useRouter();
   const { session, user, profile, setProfile } = useAuth();
-  const [avatar, setAvatar] = useState<string | null>(profile?.avatar_url ?? null);
+  const [avatar, setAvatar] = useState<string | null>(
+    profile?.avatar_url
+      ? `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`
+      : null
+  );
   const [displayName, setDisplayName] = useState(profile?.display_name ?? '');
 
   // === Method ===
@@ -24,6 +28,7 @@ export default function ProfileEditorScreen() {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
+      base64: true,
     });
 
     if (!result.canceled) {
@@ -32,12 +37,33 @@ export default function ProfileEditorScreen() {
   };
 
   const handleSave = async () => {
-    const newProfile = await updateProfile(displayName, avatar, session).catch((err) => {
-      console.error(err);
-    });
-    LogUtil.log(newProfile, {});
-    setProfile(newProfile as Tables<'profile'> | null);
-    router.back();
+    const base64Image = avatar
+      ? await fetch(avatar)
+          .then((response) => response.blob())
+          .then((blob) => {
+            return new Promise<string>((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
+            });
+          })
+          .catch((error) => {
+            console.error('Error converting image to base64:', error);
+            return null;
+          })
+      : null;
+
+    await updateProfile(displayName, base64Image, session)
+      .then((profile: Tables<'profile'>) => {
+        LogUtil.log(profile, {});
+        setProfile(profile);
+        router.back();
+      })
+      .catch((err) => {
+        console.error(err);
+        alert('プロフィールの更新に失敗しました');
+      });
   };
 
   // === Render ===
@@ -49,7 +75,12 @@ export default function ProfileEditorScreen() {
           <TouchableOpacity onPress={handlePickImage} className="relative">
             <View className="w-24 h-24 rounded-full overflow-hidden border-2 border-light-border dark:border-dark-border">
               {avatar ? (
-                <Image source={{ uri: avatar }} className="w-full h-full" />
+                <Image
+                  source={{
+                    uri: avatar,
+                  }}
+                  className="w-full h-full"
+                />
               ) : (
                 <View className="w-full h-full bg-light-shadow dark:bg-dark-shadow items-center justify-center">
                   <Ionicons name="person" size={40} color="#666666" />

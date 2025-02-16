@@ -1,17 +1,21 @@
 import React, { ReactNode, useCallback, useState } from 'react';
-import { BackgroundView, Header } from '@/src/components';
-import { usePlan } from '@/src/contexts/PlanContext';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Schedule from '@/src/components/Schedule';
+import { BackgroundView, Header, IconButton } from '@/src/components';
+import { usePlan } from '@/src/contexts/PlanContext';
 import { useRouter } from 'expo-router';
 import { deleteSchedule, fetchPlan } from '@/src/libs/ApiService';
 import { useFocusEffect } from '@react-navigation/native';
 import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { Alert } from 'react-native';
+import dayjs from 'dayjs';
+import { useTheme } from '@/src/contexts/ThemeContext';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
-  const { plan } = usePlan();
+  const { isDarkMode } = useTheme();
+  const { plan, setEditSchedule } = usePlan();
   const { session } = useAuth();
   const [viewPlan, setViewPlan] = useState<
     (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null
@@ -44,6 +48,15 @@ export default function ScheduleScreen(): ReactNode {
       ctrl.abort();
     };
   };
+  const handleAddPress = () => {
+    const schedule = {
+      plan_id: plan!.uid,
+      from: dayjs(plan?.from).set('hour', 0).set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
+      to: dayjs(plan?.from).set('hour', 1).set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
+    } as Tables<'schedule'>;
+    setEditSchedule(schedule);
+    router.push(`/(scheduleEditor)/ScheduleEditor`);
+  };
 
   const handleDeleteSchedule = async (schedule: Tables<'schedule'>) => {
     try {
@@ -69,7 +82,13 @@ export default function ScheduleScreen(): ReactNode {
         title={`${viewPlan?.title || plan?.title || 'スケジュール'}の予定`}
         onBack={() => router.back()}
         //   TODO: アクションボタン（共有・予定の削除など）
-        //   rightComponent={<></>}
+        rightComponent={
+          <IconButton
+            icon={<MaterialIcons name="add" size={18} color={isDarkMode ? 'white' : 'black'} />}
+            onPress={handleAddPress}
+            theme="info"
+          ></IconButton>
+        }
       />
       <Schedule plan={viewPlan} onDelete={handleDeleteSchedule} />
     </BackgroundView>

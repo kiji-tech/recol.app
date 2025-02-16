@@ -1,14 +1,14 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Tables } from '@/src/libs/database.types';
 import { ReactNode, useEffect, useState } from 'react';
-import { Text, ScrollView, TouchableOpacity, View, Alert } from 'react-native';
+import { Text, ScrollView, View, Alert } from 'react-native';
 import ScheduleItem from './ScheduleItem';
 import dayjs from 'dayjs';
 import { fetchScheduleList } from '@/src/libs/ApiService';
 import { useRouter } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useAuth } from '@/src/contexts/AuthContext';
-import Loading from '../Loading';
+import Button from '../Button';
 
 type Props = {
   plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
@@ -18,28 +18,24 @@ type Props = {
 export default function Schedule({ plan, onDelete }: Props): ReactNode {
   // === Member ===
   const DATE_FORMAT = 'YYYY-MM-DD';
-  const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
   const { setEditSchedule } = usePlan();
   const { session } = useAuth();
-  const [schedule, setSchedule] = useState<Tables<'schedule'>[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null);
+  const [scheduleList, setScheduleList] = useState<Tables<'schedule'>[]>([]);
   const router = useRouter();
+
   // === Method ====
-  /** 時間軸クリックイベント */
-  const handleHourPress = (hour: string) => {
-    const schedule = {
+  const handleAddSchedule = () => {
+    // スケジュールリストの最後の日付(to)を設定する
+    const from =
+      scheduleList.length > 0 ? dayjs(scheduleList[scheduleList.length - 1].to) : dayjs(plan?.from);
+    const to = dayjs(from).add(1, 'hour');
+
+    const newSchedule = {
       plan_id: plan!.uid,
-      from: dayjs(selectedDate)
-        .set('hour', parseInt(hour))
-        .set('minute', 0)
-        .format('YYYY-MM-DDTHH:mm:ss.000Z'),
-      to: dayjs(selectedDate)
-        .set('hour', parseInt(hour) + 1)
-        .set('minute', 0)
-        .format('YYYY-MM-DDTHH:mm:ss.000Z'),
+      from: from.format('YYYY-MM-DDTHH:mm:00.000Z'),
+      to: to.format('YYYY-MM-DDTHH:mm:00.000Z'),
     } as Tables<'schedule'>;
-    setEditSchedule(schedule);
+    setEditSchedule(newSchedule);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
 
@@ -48,14 +44,14 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
     const s = {
       ...schedule,
       plan_id: plan!.uid,
-      from: dayjs(selectedDate)
+      from: dayjs(schedule.from)
         .set('hour', dayjs(schedule.from).get('hour'))
         .set('minute', dayjs(schedule.from).get('minute'))
-        .format('YYYY-MM-DDTHH:mm:ss.000Z'),
-      to: dayjs(selectedDate)
+        .format('YYYY-MM-DDTHH:mm:00.000Z'),
+      to: dayjs(schedule.to)
         .set('hour', dayjs(schedule.to).get('hour'))
         .set('minute', dayjs(schedule.to).get('minute'))
-        .format('YYYY-MM-DDTHH:mm:ss.000Z'),
+        .format('YYYY-MM-DDTHH:mm:00.000Z'),
     } as Tables<'schedule'>;
     setEditSchedule(s);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
@@ -65,7 +61,7 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
   const handleScheduleLongPress = (schedule: Tables<'schedule'>) => {
     if (!onDelete) return;
     // 削除アラート
-    Alert.alert('削除', 'このスケジュールを削除しますか？', [
+    Alert.alert(schedule.title!, 'このスケジュールを削除しますか？', [
       { text: 'キャンセル', style: 'cancel' },
       {
         text: '削除',
@@ -78,24 +74,22 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
     ]);
   };
 
-  /** 日付クリックイベント */
-  const handleDatePress = (date: dayjs.Dayjs) => {
-    setSelectedDate(date);
-  };
-
   // === Effect ===
   useEffect(() => {
     if (!plan) return;
-    setSelectedDate(dayjs(plan.from));
-    setIsLoading(true);
     const ctrl = new AbortController();
 
-    fetchScheduleList(plan.uid, session, ctrl).then((data) => {
-      if (data) {
-        setSchedule(data);
-      }
-      setIsLoading(false);
-    });
+    fetchScheduleList(plan.uid, session, ctrl)
+      .then((data) => {
+        if (data) {
+          setScheduleList(data.sort((a, b) => dayjs(a.from).diff(dayjs(b.from))));
+        }
+      })
+      .catch((e) => {
+        if (e && e.message) {
+          alert(e.message);
+        }
+      });
 
     return () => {
       ctrl.abort();
@@ -103,84 +97,44 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
   }, [plan]);
 
   // ==== Memo ===
-  const dateList = useMemo(() => {
-    if (!plan) return [];
-    console.log('create date');
-    const list = [];
-    let targetAt = dayjs(plan.from);
-    const endAt = dayjs(plan.to);
-    while (targetAt.diff(endAt) <= 0) {
-      list.push(targetAt);
-      targetAt = targetAt.add(1, 'day');
-    }
-    return list;
-  }, [plan]);
-
-  if (!plan) return;
 
   // === Render ===
   return (
-    <>
-      {/* 日付選択タブ */}
-      <View className="pb-40">
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {dateList.map((date, index) => {
-            return (
-              <TouchableOpacity
-                key={date.format(DATE_FORMAT)}
-                onPress={() => handleDatePress(date)}
-              >
-                <View
-                  className={`border-t-[1px] border-x-[1px] 
-                    flex justify-start items-start h-20 w-32 p-2 ${index == 0 && 'rounded-l-xl'} ${index === dateList.length - 1 && 'rounded-r-xl'}
-                    border-light-border dark:border-dark-border ${date.isSame(selectedDate) ? 'bg-light-info dark:bg-dark-info' : 'bg-light-background dark:bg-dark-background'}`}
-                >
-                  <Text className="text-center font-semibold text-light-text dark:text-dark-text">
-                    {date.format('M/D')}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-        {/* 日付の予定 */}
-        <ScrollView className="w-full">
-          {/* 時間軸の表示 */}
-          {hours.map((hour) => {
-            // 時間内にあるスケジュールを取得する
-            return (
-              <TouchableOpacity
-                key={hour}
-                onPress={() => {
-                  handleHourPress(hour);
-                }}
-                className={`w-full flex flex-row items-center
-                border-t-[1px] last-child:border-b-[1px]  h-[64px]
-                border-light-border dark:border-dark-border`}
-              >
-                <Text className="w-1/6 pl-2 text-light-text dark:text-dark-text">{hour}</Text>
-              </TouchableOpacity>
-            );
-          })}
-          {/* スケジュールアイテム（タスク）の表示 */}
+    <ScrollView showsVerticalScrollIndicator={false}>
+      {scheduleList.map((schedule, index) => {
+        const date = dayjs(schedule.from).format(DATE_FORMAT);
+        let isDateView = true;
+        let isEndDateView = true;
 
-          {schedule
-            .filter((s) => dayjs(s.from).format(DATE_FORMAT) === selectedDate?.format(DATE_FORMAT))
-            .map((s) => (
-              <ScheduleItem
-                key={s.uid}
-                item={s}
-                onPress={handleSchedulePress}
-                onLongPress={handleScheduleLongPress}
-              />
-            ))}
-          {isLoading && (
-            <View className="absolute w-screen h-full top-0 left-0">
-              <Loading />
-            </View>
-          )}
-        </ScrollView>
-      </View>
-    </>
+        if (index > 0 && date == dayjs(scheduleList[index - 1].from).format(DATE_FORMAT)) {
+          isDateView = false;
+        }
+
+        if (
+          index + 1 < scheduleList.length &&
+          dayjs(schedule.to).isSame(dayjs(scheduleList[index + 1].from))
+        ) {
+          isEndDateView = false;
+        }
+        return (
+          <View key={schedule.uid}>
+            {isDateView && (
+              <Text
+                className={`font-bold text-xl text-center ${index != 0 && 'mt-4'} text-light-text dark:text-dark-text`}
+              >
+                {date}
+              </Text>
+            )}
+            <ScheduleItem
+              item={schedule}
+              isEndDateView={isEndDateView}
+              onPress={handleSchedulePress}
+              onLongPress={handleScheduleLongPress}
+            />
+          </View>
+        );
+      })}
+      <Button text="スケジュールを追加" onPress={() => handleAddSchedule()} />
+    </ScrollView>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { BackgroundView, Loading } from '@/src/components';
+import { BackgroundView, Header, Loading } from '@/src/components';
 import IconButton from '@/src/components/IconButton';
 import { Tables } from '@/src/libs/database.types';
 import dayjs from 'dayjs';
@@ -11,12 +11,14 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { fetchPlanList } from '@/src/libs/ApiService';
 import { LogUtil } from '@/src/libs/LogUtil';
+import { useTheme } from '@/src/contexts/ThemeContext';
 
 type PlanWithSchedule = Tables<'plan'> & { schedule: Tables<'schedule'>[] };
 
 export default function PlanListScreen() {
   // === Member ===
   const router = useRouter();
+  const { isDarkMode } = useTheme();
   const { setPlan } = usePlan();
   const { session } = useAuth();
   const [plans, setPlans] = useState<PlanWithSchedule[]>([]);
@@ -29,11 +31,19 @@ export default function PlanListScreen() {
       setPlans([]);
       LogUtil.log('planを取得します', { level: 'info' });
       const ctrl = new AbortController();
-      fetchPlanList(session, ctrl).then((data: unknown) => {
-        if (!data) return;
-        setPlans(data as PlanWithSchedule[]);
-        setIsLoading(false);
-      });
+      fetchPlanList(session, ctrl)
+        .then((data: unknown) => {
+          if (!data) return;
+          setPlans(data as PlanWithSchedule[]);
+        })
+        .catch((e) => {
+          if (e && e.message) {
+            alert(e.message);
+          }
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
       return () => {
         ctrl.abort();
       };
@@ -43,23 +53,13 @@ export default function PlanListScreen() {
   // === Method ===
   const addButton = () => {
     return (
-      <TouchableOpacity>
-        <View>
-          <IconButton
-            icon={
-              <MaterialIcons
-                name="add"
-                size={18}
-                className={`text-light-text dark:text-dark-text`}
-                color="#000"
-              />
-            }
-            onPress={() => {
-              router.push('/(add.plan)/AddPlan');
-            }}
-          />
-        </View>
-      </TouchableOpacity>
+      <IconButton
+        icon={<MaterialIcons name="add" size={18} color={isDarkMode ? 'white' : 'black'} />}
+        theme="info"
+        onPress={() => {
+          router.push('/(add.plan)/AddPlan');
+        }}
+      />
     );
   };
 
@@ -78,19 +78,15 @@ export default function PlanListScreen() {
   // === Render ===
 
   // プランがない場合
-  if (plans.length === 0) {
-    return (
-      <BackgroundView>
-        <Text className="text-lg text-gray-0 dark:text-gray-100 font-bold">No plans</Text>
-        {addButton()}
-      </BackgroundView>
-    );
+  if (plans.length === 0 || isLoading) {
+    return <Loading />;
   }
 
   return (
     <BackgroundView>
+      <Header title="計画一覧" rightComponent={addButton()} />
+
       <View className="flex flex-row justify-center flex-wrap gap-4 mb-4">
-        {isLoading && <Loading />}
         {plans &&
           plans.map((p: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => (
             <TouchableOpacity
@@ -107,7 +103,9 @@ export default function PlanListScreen() {
                     {p.title}
                   </Text>
                   <Text className={`text-md text-light-text dark:text-dark-text`}>
-                    {dayjs(p.from).format('M/D')} - {dayjs(p.to).format('M/D')}
+                    {dayjs(p.from).format('M/D') != dayjs(p.to).format('M/D')
+                      ? `${dayjs(p.from).format('M/D')} - ${dayjs(p.to).format('M/D')}`
+                      : dayjs(p.from).format('M/D')}
                   </Text>
                 </View>
                 {/* TODO: メンバー */}
@@ -120,7 +118,6 @@ export default function PlanListScreen() {
             </TouchableOpacity>
           ))}
       </View>
-      {addButton()}
     </BackgroundView>
   );
 }

@@ -9,7 +9,7 @@ const app = new Hono().basePath('/plan');
  */
 const create = async (c: Hono.Context) => {
   console.log('[POST] plan');
-  const supabase = generateSupabase();
+  const supabase = generateSupabase(c);
   const { title, from, to, locations } = await c.req.json();
 
   const user = await getUser(c, supabase);
@@ -33,7 +33,7 @@ const create = async (c: Hono.Context) => {
 
 const update = async (c: Hono.Context) => {
   console.log('[PUT] plan');
-  const supabase = generateSupabase();
+  const supabase = generateSupabase(c);
   const { uid, title, from, to, locations, place_id_list } = await c.req.json();
 
   const user = await getUser(c, supabase);
@@ -63,7 +63,7 @@ const update = async (c: Hono.Context) => {
  */
 const get = async (c: Hono.Context) => {
   console.log('[GET] plan/');
-  const supabase = generateSupabase();
+  const supabase = generateSupabase(c);
   const uid = c.req.param('uid');
   const user = await getUser(c, supabase);
   if (!user) {
@@ -92,7 +92,7 @@ const get = async (c: Hono.Context) => {
  */
 const list = async (c: Hono.Context) => {
   console.log('[POST] plan/list');
-  const supabase = generateSupabase();
+  const supabase = generateSupabase(c);
   const user = await getUser(c, supabase);
   if (!user) {
     return c.json({ error: 'User not found' }, 403);
@@ -106,7 +106,6 @@ const list = async (c: Hono.Context) => {
     console.error(error);
     return c.json(error, 403);
   }
-  console.log(data);
   return c.json(data);
 };
 

@@ -4,7 +4,7 @@ const app = new Hono().basePath('/schedule');
 
 const get = async (c: Hono.Context) => {
   console.log('schedule get');
-  const supabase = generateSupabase();
+  const supabase = generateSupabase(c);
   const scheduleId = c.req.param('scheduleId');
   const planId = c.req.param('planId');
   if (planId != null) {
@@ -37,7 +37,7 @@ const get = async (c: Hono.Context) => {
 };
 
 const upsert = async (c: Hono.Context) => {
-  const supabase = generateSupabase();
+  const supabase = generateSupabase(c);
   const { schedule } = await c.req.json();
   console.log(schedule);
   // scheduleの更新
@@ -59,7 +59,7 @@ const upsert = async (c: Hono.Context) => {
 
 const deleteSchedule = async (c: Hono.Context) => {
   console.log('deleteSchedule');
-  const supabase = generateSupabase();
+  const supabase = generateSupabase(c);
   const { uid } = await c.req.json();
 
   // 削除フラグの更新

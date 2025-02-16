@@ -114,7 +114,12 @@ export default function Settings() {
         <View className="items-center p-6 border-b border-light-border dark:border-dark-border">
           <View className="w-24 h-24 rounded-full overflow-hidden border-2 border-light-border dark:border-dark-border">
             {profile?.avatar_url ? (
-              <Image source={{ uri: profile?.avatar_url }} className="w-full h-full" />
+              <Image
+                source={{
+                  uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`,
+                }}
+                className="w-full h-full"
+              />
             ) : (
               <View className="w-full h-full bg-light-shadow dark:bg-dark-shadow items-center justify-center">
                 <Ionicons name="person" size={40} color="gray" />

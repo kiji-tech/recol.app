@@ -1,7 +1,19 @@
 import { createClient, SupabaseClient } from 'jsr:@supabase/supabase-js@2';
 
-const generateSupabase = () => {
-  return createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? '');
+const generateSupabase = (c: Hono.Context) => {
+  return createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? '', {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+    global: {
+      headers: c
+        ? {
+            Authorization: c.req.header('Authorization') ?? '',
+          }
+        : {},
+    },
+  });
 };
 
 const getUser = async (c: Hono.Context, supabase: SupabaseClient) => {
@@ -15,6 +27,5 @@ const getUser = async (c: Hono.Context, supabase: SupabaseClient) => {
   } = await supabase.auth.getUser(token);
   return user;
 };
-
 
 export { generateSupabase, getUser };

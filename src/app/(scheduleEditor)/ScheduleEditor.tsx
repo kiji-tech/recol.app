@@ -13,17 +13,21 @@ export default function ScheduleEditor() {
   // === Member ===
   const { editSchedule, setEditSchedule } = usePlan();
   const [openMapModal, setOpenMapModal] = useState(false);
-
+  const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
   // === Method ===
   /** スケジュールの編集 */
   const handleScheduleSubmit = async () => {
     if (!editSchedule) return;
+    const schedule = {
+      ...editSchedule,
+      from: dayjs(editSchedule.from).format(DATE_FORMAT),
+      to: dayjs(editSchedule.to).format(DATE_FORMAT),
+    };
     const res = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/schedule`, {
       method: 'POST',
-      body: JSON.stringify({ schedule: editSchedule }),
+      body: JSON.stringify({ schedule: schedule }),
     });
     if (!res.ok) {
-      // TODO: エラーハンドリング
       alert('登録に失敗しました');
       return;
     }
@@ -70,27 +74,29 @@ export default function ScheduleEditor() {
           <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>日時</Text>
           <View className={`flex flex-row justify-center items-center gap-4`}>
             <DatePicker
-              label=""
-              mode="time"
+              mode="datetime"
               value={editSchedule.from ? dayjs(editSchedule.from) : dayjs()}
               onChange={(date) => {
+                const to = dayjs(editSchedule.to).isBefore(dayjs(date))
+                  ? dayjs(date).add(1, 'hour').format(DATE_FORMAT)
+                  : editSchedule.to;
                 setEditSchedule({
                   ...editSchedule,
-                  from: date.format('YYYY-MM-DDTHH:mm:ss.000Z'),
+                  from: date.format(DATE_FORMAT),
+                  to,
                 });
               }}
             />
             <Text className="text-light-text dark:text-dark-text"> ― </Text>
             <DatePicker
-              label=""
-              mode="time"
+              mode="datetime"
               value={
                 editSchedule.to ? dayjs(editSchedule.to) : dayjs(editSchedule.from).add(1, 'hour')
               }
               onChange={(date) =>
                 setEditSchedule({
                   ...editSchedule,
-                  to: date.format('YYYY-MM-DDTHH:mm:ss.000Z'),
+                  to: date.format(DATE_FORMAT),
                 })
               }
             />

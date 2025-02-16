@@ -8,7 +8,7 @@ const app = new Hono().basePath('/messages');
  * @returns
  */
 const create = async (c: Hono.Context) => {
-  const supabase = generateSupabase();
+  const supabase = generateSupabase(c);
   const { title, from, to, locations } = await c.req.json();
   console.log({ title, from, to, locations });
   // planを作成
@@ -26,7 +26,7 @@ const create = async (c: Hono.Context) => {
 };
 
 const update = async (c: Hono.Context) => {
-  const supabase = generateSupabase();
+  const supabase = generateSupabase(c);
   const { uid, title, from, to, locations, place_id_list } = await c.req.json();
   console.log({ uid, title, from, to, locations, place_id_list });
   // planを更新
@@ -50,7 +50,7 @@ const update = async (c: Hono.Context) => {
  * @returns
  */
 const get = async (c: Hono.Context) => {
-  const supabase = generateSupabase();
+  const supabase = generateSupabase(c);
   const uid = c.req.param('uid');
   const { data, error } = await supabase.from('plan').select('*').eq('uid', uid).maybeSingle();
   return c.json({ data, error });
@@ -62,7 +62,7 @@ const get = async (c: Hono.Context) => {
  * @returns
  */
 const list = async (c: Hono.Context) => {
-  const supabase = generateSupabase();
+  const supabase = generateSupabase(c);
   const { data, error } = await supabase.from('messages').select('*').limit(100);
   return c.json({ data, error });
 };
