@@ -2,6 +2,7 @@ import React, { forwardRef, useImperativeHandle } from 'react';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { View } from 'react-native';
 import { Platform } from 'react-native';
+import { useTheme } from '../contexts/ThemeContext';
 const isIOS = Platform.OS === 'ios';
 
 type Props = {
@@ -9,6 +10,7 @@ type Props = {
 };
 const BottomSheetLayout = forwardRef(({ children }: Props, ref) => {
   const bottomSheetRef = React.useRef<BottomSheet>(null);
+  const { isDarkMode } = useTheme();
 
   if (ref) {
     useImperativeHandle(ref, () => ({
@@ -23,6 +25,19 @@ const BottomSheetLayout = forwardRef(({ children }: Props, ref) => {
       snapPoints={['20%', '40%', '85%']}
       enableOverDrag={false}
       enableDynamicSizing={false}
+      handleStyle={{
+        backgroundColor: isDarkMode ? '#1a1a1a' : 'white',
+        borderRadius: 100,
+      }}
+      backgroundStyle={{
+        backgroundColor: isDarkMode ? '#1a1a1a' : 'white',
+      }}
+      handleIndicatorStyle={{
+        backgroundColor: isDarkMode ? 'white' : '#1a1a1a',
+        borderRadius: 10,
+        width: 64,
+        height: 4,
+      }}
     >
       {children}
       {/* ISOのほうがアクションバーでより隠れるため高くする */}

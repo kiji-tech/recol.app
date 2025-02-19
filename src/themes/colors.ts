@@ -15,7 +15,7 @@ module.exports = {
     warn: '#E4730B',
     danger: '#B50D0D',
     text: '#ECECEC',
-    border: '#2A2A2A',
+    border: '#5A5A5A',
     background: '#1a1a1a',
     shadow: '#2A2A2A',
   },

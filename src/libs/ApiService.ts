@@ -1,6 +1,47 @@
 import { Session } from '@supabase/supabase-js';
 import { Tables } from './database.types';
 
+const API_BASE_URL = process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL;
+
+type ApiResponse<T> = {
+  data: T | null;
+  error: Error | null;
+};
+
+const createHeaders = (session: Session | null) => ({
+  'Content-Type': 'application/json',
+  Authorization: `Bearer ${session?.access_token}`,
+});
+
+async function apiRequest<T, B = Record<string, unknown>>(
+  endpoint: string,
+  options: {
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+    session: Session | null;
+    body?: B;
+    ctrl?: AbortController;
+  }
+): Promise<ApiResponse<T>> {
+  try {
+    const { method, session, body, ctrl } = options;
+    const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method,
+      headers: createHeaders(session),
+      body: body ? JSON.stringify(body) : undefined,
+      signal: ctrl?.signal,
+    });
+
+    if (!res.ok) {
+      throw new Error(`API error: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error: error as Error };
+  }
+}
+
 // ============ Plan ============
 /**
  * プラン情報の取得
@@ -10,21 +51,14 @@ import { Tables } from './database.types';
  * @param ctrl {AbortController}
  * @returns Tables<'plan'>
  */
-const fetchPlan = async (planId: string, session: Session | null, ctrl?: AbortController) => {
-  const res = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/plan/${planId}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${session?.access_token}`,
-    },
-    signal: ctrl?.signal,
-  });
-  if (!res.ok) {
-    throw res;
-  }
-  const data = await res.json();
-  return data as Tables<'plan'> & { schedule: Tables<'schedule'>[] };
-};
+async function fetchPlan(planId: string, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Tables<'plan'> & { schedule: Tables<'schedule'>[] }>(
+    `/plan/${planId}`,
+    { method: 'GET', session, ctrl }
+  );
+  if (response.error) throw response.error;
+  return response.data!;
+}
 
 /**
  * プラン一覧の取得
@@ -33,21 +67,14 @@ const fetchPlan = async (planId: string, session: Session | null, ctrl?: AbortCo
  * @param ctrl {AbortController}
  * @returns Tables<'plan'> & { schedule: Tables<'schedule'>[] }[]
  */
-const fetchPlanList = async (session: Session | null, ctrl?: AbortController) => {
-  const res = await fetch(process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL + '/plan/list', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${session?.access_token}`,
-    },
-    signal: ctrl?.signal,
-  });
-  if (!res.ok) {
-    throw res;
-  }
-  const data = await res.json();
-  return data as Tables<'plan'> & { schedule: Tables<'schedule'>[] }[];
-};
+async function fetchPlanList(session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<(Tables<'plan'> & { schedule: Tables<'schedule'>[] })[]>(
+    '/plan/list',
+    { method: 'POST', session, ctrl }
+  );
+  if (response.error) throw response.error;
+  return response.data!;
+}
 
 // ============ Schedule ============
 /**
@@ -58,28 +85,15 @@ const fetchPlanList = async (session: Session | null, ctrl?: AbortController) =>
  * @param ctrl {AbortController}
  * @returns Tables<'schedule'>
  */
-const fetchSchedule = async (
-  scheduleId: string,
-  session: Session | null,
-  ctrl?: AbortController
-) => {
-  const res = await fetch(
-    `${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/schedule/${scheduleId}`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${session?.access_token}`,
-      },
-      signal: ctrl?.signal,
-    }
-  );
-  if (!res.ok) {
-    throw res;
-  }
-  const data = await res.json();
-  return data as Tables<'schedule'>;
-};
+async function fetchSchedule(scheduleId: string, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Tables<'schedule'>>(`/schedule/${scheduleId}`, {
+    method: 'GET',
+    session,
+    ctrl,
+  });
+  if (response.error) throw response.error;
+  return response.data!;
+}
 
 /**
  * スケジュール一覧の取得
@@ -89,25 +103,15 @@ const fetchSchedule = async (
  * @param ctrl {AbortController}
  * @returns Tables<'schedule'>[]
  */
-const fetchScheduleList = async (
-  planId: string,
-  session: Session | null,
-  ctrl?: AbortController
-) => {
-  const res = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/schedule/${planId}`, {
+async function fetchScheduleList(planId: string, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Tables<'schedule'>[]>(`/schedule/${planId}`, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${session?.access_token}`,
-    },
-    signal: ctrl?.signal,
+    session,
+    ctrl,
   });
-  if (!res.ok) {
-    throw res;
-  }
-  const data = await res.json();
-  return data as Tables<'schedule'>[];
-};
+  if (response.error) throw response.error;
+  return response.data!;
+}
 
 /**
  * スケジュールの削除
@@ -116,66 +120,45 @@ const fetchScheduleList = async (
  * @param session {Session | null}
  * @param ctrl {AbortController}
  */
-const deleteSchedule = async (uid: string, session: Session | null, ctrl?: AbortController) => {
-  const res = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/schedule/delete`, {
+async function deleteSchedule(uid: string, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<void>('/schedule/delete', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${session?.access_token}`,
-    },
-    body: JSON.stringify({
-      uid,
-    }),
-    signal: ctrl?.signal,
+    session,
+    body: { uid },
+    ctrl,
   });
-  if (!res.ok) {
-    throw res;
-  }
-  return;
-};
+  if (response.error) throw response.error;
+}
 
 // ============ Profile ============
-const getProfile = async (session: Session | null, ctrl?: AbortController) => {
-  console.log('get profile');
-  const res = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/profile`, {
+async function getProfile(session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Tables<'profile'>>('/profile', {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${session?.access_token}`,
-    },
-    signal: ctrl?.signal,
+    session,
+    ctrl,
   });
-  if (!res.ok) {
-    throw res;
-  }
-  const data = await res.json();
-  return data as Tables<'profile'>;
-};
+  if (response.error) throw response.error;
+  return response.data!;
+}
 
-const updateProfile = async (
+async function updateProfile(
   displayName: string,
   avatarUrl: string | null,
   session: Session | null,
   ctrl?: AbortController
-) => {
-  const res = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/profile`, {
+) {
+  const response = await apiRequest<Tables<'profile'>>('/profile', {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${session?.access_token}`,
-    },
-    body: JSON.stringify({
+    session,
+    body: {
       display_name: displayName,
       avatar_url: avatarUrl,
-    }),
-    signal: ctrl?.signal,
+    },
+    ctrl,
   });
-  if (!res.ok) {
-    throw res;
-  }
-  const data = await res.json();
-  return data as Tables<'profile'>;
-};
+  if (response.error) throw response.error;
+  return response.data!;
+}
 
 export {
   fetchPlan,

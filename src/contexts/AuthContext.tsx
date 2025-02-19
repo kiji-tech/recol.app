@@ -13,6 +13,7 @@ type AuthContextType = {
   setUser: (user: User | null) => void;
   profile: Tables<'profile'> | null;
   setProfile: (profile: Tables<'profile'> | null) => void;
+  resetSession: () => Promise<Session | null>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -40,10 +41,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (session?.user) {
         const profile = await getProfile(session).catch((e) => {
-          if (e && e.message) {
-            alert(e.message);
-          }
-          return null;
+          // ログインされていません
+          throw e;
         });
         setProfile(profile);
       }
@@ -56,8 +55,23 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
+  const resetSession = async () => {
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.getSession();
+    if (error) {
+      alert(error.message);
+    }
+    setSession(session);
+    setUser(session?.user ?? null);
+    return session;
+  };
+
   return (
-    <AuthContext.Provider value={{ session, setSession, user, setUser, profile, setProfile }}>
+    <AuthContext.Provider
+      value={{ session, setSession, user, setUser, profile, setProfile, resetSession }}
+    >
       {children}
     </AuthContext.Provider>
   );

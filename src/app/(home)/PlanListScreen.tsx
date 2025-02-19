@@ -24,26 +24,27 @@ export default function PlanListScreen() {
   const [plans, setPlans] = useState<PlanWithSchedule[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // === Method ===
+  const init = async (ctrl?: AbortController) => {
+    setIsLoading(true);
+    setPlans([]);
+    LogUtil.log('planを取得します', { level: 'info' });
+    const data = await fetchPlanList(session, ctrl).catch((e) => {
+      LogUtil.log(e, { level: 'error', notify: true });
+      if (e && e.message) {
+        alert('計画を取得するのに失敗しました｡');
+      }
+    });
+    if (!data) return;
+    setPlans(data as PlanWithSchedule[]);
+    setIsLoading(false);
+  };
+
   // === Effect ===
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
-      setPlans([]);
-      LogUtil.log('planを取得します', { level: 'info' });
       const ctrl = new AbortController();
-      fetchPlanList(session, ctrl)
-        .then((data: unknown) => {
-          if (!data) return;
-          setPlans(data as PlanWithSchedule[]);
-        })
-        .catch((e) => {
-          if (e && e.message) {
-            alert(e.message);
-          }
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      init(ctrl);
       return () => {
         ctrl.abort();
       };

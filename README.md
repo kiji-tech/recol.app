@@ -1,15 +1,3 @@
-## 技術スタック
-
-- expo
-- react-native
-- google map api
-- tailwindcss
-- nativewind
-- openai
-- jest
-- typescript
-- zod
-
 ## 作業コマンド
 
 ### ios androidプロジェクトのbuild packageのupdate
@@ -52,6 +40,15 @@ $ npm run functions:dev
 $ npm run generate:types:local
 ```
 
+`AI Agent (OpenHands)`
+
+```shell
+$ npm run agent
+
+# CUIで実行にする場合は､agentのコマンドに以下を追加する
+$ npm run agent python -m openhands.core.cli
+```
+
 ### テスト
 
 ```shell
@@ -66,7 +63,7 @@ $ npm run test
 # ローカルにビルドファイルを作成
 $ eas build --local --platform android
 # profileは､eas.jsonに定義しているものに依存する
-$ eas build --profile development --platform android ･･･ develop-build経由で表示できるようにする
+$ eas build --profile preview --platform android ･･･ プレビュー環境にデプロイ
 $ eas build --profile production --platform all      ･･･ Storeアプリにビルド
 ```
 
@@ -98,7 +95,7 @@ $ supabase db push
 
 ## トラブルシューティング
 
-### Scrollが動かない
+`Scrollが動かない`
 
 react-nativeのスクロール系のタグ（ScrollViewやFlatListView）は入れ子にできない｡
 → react-native-gesture-handlerを使う
@@ -106,16 +103,12 @@ react-nativeのスクロール系のタグ（ScrollViewやFlatListView）は入�
 ```typescript
 import { ScrollView } from 'react-native';  ･･･ NG
 import { ScrollView } from 'react-native-gesture-handler'; ･･･ ◯
-
-
 ...
 
 <ScrollView>
   <ScrollView> </ScrollView>
 </ScrollView>
 ```
-
-### npm run ios
 
 `schema xxxx`
 
@@ -130,12 +123,12 @@ $ npx expo prebuild --clean
 $ rm -rf ios/Pods ios/Podfile.lock
 
 # iosライブラリの更新
-cd ios && pod repo updateい
+cd ios && pod repo update
 pod install --repo-update
 
 # react-nativeとexpoのバージョンがあっていない場合がある
 # package.jsonのバージョンとかをチェックして､node_modulesを削除・再インストールなど
-# ios/Podfile のiosバージョンがあっていないなど
+# ios/Podfile のiosバージョンがあっていないなど -> 15.1にする
 
 ```
 
@@ -148,7 +141,34 @@ CommandError: Failed to build iOS project. "xcodebuild" exited with error code 7
     { platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device, error:iOS 18.2 is not installed. To use with Xcode, first download and install the platform }
 ```
 
-### Possible unhandled promise rejection
+`error: Codegen did not run properly in your project. Please reinstall cocoapods with 'bundle exec pod install'`
+一度モジュールの削除と､ツールの再インストール
+
+```shell
+#npmキャッシュのクリア
+$ npm cache clean --force
+
+#node_modulesディレクトリとPodfile.lockの削除
+$ rm -rf node_modules ios/Pods ios/Podfile.lock
+
+#npm依存関係の再インストール
+$ npm install
+#または
+$ yarn install
+
+#CocoaPodsのキャッシュのクリア
+$ pod cache clean --all
+
+#CocoaPodsのインストール
+$ cd ios
+$ pod install
+
+#npx pod-installの使用
+$ cd ..
+$ npx pod-install
+```
+
+`Possible unhandled promise rejection`
 
 TryCatchなどで､Promise（非同期処理）をハンドリングされずにいると､warningとして出力される
 
