@@ -23,7 +23,7 @@ export default function MapModal({ isOpen, placeList, onClose }: Props) {
 
   // ==== Method ====
   /** 場所を選択したときのイベントハンドラ */
-  const handleSelectedPlace = (place: Place) => {
+  const handleSelectedPlace = (place: Place | null) => {
     setSelectedPlace(place);
   };
 
@@ -54,7 +54,7 @@ export default function MapModal({ isOpen, placeList, onClose }: Props) {
           isMarker={true}
           selectedPlace={selectedPlace}
           selectedPlaceList={selectedPlaceList}
-          onSelectPlace={(place: Place) => handleSelectedPlace(place)}
+          onSelectPlace={(place: Place | null) => handleSelectedPlace(place)}
           onMarkerDeselect={() => {
             // setSelectedPlace(null);
           }}

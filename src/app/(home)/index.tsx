@@ -1,6 +1,7 @@
 import React from 'react';
 import { BackgroundView } from '@/src/components';
 import { View, Text, ScrollView } from 'react-native';
+import { GAMBannerAd, BannerAdSize, TestIds, BannerAd } from 'react-native-google-mobile-ads';
 
 export default function Home() {
   return (
@@ -29,6 +30,9 @@ export default function Home() {
               <Text>新着</Text>
             </View>
           </View>
+        </View>
+        <View>
+          <BannerAd unitId={TestIds.BANNER} size={BannerAdSize.FULL_BANNER} />
         </View>
       </BackgroundView>
     </ScrollView>

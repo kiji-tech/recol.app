@@ -32,7 +32,7 @@ type Props = {
   selectedPlaceList?: Place[];
   isSearch?: boolean;
   isMarker?: boolean;
-  onSelectPlace?: (place: Place) => void;
+  onSelectPlace?: (place: Place | null) => void;
   onMarkerDeselect?: () => void;
   onAdd?: (place: Place) => void;
   onRemove?: (place: Place) => void;
@@ -79,7 +79,7 @@ export default function Map({
       return;
     }
     setPlaces(places);
-    onSelectPlace(places[0]);
+    onSelectPlace(null);
   };
 
   /** 座標のロケーション情報取得 */

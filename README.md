@@ -142,7 +142,8 @@ CommandError: Failed to build iOS project. "xcodebuild" exited with error code 7
 ```
 
 `error: Codegen did not run properly in your project. Please reinstall cocoapods with 'bundle exec pod install'`
-一度モジュールの削除と､ツールの再インストール
+
+一度モジュールの削除と､ツールの再インストールする
 
 ```shell
 #npmキャッシュのクリア
@@ -182,6 +183,15 @@ try {
 } catch (error) {
   console.error(error);
 }
+```
+
+``could not find module 'ExpoModulesCore' for target 'x86_64-apple-ios-simulator'; found: arm64-apple-ios-simulator,``
+
+xcode関係が古い？
+
+```shell
+$ brew update
+$ brew upgrade
 ```
 
 ## ドキュメント

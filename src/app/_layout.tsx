@@ -1,31 +1,47 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import '@/global.css';
 import { router, Stack } from 'expo-router';
-import { useEffect } from 'react';
 import { supabase } from '../libs/supabase';
 import { PlanProvider } from '../contexts/PlanContext';
 import { AuthProvider } from '../contexts/AuthContext';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider, useTheme } from '../contexts/ThemeContext';
+import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import 'expo-dev-client';
+
+import mobileAds from 'react-native-google-mobile-ads';
 
 const Layout = () => {
   const { isThemeLoaded } = useTheme();
 
-  useEffect(() => {
-    const initializeApp = async () => {
-      // セッションチェック
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (!session) {
-        router.navigate('/(auth)/SignIn');
+  const initAd = useCallback(async () => {
+    try {
+      const { status } = await requestTrackingPermissionsAsync();
+      if (status === 'granted') {
+        console.log('Yay! I have user permission to track data');
       }
-    };
+      await mobileAds().initialize();
+    } catch (err) {
+      console.warn('initAd', err);
+    }
+  }, []);
 
+  useEffect(() => {
     initializeApp();
   }, []);
+  const initializeApp = async () => {
+    // セッションチェック
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      router.navigate('/(auth)/SignIn');
+    }
+
+    // 広告初期化
+    initAd();
+  };
 
   if (!isThemeLoaded) {
     return <View style={{ flex: 1 }} />;

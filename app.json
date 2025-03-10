@@ -7,6 +7,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
+    "jsEngine": "hermes",
     "splash": {
         "image": "./assets/splash.png",
         "resizeMode": "contain",
@@ -54,6 +55,12 @@
                 "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
             }
         ],
+        [
+            "expo-tracking-transparency",
+            {
+                "userTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+            }
+        ],
         "expo-font",
         "expo-build-properties"
     ],
@@ -70,6 +77,14 @@
     },
     "runtimeVersion": {
         "policy": "appVersion"
+    },
+    "react-native-google-mobile-ads": {
+        "android_app_id": "ca-app-pub-2018656716460271~9761357839",
+        "ios_app_id": "ca-app-pub-2018656716460271~9761357839",
+        "delay_app_measurement_init": true,
+        "user_tracking_usage_description": "関連性の高い広告を表示するためにIDをトラッキングいたします。",
+        "optimize_initialization": true,
+        "optimize_ad_loading": true
     },
     "updates": {
         "url": "https://u.expo.dev/d0f16b33-31f2-4574-a7ab-9e3318729003"

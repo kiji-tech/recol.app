@@ -38,6 +38,21 @@
                 "EXPO_PUBLIC_APP_ENV": "develop"
             }
         },
+        "development-simulator": {
+            "extends": "base",
+            "developmentClient": true,
+            "distribution": "internal",
+            "android": {
+                "buildType": "apk",
+                "gradleCommand": ":app:assembleDebug"
+            },
+            "ios": {
+                "simulator": true
+            },
+            "env": {
+                "EXPO_PUBLIC_APP_ENV": "develop"
+            }
+        },
         "preview": {
             "extends": "base",
             "distribution": "internal",
