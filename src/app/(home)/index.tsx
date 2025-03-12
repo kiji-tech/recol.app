@@ -32,7 +32,14 @@ export default function Home() {
           </View>
         </View>
         <View>
-          <BannerAd unitId={TestIds.BANNER} size={BannerAdSize.FULL_BANNER} />
+          <BannerAd
+            unitId={TestIds.BANNER}
+            size={BannerAdSize.FULL_BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+              networkExtras: { collapsible: 'bottom' },
+            }}
+          />
         </View>
       </BackgroundView>
     </ScrollView>

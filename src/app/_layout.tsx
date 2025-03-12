@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect } from 'react';
 import '@/global.css';
+import React, { useCallback, useEffect } from 'react';
 import { router, Stack } from 'expo-router';
 import { supabase } from '../libs/supabase';
 import { PlanProvider } from '../contexts/PlanContext';
