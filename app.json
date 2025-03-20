@@ -66,14 +66,24 @@
             "expo-build-properties",
             {
                 "android": {
-                    "compileSdkVersion": 34,
-                    "targetSdkVersion": 34,
-                    "buildToolsVersion": "34.0.0",
-                    "kotlinVersion": "1.8.20"
+                    "compileSdkVersion": 36,
+                    "targetSdkVersion": 36,
+                    "minSdkVersion": 28,
+                    "buildToolsVersion": "36.0.0",
+                    "kotlinVersion": "1.9.23"
                 },
                 "ios": {
+                    "useFrameworks": "static",
                     "deploymentTarget": "13.4"
                 }
+            }
+        ],
+        [
+            "react-native-google-mobile-ads",
+            {
+                "androidAppId": "ca-app-pub-2018656716460271~9761357839",
+                "iosAppId": "ca-app-pub-2018656716460271~5429184177",
+                "userTrackingUsageDescription": "This identifier will be used to deliver personalized ads to you."
             }
         ]
     ],
@@ -93,7 +103,7 @@
     },
     "react-native-google-mobile-ads": {
         "android_app_id": "ca-app-pub-2018656716460271~9761357839",
-        "ios_app_id": "ca-app-pub-2018656716460271~9761357839",
+        "ios_app_id": "ca-app-pub-2018656716460271~5429184177",
         "user_tracking_usage_description": "関連性の高い広告を表示するためにIDをトラッキングいたします。",
         "delay_app_measurement_init": true,
         "optimize_initialization": true,

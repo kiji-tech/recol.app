@@ -7,7 +7,11 @@ import { AuthProvider } from '../contexts/AuthContext';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider, useTheme } from '../contexts/ThemeContext';
-import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
+import {
+  PermissionStatus,
+  getTrackingPermissionsAsync,
+  requestTrackingPermissionsAsync,
+} from 'expo-tracking-transparency';
 import 'expo-dev-client';
 
 import mobileAds from 'react-native-google-mobile-ads';
@@ -17,10 +21,15 @@ const Layout = () => {
 
   const initAd = useCallback(async () => {
     try {
-      const { status } = await requestTrackingPermissionsAsync();
-      if (status === 'granted') {
-        console.log('Yay! I have user permission to track data');
+      const { status } = await getTrackingPermissionsAsync();
+      if (status === PermissionStatus.UNDETERMINED) {
+        await requestTrackingPermissionsAsync();
       }
+      mobileAds().setRequestConfiguration({
+        // An array of test device IDs to add to the allow list.
+        testDeviceIdentifiers: ['EMULATOR'],
+      });
+
       await mobileAds().initialize();
     } catch (err) {
       console.warn('initAd', err);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { BackgroundView } from '@/src/components';
 import { View, Text, ScrollView } from 'react-native';
-import { GAMBannerAd, BannerAdSize, TestIds, BannerAd } from 'react-native-google-mobile-ads';
+import { BannerAdSize, TestIds, BannerAd } from 'react-native-google-mobile-ads';
 
 export default function Home() {
   return (
@@ -31,10 +31,10 @@ export default function Home() {
             </View>
           </View>
         </View>
-        <View>
+        <View className="flex justify-center items-center">
           <BannerAd
             unitId={TestIds.BANNER}
-            size={BannerAdSize.FULL_BANNER}
+            size={BannerAdSize.INLINE_ADAPTIVE_BANNER}
             requestOptions={{
               requestNonPersonalizedAdsOnly: true,
               networkExtras: { collapsible: 'bottom' },

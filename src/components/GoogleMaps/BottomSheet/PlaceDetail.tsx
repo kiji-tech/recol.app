@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Place, Review } from '@/src/entities/Place';
 import { Text, View, Linking } from 'react-native';
@@ -12,6 +12,7 @@ import { reviewAIAnalyze } from '@/src/apis/OpenAI';
 import Loading from '../../Loading';
 import ImageScrollView from '../../ImageScrollView';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import Button from '../../Button';
 type Props = {
   place: Place;
   selected: boolean;
@@ -54,12 +55,6 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
   const handleRemove = () => {
     if (place) onRemove(place);
   };
-
-  // ==== Effect ====
-  useEffect(() => {
-    if (!place) return;
-    fetchAiText();
-  }, [place]);
 
   // ==== Render ====
   return (
@@ -112,6 +107,7 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
         <Text className="text-xl font-semibold text-light-text dark:text-dark-text">
           AIレビュー要約({place.reviews.length}件)
         </Text>
+        <Button text="AIで店舗のレビューを要約する" onPress={fetchAiText} />
         {isAiNavigation ? (
           <Text className={`text-light-text dark:text-dark-text`}>{aiText}</Text>
         ) : (
