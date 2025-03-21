@@ -1,17 +1,20 @@
 import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef } from 'react';
-import { Place } from '@/src/entities/Place';
 import PlaceCard from './PlaceCard';
+import { Text, View } from 'react-native';
+import { Place } from '@/src/entities/Place';
 import { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { ScrollResponderMixin } from 'react-native';
+import { MapCategory } from '@/src/entities/MapCategory';
 
 type Props = {
   placeList: Place[];
   selectedPlace: Place | null;
+  selectedCategory: MapCategory;
   onSelect: (place: Place) => void;
 };
 const MapBottomSheetBody = forwardRef(
   (
-    { placeList, selectedPlace, onSelect }: Props,
+    { placeList, selectedPlace, onSelect, selectedCategory }: Props,
     ref: ForwardedRef<BottomSheetScrollViewMethods>
   ) => {
     // ==== Member ====
@@ -37,10 +40,20 @@ const MapBottomSheetBody = forwardRef(
     }
 
     // ==== Method ====
+
     // ==== Render ====
     return (
       <>
         <BottomSheetScrollView className="w-full flex-1" ref={scrollRef}>
+          {placeList && placeList.length == 0 && (
+            <View className="w-full p-8">
+              <Text className="text-center text-light-text dark:text-dark-text">
+                {selectedCategory == 'selected'
+                  ? '候補が選択されていません'
+                  : '検索結果がありません'}
+              </Text>
+            </View>
+          )}
           {placeList &&
             placeList.map((place: Place) => (
               <PlaceCard

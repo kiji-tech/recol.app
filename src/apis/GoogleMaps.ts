@@ -131,7 +131,9 @@ async function searchId(placeId: string) {
     }),
   })
     .then((response) => response.json())
-    .catch((e) => console.log(e));
+    .catch(() => {
+      //   console.log(e)
+    });
   return response;
 }
 
@@ -164,9 +166,11 @@ async function searchNearby(
     }),
   })
     .then((response) => response.json())
-    .catch((e) => console.log(e));
+    .catch(() => {
+      //   console.log(e)
+    });
   if (response.error) {
-    console.error(JSON.stringify(response));
+    // console.error(JSON.stringify(response));
   }
 
   return response.places;
@@ -199,9 +203,7 @@ async function searchPlaceByText(
         },
       },
     }),
-  })
-    .then((response) => response.json())
-    .catch((e) => console.log(JSON.stringify(e)));
+  }).then((response) => response.json());
   return response.places;
 }
 export { searchId, searchNearby, searchPlaceByText };

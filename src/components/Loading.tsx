@@ -1,6 +1,5 @@
+import React from 'react';
 import { View, ActivityIndicator, Text } from 'react-native';
-import BackgroundView from './BackgroundView';
-import { textColor } from '../themes/ColorUtil';
 
 export default function Loading() {
   return (

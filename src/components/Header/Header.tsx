@@ -47,7 +47,7 @@ export default function Header({
             placeholder="検索"
             onBlur={() => onSearch(searchText)}
             returnKeyType="search"
-            placeholderTextColor={isDarkMode ? 'gray' : 'black'}
+            placeholderTextColor={'gray'}
             className={`w-full rounded-xl text-m 
                         border-light-border dark:border-dark-border
                         text-light-text dark:text-dark-text`}

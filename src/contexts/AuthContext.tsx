@@ -14,6 +14,8 @@ type AuthContextType = {
   profile: Tables<'profile'> | null;
   setProfile: (profile: Tables<'profile'> | null) => void;
   resetSession: () => Promise<Session | null>;
+  refreshSession: () => Promise<void>;
+  isRefreshing: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -22,6 +24,79 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Tables<'profile'> | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+
+  // セッションを手動で更新する関数
+  const refreshSession = async () => {
+    if (isRefreshing) return; // 既に更新中なら処理しない
+
+    try {
+      setIsRefreshing(true);
+      const { data, error } = await supabase.auth.refreshSession();
+      if (error) {
+        throw error;
+      }
+
+      if (data.session) {
+        setSession(data.session);
+        setUser(data.session.user);
+
+        // プロフィール情報も更新
+        if (data.session.user) {
+          const profile = await getProfile(data.session).catch((e) => {
+            throw e;
+          });
+          setProfile(profile);
+        }
+      }
+    } catch (error: Error | unknown) {
+      const errorMessage = error instanceof Error ? error.message : '不明なエラー';
+      LogUtil.log(`セッション更新エラー: ${errorMessage}`, { level: 'error' });
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  // セッション有効性のチェックとエラーハンドリングのセットアップ
+  useEffect(() => {
+    // Supabaseのリクエストインターセプターをセットアップ
+    const setupAuthErrorHandler = () => {
+      // APIレスポンスを監視するためのオリジナルfetchの保存
+      const originalFetch = window.fetch;
+
+      window.fetch = async (...args) => {
+        try {
+          const response = await originalFetch(...args);
+
+          // 認証エラーを検出（401 Unauthorized または 403 Forbidden）
+          if (response.status === 401 || response.status === 403) {
+            // セッションが無効になっている可能性があるため更新を試みる
+            LogUtil.log('認証エラーを検出: セッションを更新します', { level: 'info' });
+            await refreshSession();
+
+            // セッション更新後、元のリクエストを再試行できるようにクローンを作成
+            if (session) {
+              const request = args[0] as Request;
+              const clonedRequest = request.clone ? request.clone() : request;
+              return originalFetch(clonedRequest, args[1]);
+            }
+          }
+
+          return response;
+        } catch (error) {
+          // ネットワークエラーなどの例外をそのまま伝播
+          throw error;
+        }
+      };
+    };
+
+    setupAuthErrorHandler();
+
+    // クリーンアップ関数
+    return () => {
+      // 元のfetchに戻す処理があればここに実装
+    };
+  }, [session]);
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -50,8 +125,42 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (e && e.message) LogUtil.log(e.message, { level: 'error' });
     });
 
+    // セッション変更監視のサブスクリプション
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+      LogUtil.log(`Auth state changed: ${event}`, { level: 'info' });
+      if (newSession) {
+        setSession(newSession);
+        setUser(newSession.user);
+
+        if (newSession.user) {
+          try {
+            const profile = await getProfile(newSession);
+            setProfile(profile);
+          } catch (e: Error | unknown) {
+            const errorMessage = e instanceof Error ? e.message : '不明なエラー';
+            LogUtil.log(`プロフィール取得エラー`, {
+              level: 'error',
+              error: new Error(errorMessage),
+            });
+          }
+        }
+      } else if (event === 'SIGNED_OUT') {
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+      }
+    });
+
+    // セッションの有効期限切れに備えてバックアップとして長めの間隔で更新
+    // 30分ごとにセッションを更新（主にバックアップとして）
+    const refreshTimer = setInterval(refreshSession, 30 * 60 * 1000);
+
     return () => {
       ctrl.abort();
+      subscription?.unsubscribe();
+      clearInterval(refreshTimer);
     };
   }, []);
 
@@ -70,7 +179,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ session, setSession, user, setUser, profile, setProfile, resetSession }}
+      value={{
+        session,
+        setSession,
+        user,
+        setUser,
+        profile,
+        setProfile,
+        resetSession,
+        refreshSession,
+        isRefreshing,
+      }}
     >
       {children}
     </AuthContext.Provider>

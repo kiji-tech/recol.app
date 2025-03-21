@@ -29,7 +29,7 @@ const SettingItem: React.FC<SettingItemProps> = ({
 }) => (
   <TouchableOpacity
     onPress={onPress}
-    className="flex-row items-center justify-between p-4 bg-white dark:bg-gray-800 border-b border-light-border dark:border-dark-border"
+    className="flex-row items-center justify-between p-4 border-b border-light-border dark:border-dark-border"
   >
     <View className="flex-row items-center">
       <Ionicons name={icon} size={24} color={isDarkMode ? 'white' : 'black'} />
@@ -58,17 +58,13 @@ export default function Settings() {
   // 通知設定の読み込み
   useEffect(() => {
     const loadSettings = async () => {
-      try {
-        const [scheduleEnabled, chatEnabled] = await Promise.all([
-          AsyncStorage.getItem(SCHEDULE_NOTIFICATION_KEY),
-          AsyncStorage.getItem(CHAT_NOTIFICATION_KEY),
-        ]);
+      const [scheduleEnabled, chatEnabled] = await Promise.all([
+        AsyncStorage.getItem(SCHEDULE_NOTIFICATION_KEY),
+        AsyncStorage.getItem(CHAT_NOTIFICATION_KEY),
+      ]);
 
-        setScheduleNotification(scheduleEnabled !== 'false');
-        setChatNotification(chatEnabled !== 'false');
-      } catch (error) {
-        console.error('設定の読み込みに失敗しました:', error);
-      }
+      setScheduleNotification(scheduleEnabled !== 'false');
+      setChatNotification(chatEnabled !== 'false');
     };
     loadSettings();
   }, []);
@@ -80,22 +76,14 @@ export default function Settings() {
 
   // スケジュール通知設定の変更
   const handleScheduleNotificationChange = async (value: boolean) => {
-    try {
-      await AsyncStorage.setItem(SCHEDULE_NOTIFICATION_KEY, String(value));
-      setScheduleNotification(value);
-    } catch (error) {
-      console.error('スケジュール通知設定の保存に失敗しました:', error);
-    }
+    await AsyncStorage.setItem(SCHEDULE_NOTIFICATION_KEY, String(value));
+    setScheduleNotification(value);
   };
 
   // チャット通知設定の変更
   const handleChatNotificationChange = async (value: boolean) => {
-    try {
-      await AsyncStorage.setItem(CHAT_NOTIFICATION_KEY, String(value));
-      setChatNotification(value);
-    } catch (error) {
-      console.error('チャット通知設定の保存に失敗しました:', error);
-    }
+    await AsyncStorage.setItem(CHAT_NOTIFICATION_KEY, String(value));
+    setChatNotification(value);
   };
 
   const handleSignOut = async () => {
@@ -150,7 +138,7 @@ export default function Settings() {
           <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">アプリ設定</Text>
 
           {/* ダークモード設定 */}
-          <View className="flex-row items-center justify-between p-4 bg-white border-b border-light-border dark:border-dark-border">
+          <View className="flex-row items-center justify-between p-4 border-b border-light-border dark:border-dark-border">
             <View className="flex-row items-center">
               <Ionicons name="moon-outline" size={24} color={isDarkMode ? 'white' : 'black'} />
               <Text className="ml-3 text-light-text dark:text-dark-text">ダークモード</Text>
@@ -159,8 +147,8 @@ export default function Settings() {
           </View>
 
           {/* スケジュール通知設定 */}
-          <View className="flex-row items-center justify-between p-4 bg-white border-b border-light-border dark:border-dark-border">
-            <View>
+          <View className="flex-row items-center relative p-4 border-b border-light-border dark:border-dark-border">
+            <View className="flex-1 pr-16">
               <View className="flex-row items-center">
                 <Ionicons
                   name="calendar-outline"
@@ -173,12 +161,17 @@ export default function Settings() {
                 スケジュールの開始時刻に通知を受け取ります
               </Text>
             </View>
-            <Switch value={scheduleNotification} onValueChange={handleScheduleNotificationChange} />
+            <View className="absolute right-4">
+              <Switch
+                value={scheduleNotification}
+                onValueChange={handleScheduleNotificationChange}
+              />
+            </View>
           </View>
 
           {/* チャット通知設定 */}
-          <View className="flex-row items-center justify-between p-4 bg-white border-b border-light-border dark:border-dark-border">
-            <View>
+          <View className="flex-row items-center relative p-4 border-b border-light-border dark:border-dark-border">
+            <View className="flex-1 pr-16">
               <View className="flex-row items-center">
                 <Ionicons
                   name="chatbubble-outline"
@@ -191,7 +184,9 @@ export default function Settings() {
                 新しいメッセージを受信したときに通知を受け取ります
               </Text>
             </View>
-            <Switch value={chatNotification} onValueChange={handleChatNotificationChange} />
+            <View className="absolute right-4">
+              <Switch value={chatNotification} onValueChange={handleChatNotificationChange} />
+            </View>
           </View>
 
           <SettingItem

@@ -1,10 +1,10 @@
+import React, { useEffect, useState } from 'react';
 import { Button, Header } from '@/src/components';
 import { BackgroundView } from '@/src/components';
 import DatePicker from '@/src/components/DatePicker';
 import { borderColor } from '@/src/themes/ColorUtil';
 import dayjs, { Dayjs } from 'dayjs';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, ScrollView } from 'react-native';
 import * as Location from 'expo-location';
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
@@ -53,14 +53,10 @@ export default function AddPlan() {
   // === Effect ===
   useEffect(() => {
     const getLocationPermissions = async () => {
-      try {
-        const {
-          coords: { latitude, longitude },
-        } = await Location.getCurrentPositionAsync({});
-        setRegion({ latitude, longitude, latitudeDelta: 0.09, longitudeDelta: 0.04 } as Region);
-      } catch (e) {
-        console.error(e);
-      }
+      const {
+        coords: { latitude, longitude },
+      } = await Location.getCurrentPositionAsync({});
+      setRegion({ latitude, longitude, latitudeDelta: 0.09, longitudeDelta: 0.04 } as Region);
     };
     getLocationPermissions();
   }, []);
@@ -81,6 +77,7 @@ export default function AddPlan() {
           </Text>
           <TextInput
             placeholder="修学旅行..."
+            placeholderTextColor="gray"
             className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
                 ${borderColor} text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background
                 `}

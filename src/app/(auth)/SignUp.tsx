@@ -43,12 +43,15 @@ export default function SignUpScreen() {
   return (
     <BackgroundView>
       <View className="flex flex-col items-center w-full gap-8 ">
-        <Text className="text-4xl font-bold">Welcome to the Voyx</Text>
+        <Text className="text-4xl font-bold text-light-text dark:text-dark-text">
+          Welcome to the Voyx
+        </Text>
         {/* 画像 */}
         <View className="bg-light-theme h-96 w-96 rounded-xl mb-4"></View>
         {/* form */}
         <TextInput
           placeholder="メールアドレス"
+          placeholderTextColor="gray"
           className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
                 `}
@@ -57,6 +60,7 @@ export default function SignUpScreen() {
         />
         <TextInput
           placeholder="パスワード"
+          placeholderTextColor="gray"
           className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
                 `}
@@ -66,6 +70,7 @@ export default function SignUpScreen() {
         />
         <TextInput
           placeholder="パスワード（確認）"
+          placeholderTextColor="gray"
           className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
                 `}

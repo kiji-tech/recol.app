@@ -24,15 +24,18 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
   // === Member ===
   const { isDarkMode } = useTheme();
   const [isAiNavigation, setIsAiNavigation] = useState(false);
+  const [isAiLoading, setIsAiLoading] = useState(false);
   const [aiText, setAiText] = useState('');
 
   // === Method ===
   /** AIによるレビュー解析の結果取得 */
   const fetchAiText = async () => {
+    setIsAiNavigation(true);
     if (!place.reviews) {
-      setIsAiNavigation(false);
       setAiText('レビューがありません');
+      return;
     }
+    setIsAiLoading(true);
 
     const reviews = place.reviews
       .map((review: Review) => {
@@ -42,9 +45,11 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
         `;
       })
       .join('\n\n');
+
+    // AI実行
     reviewAIAnalyze(reviews).then((text: string | null) => {
       setAiText(text || '');
-      setIsAiNavigation(true);
+      setIsAiLoading(false);
     });
   };
 
@@ -105,12 +110,15 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
 
         {/* AIレビュー */}
         <Text className="text-xl font-semibold text-light-text dark:text-dark-text">
-          AIレビュー要約({place.reviews.length}件)
+          レビュー要約({place.reviews.length}件)
         </Text>
-        <Button text="AIで店舗のレビューを要約する" onPress={fetchAiText} />
-        {isAiNavigation ? (
+        {!isAiNavigation && (
+          <Button text="AIで店舗のレビューを要約する" theme="info" onPress={fetchAiText} />
+        )}
+        {isAiNavigation && !isAiLoading && (
           <Text className={`text-light-text dark:text-dark-text`}>{aiText}</Text>
-        ) : (
+        )}
+        {isAiNavigation && isAiLoading && (
           <View className="w-full h-36">
             <Loading />
           </View>

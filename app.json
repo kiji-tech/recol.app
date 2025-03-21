@@ -22,10 +22,12 @@
         "infoPlist": {
             "ITSAppUsesNonExemptEncryption": false
         },
-        "userInterfaceStyle": "automatic"
+        "userInterfaceStyle": "automatic",
+        "deploymentTarget": "15.1"
     },
     "android": {
         "package": "com.libetech.voyz",
+        "packageName": "com.libetech.voyz",
         "adaptiveIcon": {
             "foregroundImage": "./assets/adaptive-icon.png",
             "backgroundColor": "#ffffff"
@@ -46,9 +48,7 @@
         "bundler": "metro"
     },
     "plugins": [
-        [
-            "expo-router"
-        ],
+        "expo-router",
         [
             "expo-location",
             {
@@ -66,15 +66,14 @@
             "expo-build-properties",
             {
                 "android": {
-                    "compileSdkVersion": 36,
-                    "targetSdkVersion": 36,
-                    "minSdkVersion": 28,
-                    "buildToolsVersion": "36.0.0",
-                    "kotlinVersion": "1.9.23"
+                    "compileSdkVersion": 35,
+                    "targetSdkVersion": 35,
+                    "buildToolsVersion": "35.0.0",
+                    "kotlinVersion": "1.9.25"
                 },
                 "ios": {
                     "useFrameworks": "static",
-                    "deploymentTarget": "13.4"
+                    "deploymentTarget": "15.1"
                 }
             }
         ],

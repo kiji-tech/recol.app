@@ -46,8 +46,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setThemeState(themeToApply);
         setIsDarkMode(themeToApply === 'dark');
         setIsThemeLoaded(true);
-      } catch (error) {
-        console.error('テーマ設定の読み込みに失敗しました:', error);
+      } catch {
         setThemeState('light');
         setIsDarkMode(false);
         setIsThemeLoaded(true);
@@ -60,25 +59,21 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [systemColorScheme]);
 
   const setTheme = async (newTheme: ThemeMode) => {
-    try {
-      await AsyncStorage.setItem(THEME_STORAGE_KEY, newTheme).catch((e) => {
-        if (e && e.message) LogUtil.log(e.message, { level: 'error' });
+    await AsyncStorage.setItem(THEME_STORAGE_KEY, newTheme).catch((e) => {
+      if (e && e.message) LogUtil.log(e.message, { level: 'error' });
+    });
+    if (Platform.OS === 'ios') {
+      colorScheme.set(newTheme);
+    } else {
+      // Androidの場合は遅延実行
+      await new Promise((resolve) => setTimeout(resolve, 0)).catch((e) => {
+        if (e && e.message) {
+          LogUtil.log(e.message, { level: 'error' });
+        }
       });
-      if (Platform.OS === 'ios') {
-        colorScheme.set(newTheme);
-      } else {
-        // Androidの場合は遅延実行
-        await new Promise((resolve) => setTimeout(resolve, 0)).catch((e) => {
-          if (e && e.message) {
-            LogUtil.log(e.message, { level: 'error' });
-          }
-        });
-        colorScheme.set(newTheme);
-      }
-      setThemeState(newTheme);
-    } catch (error) {
-      console.error('テーマの保存に失敗しました:', error);
+      colorScheme.set(newTheme);
     }
+    setThemeState(newTheme);
   };
 
   return (

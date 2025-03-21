@@ -9,8 +9,6 @@ export default function SampleScreen() {
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }]),
       onPanResponderRelease: () => {
-        console.log(`release: ${pan.x}, ${pan.y}`);
-        console.log(JSON.stringify(pan));
         pan.extractOffset();
       },
     })

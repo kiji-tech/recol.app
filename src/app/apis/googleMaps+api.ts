@@ -1,4 +1,5 @@
-import ENV from "@/env";
+import ENV from '@/env';
+
 interface GoogleMapApiRequest {
   body: {
     latitude: number;
@@ -7,19 +8,18 @@ interface GoogleMapApiRequest {
 }
 
 export async function POST(req: Request) {
-  console.log("handler post");
   const { latitude, longitude } = await req.json();
-  const response = await fetch("https://places.googleapis.com/v1/places:searchNearby", {
-    method: "POST",
+  const response = await fetch('https://places.googleapis.com/v1/places:searchNearby', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
-      "X-Goog-Api-Key": ENV.GOOGLE_MAP_API_KEY,
-      "X-Goog-FieldMask": "*",
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': ENV.GOOGLE_MAP_API_KEY,
+      'X-Goog-FieldMask': '*',
     },
     body: JSON.stringify({
       maxResultCount: 20,
-      languageCode: "ja",
-      includedTypes: ["cafe", "hostel", "hotel"],
+      languageCode: 'ja',
+      includedTypes: ['cafe', 'hostel', 'hotel'],
       locationRestriction: {
         circle: {
           center: {
@@ -30,9 +30,6 @@ export async function POST(req: Request) {
         },
       },
     }),
-  })
-    .then((response) => response.json())
-    .catch((e) => console.log(e));
-  console.log(response);
+  }).then((response) => response.json());
   return Response.json({ places: response.places }, { status: 200 });
 }

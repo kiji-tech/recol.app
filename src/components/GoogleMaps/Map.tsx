@@ -40,7 +40,7 @@ type Props = {
 };
 export default function Map({
   selectedPlace,
-  selectedPlaceList,
+  selectedPlaceList = [],
   isSearch = false,
   isMarker = false,
   //   onMarkerDeselect = () => void 0,
@@ -49,17 +49,18 @@ export default function Map({
   onRemove = () => void 0,
   onBack = () => void 0,
 }: Props) {
+  // === Member ===
   const DEFAULT_RADIUS = 4200;
   const markerRef: { [id: string]: MapMarker | null } = {};
   const bottomSheetRef = useRef<BottomSheet | null>(null);
   const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
   const { plan } = usePlan();
   const [places, setPlaces] = useState<Place[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   // 検索結果の再描画ボタン表示までの時間
   const [searchTimer, setSearchTimer] = useState<boolean>(false);
-  // 選択中のカテゴリ（meal, hotel, spot, selected）
-  const [selectedCategory, setSelectedCategory] = useState<MapCategory>('meal');
+  // 選択中のカテゴリ（meal, hotel, spot, selected, text）
+  const [selectedCategory, setSelectedCategory] = useState<MapCategory>('selected');
   const [isCoords, setIsCoords] = useState<Region>({
     ...JSON.parse(plan!.locations![0]),
     latitudeDelta: 0.05,
@@ -89,8 +90,6 @@ export default function Map({
     try {
       const response = await searchNearby(latitude, longitude, selectedCategory, radius);
       settingPlaces(response);
-    } catch (e) {
-      console.error(e);
     } finally {
       setIsLoading(false);
     }
@@ -117,8 +116,6 @@ export default function Map({
         radius
       );
       settingPlaces(response);
-    } catch (e) {
-      console.error(e);
     } finally {
       setIsLoading(false);
     }
@@ -143,8 +140,6 @@ export default function Map({
       await fetchLocation(isCoords.latitude, isCoords.longitude);
       setCenterCords(isCoords);
       reSearchTimer();
-    } catch (e) {
-      console.error(e);
     } finally {
       setIsLoading(false);
     }
@@ -209,6 +204,7 @@ export default function Map({
     if (isCoords) fetchLocation(isCoords.latitude, isCoords.longitude);
     reSearchTimer();
   }, []);
+
   useEffect(() => {
     if (selectedPlace && markerRef[selectedPlace.id] != null) {
       markerRef[selectedPlace.id]?.showCallout();
@@ -310,21 +306,19 @@ export default function Map({
           </TouchableOpacity>
         )}
       </View>
-      {places.length > 0 && (
-        <MapBottomSheet
-          placeList={places}
-          selectedPlace={selectedPlace}
-          selectedPlaceList={selectedPlaceList || []}
-          selectedCategory={selectedCategory}
-          isSelected={isOnlySelected}
-          onAdd={onAdd}
-          onRemove={onRemove}
-          onSelectedPlace={handleSelectedPlace}
-          onSelectedCategory={handleSelectedCategory}
-          bottomSheetRef={bottomSheetRef}
-          scrollRef={scrollRef}
-        />
-      )}
+      <MapBottomSheet
+        placeList={places}
+        selectedPlace={selectedPlace}
+        selectedPlaceList={selectedPlaceList || []}
+        selectedCategory={selectedCategory}
+        isSelected={isOnlySelected}
+        onAdd={onAdd}
+        onRemove={onRemove}
+        onSelectedPlace={handleSelectedPlace}
+        onSelectedCategory={handleSelectedCategory}
+        bottomSheetRef={bottomSheetRef}
+        scrollRef={scrollRef}
+      />
       {isLoading && <Loading />}
     </>
   );

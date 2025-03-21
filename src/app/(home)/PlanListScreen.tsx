@@ -32,7 +32,7 @@ export default function PlanListScreen() {
     const data = await fetchPlanList(session, ctrl).catch((e) => {
       LogUtil.log(e, { level: 'error', notify: true });
       if (e && e.message) {
-        alert('計画を取得するのに失敗しました｡');
+        alert(e.message);
       }
     });
     if (!data) return;

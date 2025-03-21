@@ -30,6 +30,7 @@ export default function MapModal({ isOpen, placeList, onClose }: Props) {
   const handleAdd = (place: Place) => {
     setSelectedPlaceList([...selectedPlaceList, place]);
   };
+    
   const handleRemove = (place: Place) => {
     setSelectedPlaceList(selectedPlaceList.filter((p) => p.id !== place.id));
   };

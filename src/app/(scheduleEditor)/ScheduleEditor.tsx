@@ -8,12 +8,10 @@ import DatePicker from '../../components/DatePicker';
 import dayjs from '@/src/libs/dayjs';
 import MapModal from './component/MapModal';
 import { Place } from '@/src/entities/Place';
-import { useTheme } from '@/src/contexts/ThemeContext';
 
 export default function ScheduleEditor() {
   // === Member ===
   const { editSchedule, setEditSchedule } = usePlan();
-  const { isDarkMode } = useTheme();
   const [openMapModal, setOpenMapModal] = useState(false);
 
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';

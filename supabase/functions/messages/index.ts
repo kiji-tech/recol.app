@@ -10,7 +10,6 @@ const app = new Hono().basePath('/messages');
 const create = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
   const { title, from, to, locations } = await c.req.json();
-  console.log({ title, from, to, locations });
   // planを作成
   const { data, error } = await supabase
     .from('plan')
@@ -18,7 +17,6 @@ const create = async (c: Hono.Context) => {
     .select('*');
 
   if (error) {
-    console.error(error);
     return c.json({ error }, 403);
   }
 
@@ -28,7 +26,6 @@ const create = async (c: Hono.Context) => {
 const update = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
   const { uid, title, from, to, locations, place_id_list } = await c.req.json();
-  console.log({ uid, title, from, to, locations, place_id_list });
   // planを更新
   const { data, error } = await supabase
     .from('plan')
@@ -37,7 +34,6 @@ const update = async (c: Hono.Context) => {
     .select('*');
 
   if (error) {
-    console.error(error);
     return c.json({ error }, 403);
   }
 

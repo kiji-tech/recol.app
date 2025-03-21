@@ -1,10 +1,10 @@
 import React from 'react';
-import { View } from 'react-native';
-import { Platform } from 'react-native';
+import { View, Platform } from 'react-native';
+
 const isIOS = Platform.OS === 'ios';
 
 type Props = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   isTabbar?: boolean;
 };
 export default function BackgroundView({ children, isTabbar = true }: Props) {

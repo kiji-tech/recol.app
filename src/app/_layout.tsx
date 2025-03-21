@@ -32,7 +32,7 @@ const Layout = () => {
 
       await mobileAds().initialize();
     } catch (err) {
-      console.warn('initAd', err);
+      alert(err);
     }
   }, []);
 

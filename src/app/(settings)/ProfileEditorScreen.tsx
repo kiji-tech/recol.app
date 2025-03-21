@@ -48,22 +48,16 @@ export default function ProfileEditorScreen() {
               reader.readAsDataURL(blob);
             });
           })
-          .catch((error) => {
-            console.error('Error converting image to base64:', error);
+          .catch(() => {
             return null;
           })
       : null;
 
-    await updateProfile(displayName, base64Image, session)
-      .then((profile: Tables<'profile'>) => {
-        LogUtil.log(profile, {});
-        setProfile(profile);
-        router.back();
-      })
-      .catch((err) => {
-        console.error(err);
-        alert('プロフィールの更新に失敗しました');
-      });
+    await updateProfile(displayName, base64Image, session).then((profile: Tables<'profile'>) => {
+      LogUtil.log(profile, {});
+      setProfile(profile);
+      router.back();
+    });
   };
 
   // === Render ===

@@ -33,7 +33,6 @@ export const reviewAIAnalyze = async (reviews: string): Promise<string | null> =
     });
     return completion.choices[0].message.content;
   } catch (e) {
-    console.error(e);
     throw e;
   }
 };

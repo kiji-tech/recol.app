@@ -44,6 +44,7 @@ export default function MapBottomSheet({
     setIsDetailPlace(true);
   };
 
+  // ==== Effect ====
   useEffect(() => {
     setDetailPlace(selectedPlace);
   }, [selectedPlace]);
@@ -68,6 +69,7 @@ export default function MapBottomSheet({
           <MapBottomSheetBody
             placeList={isSelected ? selectedPlaceList : placeList}
             selectedPlace={selectedPlace}
+            selectedCategory={selectedCategory}
             onSelect={handleSelect}
             ref={scrollRef}
           />

@@ -40,8 +40,11 @@ export default function ScheduleScreen(): ReactNode {
         setViewPlan({ ...data } as Tables<'plan'> & { schedule: Tables<'schedule'>[] });
       })
       .catch((e) => {
-        console.error('Plan fetch error:', e);
-        Alert.alert('エラー', 'プランの読み込み中にエラーが発生しました。もう一度お試しください。');
+        if (e)
+          Alert.alert(
+            'エラー',
+            'プランの読み込み中にエラーが発生しました。もう一度お試しください。'
+          );
       });
 
     return () => {
@@ -66,13 +69,16 @@ export default function ScheduleScreen(): ReactNode {
       await deleteSchedule(schedule.uid, session);
       initView();
     } catch (error) {
-      console.error('Schedule deletion error:', error);
-      Alert.alert('エラー', 'スケジュールの削除中にエラーが発生しました。もう一度お試しください。');
+      if (error)
+        Alert.alert(
+          'エラー',
+          'スケジュールの削除中にエラーが発生しました。もう一度お試しください。'
+        );
     }
   };
 
   // === Effect ===
-  useFocusEffect(useCallback(initView, [plan]));
+  useFocusEffect(useCallback(initView, [plan, session]));
 
   // === Render ===
   return (

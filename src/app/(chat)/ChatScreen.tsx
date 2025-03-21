@@ -85,11 +85,8 @@ export default function ChatScreen() {
         body: JSON.stringify(body),
       }
     );
-    const { data, error } = await response.json();
-    console.log(data);
+    const { data } = await response.json();
     if (!response.ok) {
-      console.log('Failed to fetch messages');
-      console.log(JSON.stringify(error));
       return;
     }
 
@@ -103,8 +100,7 @@ export default function ChatScreen() {
       .from('messages')
       .insert([{ content: inputText, sender_id: 'user-id' }]);
 
-    if (error) console.error(error);
-    else setInputText('');
+    if (!error) setInputText('');
   };
 
   // ==== Render ====
@@ -114,6 +110,7 @@ export default function ChatScreen() {
         <TextInput
           value={inputText}
           placeholder="Type a message..."
+          placeholderTextColor="gray"
           className={`flex-1 rounded-xl items-center border p-4 text-xl mr-4
                 ${borderColor} text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background
                 `}

@@ -60,8 +60,6 @@ const MapScreen = () => {
     try {
       const response = await searchNearby(latitude, longitude);
       settingPlaces(response);
-    } catch (e) {
-      console.error(e);
     } finally {
       setIsLoading(false);
     }
@@ -77,8 +75,6 @@ const MapScreen = () => {
         searchText
       );
       settingPlaces(response);
-    } catch (e) {
-      console.error(e);
     } finally {
       setIsLoading(false);
     }
@@ -90,8 +86,6 @@ const MapScreen = () => {
     try {
       await fetchLocation(isCoords.latitude, isCoords.longitude);
       setCenterCords(isCoords);
-    } catch (e) {
-      console.error(e);
     } finally {
       setIsLoading(false);
     }

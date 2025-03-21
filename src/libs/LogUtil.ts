@@ -51,32 +51,28 @@ export class LogUtil {
     if (this.ENABLE_CONSOLE_LOG) {
       switch (level) {
         case 'info':
-          console.log(JSON.stringify(logData, null, 2));
+          console.log(JSON.stringify(logData));
           break;
         case 'warn':
-          console.warn(JSON.stringify(logData, null, 2));
+          console.warn(JSON.stringify(logData));
           break;
         case 'error':
-          console.error(JSON.stringify(logData, null, 2));
+          console.error(JSON.stringify(logData));
           break;
       }
     }
 
     // Slack通知が有効で、通知フラグがtrueの場合
     if (this.ENABLE_SLACK_NOTIFICATION && notify && this.SLACK_WEBHOOK_URL) {
-      try {
-        await fetch(this.SLACK_WEBHOOK_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            text: `🚨 *${level.toUpperCase()}*\n${message}\n\`\`\`${JSON.stringify(logData, null, 2)}\`\`\``,
-          }),
-        });
-      } catch (slackError) {
-        console.error('Slack通知の送信に失敗しました:', slackError);
-      }
+      await fetch(this.SLACK_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: `🚨 *${level.toUpperCase()}*\n${message}\n\`\`\`${JSON.stringify(logData)}\`\`\``,
+        }),
+      });
     }
   }
 }

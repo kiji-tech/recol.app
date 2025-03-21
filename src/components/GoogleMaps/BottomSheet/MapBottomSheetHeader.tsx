@@ -27,10 +27,10 @@ export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }
 
   const categoryButtonList: SearchSelectedButtonProps[] = [
     { id: 'text', label: '検索結果', onPress: () => {} },
+    { id: 'selected', label: '選択中', onPress: handleOnSelectedCategory },
     { id: 'meal', label: '食事・カフェ', onPress: handleOnSelectedCategory },
     { id: 'hotel', label: 'ホテル・旅館', onPress: handleOnSelectedCategory },
     { id: 'spot', label: '観光スポット', onPress: handleOnSelectedCategory },
-    { id: 'selected', label: '選択中', onPress: handleOnSelectedCategory },
   ];
 
   // === Render ====
