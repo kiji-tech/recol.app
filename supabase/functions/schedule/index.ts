@@ -1,9 +1,9 @@
 import { Hono } from 'jsr:@hono/hono';
-import { generateSupabase } from '../libs/supabase.ts';
+import { generateSupabase, getUser } from '../libs/supabase.ts';
 const app = new Hono().basePath('/schedule');
 
 const get = async (c: Hono.Context) => {
-  console.log('schedule get');
+  console.log('[GET] schedule/:id');
   const supabase = generateSupabase(c);
   const scheduleId = c.req.param('scheduleId');
   const planId = c.req.param('planId');
@@ -37,9 +37,14 @@ const get = async (c: Hono.Context) => {
 };
 
 const upsert = async (c: Hono.Context) => {
+  console.log('[UPSERT] schedule/:id');
   const supabase = generateSupabase(c);
+  const user = await getUser(c, supabase);
+  if (!user) {
+    return c.json({ error: 'User not found' }, 403);
+  }
   const { schedule } = await c.req.json();
-  console.log(schedule);
+  console.log({ user, schedule });
   // scheduleの更新
   const { data, error } = await supabase
     .from('schedule')
@@ -58,7 +63,7 @@ const upsert = async (c: Hono.Context) => {
 };
 
 const deleteSchedule = async (c: Hono.Context) => {
-  console.log('deleteSchedule');
+  console.log('[DELETE] schedule/:id');
   const supabase = generateSupabase(c);
   const { uid } = await c.req.json();
 

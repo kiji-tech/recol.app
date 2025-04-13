@@ -9,6 +9,30 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      item_link: {
+        Row: {
+          amazon_url: string | null
+          category: string[] | null
+          created_at: string
+          id: string | null
+          rakuten_url: string | null
+        }
+        Insert: {
+          amazon_url?: string | null
+          category?: string[] | null
+          created_at?: string
+          id?: string | null
+          rakuten_url?: string | null
+        }
+        Update: {
+          amazon_url?: string | null
+          category?: string[] | null
+          created_at?: string
+          id?: string | null
+          rakuten_url?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           created_at: string

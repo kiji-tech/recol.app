@@ -130,6 +130,29 @@ async function deleteSchedule(uid: string, session: Session | null, ctrl?: Abort
   if (response.error) throw response.error;
 }
 
+/**
+ * スケジュールの作成・更新
+ *
+ * @param schedule {Tables<'schedule'>}
+ * @param session {Session | null}
+ * @param ctrl {AbortController}
+ * @returns Tables<'schedule'>
+ */
+async function upsertSchedule(
+  schedule: Tables<'schedule'>,
+  session: Session | null,
+  ctrl?: AbortController
+) {
+  const response = await apiRequest<Tables<'schedule'>[]>('/schedule', {
+    method: 'POST',
+    session,
+    body: { schedule },
+    ctrl,
+  });
+  if (response.error) throw response.error;
+  return response.data!;
+}
+
 // ============ Profile ============
 async function getProfile(session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<Tables<'profile'>>('/profile', {
@@ -160,12 +183,32 @@ async function updateProfile(
   return response.data!;
 }
 
+// ============ Item Link ============
+/**
+ * アイテムリンク一覧の取得
+ *
+ * @param session {Session | null}
+ * @param ctrl {AbortController}
+ * @returns Tables<'item_link'>[]
+ */
+async function fetchItemLinkList(session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Tables<'item_link'>[]>('/item_link/list', {
+    method: 'GET',
+    session,
+    ctrl,
+  });
+  if (response.error) throw response.error;
+  return response.data!;
+}
+
 export {
   fetchPlan,
   fetchPlanList,
   fetchSchedule,
   fetchScheduleList,
   deleteSchedule,
+  upsertSchedule,
   getProfile,
   updateProfile,
+  fetchItemLinkList,
 };

@@ -20,9 +20,9 @@ alwaysApply: true
         - ディレクトリ：小英文字を使用すること｡
     - 単語ごとに大英文字を使用すること｡
     - ファイル名はキャメルケースとすること｡
-2. ディレクトリ構成
+1. ディレクトリ構成
 2.1. 構成
-- src/
+- src/ ･･･ expoに関わるファイル｡ [expo-rule.mdc](mdc:.cursor/rules/expo-rule.mdc) を使用すること
     - app/:expoページファイル
     - components/:共通コンポーネント
     - contexts/:共通コンテキストファイル
@@ -31,15 +31,15 @@ alwaysApply: true
     - entities/:型定義
     - themes/:テーマ
 - test/:テストファイル
-- supabase/: supabase関係
+- supabase/: supabaseに関わるファイル｡ [functions-rule.mdc](mdc:.cursor/rules/functions-rule.mdc) を使用すること｡
     - functions/: supabase関数
     - migrations/: supabaseマイグレーションファイル
 
-3. エラーハンドリングルール
+1. エラーハンドリングルール
 
-4. ドキュメント
+2. ドキュメント
 
-9. 禁止事項
+3. 禁止事項
 以下の設定ファイルは､指定がない限り変更しないこと
 - .env
 - .gitignore

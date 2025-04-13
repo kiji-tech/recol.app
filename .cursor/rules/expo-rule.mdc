@@ -9,5 +9,7 @@ alwaysApply: false
 - TypeScriptで書くこと
 - React Nativeの記法とする
 - DBの構造はファイル [database.types.ts](mdc:src/libs/database.types.ts) を参考にすること
-- 色に関するルールは､  [colors.ts](mdc:src/themes/colors.ts)](mdc:src/themes/colors.ts) を参考にすること
-- 
+- classNameで色を定義するルールは､  [colors.ts](mdc:src/themes/colors.ts) を使用すること
+    - light､darkの2つを使用すること
+    - classNameで定義できない場合は､ [ThemeContext.tsx](mdc:src/contexts/ThemeContext.tsx) から､**isDarkMode**を取得して設定すること
+- 画面､コンポーネントを待つ場合は､ [Loading.tsx](mdc:src/components/Loading.tsx) を使用すること

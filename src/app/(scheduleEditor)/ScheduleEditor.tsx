@@ -8,10 +8,13 @@ import DatePicker from '../../components/DatePicker';
 import dayjs from '@/src/libs/dayjs';
 import MapModal from './component/MapModal';
 import { Place } from '@/src/entities/Place';
+import { upsertSchedule } from '@/src/libs/ApiService';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 export default function ScheduleEditor() {
   // === Member ===
   const { editSchedule, setEditSchedule } = usePlan();
+  const { session } = useAuth();
   const [openMapModal, setOpenMapModal] = useState(false);
 
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
@@ -24,15 +27,13 @@ export default function ScheduleEditor() {
       from: dayjs(editSchedule.from).format(DATE_FORMAT),
       to: dayjs(editSchedule.to).format(DATE_FORMAT),
     };
-    const res = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/schedule`, {
-      method: 'POST',
-      body: JSON.stringify({ schedule: schedule }),
-    });
-    if (!res.ok) {
+
+    try {
+      await upsertSchedule(schedule as Tables<'schedule'>, session);
+      router.back();
+    } catch {
       alert('登録に失敗しました');
-      return;
     }
-    router.back();
   };
 
   const handleSelectedPlaceList = (placeList: Place[]) => {

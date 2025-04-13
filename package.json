@@ -63,6 +63,7 @@
         "react-dom": "18.3.1",
         "react-i18next": "^15.4.0",
         "react-native": "^0.76.7",
+        "react-native-admob-native-ads": "^0.7.6",
         "react-native-dotenv": "^3.4.11",
         "react-native-elements": "^3.4.3",
         "react-native-gesture-handler": "~2.20.2",
@@ -74,6 +75,7 @@
         "react-native-screens": "~4.4.0",
         "react-native-svg": "15.8.0",
         "react-native-url-polyfill": "^2.0.0",
+        "react-native-vector-icons": "^10.2.0",
         "react-native-view-shot": "~4.0.3",
         "react-native-web": "~0.19.13",
         "zod": "^3.24.1"

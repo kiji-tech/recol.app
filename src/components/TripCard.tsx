@@ -5,7 +5,7 @@ import { URLMetadata, DEFAULT_NO_IMAGE_URL, fetchMetadata } from '../libs/Metada
 import { MaterialIcons } from '@expo/vector-icons';
 import Loading from './Loading';
 
-type LinkCardProps = {
+type TripCardProps = {
   title?: string;
   description?: string;
   imageUrl?: string;
@@ -16,7 +16,7 @@ type LinkCardProps = {
   onBookmarkChange?: (url: string, isBookmarked: boolean) => void;
 };
 
-const LinkCard: React.FC<LinkCardProps> = ({
+const TripCard: React.FC<TripCardProps> = ({
   title: propTitle,
   description: propDescription,
   imageUrl: propImageUrl,
@@ -74,7 +74,8 @@ const LinkCard: React.FC<LinkCardProps> = ({
     fetchUrlMetadata();
   }, [url, propTitle, propDescription, propImageUrl]);
 
-  const handlePress = () => {
+  // 外部URLを開く
+  const openUrl = () => {
     if (url) {
       Linking.openURL(url).catch((err) => console.error('URLを開けませんでした:', err));
     }
@@ -93,6 +94,8 @@ const LinkCard: React.FC<LinkCardProps> = ({
 
   // URLからドメイン部分を抽出する関数（改善版）
   const extractDomain = (urlString: string): string => {
+    if (!urlString) return '外部リンク';
+
     try {
       // URLにプロトコルが含まれていない場合は追加
       let processedUrl = urlString;
@@ -106,7 +109,7 @@ const LinkCard: React.FC<LinkCardProps> = ({
     } catch {
       // URL解析に失敗した場合、単純にドメイン部分を抽出する
       const match = urlString.match(/^(?:https?:\/\/)?(?:www\.)?([^\/]+)/i);
-      return match ? match[1] : urlString;
+      return match ? match[1] : '外部リンク';
     }
   };
 
@@ -126,11 +129,6 @@ const LinkCard: React.FC<LinkCardProps> = ({
     }
   };
 
-  // タイトルから特定の文字列を削除する関数
-  const cleanTitle = (title: string): string => {
-    return title.replace(/^Amazon\.co\.jp: /i, '').replace(/^【楽天市場】/i, '');
-  };
-
   const domain = extractDomain(url);
   const formattedDate = formatDate(createdAt);
 
@@ -146,7 +144,7 @@ const LinkCard: React.FC<LinkCardProps> = ({
     );
   }
 
-  const displayTitle = cleanTitle(metadata?.title || propTitle || 'タイトルなし');
+  const displayTitle = metadata?.title || propTitle || 'タイトルなし';
   const displayDescription = metadata?.description || propDescription;
   const displayImage = metadata?.image || propImageUrl || DEFAULT_NO_IMAGE_URL;
   const displaySiteName = metadata?.siteName;
@@ -172,19 +170,25 @@ const LinkCard: React.FC<LinkCardProps> = ({
   };
 
   return (
-    <TouchableOpacity onPress={handlePress} className={cardBaseClass}>
+    <View className={cardBaseClass}>
       <View className="w-full flex-col">
-        <View className="relative">
-          <Image
-            source={{ uri: displayImage }}
-            className="w-full h-36 rounded-t-lg"
-            resizeMode="cover"
-          />
-        </View>
+        <TouchableOpacity onPress={openUrl}>
+          <View className="relative">
+            <Image
+              source={{ uri: displayImage }}
+              className="w-full h-36 rounded-t-lg"
+              resizeMode="cover"
+            />
+          </View>
+        </TouchableOpacity>
 
         <View className="p-3 relative">
           {/* 日付表示 - バッジの上に配置 */}
-          {formattedDate && <Text className="text-xs text-gray-500 mb-2">{formattedDate}</Text>}
+          {formattedDate && (
+            <Text className="text-xs text-light-secondary dark:text-dark-secondary mb-2">
+              {formattedDate}
+            </Text>
+          )}
 
           {/* カテゴリーバッジ - 複数表示 */}
           {category.length > 0 && (
@@ -199,39 +203,44 @@ const LinkCard: React.FC<LinkCardProps> = ({
             </View>
           )}
 
-          <Text
-            className="font-bold text-light-text dark:text-dark-text"
-            numberOfLines={1}
-            ellipsizeMode="tail"
-            style={titleStyle}
-          >
-            {displayTitle}
-          </Text>
-          {displayDescription && (
+          <TouchableOpacity onPress={openUrl}>
             <Text
-              className="text-sm text-light-text dark:text-dark-text mt-1"
-              numberOfLines={3}
+              className="font-bold text-light-text dark:text-dark-text"
+              numberOfLines={1}
               ellipsizeMode="tail"
-              style={descriptionStyle}
+              style={titleStyle}
             >
-              {displayDescription}
+              {displayTitle}
             </Text>
-          )}
+            {displayDescription && (
+              <Text
+                className="text-sm text-light-text dark:text-dark-text mt-1"
+                numberOfLines={3}
+                ellipsizeMode="tail"
+                style={descriptionStyle}
+              >
+                {displayDescription}
+              </Text>
+            )}
+          </TouchableOpacity>
+
           {/* サイト名 - 高さ固定 */}
           <View style={siteNameStyle}>
             {displaySiteName && (
-              <Text className="text-xs text-gray-500 mt-1">{displaySiteName}</Text>
+              <Text className="text-xs text-light-secondary dark:text-dark-secondary mt-1">
+                {displaySiteName}
+              </Text>
             )}
             {error && <Text className="text-xs text-red-500 mt-1">{error}</Text>}
           </View>
 
           <View className="mt-2 flex-row justify-between items-center">
             {/* リンク先ドメイン表示 */}
-            <View className="px-2 py-1 bg-light-background dark:bg-dark-background border border-light-border dark:border-dark-border rounded-full">
-              <Text className="text-xs text-light-text dark:text-dark-text">
-                {domain || '外部リンク'} →
-              </Text>
-            </View>
+            <TouchableOpacity onPress={openUrl}>
+              <View className="px-2 py-1 bg-light-background dark:bg-dark-background border border-light-border dark:border-dark-border rounded-full">
+                <Text className="text-xs text-light-text dark:text-dark-text">{domain} →</Text>
+              </View>
+            </TouchableOpacity>
 
             {/* ブックマークボタン - 右下に配置 */}
             <TouchableOpacity
@@ -247,8 +256,8 @@ const LinkCard: React.FC<LinkCardProps> = ({
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
-export default LinkCard;
+export default TripCard;
