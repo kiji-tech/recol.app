@@ -5,6 +5,7 @@ import { URLMetadata, DEFAULT_NO_IMAGE_URL, fetchMetadata } from '../libs/Metada
 import { MaterialIcons } from '@expo/vector-icons';
 import Loading from './Loading';
 import { Tables } from '@/src/libs/database.types';
+import { useTheme } from '../contexts/ThemeContext';
 
 type ItemCardProps = Tables<'item_link'> & {
   isBookmarked?: boolean;
@@ -19,6 +20,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
   isBookmarked: propIsBookmarked = false,
   onBookmarkChange,
 }) => {
+  const { isDarkMode } = useTheme();
   const [loading, setLoading] = useState(false);
   const [metadata, setMetadata] = useState<URLMetadata | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -98,14 +100,31 @@ const ItemCard: React.FC<ItemCardProps> = ({
     }
   };
 
+  // 日付が直近1週間以内かどうかをチェック
+  const isWithinLastWeek = (dateString?: string): boolean => {
+    if (!dateString) return false;
+
+    try {
+      const itemDate = new Date(dateString);
+      const now = new Date();
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(now.getDate() - 7);
+
+      return itemDate >= oneWeekAgo;
+    } catch {
+      return false;
+    }
+  };
+
   const formattedDate = formatDate(created_at);
+  const isNew = isWithinLastWeek(created_at);
 
   // メタデータローディング中の表示
   if (loading) {
     return (
       <View
-        className="mb-4 rounded-lg overflow-hidden border border-light-border dark:border-dark-border bg-light-background dark:bg-dark-background w-[280px] mr-3 relative"
-        style={{ height: 250 }}
+        className="rounded-lg overflow-hidden border border-light-border dark:border-dark-border bg-light-background dark:bg-dark-background w-full relative"
+        style={{ height: 320 }}
       >
         <Loading />
       </View>
@@ -118,7 +137,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
 
   // カードのベースクラス
   const cardBaseClass =
-    'mb-4 rounded-lg overflow-hidden border border-light-border dark:border-dark-border bg-light-background dark:bg-dark-background w-[280px] mr-3';
+    'rounded-lg overflow-hidden border border-light-border dark:border-dark-border bg-light-background dark:bg-dark-background w-full';
 
   // 固定高さスタイル
   const titleStyle = {
@@ -135,35 +154,59 @@ const ItemCard: React.FC<ItemCardProps> = ({
     <View className={cardBaseClass}>
       <View className="w-full flex-col">
         {/* 商品画像 */}
-        <View className="relative">
-          <Image
-            source={{ uri: displayImage }}
-            className="w-full h-36 rounded-t-lg"
-            resizeMode="cover"
-          />
-        </View>
+        <Image
+          source={{ uri: displayImage }}
+          className="w-full h-64 rounded-t-lg"
+          resizeMode="contain"
+        />
 
         <View className="p-3 relative">
           {/* 日付表示 */}
           {formattedDate && (
-            <Text className="text-xs text-light-secondary dark:text-dark-secondary mb-2">
-              {formattedDate}
-            </Text>
-          )}
-
-          {/* カテゴリーバッジ - 複数表示 */}
-          {category && category.length > 0 && (
-            <View className="flex-row flex-wrap mb-2">
-              {category.map((cat, index) => (
-                <Badge
-                  key={`${cat}-${index}`}
-                  text={cat}
-                  className={index < category.length - 1 ? 'mr-2 mb-1' : 'mb-1'}
-                />
-              ))}
+            <View className="flex-row items-center mb-2">
+              {isNew && (
+                <View className="mr-2 bg-orange-600 rounded-full px-2 py-0.5 flex-row items-center">
+                  <MaterialIcons
+                    name="fiber-new"
+                    size={24}
+                    color={!isDarkMode ? '#EF5858' : '#B50D0D'}
+                  />
+                </View>
+              )}
+              <Text className="text-xs text-light-secondary dark:text-dark-secondary">
+                {formattedDate}
+              </Text>
             </View>
           )}
 
+          <View className="flex-row justify-between items-center">
+            {/* カテゴリーバッジ - 複数表示 */}
+            {category && category.length > 0 && (
+              <View className="flex-row flex-wrap mb-2">
+                {category.map((cat, index) => (
+                  <Badge
+                    key={`${cat}-${index}`}
+                    text={cat}
+                    className={index < category.length - 1 ? 'mr-2 mb-1' : 'mb-1'}
+                  />
+                ))}
+              </View>
+            )}
+            {/* ブックマークボタン */}
+            <View className="mt-2 flex-row justify-start items-center">
+              <TouchableOpacity
+                onPress={toggleBookmark}
+                className="flex-row items-center"
+                style={{ padding: 4 }}
+              >
+                <MaterialIcons
+                  name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
+                  size={24}
+                  color={isBookmarked ? '#ff3b30' : '#555'}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
           {/* タイトルと説明 */}
           <Text
             className="font-bold text-light-text dark:text-dark-text"
@@ -205,24 +248,6 @@ const ItemCard: React.FC<ItemCardProps> = ({
                 <Text className="text-dark-text text-sm font-bold">楽天で見る</Text>
               </TouchableOpacity>
             )}
-          </View>
-
-          {/* ブックマークボタン */}
-          <View className="mt-2 flex-row justify-start items-center">
-            <TouchableOpacity
-              onPress={toggleBookmark}
-              className="flex-row items-center"
-              style={{ padding: 4 }}
-            >
-              <Text className="text-xs text-light-text dark:text-dark-text mr-1">
-                {isBookmarked ? 'ブックマーク中' : 'ブックマーク'}
-              </Text>
-              <MaterialIcons
-                name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
-                size={18}
-                color={isBookmarked ? '#ff3b30' : '#555'}
-              />
-            </TouchableOpacity>
           </View>
         </View>
       </View>

@@ -115,7 +115,7 @@ export default function Home() {
     <ScrollView>
       <BackgroundView>
         {/* 旅行グッズ */}
-        <View className="flex-1 flex-row justify-between items-center w-full mt-6 sticky">
+        <View className="flex-1 flex-row justify-between items-center w-full mt-6">
           <Text className="text-2xl font-bold text-light-text dark:text-dark-text">旅行グッズ</Text>
           <View className="border-1 flex flex-row">
             <TouchableOpacity
@@ -158,13 +158,9 @@ export default function Home() {
             <ActivityIndicator size="large" color="#0000ff" />
           </View>
         ) : (
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            className="flex flex-row gap-4"
-          >
+          <ScrollView showsHorizontalScrollIndicator={false} className="flex flex-col gap-4">
             {getDisplayItems().map((item, index) => (
-              <View key={item.id} className="mr-4 flex flex-row">
+              <View key={item.id} className="flex flex-col w-full gap-4 mb-4 justify-center">
                 <ItemCard
                   id={item.id}
                   amazon_url={item.amazon_url}
@@ -175,7 +171,11 @@ export default function Home() {
                   onBookmarkChange={handleBookmarkChange}
                 />
                 {/* 広告 */}
-                {index % 5 === 0 && <ListCardAd />}
+                {index % 5 === 0 && (
+                  <View className="mb-4">
+                    <ListCardAd />
+                  </View>
+                )}
               </View>
             ))}
           </ScrollView>
