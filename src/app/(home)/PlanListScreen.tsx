@@ -1,6 +1,6 @@
 import React from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { BackgroundView, Header, Loading } from '@/src/components';
+import { BackgroundView, Button, Header, Loading } from '@/src/components';
 import IconButton from '@/src/components/IconButton';
 import { Tables } from '@/src/libs/database.types';
 import dayjs from 'dayjs';
@@ -35,8 +35,7 @@ export default function PlanListScreen() {
         alert(e.message);
       }
     });
-    if (!data) return;
-    setPlans(data as PlanWithSchedule[]);
+    setPlans((data as PlanWithSchedule[]) || []);
     setIsLoading(false);
   };
 
@@ -79,13 +78,26 @@ export default function PlanListScreen() {
   // === Render ===
 
   // プランがない場合
-  if (plans.length === 0 || isLoading) {
+  if (isLoading) {
     return <Loading />;
   }
 
   return (
     <BackgroundView>
       <Header title="計画一覧" rightComponent={addButton()} />
+
+      {plans.length === 0 && (
+        <View className="flex flex-col justify-center items-center h-full">
+          <Text className="text-light-text dark:text-dark-text text-lg font-bold">
+            プランがありません
+          </Text>
+          <Button
+            text={'プランを追加する'}
+            theme={'info'}
+            onPress={() => router.push('/(add.plan)/AddPlan')}
+          />
+        </View>
+      )}
 
       <View className="flex flex-row justify-center flex-wrap gap-4 mb-4">
         {plans &&

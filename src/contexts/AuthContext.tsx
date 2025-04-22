@@ -5,6 +5,7 @@ import { supabase } from '../libs/supabase';
 import { Tables } from '../libs/database.types';
 import { getProfile } from '../libs/ApiService';
 import { LogUtil } from '../libs/LogUtil';
+import { CommonUtil } from '../libs/CommonUtil';
 
 type AuthContextType = {
   session: Session | null;
@@ -25,13 +26,26 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Tables<'profile'> | null>(null);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const [refreshAttempts, setRefreshAttempts] = useState<number>(0);
+  const MAX_REFRESH_ATTEMPTS = 5;
+  const REFRESH_WAIT_TIME = 2000; // 2秒
 
   // セッションを手動で更新する関数
   const refreshSession = async () => {
     if (isRefreshing) return; // 既に更新中なら処理しない
 
+    // 最大試行回数を超えた場合はアラートを表示して処理を中断
+    if (refreshAttempts >= MAX_REFRESH_ATTEMPTS) {
+      LogUtil.log('セッション更新の最大試行回数を超えました', { level: 'error', notify: true });
+      alert('ログイン情報の取得に失敗しました｡アプリケーションを再度起動してください｡');
+      setRefreshAttempts(0); // カウンターをリセット
+      return;
+    }
+
     try {
       setIsRefreshing(true);
+      setRefreshAttempts((prev) => prev + 1);
+
       const { data, error } = await supabase.auth.refreshSession();
       if (error) {
         throw error;
@@ -48,10 +62,16 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           });
           setProfile(profile);
         }
+
+        // 成功したらカウンターをリセット
+        setRefreshAttempts(0);
       }
     } catch (error: Error | unknown) {
       const errorMessage = error instanceof Error ? error.message : '不明なエラー';
       LogUtil.log(`セッション更新エラー: ${errorMessage}`, { level: 'error' });
+
+      // エラー発生時に待機してから再試行できるようにする
+      await CommonUtil.wait(REFRESH_WAIT_TIME);
     } finally {
       setIsRefreshing(false);
     }
