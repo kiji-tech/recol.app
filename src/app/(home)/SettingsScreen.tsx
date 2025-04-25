@@ -97,7 +97,7 @@ export default function Settings() {
 
   return (
     <BackgroundView>
-      <ScrollView className="h-screen gap-8 flex flex-col" showsVerticalScrollIndicator={false}>
+      <ScrollView className="gap-8 flex flex-col" showsVerticalScrollIndicator={false}>
         {/* プロフィールセクション */}
         <View className="items-center p-6 border-b border-light-border dark:border-dark-border">
           <View className="w-24 h-24 rounded-full overflow-hidden border-2 border-light-border dark:border-dark-border">
