@@ -156,9 +156,12 @@ export default function Home() {
             <ActivityIndicator size="large" color="#0000ff" />
           </View>
         ) : (
-          <ScrollView showsHorizontalScrollIndicator={false} className="flex flex-col gap-4">
+          <ScrollView
+            showsHorizontalScrollIndicator={false}
+            className="flex flex-col w-screen ml-[-14px]"
+          >
             {getDisplayItems().map((item, index) => (
-              <View key={item.id} className="flex flex-col w-full gap-4 mb-4 justify-center">
+              <View key={item.id} className="flex flex-col w-fulljustify-center">
                 <ItemCard
                   id={item.id}
                   amazon_url={item.amazon_url}

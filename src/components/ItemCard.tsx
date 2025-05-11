@@ -123,7 +123,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
   if (loading) {
     return (
       <View
-        className="rounded-lg overflow-hidden border border-light-border dark:border-dark-border bg-light-background dark:bg-dark-background w-full relative"
+        className="overflow-hidden border border-light-border dark:border-dark-border bg-light-background dark:bg-dark-background w-full relative"
         style={{ height: 320 }}
       >
         <Loading />
@@ -137,77 +137,52 @@ const ItemCard: React.FC<ItemCardProps> = ({
 
   // カードのベースクラス
   const cardBaseClass =
-    'rounded-lg overflow-hidden border border-light-border dark:border-dark-border bg-light-background dark:bg-dark-background w-full';
+    'overflow-hidden border border-light-border dark:border-dark-border bg-light-background dark:bg-dark-background w-full flex-row';
 
   // 固定高さスタイル
   const titleStyle = {
-    height: 24, // 1行分の高さを固定
     lineHeight: 24,
   };
 
   const descriptionStyle = {
-    height: 60, // 3行分の高さを固定
     lineHeight: 20,
   };
 
   return (
-    <View className={cardBaseClass}>
-      <View className="w-full flex-col">
-        {/* 商品画像 */}
-        <Image
-          source={{ uri: displayImage }}
-          className="w-full h-64 rounded-t-lg"
-          resizeMode="contain"
-        />
+    <View className={cardBaseClass} style={{ height: 160 }}>
+      {/* 商品画像コンテナ */}
+      <View className="w-1/4 h-auto">
+        <Image source={{ uri: displayImage }} className="w-full h-full" resizeMode="contain" />
+      </View>
 
-        <View className="p-3 relative">
-          {/* 日付表示 */}
-          {formattedDate && (
-            <View className="flex-row items-center mb-2">
-              {isNew && (
-                <View className="mr-2 bg-orange-600 rounded-full px-2 py-0.5 flex-row items-center">
-                  <MaterialIcons
-                    name="fiber-new"
-                    size={24}
-                    color={!isDarkMode ? '#EF5858' : '#B50D0D'}
-                  />
-                </View>
-              )}
-              <Text className="text-xs text-light-secondary dark:text-dark-secondary">
-                {formattedDate}
-              </Text>
-            </View>
-          )}
-
-          <View className="flex-row justify-between items-center">
+      {/* テキスト情報コンテナ */}
+      <View className="w-3/4 p-3 flex-col justify-between">
+        <View>
+          {/* カテゴリーバッジ & ブックマークボタン */}
+          <View className="flex-row justify-between items-start mt-1">
             {/* カテゴリーバッジ - 複数表示 */}
             {category && category.length > 0 && (
-              <View className="flex-row flex-wrap mb-2">
+              <View className="flex-row flex-wrap flex-1 mr-2">
                 {category.map((cat, index) => (
                   <Badge
                     key={`${cat}-${index}`}
                     text={cat}
-                    className={index < category.length - 1 ? 'mr-2 mb-1' : 'mb-1'}
+                    className={index < category.length - 1 ? 'mr-1 mb-0.5' : 'mb-0.5'}
                   />
                 ))}
               </View>
             )}
             {/* ブックマークボタン */}
-            <View className="mt-2 flex-row justify-start items-center">
-              <TouchableOpacity
-                onPress={toggleBookmark}
-                className="flex-row items-center"
-                style={{ padding: 4 }}
-              >
-                <MaterialIcons
-                  name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
-                  size={24}
-                  color={isBookmarked ? '#ff3b30' : '#555'}
-                />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity onPress={toggleBookmark} style={{ padding: 2 }}>
+              <MaterialIcons
+                name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
+                size={20}
+                color={isBookmarked ? '#ff3b30' : '#555'}
+              />
+            </TouchableOpacity>
           </View>
-          {/* タイトルと説明 */}
+
+          {/* タイトル */}
           <Text
             className="font-bold text-light-text dark:text-dark-text"
             numberOfLines={1}
@@ -216,39 +191,40 @@ const ItemCard: React.FC<ItemCardProps> = ({
           >
             {displayTitle}
           </Text>
+
+          {/* 説明 */}
           {displayDescription && (
             <Text
-              className="text-sm text-light-text dark:text-dark-text mt-1"
-              numberOfLines={3}
+              className="text-xs text-light-text dark:text-dark-text mt-1"
+              numberOfLines={2}
               ellipsizeMode="tail"
               style={descriptionStyle}
             >
               {displayDescription}
             </Text>
           )}
-
           {/* エラー表示 */}
           {error && <Text className="text-xs text-red-500 mt-1">{error}</Text>}
+        </View>
 
-          {/* ショップボタン */}
-          <View className="flex-row mt-4 mb-2">
-            {amazon_url && (
-              <TouchableOpacity
-                onPress={() => openShopUrl(amazon_url)}
-                className="bg-[#FF9900] rounded-md px-3 py-2 mr-2 flex-row items-center justify-center flex-1"
-              >
-                <Text className="text-dark-text text-sm font-bold">Amazonで見る</Text>
-              </TouchableOpacity>
-            )}
-            {rakuten_url && (
-              <TouchableOpacity
-                onPress={() => openShopUrl(rakuten_url)}
-                className="bg-[#BF0000] rounded-md px-3 py-4 flex-row items-center justify-center flex-1"
-              >
-                <Text className="text-dark-text text-sm font-bold">楽天で見る</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+        {/* ショップボタン */}
+        <View className="flex-row mt-2">
+          {amazon_url && (
+            <TouchableOpacity
+              onPress={() => openShopUrl(amazon_url)}
+              className="bg-[#FF9900] rounded-md px-2 py-1 mr-1 flex-row items-center justify-center flex-1"
+            >
+              <Text className="text-dark-text text-xs font-bold">Amazon</Text>
+            </TouchableOpacity>
+          )}
+          {rakuten_url && (
+            <TouchableOpacity
+              onPress={() => openShopUrl(rakuten_url)}
+              className="bg-[#BF0000] rounded-md px-2 py-1 flex-row items-center justify-center flex-1"
+            >
+              <Text className="text-dark-text text-xs font-bold">楽天</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </View>
