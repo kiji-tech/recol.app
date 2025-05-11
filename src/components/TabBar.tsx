@@ -9,8 +9,8 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
   return (
-    <View className="flex-col gap-2">
-      <View className="flex-row w-full bottom-8 border-[1px] border-light-border dark:border-dark-border mx-auto">
+    <View className="flex-col gap-2 bottom-8 bg-dark-theme dark:bg-light-theme">
+      <View className="flex-row w-full border-[1px] border-light-border dark:border-dark-border mx-auto">
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
           const label =
