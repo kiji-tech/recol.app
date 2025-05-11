@@ -7,7 +7,7 @@ import { Tables } from '@/src/libs/database.types';
 import { fetchItemLinkList } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useFocusEffect } from 'expo-router';
-import { ListCardAd } from '@/src/components/Ad/ListCardAd';
+import { MyBannerAd } from '@/src/components/Ad/BannerAd';
 
 // アイテム型定義
 // ストレージのキー
@@ -172,11 +172,7 @@ export default function Home() {
                   onBookmarkChange={handleBookmarkChange}
                 />
                 {/* 広告 */}
-                {index % 5 === 0 && (
-                  <View className="mb-4">
-                    <ListCardAd />
-                  </View>
-                )}
+                {index % 5 === 0 && <MyBannerAd />}
               </View>
             ))}
           </ScrollView>

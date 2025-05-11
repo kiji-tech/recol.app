@@ -5,7 +5,6 @@ import { URLMetadata, DEFAULT_NO_IMAGE_URL, fetchMetadata } from '../libs/Metada
 import { MaterialIcons } from '@expo/vector-icons';
 import Loading from './Loading';
 import { Tables } from '@/src/libs/database.types';
-import { useTheme } from '../contexts/ThemeContext';
 
 type ItemCardProps = Tables<'item_link'> & {
   isBookmarked?: boolean;
@@ -16,11 +15,9 @@ const ItemCard: React.FC<ItemCardProps> = ({
   amazon_url,
   rakuten_url,
   category = [],
-  created_at = '',
   isBookmarked: propIsBookmarked = false,
   onBookmarkChange,
 }) => {
-  const { isDarkMode } = useTheme();
   const [loading, setLoading] = useState(false);
   const [metadata, setMetadata] = useState<URLMetadata | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -84,53 +81,6 @@ const ItemCard: React.FC<ItemCardProps> = ({
     return title.replace(/^Amazon\.co\.jp: /i, '').replace(/^【楽天市場】/i, '');
   };
 
-  // 日付のフォーマット（例：2023.10.15形式に変換）
-  const formatDate = (dateString?: string): string => {
-    if (!dateString) return '';
-
-    try {
-      const date = new Date(dateString);
-      const year = date.getFullYear();
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const day = date.getDate().toString().padStart(2, '0');
-
-      return `${year}.${month}.${day}`;
-    } catch {
-      return dateString; // パースできない場合はそのまま返す
-    }
-  };
-
-  // 日付が直近1週間以内かどうかをチェック
-  const isWithinLastWeek = (dateString?: string): boolean => {
-    if (!dateString) return false;
-
-    try {
-      const itemDate = new Date(dateString);
-      const now = new Date();
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(now.getDate() - 7);
-
-      return itemDate >= oneWeekAgo;
-    } catch {
-      return false;
-    }
-  };
-
-  const formattedDate = formatDate(created_at);
-  const isNew = isWithinLastWeek(created_at);
-
-  // メタデータローディング中の表示
-  if (loading) {
-    return (
-      <View
-        className="overflow-hidden border border-light-border dark:border-dark-border bg-light-background dark:bg-dark-background w-full relative"
-        style={{ height: 320 }}
-      >
-        <Loading />
-      </View>
-    );
-  }
-
   const displayTitle = cleanTitle(metadata?.title || 'タイトルなし');
   const displayDescription = metadata?.description;
   const displayImage = metadata?.image || DEFAULT_NO_IMAGE_URL;
@@ -148,6 +98,17 @@ const ItemCard: React.FC<ItemCardProps> = ({
     lineHeight: 20,
   };
 
+  // メタデータローディング中の表示
+  if (loading) {
+    return (
+      <View
+        className="overflow-hidden border border-light-border dark:border-dark-border bg-light-background dark:bg-dark-background w-full relative"
+        style={{ height: 160 }}
+      >
+        <Loading />
+      </View>
+    );
+  }
   return (
     <View className={cardBaseClass} style={{ height: 160 }}>
       {/* 商品画像コンテナ */}

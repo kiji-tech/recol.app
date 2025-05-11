@@ -5,15 +5,11 @@ import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useTheme } from '../contexts/ThemeContext';
-import { MyBannerAd } from './Ad/BannerAd';
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
   return (
     <View className="flex-col gap-2">
-      <View className="w-screen mb-6">
-        <MyBannerAd />
-      </View>
       <View className="flex-row w-full bottom-8 border-[1px] border-light-border dark:border-dark-border mx-auto">
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
