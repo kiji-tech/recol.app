@@ -62,9 +62,6 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
               {label == 'ホーム' && (
                 <Entypo name="home" size={20} color={isDarkMode ? 'white' : 'black'} />
               )}
-              {label == 'ブログ' && (
-                <Entypo name="text-document" size={20} color={isDarkMode ? 'white' : 'black'} />
-              )}
               {label == 'プラン' && (
                 <Entypo name="calendar" size={20} color={isDarkMode ? 'white' : 'black'} />
               )}

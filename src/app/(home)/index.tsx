@@ -114,7 +114,6 @@ export default function Home() {
   return (
     <ScrollView>
       <BackgroundView>
-        {/* 旅行グッズ */}
         <View className="flex-1 flex-row justify-between items-center w-full mt-6">
           <Text className="text-2xl font-bold text-light-text dark:text-dark-text">旅行グッズ</Text>
           <View className="border-1 flex flex-row">
@@ -152,7 +151,6 @@ export default function Home() {
             </TouchableOpacity>
           </View>
         </View>
-        {/* グッズコンテンツ表示 - 横スクロール */}
         {loading ? (
           <View className="flex-1 justify-center items-center py-6">
             <ActivityIndicator size="large" color="#0000ff" />
