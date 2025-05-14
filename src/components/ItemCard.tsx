@@ -85,10 +85,6 @@ const ItemCard: React.FC<ItemCardProps> = ({
   const displayDescription = metadata?.description;
   const displayImage = metadata?.image || DEFAULT_NO_IMAGE_URL;
 
-  // カードのベースクラス
-  const cardBaseClass =
-    'overflow-hidden border border-light-border dark:border-dark-border bg-light-background dark:bg-dark-background w-full flex-row';
-
   // 固定高さスタイル
   const titleStyle = {
     lineHeight: 24,
@@ -101,16 +97,13 @@ const ItemCard: React.FC<ItemCardProps> = ({
   // メタデータローディング中の表示
   if (loading) {
     return (
-      <View
-        className="overflow-hidden border border-light-border dark:border-dark-border bg-light-background dark:bg-dark-background w-full relative"
-        style={{ height: 160 }}
-      >
+      <View className="overflow-hidden bg-light-background dark:bg-dark-background w-full relative h-40">
         <Loading />
       </View>
     );
   }
   return (
-    <View className={cardBaseClass} style={{ height: 160 }}>
+    <View className="overflow-hidden dark:bg-dark-background w-full flex-row h-40">
       {/* 商品画像コンテナ */}
       <View className="w-1/4 h-auto">
         <Image source={{ uri: displayImage }} className="w-full h-full" resizeMode="contain" />
@@ -134,7 +127,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
               </View>
             )}
             {/* ブックマークボタン */}
-            <TouchableOpacity onPress={toggleBookmark} style={{ padding: 2 }}>
+            <TouchableOpacity onPress={toggleBookmark} style={{ padding: 2 }} className="hidden">
               <MaterialIcons
                 name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
                 size={20}
@@ -169,7 +162,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
         </View>
 
         {/* ショップボタン */}
-        <View className="flex-row mt-2">
+        <View className="flex-row mt-2 gap-4">
           {amazon_url && (
             <TouchableOpacity
               onPress={() => openShopUrl(amazon_url)}

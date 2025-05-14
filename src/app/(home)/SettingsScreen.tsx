@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STORAGE_KEYS } from '@/src/libs/ConstValue';
 
 interface SettingItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -44,8 +45,9 @@ const SettingItem: React.FC<SettingItemProps> = ({
   </TouchableOpacity>
 );
 
-const SCHEDULE_NOTIFICATION_KEY = '@schedule_notification_enabled';
-const CHAT_NOTIFICATION_KEY = '@chat_notification_enabled';
+// TODO: 将来的にはDB化
+const SCHEDULE_NOTIFICATION_KEY = STORAGE_KEYS.SCHEDULE_NOTIFICATION_KEY;
+const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
 
 export default function Settings() {
   const { user, profile } = useAuth();

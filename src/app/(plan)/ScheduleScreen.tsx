@@ -11,6 +11,7 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { Alert } from 'react-native';
 import dayjs from 'dayjs';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import PlanInformation from '@/src/components/PlanInformation';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
@@ -96,6 +97,9 @@ export default function ScheduleScreen(): ReactNode {
           ></IconButton>
         }
       />
+      {/* Plan Information */}
+      <PlanInformation plan={viewPlan} />
+      {/* Schedule */}
       <Schedule plan={viewPlan} onDelete={handleDeleteSchedule} />
     </BackgroundView>
   );

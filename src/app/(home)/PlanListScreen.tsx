@@ -12,6 +12,8 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { fetchPlanList } from '@/src/libs/ApiService';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import { AD_INTERVAL } from '@/src/libs/ConstValue';
+import { MyBannerAd } from '@/src/components/Ad/BannerAd';
 
 type PlanWithSchedule = Tables<'plan'> & { schedule: Tables<'schedule'>[] };
 
@@ -31,7 +33,10 @@ export default function PlanListScreen() {
     LogUtil.log('planを取得します', { level: 'info' });
     const data = await fetchPlanList(session, ctrl).catch((e) => {
       LogUtil.log(e, { level: 'error', notify: true });
-      if (e && e.message) {
+      if (e) {
+        if ('Aborted'.indexOf(e.message) >= 0) {
+          return [];
+        }
         alert(e.message);
       }
     });
@@ -101,34 +106,36 @@ export default function PlanListScreen() {
 
       <View className="flex flex-row justify-center flex-wrap gap-4 mb-4">
         {plans &&
-          plans.map((p: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => (
-            <TouchableOpacity
-              key={p.uid}
-              className={`
+          plans.map((p: Tables<'plan'> & { schedule: Tables<'schedule'>[] }, i: number) => (
+            <View key={p.uid}>
+              <TouchableOpacity
+                className={`
                 p-4 border-b-[1px] 
                 w-full rounded-lg
                 border-light-border dark:border-dark-border`}
-              onPress={() => handleSelectPlan(p)}
-            >
-              <View className="flex flex-col gap-2 justify-start items-start">
-                <View className="flex flex-row justify-between items-center w-full">
-                  <Text className={`font-bold text-xl text-light-text dark:text-dark-text`}>
-                    {p.title}
-                  </Text>
-                  <Text className={`text-md text-light-text dark:text-dark-text`}>
-                    {dayjs(p.from).format('M/D') != dayjs(p.to).format('M/D')
-                      ? `${dayjs(p.from).format('M/D')} - ${dayjs(p.to).format('M/D')}`
-                      : dayjs(p.from).format('M/D')}
-                  </Text>
-                </View>
-                {/* TODO: メンバー */}
-                <View className="flex flex-row justify-start items-center gap-2">
+                onPress={() => handleSelectPlan(p)}
+              >
+                <View className="flex flex-col gap-2 justify-start items-start">
+                  <View className="flex flex-row justify-between items-center w-full">
+                    <Text className={`font-bold text-xl text-light-text dark:text-dark-text`}>
+                      {p.title}
+                    </Text>
+                    <Text className={`text-md text-light-text dark:text-dark-text`}>
+                      {dayjs(p.from).format('M/D') != dayjs(p.to).format('M/D')
+                        ? `${dayjs(p.from).format('M/D')} - ${dayjs(p.to).format('M/D')}`
+                        : dayjs(p.from).format('M/D')}
+                    </Text>
+                  </View>
+                  {/* TODO: メンバー */}
+                  {/* <View className="flex flex-row justify-start items-center gap-2">
                   <View className={`h-8 w-8 bg-light-info rounded-full `}></View>
                   <View className={`h-8 w-8 bg-light-warn rounded-full `}></View>
                   <View className={`h-8 w-8 bg-light-danger rounded-full `}></View>
+                  </View> */}
                 </View>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+              {i % AD_INTERVAL === 0 && <MyBannerAd />}
+            </View>
           ))}
       </View>
     </BackgroundView>
