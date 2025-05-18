@@ -13,6 +13,13 @@ import {
   requestTrackingPermissionsAsync,
 } from 'expo-tracking-transparency';
 import 'expo-dev-client';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  // 非表示にしたい警告があればここへ
+  'Support for defaultProps will be removed from function components',
+  'Support for defaultProps will be removed from memo components',
+]);
 
 import mobileAds from 'react-native-google-mobile-ads';
 
