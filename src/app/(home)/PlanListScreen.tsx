@@ -12,8 +12,6 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { fetchPlanList } from '@/src/libs/ApiService';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { AD_INTERVAL } from '@/src/libs/ConstValue';
-import { MyBannerAd } from '@/src/components/Ad/BannerAd';
 
 type PlanWithSchedule = Tables<'plan'> & { schedule: Tables<'schedule'>[] };
 
@@ -89,7 +87,6 @@ export default function PlanListScreen() {
   return (
     <BackgroundView>
       <Header title="計画一覧" rightComponent={addButton()} />
-
       {plans.length === 0 && (
         <View className="flex flex-col justify-center items-center h-full">
           <Text className="text-light-text dark:text-dark-text text-lg font-bold">
@@ -102,14 +99,13 @@ export default function PlanListScreen() {
           />
         </View>
       )}
-
       <View className="flex flex-row justify-center flex-wrap gap-4 mb-4">
         {plans &&
-          plans.map((p: Tables<'plan'> & { schedule: Tables<'schedule'>[] }, i: number) => (
+          plans.map((p: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => (
             <View key={p.uid}>
               <TouchableOpacity
                 className={`
-                p-4 border-b-[1px] 
+                border-b-[1px] p-4
                 w-full rounded-lg
                 border-light-border dark:border-dark-border`}
                 onPress={() => handleSelectPlan(p)}
@@ -133,7 +129,6 @@ export default function PlanListScreen() {
                   </View> */}
                 </View>
               </TouchableOpacity>
-              {i % AD_INTERVAL === 3 && <MyBannerAd />}
             </View>
           ))}
       </View>

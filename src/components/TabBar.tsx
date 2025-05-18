@@ -5,11 +5,13 @@ import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useTheme } from '../contexts/ThemeContext';
+import { MyBannerAd } from './Ad/BannerAd';
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
   return (
-    <View className="flex-col gap-2 bottom-8 bg-dark-theme dark:bg-light-theme">
+    <View className="flex-col bottom-8 bg-dark-theme dark:bg-light-theme">
+      <MyBannerAd />
       <View className="flex-row w-full border-[1px] border-light-border dark:border-dark-border mx-auto">
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
@@ -67,7 +69,6 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
               {label == 'マップ' && (
                 <FontAwesome name="map-marker" size={20} color={isDarkMode ? 'white' : 'black'} />
               )}
-
               <Text className={`text-light-text dark:text-dark-text text-md font-semibold`}>
                 {label as string}
               </Text>
