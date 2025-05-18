@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, useWindowDimensions } from 'react-native';
+import {
+  Text,
+  Image,
+  Linking,
+  ScrollView,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { BackgroundView, Header, Loading } from '@/src/components';
 import { fetchBlog } from '@/src/libs/ApiService';
@@ -26,6 +34,10 @@ export default function BlogScreen() {
       })
       .catch((e) => console.error(e));
   }, []);
+
+  const openShopUrl = (shopUrl: string) => {
+    Linking.openURL(shopUrl).catch((err) => console.error('URLを開けませんでした:', err));
+  };
 
   if (!blog) return <Loading />;
 
@@ -58,6 +70,24 @@ export default function BlogScreen() {
             img: { width: '100', height: 'auto', borderRadius: 8 }, // 横幅は必ず100%
           }}
         />
+        <View className="flex-row mt-2 gap-4 justify-center">
+          {blog.amazonUrl && (
+            <TouchableOpacity
+              onPress={() => openShopUrl(blog.amazonUrl!)}
+              className="bg-[#FF9900] rounded-md px-2 py-2 mr-1 flex-row items-center justify-center flex-1 max-w-52"
+            >
+              <Text className="text-dark-text text-md font-bold">Amazon</Text>
+            </TouchableOpacity>
+          )}
+          {blog.rakutenUrl && (
+            <TouchableOpacity
+              onPress={() => openShopUrl(blog.rakutenUrl!)}
+              className="bg-[#BF0000] rounded-md px-2 py-2 flex-row items-center justify-center flex-1 max-w-52"
+            >
+              <Text className="text-dark-text text-md font-bold">楽天</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </ScrollView>
     </BackgroundView>
   );

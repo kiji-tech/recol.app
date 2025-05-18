@@ -19,4 +19,6 @@ export type Blog = {
     revisedAt: string;
     name: string;
   };
+  amazonUrl?: string;
+  rakutenUrl?: string;
 };
