@@ -70,7 +70,6 @@ export default function PlanListScreen() {
 
   const handleSelectPlan = (plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => {
     // スケジュールを取得して設定
-
     setPlan(plan);
     router.push({
       pathname: '/(plan)/ScheduleScreen',
@@ -134,7 +133,7 @@ export default function PlanListScreen() {
                   </View> */}
                 </View>
               </TouchableOpacity>
-              {i % AD_INTERVAL === 0 && <MyBannerAd />}
+              {i % AD_INTERVAL === 3 && <MyBannerAd />}
             </View>
           ))}
       </View>

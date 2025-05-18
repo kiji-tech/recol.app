@@ -1,89 +1,79 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { BackgroundView, ItemCard } from '@/src/components';
-import { View, ScrollView, ActivityIndicator } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Tables } from '@/src/libs/database.types';
-import { fetchItemLinkList } from '@/src/libs/ApiService';
+import React, { useState, useCallback } from 'react';
+import { BackgroundView, Loading } from '@/src/components';
+import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
+import { fetchBlogList } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { MyBannerAd } from '@/src/components/Ad/BannerAd';
-import { AD_INTERVAL, STORAGE_KEYS } from '@/src/libs/ConstValue';
+import { AD_INTERVAL } from '@/src/libs/ConstValue';
+import { Blog } from '@/src/entities/Blog';
+import { useTheme } from '@/src/contexts/ThemeContext';
 
 // アイテム型定義
 // ストレージのキー
 
 export default function Home() {
   const { session } = useAuth();
-  const [items, setItems] = useState<Tables<'item_link'>[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+  const { textColor, isThemeLoaded } = useTheme();
+
+  const [blogs, setBlogs] = useState<Blog[]>([]);
 
   useFocusEffect(
     useCallback(() => {
-      if (!session) return;
-      const ctrl = new AbortController();
-      fetchItems(ctrl);
-      return () => {
-        ctrl.abort();
-      };
+      setLoading(true);
+      fetchBlogList()
+        .then((blogs) => {
+          setBlogs(blogs);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }, [session])
   );
 
-  // 内部キャッシュから前回取得している情報を表示しておく
-  useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEYS.BLOG_KEY).then((items) => {
-      if (items) {
-        setItems(JSON.parse(items));
-      }
-    });
-  }, []);
-
-  // APIからアイテムを取得する
-  const fetchItems = async (ctrl?: AbortController) => {
-    try {
-      setLoading(true);
-      const itemsData = await fetchItemLinkList(session, ctrl);
-
-      // 取得したデータを新着とブックマークに分類
-      setItems(itemsData);
-      await AsyncStorage.setItem(STORAGE_KEYS.BLOG_KEY, JSON.stringify(itemsData));
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (!blogs || !isThemeLoaded) return <Loading />;
 
   return (
-    <ScrollView>
-      <BackgroundView>
-        {/* TODO: タブバー */}
-        {/* 新着・おすすめ・旅行先・グッズ */}
+    <BackgroundView>
+      {/* TODO: タブバー */}
+      {/* 新着・おすすめ・旅行先・グッズ */}
 
-        {loading ? (
-          <View className="flex-1 justify-center items-center py-6">
-            <ActivityIndicator size="large" color="#0000ff" />
-          </View>
-        ) : (
-          <ScrollView
-            showsHorizontalScrollIndicator={false}
-            className="flex flex-col w-screen ml-[-14px]"
-          >
-            {items.map((item, index) => (
-              <View key={item.id} className="flex flex-col w-fulljustify-center">
-                <ItemCard
-                  id={item.id}
-                  amazon_url={item.amazon_url}
-                  rakuten_url={item.rakuten_url}
-                  category={item.category || []}
-                  created_at={item.created_at}
-                  isBookmarked={false}
-                  onBookmarkChange={() => {}}
-                />
-                {/* 広告 */}
-                {index % AD_INTERVAL === 0 && <MyBannerAd />}
-              </View>
-            ))}
-          </ScrollView>
-        )}
-      </BackgroundView>
-    </ScrollView>
+      {loading ? (
+        <Loading />
+      ) : (
+        <FlatList
+          data={blogs}
+          keyExtractor={(item: Blog) => item.id}
+          contentContainerStyle={{ padding: 16 }}
+          renderItem={({ item, index }) => (
+            <>
+              <TouchableOpacity
+                style={{ flexDirection: 'row', marginBottom: 16 }}
+                onPress={() => router.push(`/(blog)/${item.id}`)}
+              >
+                {item.eyecatch?.url && (
+                  <Image
+                    source={{ uri: item.eyecatch.url }}
+                    style={{ width: 120, height: 96, borderRadius: 8, marginRight: 12 }}
+                  />
+                )}
+                <View style={{ flex: 1, justifyContent: 'center' }}>
+                  <Text style={{ fontSize: 16, fontWeight: '600', color: textColor }}>
+                    {item.title}
+                  </Text>
+                  <Text style={{ color: textColor, marginTop: 4 }}>
+                    {new Date(item.publishedAt).toLocaleDateString()}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              {index % AD_INTERVAL === 5 && <MyBannerAd />}
+            </>
+          )}
+        />
+      )}
+    </BackgroundView>
   );
 }

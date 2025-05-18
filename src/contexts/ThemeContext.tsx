@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { colorScheme } from 'nativewind';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform, useColorScheme } from 'react-native';
@@ -13,6 +13,7 @@ interface ThemeContextType {
   setTheme: (theme: ThemeMode) => Promise<void>;
   isThemeLoaded: boolean;
   isDarkMode: boolean;
+  textColor: string;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -22,6 +23,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [theme, setThemeState] = useState<ThemeMode>('light');
   const [isThemeLoaded, setIsThemeLoaded] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const textColor = useMemo(() => (isDarkMode ? '#fff' : '#000'), [isDarkMode]);
 
   useEffect(() => {
     const loadTheme = async () => {
@@ -77,7 +79,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, isThemeLoaded, isDarkMode }}>
+    <ThemeContext.Provider value={{ theme, setTheme, isThemeLoaded, isDarkMode, textColor }}>
       {children}
     </ThemeContext.Provider>
   );
