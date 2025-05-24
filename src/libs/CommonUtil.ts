@@ -1,3 +1,5 @@
+import { Linking } from "react-native";
+
 /**
  * 共通ユーティリティ関数
  */
@@ -9,5 +11,14 @@ export class CommonUtil {
    */
   static async wait(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  static async openBrowser(url: string): Promise<void> {
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      throw new Error('Invalid URL');
+    }
   }
 }

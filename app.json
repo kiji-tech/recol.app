@@ -1,7 +1,7 @@
 {
-    "scheme": "voyz",
-    "name": "Voyz",
-    "slug": "voyz",
+    "scheme": "yuru-tabi",
+    "name": "ゆる旅",
+    "slug": "yuru-tabi",
     "version": "1.0.0",
     "owner": "shinji5761",
     "orientation": "portrait",
@@ -15,7 +15,7 @@
     },
     "ios": {
         "supportsTablet": true,
-        "bundleIdentifier": "com.libetech.voyz",
+        "bundleIdentifier": "com.libetech.yuru-tabi",
         "config": {
             "googleMapsApiKey": "AIzaSyDZg8Pd1pIXO0NWl1lWo0JJM1UCixBqarQ"
         },
@@ -26,8 +26,8 @@
         "deploymentTarget": "15.1"
     },
     "android": {
-        "package": "com.libetech.voyz",
-        "packageName": "com.libetech.voyz",
+        "package": "com.libetech.yuru-tabi",
+        "packageName": "com.libetech.yuru-tabi",
         "adaptiveIcon": {
             "foregroundImage": "./assets/adaptive-icon.png",
             "backgroundColor": "#ffffff"

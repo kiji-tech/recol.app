@@ -3,11 +3,12 @@ import { BackgroundView, Loading } from '@/src/components';
 import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import { fetchBlogList } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { MyBannerAd } from '@/src/components/Ad/BannerAd';
 import { AD_INTERVAL } from '@/src/libs/ConstValue';
 import { Blog } from '@/src/entities/Blog';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import { CommonUtil } from '@/src/libs/CommonUtil';
 
 // アイテム型定義
 // ストレージのキー
@@ -15,8 +16,6 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 export default function Home() {
   const { session } = useAuth();
   const [loading, setLoading] = useState(false);
-
-  const router = useRouter();
   const { textColor, isThemeLoaded } = useTheme();
 
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -52,7 +51,9 @@ export default function Home() {
             <>
               <TouchableOpacity
                 style={{ flexDirection: 'row', marginBottom: 16 }}
-                onPress={() => router.push(`/(blog)/${item.id}`)}
+                onPress={() =>
+                  CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/articles/${item.id}`)
+                }
               >
                 {item.eyecatch?.url && (
                   <Image

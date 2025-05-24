@@ -7,9 +7,9 @@ import { router } from 'expo-router';
 import { Text, View, Switch, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
-import * as WebBrowser from 'expo-web-browser';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '@/src/libs/ConstValue';
+import { CommonUtil } from '@/src/libs/CommonUtil';
 
 interface SettingItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -91,10 +91,6 @@ export default function Settings() {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     router.navigate('/(auth)/SignIn');
-  };
-
-  const handleOpenURL = async (url: string) => {
-    await WebBrowser.openBrowserAsync(url);
   };
 
   return (
@@ -207,13 +203,13 @@ export default function Settings() {
             icon="document-text-outline"
             title="利用規約"
             isDarkMode={isDarkMode}
-            onPress={() => handleOpenURL('https://example.com/terms')}
+            onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/terms`)}
           />
           <SettingItem
             icon="shield-outline"
             title="プライバシーポリシー"
             isDarkMode={isDarkMode}
-            onPress={() => handleOpenURL('https://example.com/privacy')}
+            onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/policy`)}
           />
         </View>
 

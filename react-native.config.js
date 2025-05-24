@@ -1,7 +1,7 @@
 module.exports = {
   project: {
     android: {
-      packageName: 'com.libetech.voyz',
+      packageName: 'com.libetech.yuru-tabi',
     },
   },
 };
