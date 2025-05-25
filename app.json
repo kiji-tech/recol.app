@@ -77,11 +77,11 @@
                 }
             ],
             [
-                "react-native-admob-native-ads",
+                "react-native-google-mobile-ads",
                 {
                     "androidAppId": "ca-app-pub-2018656716460271~9761357839",
                     "iosAppId": "ca-app-pub-2018656716460271~5429184177",
-                    "facebookMediation": false
+                    "userTrackingUsageDescription": "This identifier will be used to deliver personalized ads to you."
                 }
             ]
         ],
