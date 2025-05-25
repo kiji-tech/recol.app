@@ -11,7 +11,7 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { BackgroundView, Header, Loading } from '@/src/components';
 import { fetchBlog } from '@/src/libs/ApiService';
-import { Blog } from '@/src/entities/Blog';
+import { Blog } from '@/src/entities/Article';
 import RenderHtml from 'react-native-render-html';
 import { useTheme } from '@/src/contexts/ThemeContext';
 

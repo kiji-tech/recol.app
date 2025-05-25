@@ -27,7 +27,9 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
   const handleAddSchedule = () => {
     // スケジュールリストの最後の日付(to)を設定する
     const from =
-      scheduleList.length > 0 ? dayjs(scheduleList[scheduleList.length - 1].to) : dayjs(plan?.from);
+      scheduleList.length > 0
+        ? dayjs(scheduleList[scheduleList.length - 1].to)
+        : dayjs(plan?.from).set('minute', 0);
     const to = dayjs(from).add(1, 'hour');
 
     const newSchedule = {

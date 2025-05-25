@@ -10,10 +10,14 @@
     "jsEngine": "hermes",
     "splash": {
         "image": "./assets/splash.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#fff"
+        "resizeMode": "contain"
     },
     "ios": {
+        "icon": "./assets/icon.png",
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain"
+        },
         "supportsTablet": true,
         "bundleIdentifier": "com.libetech.yuru-tabi",
         "config": {
@@ -26,6 +30,11 @@
         "deploymentTarget": "15.1"
     },
     "android": {
+        "icon": "./assets/icon.png",
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain"
+        },
         "package": "com.libetech.yuru-tabi",
         "packageName": "com.libetech.yuru-tabi",
         "adaptiveIcon": {
@@ -92,6 +101,26 @@
                 "iosAppId": "ca-app-pub-2018656716460271~5429184177",
                 "facebookMediation": false
             }
+        ],
+        [
+            "expo-splash-screen",
+            {
+                "image": "./assets/splash.png",
+                "dark": {
+                    "image": "./assets/splash.png"
+                },
+                "imageWidth": 200,
+                "android": {
+                    "splash": {
+                        "image": "./assets/splash.png"
+                    }
+                },
+                "ios": {
+                    "splash": {
+                        "image": "./assets/splash.png"
+                    }
+                }
+            }
         ]
     ],
     "experiments": {
@@ -118,5 +147,18 @@
     },
     "updates": {
         "url": "https://u.expo.dev/d0f16b33-31f2-4574-a7ab-9e3318729003"
+    },
+    "expo": {
+        "android": {
+            "package": "com.shinji5761.yurutabi"
+        },
+        "extra": {
+            "eas": {
+                "projectId": "c85fb288-4763-4861-afe1-77ae452bbd97"
+            }
+        },
+        "ios": {
+            "bundleIdentifier": "com.shinji5761.yurutabi"
+        }
     }
 }

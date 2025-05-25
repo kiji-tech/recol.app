@@ -1,6 +1,6 @@
 import React from 'react';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -9,8 +9,11 @@ import { MyBannerAd } from './Ad/BannerAd';
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
+  const isIOS = Platform.OS === 'ios';
   return (
-    <View className="flex-col bottom-8 bg-dark-theme dark:bg-light-theme">
+    <View
+      className={`flex-col bg-dark-theme dark:bg-light-theme ${isIOS ? 'bottom-8' : 'bottom-0'}`}
+    >
       <MyBannerAd />
       <View className="flex-row w-full border-[1px] border-light-border dark:border-dark-border mx-auto">
         {state.routes.map((route, index) => {

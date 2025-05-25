@@ -60,7 +60,7 @@ export default function PlanListScreen() {
         icon={<MaterialIcons name="add" size={18} color={isDarkMode ? 'white' : 'black'} />}
         theme="info"
         onPress={() => {
-          router.push('/(add.plan)/AddPlan');
+          router.push('/(addPlan)/AddPlan');
         }}
       />
     );
@@ -95,7 +95,7 @@ export default function PlanListScreen() {
           <Button
             text={'プランを追加する'}
             theme={'info'}
-            onPress={() => router.push('/(add.plan)/AddPlan')}
+            onPress={() => router.push('/(addPlan)/AddPlan')}
           />
         </View>
       )}

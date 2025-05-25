@@ -36,7 +36,7 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
 
   return (
     <TouchableOpacity onPress={() => onPress(item)} onLongPress={() => onLongPress(item)}>
-      <View className="flex flex-col gap-2 mb-4">
+      <View className="flex flex-col gap-2">
         {/* 開始時刻 */}
         <View className="flex flex-row gap-2 items-center">
           <View
@@ -56,9 +56,13 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
         </View>
         {/* 情報詳細 */}
         <View className="flex flex-col gap-2 p-4 ml-3 border-l-[1px] border-light-border dark:border-dark-border">
-          <Text className="text-light-text dark:text-dark-text">{item.description}</Text>
+          <Text className="text-light-text dark:text-dark-text line-clamp-2">
+            {item.description}
+          </Text>
           <View className="flex flex-row justify-between">
-            <Text className="text-light-text dark:text-dark-text">☑ 0/2 件</Text>
+            {/* TODO: チェックリスト（将来機能） */}
+            {/* <Text className="text-light-text dark:text-dark-text">☑ 0/2 件</Text> */}
+
             {item.place_list && item.place_list?.length > 0 && (
               <View className="flex flex-row gap-2 items-center">
                 <FontAwesome5

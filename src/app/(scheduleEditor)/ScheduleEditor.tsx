@@ -16,9 +16,9 @@ export default function ScheduleEditor() {
   const { editSchedule, setEditSchedule } = usePlan();
   const { session } = useAuth();
   const [openMapModal, setOpenMapModal] = useState(false);
-
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
-  // === Method ===
+
+    // === Method ===
   /** スケジュールの編集 */
   const handleScheduleSubmit = async () => {
     if (!editSchedule) return;

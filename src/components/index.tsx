@@ -8,6 +8,7 @@ export { default as Loading } from './Loading';
 export { default as TripCard } from './TripCard';
 export { default as ItemCard } from './ItemCard';
 export { default as Badge } from './Badge';
+export { default as NeumorphismBox } from './NeumorphismBox';
 
 // === 個別 ===
 export { default as BackgroundView } from './BackgroundView';

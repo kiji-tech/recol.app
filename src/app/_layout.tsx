@@ -1,6 +1,6 @@
 import '@/global.css';
 import React, { useCallback, useEffect } from 'react';
-import { router, Stack } from 'expo-router';
+import { router, SplashScreen, Stack } from 'expo-router';
 import { supabase } from '../libs/supabase';
 import { PlanProvider } from '../contexts/PlanContext';
 import { AuthProvider } from '../contexts/AuthContext';
@@ -14,6 +14,7 @@ import {
 } from 'expo-tracking-transparency';
 import 'expo-dev-client';
 import { LogBox } from 'react-native';
+import mobileAds from 'react-native-google-mobile-ads';
 
 LogBox.ignoreLogs([
   // 非表示にしたい警告があればここへ
@@ -21,7 +22,8 @@ LogBox.ignoreLogs([
   'Support for defaultProps will be removed from memo components',
 ]);
 
-import mobileAds from 'react-native-google-mobile-ads';
+SplashScreen.preventAutoHideAsync();
+SplashScreen.hideAsync();
 
 const Layout = () => {
   const { isThemeLoaded } = useTheme();
@@ -66,7 +68,7 @@ const Layout = () => {
   return (
     <Stack>
       <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
-      <Stack.Screen name="(add.plan)" options={{ title: '計画作成', headerShown: false }} />
+      <Stack.Screen name="(addPlan)" options={{ title: '計画作成', headerShown: false }} />
       <Stack.Screen name="(blog)" options={{ title: 'ブログ', headerShown: false }} />
       <Stack.Screen name="(plan)" options={{ title: '計画表示', headerShown: false }} />
       <Stack.Screen name="(chat)" options={{ title: 'チャット', headerShown: false }} />
