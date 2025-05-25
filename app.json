@@ -13,9 +13,17 @@
         "resizeMode": "contain"
     },
     "ios": {
-        "icon": "./assets/icon.png",
+        "icon": {
+            "light": "./assets/icon.png",
+            "dark": "./assets/icon.png"
+        },
         "splash": {
             "image": "./assets/splash.png",
+            "tabletImage": "./assets/splash.png",
+            "dark": {
+                "image": "./assets/splash.png",
+                "tabletImage": "./assets/splash.png"
+            },
             "resizeMode": "contain"
         },
         "supportsTablet": true,
@@ -33,14 +41,27 @@
         "icon": "./assets/icon.png",
         "splash": {
             "image": "./assets/splash.png",
-            "resizeMode": "contain"
+            "mdpi": "./assets/icons/android_legacy_48x48.png",
+            "hdpi": "./assets/icons/android_legacy_72x72.png",
+            "xhdpi": "./assets/icons/android_legacy_96x96.png",
+            "xxhdpi": "./assets/icons/android_legacy_144x144.png",
+            "xxxhdpi": "./assets/icons/android_legacy_192x192.png",
+            "resizeMode": "contain",
+            "dark": {
+                "image": "./assets/splash.png",
+                "mdpi": "./assets/icons/android_legacy_48x48.png",
+                "hdpi": "./assets/icons/android_legacy_72x72.png",
+                "xhdpi": "./assets/icons/android_legacy_96x96.png",
+                "xxhdpi": "./assets/icons/android_legacy_144x144.png",
+                "xxxhdpi": "./assets/icons/android_legacy_192x192.png"
+            }
+        },
+        "adaptiveIcon": {
+            "foregroundImage": "./assets/icons/android_adaptive_foreground_432x432.png",
+            "backgroundColor": "#ffffff"
         },
         "package": "com.libetech.yuru-tabi",
         "packageName": "com.libetech.yuru-tabi",
-        "adaptiveIcon": {
-            "foregroundImage": "./assets/adaptive-icon.png",
-            "backgroundColor": "#ffffff"
-        },
         "config": {
             "googleMaps": {
                 "apiKey": "AIzaSyB3kyCKbNsUC_mcyeZpiiT3OWISKfe2Joo"
@@ -100,26 +121,6 @@
                 "androidAppId": "ca-app-pub-2018656716460271~9761357839",
                 "iosAppId": "ca-app-pub-2018656716460271~5429184177",
                 "facebookMediation": false
-            }
-        ],
-        [
-            "expo-splash-screen",
-            {
-                "image": "./assets/splash.png",
-                "dark": {
-                    "image": "./assets/splash.png"
-                },
-                "imageWidth": 200,
-                "android": {
-                    "splash": {
-                        "image": "./assets/splash.png"
-                    }
-                },
-                "ios": {
-                    "splash": {
-                        "image": "./assets/splash.png"
-                    }
-                }
             }
         ]
     ],

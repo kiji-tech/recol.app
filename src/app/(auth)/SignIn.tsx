@@ -42,7 +42,7 @@ export default function SignInScreen() {
     <BackgroundView>
       <View className="flex flex-col items-center w-full gap-8">
         <Text className="text-4xl font-bold text-light-text dark:text-dark-text">
-          Welcome to the Voyx
+          Welcome to the ゆるたび
         </Text>
         {/* 画像 */}
         <View className="bg-light-theme h-96 w-96 rounded-xl mb-4"></View>
