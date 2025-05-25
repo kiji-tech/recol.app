@@ -1,12 +1,12 @@
 import '@/global.css';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { router, Stack } from 'expo-router';
 import { supabase } from '../libs/supabase';
 import { PlanProvider } from '../contexts/PlanContext';
 import { AuthProvider } from '../contexts/AuthContext';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { ThemeProvider, useTheme } from '../contexts/ThemeContext';
+import { ThemeProvider } from '../contexts/ThemeContext';
 import {
   PermissionStatus,
   getTrackingPermissionsAsync,
@@ -16,6 +16,7 @@ import 'expo-dev-client';
 import { LogBox } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import mobileAds from 'react-native-google-mobile-ads';
+import * as Font from 'expo-font';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -26,13 +27,26 @@ LogBox.ignoreLogs([
 
 // === SplashScreen ===
 SplashScreen.preventAutoHideAsync();
-SplashScreen.setOptions({
-  duration: 1000,
-  fade: true,
-});
 
 const Layout = () => {
-  const { isThemeLoaded } = useTheme();
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      // ここでフォントや API をプリロード
+      await Font.loadAsync({
+        // 例: 'Roboto': require('./assets/fonts/Roboto-Regular.ttf')
+      });
+      setReady(true);
+    })();
+  }, []);
+
+  const onLayout = useCallback(async () => {
+    if (ready) {
+      // レイアウトが終わってから隠すと白画面を防げる
+      await SplashScreen.hideAsync();
+    }
+  }, [ready]);
 
   const initAd = useCallback(async () => {
     try {
@@ -67,24 +81,24 @@ const Layout = () => {
     initAd();
   };
 
-  if (!isThemeLoaded) {
-    return <View style={{ flex: 1 }} />;
-  }
+  if (!ready) return null;
 
   return (
-    <Stack>
-      <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
-      <Stack.Screen name="(addPlan)" options={{ title: '計画作成', headerShown: false }} />
-      <Stack.Screen name="(blog)" options={{ title: 'ブログ', headerShown: false }} />
-      <Stack.Screen name="(plan)" options={{ title: '計画表示', headerShown: false }} />
-      <Stack.Screen name="(chat)" options={{ title: 'チャット', headerShown: false }} />
-      <Stack.Screen name="(settings)" options={{ title: '設定', headerShown: false }} />
-      <Stack.Screen
-        name="(scheduleEditor)"
-        options={{ title: 'スケジュール編集', headerShown: false }}
-      />
-      <Stack.Screen name="(auth)" options={{ title: 'ログイン', headerShown: false }} />
-    </Stack>
+    <View onLayout={onLayout} style={{ flex: 1 }}>
+      <Stack>
+        <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
+        <Stack.Screen name="(addPlan)" options={{ title: '計画作成', headerShown: false }} />
+        <Stack.Screen name="(blog)" options={{ title: 'ブログ', headerShown: false }} />
+        <Stack.Screen name="(plan)" options={{ title: '計画表示', headerShown: false }} />
+        <Stack.Screen name="(chat)" options={{ title: 'チャット', headerShown: false }} />
+        <Stack.Screen name="(settings)" options={{ title: '設定', headerShown: false }} />
+        <Stack.Screen
+          name="(scheduleEditor)"
+          options={{ title: 'スケジュール編集', headerShown: false }}
+        />
+        <Stack.Screen name="(auth)" options={{ title: 'ログイン', headerShown: false }} />
+      </Stack>
+    </View>
   );
 };
 

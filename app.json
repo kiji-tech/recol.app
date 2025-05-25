@@ -8,24 +8,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "jsEngine": "hermes",
-    "splash": {
-        "image": "./assets/splash.png",
-        "resizeMode": "contain"
-    },
     "ios": {
-        "icon": {
-            "light": "./assets/icon.png",
-            "dark": "./assets/icon.png"
-        },
-        "splash": {
-            "image": "./assets/splash.png",
-            "tabletImage": "./assets/splash.png",
-            "dark": {
-                "image": "./assets/splash.png",
-                "tabletImage": "./assets/splash.png"
-            },
-            "resizeMode": "contain"
-        },
         "supportsTablet": true,
         "bundleIdentifier": "com.libetech.yuru-tabi",
         "config": {
@@ -38,28 +21,6 @@
         "deploymentTarget": "15.1"
     },
     "android": {
-        "icon": "./assets/icon.png",
-        "splash": {
-            "image": "./assets/splash.png",
-            "mdpi": "./assets/icons/android_legacy_48x48.png",
-            "hdpi": "./assets/icons/android_legacy_72x72.png",
-            "xhdpi": "./assets/icons/android_legacy_96x96.png",
-            "xxhdpi": "./assets/icons/android_legacy_144x144.png",
-            "xxxhdpi": "./assets/icons/android_legacy_192x192.png",
-            "resizeMode": "contain",
-            "dark": {
-                "image": "./assets/splash.png",
-                "mdpi": "./assets/icons/android_legacy_48x48.png",
-                "hdpi": "./assets/icons/android_legacy_72x72.png",
-                "xhdpi": "./assets/icons/android_legacy_96x96.png",
-                "xxhdpi": "./assets/icons/android_legacy_144x144.png",
-                "xxxhdpi": "./assets/icons/android_legacy_192x192.png"
-            }
-        },
-        "adaptiveIcon": {
-            "foregroundImage": "./assets/icons/android_adaptive_foreground_432x432.png",
-            "backgroundColor": "#ffffff"
-        },
         "package": "com.libetech.yuru-tabi",
         "packageName": "com.libetech.yuru-tabi",
         "config": {
@@ -126,10 +87,7 @@
         [
             "expo-splash-screen",
             {
-                "image": "./assets/splash.png",
-                "dark": {
-                    "image": "./assets/splash.png"
-                }
+                "image": "./assets/icon.png"
             }
         ]
     ],
