@@ -1,6 +1,6 @@
 import '@/global.css';
 import React, { useCallback, useEffect } from 'react';
-import { router, SplashScreen, Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { supabase } from '../libs/supabase';
 import { PlanProvider } from '../contexts/PlanContext';
 import { AuthProvider } from '../contexts/AuthContext';
@@ -14,16 +14,22 @@ import {
 } from 'expo-tracking-transparency';
 import 'expo-dev-client';
 import { LogBox } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
 import mobileAds from 'react-native-google-mobile-ads';
 
+// === LogBox ===
 LogBox.ignoreLogs([
   // 非表示にしたい警告があればここへ
   'Support for defaultProps will be removed from function components',
   'Support for defaultProps will be removed from memo components',
 ]);
 
+// === SplashScreen ===
 SplashScreen.preventAutoHideAsync();
-SplashScreen.hideAsync();
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true,
+});
 
 const Layout = () => {
   const { isThemeLoaded } = useTheme();
