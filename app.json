@@ -75,6 +75,14 @@
                 {
                     "image": "./assets/images/splash.png"
                 }
+            ],
+            [
+                "react-native-admob-native-ads",
+                {
+                    "androidAppId": "ca-app-pub-2018656716460271~9761357839",
+                    "iosAppId": "ca-app-pub-2018656716460271~5429184177",
+                    "facebookMediation": false
+                }
             ]
         ],
         "experiments": {
@@ -90,14 +98,6 @@
         },
         "runtimeVersion": {
             "policy": "appVersion"
-        },
-        "react-native-google-mobile-ads": {
-            "android_app_id": "ca-app-pub-2018656716460271~9761357839",
-            "ios_app_id": "ca-app-pub-2018656716460271~5429184177",
-            "user_tracking_usage_description": "関連性の高い広告を表示するためにIDをトラッキングいたします。",
-            "delay_app_measurement_init": true,
-            "optimize_initialization": true,
-            "optimize_ad_loading": true
         },
         "updates": {
             "url": "https://u.expo.dev/d0f16b33-31f2-4574-a7ab-9e3318729003"
