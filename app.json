@@ -73,7 +73,11 @@
             [
                 "expo-splash-screen",
                 {
-                    "image": "./assets/images/splash.png"
+                    "image": "./assets/images/icon.png",
+                    "resizeMode": "contain",
+                    "imageWidth": 300,
+                    "duration": 2000,
+                    "fade": true
                 }
             ],
             [

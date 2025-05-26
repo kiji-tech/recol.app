@@ -12,7 +12,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
   const isIOS = Platform.OS === 'ios';
   return (
     <View
-      className={`flex-col bg-dark-theme dark:bg-light-theme ${isIOS ? 'bottom-8' : 'bottom-0'}`}
+      className={`flex-col bg-dark-theme dark:bg-light-theme ${isIOS ? 'bottom-8' : 'bottom-8'}`}
     >
       <MyBannerAd />
       <View className="flex-row w-full border-[1px] border-light-border dark:border-dark-border mx-auto">

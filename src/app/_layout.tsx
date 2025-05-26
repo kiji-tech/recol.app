@@ -27,6 +27,10 @@ LogBox.ignoreLogs([
 
 // === SplashScreen ===
 SplashScreen.preventAutoHideAsync();
+SplashScreen.setOptions({
+  duration: 2000,
+  fade: true,
+});
 
 const Layout = () => {
   const [ready, setReady] = useState(false);

@@ -55,7 +55,7 @@ export default function Home() {
               >
                 {/* アイキャッチ */}
                 {item.eyecatch?.url && (
-                  <Image source={{ uri: item.eyecatch.url }} className="w-32 h-32 rounded-l-md" />
+                  <Image source={{ uri: item.eyecatch.url }} className="w-48 h-32 rounded-l-md" />
                 )}
                 {/* 右側 */}
                 <View className="flex-1 gap-2 p-4 flex flex-col items-start justify-between">
