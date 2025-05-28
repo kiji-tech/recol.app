@@ -183,24 +183,6 @@ async function updateProfile(
   return response.data!;
 }
 
-// ============ Item Link ============
-/**
- * アイテムリンク一覧の取得
- *
- * @param session {Session | null}
- * @param ctrl {AbortController}
- * @returns Tables<'item_link'>[]
- */
-async function fetchItemLinkList(session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Tables<'item_link'>[]>('/item_link/list', {
-    method: 'GET',
-    session,
-    ctrl,
-  });
-  if (response.error) throw response.error;
-  return response.data!;
-}
-
 // ============ MicroCMS ============
 async function fetchBlog(id: string, ctrl?: AbortController) {
   const url = process.env.EXPO_PUBLIC_MICROCMS_URI! + '/blogs/' + id;
@@ -237,7 +219,6 @@ export {
   upsertSchedule,
   getProfile,
   updateProfile,
-  fetchItemLinkList,
   fetchBlog,
   fetchBlogList,
 };

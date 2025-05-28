@@ -9,6 +9,7 @@
         "orientation": "portrait",
         "userInterfaceStyle": "automatic",
         "jsEngine": "hermes",
+        "newArchEnabled": false,
         "ios": {
             "icon": "./assets/images/icon.png",
             "supportsTablet": true,

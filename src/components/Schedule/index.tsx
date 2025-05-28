@@ -119,10 +119,10 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
           isEndDateView = false;
         }
         return (
-          <View key={schedule.uid}>
+          <View key={schedule.uid} className="relative">
             {isDateView && (
               <Text
-                className={`font-bold text-xl text-center ${index != 0 && 'mt-4'} text-light-text dark:text-dark-text`}
+                className={`font-bold text-xl text-center ${index != 0 && 'mt-4'} text-light-text dark:text-dark-text sticky top-0`}
               >
                 {date}
               </Text>
