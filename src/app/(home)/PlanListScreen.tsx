@@ -5,40 +5,16 @@ import IconButton from '@/src/components/IconButton';
 import { Tables } from '@/src/libs/database.types';
 import dayjs from 'dayjs';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { useAuth } from '@/src/contexts/AuthContext';
-import { fetchPlanList } from '@/src/libs/ApiService';
-import { LogUtil } from '@/src/libs/LogUtil';
 import { useTheme } from '@/src/contexts/ThemeContext';
-
-type PlanWithSchedule = Tables<'plan'> & { schedule: Tables<'schedule'>[] };
 
 export default function PlanListScreen() {
   // === Member ===
   const router = useRouter();
   const { isDarkMode } = useTheme();
-  const { planList, setPlan, setPlanList } = usePlan();
-  const { session } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
-
-  // === Method ===
-  const init = async (ctrl?: AbortController) => {
-    setIsLoading(true);
-    LogUtil.log('planを取得します', { level: 'info' });
-    const data = await fetchPlanList(session, ctrl).catch((e) => {
-      LogUtil.log(e, { level: 'error', notify: true });
-      if (e) {
-        if ('Aborted'.indexOf(e.message) >= 0) {
-          return [];
-        }
-        alert(e.message);
-      }
-    });
-    setPlanList(data as PlanWithSchedule[]);
-    setIsLoading(false);
-  };
+  const { planList, setPlan, planLoading, fetchPlan } = usePlan();
 
   // === Effect ===
   useFocusEffect(
@@ -52,18 +28,11 @@ export default function PlanListScreen() {
   );
 
   // === Method ===
-  const addButton = () => {
-    return (
-      <IconButton
-        icon={<MaterialIcons name="add" size={18} color={isDarkMode ? 'white' : 'black'} />}
-        theme="info"
-        onPress={() => {
-          router.push('/(addPlan)/AddPlan');
-        }}
-      />
-    );
+  const init = async (ctrl?: AbortController) => {
+    await fetchPlan(ctrl);
   };
 
+  /** プラン選択処理 */
   const handleSelectPlan = (plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => {
     // スケジュールを取得して設定
     setPlan(plan);
@@ -76,9 +45,19 @@ export default function PlanListScreen() {
   };
 
   // === Render ===
-
+  const addButton = () => {
+    return (
+      <IconButton
+        icon={<MaterialIcons name="add" size={18} color={isDarkMode ? 'white' : 'black'} />}
+        theme="info"
+        onPress={() => {
+          router.push('/(addPlan)/AddPlan');
+        }}
+      />
+    );
+  };
   // プランがない場合
-  if (isLoading) {
+  if (planLoading) {
     return <Loading />;
   }
 
