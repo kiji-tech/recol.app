@@ -1,6 +1,6 @@
 import { Hono } from 'jsr:@hono/hono';
 import { generateSupabase } from '../libs/supabase.ts';
-const app = new Hono().basePath('/messages');
+const app = new Hono().basePath('/message');
 
 /**
  *

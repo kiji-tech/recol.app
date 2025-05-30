@@ -76,6 +76,16 @@ async function fetchPlanList(session: Session | null, ctrl?: AbortController) {
   return response.data!;
 }
 
+async function deletePlan(planId: string, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<void>('/plan/delete', {
+    method: 'POST',
+    session,
+    body: { planId },
+    ctrl,
+  });
+  if (response.error) throw response.error;
+}
+
 // ============ Schedule ============
 /**
  * スケジュール情報の取得
@@ -213,6 +223,7 @@ async function fetchBlogList() {
 export {
   fetchPlan,
   fetchPlanList,
+  deletePlan,
   fetchSchedule,
   fetchScheduleList,
   deleteSchedule,

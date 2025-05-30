@@ -46,8 +46,10 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
   const fetchStoragePlan = async () => {
     try {
       const planList = await AsyncStorage.getItem(PLAN_LIST_STORAGE_KEY);
-      LogUtil.log('set storage plan list', { level: 'info' });
+
       if (planList) {
+        LogUtil.log('set storage plan list', { level: 'info' });
+        console.log(planList);
         setPlanList(JSON.parse(planList));
       }
     } catch (error) {

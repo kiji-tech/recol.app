@@ -6,16 +6,18 @@ import { Tables } from '@/src/libs/database.types';
 import dayjs from 'dayjs';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import { deletePlan } from '@/src/libs/ApiService';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 export default function PlanListScreen() {
   // === Member ===
   const router = useRouter();
   const { isDarkMode } = useTheme();
   const { planList, setPlan, planLoading, fetchPlan } = usePlan();
-
+  const { session } = useAuth();
   // === Effect ===
   useFocusEffect(
     useCallback(() => {
@@ -44,6 +46,23 @@ export default function PlanListScreen() {
     });
   };
 
+  /** プランの削除 */
+  const handleDeletePlan = (plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => {
+    Alert.alert('削除しますか？', '削除すると元に戻すことはできません。', [
+      {
+        text: 'キャンセル',
+        style: 'cancel',
+      },
+      {
+        text: '削除',
+        onPress: async () => {
+          await deletePlan(plan.uid, session);
+          await fetchPlan();
+        },
+      },
+    ]);
+  };
+
   // === Render ===
   const addButton = () => {
     return (
@@ -56,7 +75,8 @@ export default function PlanListScreen() {
       />
     );
   };
-  // プランがない場合
+
+  // ロード中の場合
   if (planLoading) {
     return <Loading />;
   }
@@ -87,6 +107,7 @@ export default function PlanListScreen() {
                 py-4 w-full
                 border-light-border dark:border-dark-border`}
               onPress={() => handleSelectPlan(p)}
+              onLongPress={() => handleDeletePlan(p)}
             >
               <View className="flex flex-row gap-2 justify-between items-start">
                 <View className="flex flex-row gap-4 justify-start items-center">

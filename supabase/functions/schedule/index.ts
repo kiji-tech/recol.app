@@ -66,6 +66,10 @@ const deleteSchedule = async (c: Hono.Context) => {
   console.log('[DELETE] schedule/:id');
   const supabase = generateSupabase(c);
   const { uid } = await c.req.json();
+  const user = await getUser(c, supabase);
+  if (!user) {
+    return c.json({ error: 'User not found' }, 403);
+  }
 
   // 削除フラグの更新
   const { data, error } = await supabase

@@ -101,6 +101,8 @@ const list = async (c: Hono.Context) => {
     .from('plan')
     .select('*, schedule(*)')
     .eq('user_id', user.id)
+    .eq('delete_flag', false)
+    .eq('schedule.delete_flag', false)
     .order('from', { ascending: false });
   if (error) {
     console.error(error);
@@ -109,8 +111,29 @@ const list = async (c: Hono.Context) => {
   return c.json(data);
 };
 
+const deletePlan = async (c: Hono.Context) => {
+  console.log('[POST] plan/delete');
+  const supabase = generateSupabase(c);
+  const { planId } = await c.req.json();
+  const user = await getUser(c, supabase);
+  if (!user) {
+    return c.json({ error: 'User not found' }, 403);
+  }
+  const { data, error } = await supabase
+    .from('plan')
+    .update({ delete_flag: true })
+    .eq('uid', planId)
+    .eq('user_id', user.id);
+  if (error) {
+    console.error(error);
+    return c.json({ error }, 403);
+  }
+  return c.json(data);
+};
+
 app.post('/list', list);
 app.get('/:uid', get);
 app.post('/', create);
 app.put('/', update);
+app.post('/delete', deletePlan);
 Deno.serve(app.fetch);
