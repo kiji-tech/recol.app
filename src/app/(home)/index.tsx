@@ -76,7 +76,7 @@ export default function Home() {
                     {new Date(item.publishedAt).toLocaleDateString()}
                   </Text>
                   {/* 場所（旅行系の場合） */}
-                  {item.location && (
+                  {item.location.length > 0 && (
                     <View className="flex-row items-start justify-start">
                       <FontAwesome5
                         name="map-marker-alt"

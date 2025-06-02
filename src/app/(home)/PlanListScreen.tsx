@@ -1,6 +1,6 @@
 import React from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { BackgroundView, Button, Header, Loading } from '@/src/components';
+import { BackgroundView, Button, Header } from '@/src/components';
 import IconButton from '@/src/components/IconButton';
 import { Tables } from '@/src/libs/database.types';
 import dayjs from 'dayjs';
@@ -16,7 +16,7 @@ export default function PlanListScreen() {
   // === Member ===
   const router = useRouter();
   const { isDarkMode } = useTheme();
-  const { planList, setPlan, planLoading, fetchPlan } = usePlan();
+  const { planList, setPlan, fetchPlan } = usePlan();
   const { session } = useAuth();
   // === Effect ===
   useFocusEffect(
@@ -75,11 +75,6 @@ export default function PlanListScreen() {
       />
     );
   };
-
-  // ロード中の場合
-  if (planLoading) {
-    return <Loading />;
-  }
 
   return (
     <BackgroundView>

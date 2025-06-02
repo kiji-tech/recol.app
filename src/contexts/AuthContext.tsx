@@ -61,10 +61,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             throw e;
           });
           setProfile(profile);
+          // 成功したらカウンターをリセット
+          setRefreshAttempts(0);
         }
-
-        // 成功したらカウンターをリセット
-        setRefreshAttempts(0);
       }
     } catch (error: Error | unknown) {
       const errorMessage = error instanceof Error ? error.message : '不明なエラー';

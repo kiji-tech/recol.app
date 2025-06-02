@@ -1,9 +1,9 @@
 {
     "expo": {
-        "scheme": "ゆるたび",
-        "name": "ゆるたび",
-        "slug": "yuru-tabi",
-        "version": "1.0.1",
+        "scheme": "recol",
+        "name": "Re:col",
+        "slug": "recol",
+        "version": "1.0.0",
         "icon": "./assets/images/icon.png",
         "owner": "shinji5761",
         "orientation": "portrait",
@@ -13,7 +13,7 @@
         "ios": {
             "icon": "./assets/images/icon.png",
             "supportsTablet": true,
-            "bundleIdentifier": "com.shinji5761.yurutabi",
+            "bundleIdentifier": "com.libetech.recol",
             "config": {
                 "googleMapsApiKey": "AIzaSyDZg8Pd1pIXO0NWl1lWo0JJM1UCixBqarQ"
             },
@@ -24,8 +24,8 @@
             "deploymentTarget": "15.1"
         },
         "android": {
-            "package": "com.shinji5761.yurutabi",
-            "packageName": "com.shinji5761.yurutabi",
+            "package": "com.libetech.recol",
+            "packageName": "com.libetech.recol",
             "config": {
                 "googleMaps": {
                     "apiKey": "AIzaSyB3kyCKbNsUC_mcyeZpiiT3OWISKfe2Joo"
