@@ -1,12 +1,11 @@
 import React from 'react';
 import { BackgroundView, Button } from '@/src/components';
-import { Text, TextInput, View } from 'react-native';
+import { Image, Text, TextInput, View } from 'react-native';
 import { useState } from 'react';
 import { Link, router } from 'expo-router';
 import { supabase } from '@/src/libs/supabase';
 import { Alert } from 'react-native';
 import { useAuth } from '@/src/contexts/AuthContext';
-
 export default function SignInScreen() {
   // ==== Member ===
   const { setUser } = useAuth();
@@ -45,22 +44,26 @@ export default function SignInScreen() {
           Welcome to the Re:col
         </Text>
         {/* 画像 */}
-        <View className="bg-light-theme h-96 w-96 rounded-xl mb-4"></View>
+        <Image
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          source={require('../../../assets/images/icon.png')}
+          className="h-96 w-96 rounded-xl mb-4"
+        />
         {/* form */}
         <TextInput
           keyboardType="email-address"
-          placeholder="メールアドレス"
+          placeholder="メールアドレス..."
           placeholderTextColor="gray"
-          className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
+          className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
                 `}
           value={email}
           onChangeText={(text) => setEmail(text)}
         />
         <TextInput
-          placeholder="パスワード"
+          placeholder="パスワード..."
           placeholderTextColor="gray"
-          className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
+          className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
                 `}
           value={password}

@@ -52,7 +52,7 @@ export default function SignUpScreen() {
         <TextInput
           placeholder="メールアドレス"
           placeholderTextColor="gray"
-          className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
+          className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
                 `}
           value={email}
@@ -61,7 +61,7 @@ export default function SignUpScreen() {
         <TextInput
           placeholder="パスワード"
           placeholderTextColor="gray"
-          className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
+          className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
                 `}
           value={password}
@@ -71,7 +71,7 @@ export default function SignUpScreen() {
         <TextInput
           placeholder="パスワード（確認）"
           placeholderTextColor="gray"
-          className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
+          className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
                 `}
           value={password2}
