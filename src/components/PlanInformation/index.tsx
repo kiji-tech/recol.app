@@ -3,6 +3,7 @@ import { Tables } from '@/src/libs/database.types';
 import { View, Text } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useTheme } from '@/src/contexts/ThemeContext';
 
 type Props = {
   plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
@@ -15,6 +16,8 @@ type Props = {
  * ・友達
  */
 export default function PlanInformation({ plan }: Props) {
+  const { isDarkMode } = useTheme();
+
   // No plan
   if (!plan) return <></>;
 
@@ -28,7 +31,7 @@ export default function PlanInformation({ plan }: Props) {
         </Text>
       </View>
       {/* イメージビュー */}
-      <ScrollView horizontal>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View className="flex flex-row gap-2">
           <View className="w-44 h-32 bg-light-theme dark:bg-dark-theme rounded-md"></View>
           <View className="w-44 h-32 bg-light-theme dark:bg-dark-theme rounded-md"></View>
@@ -36,8 +39,8 @@ export default function PlanInformation({ plan }: Props) {
           <View className="w-44 h-32 bg-light-theme dark:bg-dark-theme rounded-md"></View>
           <View className="w-44 h-32 bg-light-theme dark:bg-dark-theme rounded-md"></View>
           <View className="w-44 h-32 bg-light-background dark:bg-dark-background rounded-md border border-light-border dark:border-dark-border">
-            <View className="flex-1 justify-center items-center">
-              <AntDesign name="plus" size={24} color="black" />
+            <View className="flex-1 justify-center items-center bg-light-background dark:bg-dark-background">
+              <AntDesign name="plus" size={24} color={isDarkMode ? 'white' : 'black'} />
             </View>
           </View>
         </View>

@@ -67,7 +67,10 @@ async function fetchPlan(planId: string, session: Session | null, ctrl?: AbortCo
  * @param ctrl {AbortController}
  * @returns Tables<'plan'> & { schedule: Tables<'schedule'>[] }[]
  */
-async function fetchPlanList(session: Session | null, ctrl?: AbortController) {
+async function fetchPlanList(
+  session: Session | null,
+  ctrl?: AbortController
+): Promise<(Tables<'plan'> & { schedule: Tables<'schedule'>[] })[]> {
   const response = await apiRequest<(Tables<'plan'> & { schedule: Tables<'schedule'>[] })[]>(
     '/plan/list',
     { method: 'POST', session, ctrl }

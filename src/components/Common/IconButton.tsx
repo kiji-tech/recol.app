@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
 type Props = {
-  icon: any;
+  icon: React.ReactNode;
   theme?: 'info' | 'danger' | 'warn' | 'theme' | 'background';
   onPress: () => void;
 };

@@ -8,7 +8,7 @@ import { fetchScheduleList } from '@/src/libs/ApiService';
 import { useRouter } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useAuth } from '@/src/contexts/AuthContext';
-import Button from '../Button';
+import Button from '../Common/Button';
 
 type Props = {
   plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
@@ -29,7 +29,7 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
     const from =
       scheduleList.length > 0
         ? dayjs(scheduleList[scheduleList.length - 1].to)
-        : dayjs(plan?.from).set('minute', 0);
+        : dayjs().set('minute', 0);
     const to = dayjs(from).add(1, 'hour');
 
     const newSchedule = {

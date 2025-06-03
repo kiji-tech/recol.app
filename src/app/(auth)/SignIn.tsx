@@ -1,14 +1,12 @@
 import React from 'react';
 import { BackgroundView, Button } from '@/src/components';
-import { Image, Text, TextInput, View } from 'react-native';
+import { Alert, Image, Text, TextInput, View } from 'react-native';
 import { useState } from 'react';
 import { Link, router } from 'expo-router';
-import { supabase } from '@/src/libs/supabase';
-import { Alert } from 'react-native';
 import { useAuth } from '@/src/contexts/AuthContext';
 export default function SignInScreen() {
   // ==== Member ===
-  const { setUser } = useAuth();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -24,17 +22,13 @@ export default function SignInScreen() {
   const signInWithPassword = async () => {
     // verify
     if (!verify()) return;
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      Alert.alert(error.message);
-      return;
-    }
-    const user = session?.user;
-    setUser(user!);
-    router.navigate('/(home)');
+    login(email, password)
+      .then(() => {
+        router.navigate('/(home)');
+      })
+      .catch((e) => {
+        Alert.alert(e.message);
+      });
   };
 
   return (

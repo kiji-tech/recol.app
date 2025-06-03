@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity } from 'react-native';
 import { Place } from '../../../entities/Place';
-import RateViewer from '../../RateViewer';
+import RateViewer from './RateViewer';
 
 type Props = {
   place: Place | null;

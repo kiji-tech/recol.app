@@ -52,16 +52,19 @@ export default function ScheduleScreen(): ReactNode {
       ctrl.abort();
     };
   };
+
+  /** 予定の追加 */
   const handleAddPress = () => {
     const schedule = {
       plan_id: plan!.uid,
-      from: dayjs(plan?.from).set('hour', 0).set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
-      to: dayjs(plan?.from).set('hour', 1).set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
+      from: dayjs().set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
+      to: dayjs().add(1, 'hour').set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
     } as Tables<'schedule'>;
     setEditSchedule(schedule);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
 
+  /** 予定の削除 */
   const handleDeleteSchedule = async (schedule: Tables<'schedule'>) => {
     try {
       if (!session) {

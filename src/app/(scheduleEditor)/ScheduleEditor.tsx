@@ -4,7 +4,7 @@ import { Json, Tables } from '@/src/libs/database.types';
 import { Text, TextInput, View } from 'react-native';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
-import DatePicker from '../../components/DatePicker';
+import DatePicker from '../../components/Common/DatePicker';
 import dayjs from '@/src/libs/dayjs';
 import MapModal from './component/MapModal';
 import { Place } from '@/src/entities/Place';
@@ -18,7 +18,7 @@ export default function ScheduleEditor() {
   const [openMapModal, setOpenMapModal] = useState(false);
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
 
-    // === Method ===
+  // === Method ===
   /** スケジュールの編集 */
   const handleScheduleSubmit = async () => {
     if (!editSchedule) return;
@@ -36,6 +36,7 @@ export default function ScheduleEditor() {
     }
   };
 
+  /** マップから選択した場所を追加 */
   const handleSelectedPlaceList = (placeList: Place[]) => {
     const schedule = { ...editSchedule, place_list: placeList as unknown as Json[] };
     setEditSchedule({ ...schedule } as Tables<'schedule'>);
@@ -47,6 +48,7 @@ export default function ScheduleEditor() {
     setOpenMapModal(true);
   };
 
+  /** 戻る */
   const handleBack = () => {
     router.back();
   };

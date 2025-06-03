@@ -49,9 +49,7 @@ export type Database = {
           created_at: string
           delete_flag: boolean | null
           from: string | null
-          locations: string[] | null
           memo: string | null
-          place_id_list: string[] | null
           title: string | null
           to: string | null
           uid: string
@@ -62,9 +60,7 @@ export type Database = {
           created_at?: string
           delete_flag?: boolean | null
           from?: string | null
-          locations?: string[] | null
           memo?: string | null
-          place_id_list?: string[] | null
           title?: string | null
           to?: string | null
           uid?: string
@@ -75,9 +71,7 @@ export type Database = {
           created_at?: string
           delete_flag?: boolean | null
           from?: string | null
-          locations?: string[] | null
           memo?: string | null
-          place_id_list?: string[] | null
           title?: string | null
           to?: string | null
           uid?: string

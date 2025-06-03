@@ -63,6 +63,13 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
       const planList = await fetchPlanList(session, ctrl);
       LogUtil.log('set API plan list', { level: 'info' });
       setPlanList(planList);
+      if (plan) {
+        setPlan(
+          planList.find((p) => p.uid === plan.uid) as Tables<'plan'> & {
+            schedule: Tables<'schedule'>[];
+          }
+        );
+      }
       await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(planList));
     } finally {
       setPlanLoading(false);

@@ -20,12 +20,14 @@ const MapScreen = () => {
   // ==== Member ====
   const { plan } = usePlan();
   const [isCoords, setIsCoords] = useState<Region>({
-    ...JSON.parse(plan!.locations![0]),
+    latitude: 0,
+    longitude: 0,
     latitudeDelta: 0.05,
     longitudeDelta: 0.03,
   });
   const [centerCords, setCenterCords] = useState<Region>({
-    ...JSON.parse(plan!.locations![0]),
+    latitude: 0,
+    longitude: 0,
     latitudeDelta: 0.01,
     longitudeDelta: 0.03,
   });
