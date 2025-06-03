@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Tables } from '@/src/libs/database.types';
-import { View, Text } from 'react-native';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import * as ImagePicker from 'expo-image-picker';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 type Props = {
   plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
@@ -11,14 +12,32 @@ type Props = {
 
 /**
  * プランインフォメーション
- * ・予定地
  * ・予定メモ
- * ・友達
+ * ・画像
+ * ・メンバー
  */
 export default function PlanInformation({ plan }: Props) {
+  // === Member ===
   const { isDarkMode } = useTheme();
+  const [images, setImages] = useState<string[]>([]);
 
-  // No plan
+  // === Method ===
+  const handleAddImages = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      aspect: [1, 1],
+      quality: 1,
+      allowsMultipleSelection: true,
+      base64: true,
+    });
+
+    if (!result.canceled) {
+      setImages(result.assets.map((a) => a.uri));
+    }
+  };
+
+  // === Render ===
   if (!plan) return <></>;
 
   return (
@@ -33,16 +52,24 @@ export default function PlanInformation({ plan }: Props) {
       {/* イメージビュー */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View className="flex flex-row gap-2">
-          <View className="w-44 h-32 bg-light-theme dark:bg-dark-theme rounded-md"></View>
-          <View className="w-44 h-32 bg-light-theme dark:bg-dark-theme rounded-md"></View>
-          <View className="w-44 h-32 bg-light-theme dark:bg-dark-theme rounded-md"></View>
-          <View className="w-44 h-32 bg-light-theme dark:bg-dark-theme rounded-md"></View>
-          <View className="w-44 h-32 bg-light-theme dark:bg-dark-theme rounded-md"></View>
-          <View className="w-44 h-32 bg-light-background dark:bg-dark-background rounded-md border border-light-border dark:border-dark-border">
+          {images.map((image) => {
+            return (
+              <View
+                key={image}
+                className="w-44 h-32 bg-light-theme dark:bg-dark-theme rounded-md border border-light-border dark:border-dark-border"
+              >
+                <Image source={{ uri: image }} className="w-full h-full" />
+              </View>
+            );
+          })}
+          <TouchableOpacity
+            onPress={handleAddImages}
+            className="w-44 h-32 bg-light-background dark:bg-dark-background rounded-md border border-light-border dark:border-dark-border"
+          >
             <View className="flex-1 justify-center items-center bg-light-background dark:bg-dark-background">
               <AntDesign name="plus" size={24} color={isDarkMode ? 'white' : 'black'} />
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
       {/* メンバーリスト */}

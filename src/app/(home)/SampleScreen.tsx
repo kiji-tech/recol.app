@@ -3,14 +3,14 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
 import { fetchBlogList } from '@/src/libs/ApiService';
 import { BackgroundView, Loading } from '@/src/components';
-import { Blog } from '@/src/entities/Article';
+import { Article } from '@/src/entities/Article';
 import { useTheme } from '@/src/contexts/ThemeContext';
 
 export default function SampleScreen() {
   const router = useRouter();
   const { textColor } = useTheme();
 
-  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [blogs, setBlogs] = useState<Article[]>([]);
 
   useFocusEffect(
     useCallback(() => {
@@ -26,7 +26,7 @@ export default function SampleScreen() {
     <BackgroundView>
       <FlatList
         data={blogs}
-        keyExtractor={(item: Blog) => item.id}
+        keyExtractor={(item: Article) => item.id}
         contentContainerStyle={{ padding: 16 }}
         renderItem={({ item }) => (
           <TouchableOpacity

@@ -9,6 +9,7 @@ export type AuthContextType = {
   user: User | null;
   session: Session | null;
   profile: Tables<'profile'> | null;
+  setProfile: (profile: Tables<'profile'> | null) => void;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -96,7 +97,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, session, profile, setProfile, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
