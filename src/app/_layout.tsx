@@ -16,6 +16,7 @@ import 'expo-dev-client';
 import { LogBox } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import mobileAds from 'react-native-google-mobile-ads';
+import { MenuProvider } from 'react-native-popup-menu';
 import * as Font from 'expo-font';
 
 // === LogBox ===
@@ -109,13 +110,15 @@ const Layout = () => {
 const RouteLayout = () => {
   return (
     <AuthProvider>
-      <PlanProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <ThemeProvider>
-            <Layout />
-          </ThemeProvider>
-        </GestureHandlerRootView>
-      </PlanProvider>
+      <MenuProvider>
+        <PlanProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <ThemeProvider>
+              <Layout />
+            </ThemeProvider>
+          </GestureHandlerRootView>
+        </PlanProvider>
+      </MenuProvider>
     </AuthProvider>
   );
 };

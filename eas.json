@@ -35,7 +35,7 @@
                 "buildType": "apk"
             },
             "env": {
-                "EXPO_PUBLIC_APP_ENV": "develop"
+                "EXPO_PUBLIC_APP_ENV": "development"
             }
         },
         "development-simulator": {
@@ -49,7 +49,7 @@
                 "simulator": true
             },
             "env": {
-                "EXPO_PUBLIC_APP_ENV": "develop"
+                "EXPO_PUBLIC_APP_ENV": "development"
             }
         },
         "preview": {
@@ -59,7 +59,7 @@
                 "buildType": "apk"
             },
             "env": {
-                "EXPO_PUBLIC_APP_ENV": "develop"
+                "EXPO_PUBLIC_APP_ENV": "development"
             }
         },
         "production": {

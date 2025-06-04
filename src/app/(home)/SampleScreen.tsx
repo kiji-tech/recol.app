@@ -1,17 +1,15 @@
 import React, { useCallback, useState } from 'react';
-import { useFocusEffect, useRouter } from 'expo-router';
-import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
-import { fetchBlogList } from '@/src/libs/ApiService';
-import { BackgroundView, Loading } from '@/src/components';
+import { Button, TouchableOpacity, View, Text } from 'react-native';
+import { Loading, BackgroundView } from '@/src/components';
 import { Article } from '@/src/entities/Article';
+import { fetchBlogList } from '@/src/libs/ApiService';
+import { useFocusEffect } from 'expo-router';
+import { MenuTrigger, Menu, MenuOption, MenuOptions } from 'react-native-popup-menu';
 import { useTheme } from '@/src/contexts/ThemeContext';
-
+import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 export default function SampleScreen() {
-  const router = useRouter();
-  const { textColor } = useTheme();
-
   const [blogs, setBlogs] = useState<Article[]>([]);
-
+  const { isDarkMode } = useTheme();
   useFocusEffect(
     useCallback(() => {
       fetchBlogList().then((blogs) => {
@@ -24,32 +22,21 @@ export default function SampleScreen() {
 
   return (
     <BackgroundView>
-      <FlatList
-        data={blogs}
-        keyExtractor={(item: Article) => item.id}
-        contentContainerStyle={{ padding: 16 }}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={{ flexDirection: 'row', marginBottom: 16 }}
-            onPress={() => router.push(`/(blog)/${item.id}`)}
-          >
-            {item.eyecatch?.url && (
-              <Image
-                source={{ uri: item.eyecatch.url }}
-                style={{ width: 120, height: 96, borderRadius: 8, marginRight: 12 }}
-              />
-            )}
-            <View style={{ flex: 1, justifyContent: 'center' }}>
-              <Text style={{ fontSize: 16, fontWeight: '600', color: textColor }}>
-                {item.title}
-              </Text>
-              <Text style={{ color: textColor, marginTop: 4 }}>
-                {new Date(item.publishedAt).toLocaleDateString()}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+      <Menu>
+        <MenuTrigger>
+          <View className="w-10 h-10 bg-light-theme dark:bg-dark-theme rounded-full flex flex-row items-center justify-center">
+            <SimpleLineIcons name="options" size={14} color={isDarkMode ? 'white' : 'black'} />
+          </View>
+        </MenuTrigger>
+        <MenuOptions>
+          <MenuOption
+            text="プラン編集"
+            onSelect={() => {
+              console.log('プラン編集');
+            }}
+          />
+        </MenuOptions>
+      </Menu>
     </BackgroundView>
   );
 }
