@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Button, TouchableOpacity, View, Text } from 'react-native';
+import { View } from 'react-native';
 import { Loading, BackgroundView } from '@/src/components';
 import { Article } from '@/src/entities/Article';
 import { fetchBlogList } from '@/src/libs/ApiService';
@@ -28,9 +28,35 @@ export default function SampleScreen() {
             <SimpleLineIcons name="options" size={14} color={isDarkMode ? 'white' : 'black'} />
           </View>
         </MenuTrigger>
-        <MenuOptions>
+        <MenuOptions
+          customStyles={{
+            optionsContainer: {
+              borderStartStartRadius: 10,
+              borderStartEndRadius: 10,
+              borderEndStartRadius: 10,
+              borderEndEndRadius: 10,
+              width: 140,
+            },
+          }}
+        >
           <MenuOption
             text="プラン編集"
+            customStyles={{
+              optionText: {
+                padding: 4,
+              },
+            }}
+            onSelect={() => {
+              console.log('プラン編集');
+            }}
+          />
+          <MenuOption
+            text="スケジュール追加"
+            customStyles={{
+              optionText: {
+                padding: 4,
+              },
+            }}
             onSelect={() => {
               console.log('プラン編集');
             }}

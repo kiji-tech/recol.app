@@ -1,22 +1,88 @@
+import dayjs from 'dayjs';
 import React, { ReactNode, useCallback, useState } from 'react';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Schedule from '@/src/components/Schedule';
-import { BackgroundView, Header, IconButton } from '@/src/components';
+import { BackgroundView, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useRouter } from 'expo-router';
 import { deleteSchedule, fetchPlan } from '@/src/libs/ApiService';
 import { useFocusEffect } from '@react-navigation/native';
 import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
-import { Alert } from 'react-native';
-import dayjs from 'dayjs';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { Alert, View } from 'react-native';
+import { SimpleLineIcons } from '@expo/vector-icons';
+import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import PlanInformation from '@/src/components/PlanInformation';
+import { useTheme } from '@/src/contexts/ThemeContext';
+
+const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null) => {
+  const router = useRouter();
+  const { isDarkMode } = useTheme();
+  const { setEditSchedule } = usePlan();
+
+  // === Method ===
+  /** プランの編集 */
+  const handleEditPress = () => {
+    router.push(`/(planEditor)/PlanEditor`);
+  };
+
+  /** スケジュールの追加 */
+  const handleAddPress = () => {
+    const schedule = {
+      plan_id: plan!.uid,
+      from: dayjs().set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
+      to: dayjs().add(1, 'hour').set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
+    } as Tables<'schedule'>;
+    setEditSchedule(schedule);
+    router.push(`/(scheduleEditor)/ScheduleEditor`);
+  };
+  return (
+    <Menu>
+      <MenuTrigger>
+        <View className="w-10 h-10 bg-light-info dark:bg-dark-info rounded-full flex flex-row items-center justify-center">
+          <SimpleLineIcons name="options" size={14} color={isDarkMode ? 'white' : 'black'} />
+        </View>
+      </MenuTrigger>
+      <MenuOptions
+        customStyles={{
+          optionsContainer: {
+            borderStartStartRadius: 10,
+            borderStartEndRadius: 10,
+            borderEndStartRadius: 10,
+            borderEndEndRadius: 10,
+            width: 140,
+          },
+        }}
+      >
+        <MenuOption
+          text="プラン編集"
+          customStyles={{
+            optionText: {
+              paddingVertical: 12,
+              paddingHorizontal: 8,
+            },
+          }}
+          onSelect={handleEditPress}
+        />
+        <MenuOption
+          text="スケジュール追加"
+          customStyles={{
+            optionText: {
+              paddingVertical: 12,
+              paddingHorizontal: 8,
+            },
+          }}
+          onSelect={() => {
+            handleAddPress();
+          }}
+        />
+      </MenuOptions>
+    </Menu>
+  );
+};
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
-  const { isDarkMode } = useTheme();
-  const { plan, setEditSchedule } = usePlan();
+  const { plan } = usePlan();
   const { session } = useAuth();
   const [viewPlan, setViewPlan] = useState<
     (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null
@@ -53,17 +119,6 @@ export default function ScheduleScreen(): ReactNode {
     };
   };
 
-  /** 予定の追加 */
-  const handleAddPress = () => {
-    const schedule = {
-      plan_id: plan!.uid,
-      from: dayjs().set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
-      to: dayjs().add(1, 'hour').set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
-    } as Tables<'schedule'>;
-    setEditSchedule(schedule);
-    router.push(`/(scheduleEditor)/ScheduleEditor`);
-  };
-
   /** 予定の削除 */
   const handleDeleteSchedule = async (schedule: Tables<'schedule'>) => {
     try {
@@ -92,13 +147,7 @@ export default function ScheduleScreen(): ReactNode {
         title={`${viewPlan?.title || plan?.title || 'スケジュール'}の予定`}
         onBack={() => router.back()}
         //   TODO: アクションボタン（共有・予定の削除など）
-        rightComponent={
-          <IconButton
-            icon={<MaterialIcons name="add" size={18} color={isDarkMode ? 'white' : 'black'} />}
-            onPress={handleAddPress}
-            theme="info"
-          ></IconButton>
-        }
+        rightComponent={viewPlan ? <ScheduleMenu {...viewPlan} /> : undefined}
       />
       {/* Plan Information */}
       <PlanInformation plan={viewPlan} />

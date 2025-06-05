@@ -97,6 +97,7 @@ const Layout = () => {
         <Stack.Screen name="(plan)" options={{ title: '計画表示', headerShown: false }} />
         <Stack.Screen name="(chat)" options={{ title: 'チャット', headerShown: false }} />
         <Stack.Screen name="(settings)" options={{ title: '設定', headerShown: false }} />
+        <Stack.Screen name="(planEditor)" options={{ title: 'プラン編集', headerShown: false }} />
         <Stack.Screen
           name="(scheduleEditor)"
           options={{ title: 'スケジュール編集', headerShown: false }}

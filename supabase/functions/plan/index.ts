@@ -10,7 +10,7 @@ const app = new Hono().basePath('/plan');
 const create = async (c: Hono.Context) => {
   console.log('[POST] plan');
   const supabase = generateSupabase(c);
-  const { title, from, to } = await c.req.json();
+  const { title } = await c.req.json();
 
   const user = await getUser(c, supabase);
   if (!user) {
@@ -20,7 +20,7 @@ const create = async (c: Hono.Context) => {
   // planを作成
   const { data, error } = await supabase
     .from('plan')
-    .insert({ title, from, to, user_id: user.id })
+    .insert({ title, user_id: user.id })
     .select('*');
 
   if (error) {
@@ -34,7 +34,7 @@ const create = async (c: Hono.Context) => {
 const update = async (c: Hono.Context) => {
   console.log('[PUT] plan');
   const supabase = generateSupabase(c);
-  const { uid, title, from, to, place_id_list } = await c.req.json();
+  const { uid, title, memo } = await c.req.json();
 
   const user = await getUser(c, supabase);
   if (!user) {
@@ -43,7 +43,7 @@ const update = async (c: Hono.Context) => {
   // planを更新
   const { data, error } = await supabase
     .from('plan')
-    .update({ title, from, to, place_id_list })
+    .update({ title, memo })
     .eq('uid', uid)
     .eq('user_id', user.id)
     .select('*');
