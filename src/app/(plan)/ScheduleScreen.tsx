@@ -146,7 +146,6 @@ export default function ScheduleScreen(): ReactNode {
       <Header
         title={`${viewPlan?.title || plan?.title || 'スケジュール'}の予定`}
         onBack={() => router.back()}
-        //   TODO: アクションボタン（共有・予定の削除など）
         rightComponent={viewPlan ? <ScheduleMenu {...viewPlan} /> : undefined}
       />
       {/* Plan Information */}

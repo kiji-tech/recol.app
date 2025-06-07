@@ -72,6 +72,12 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
               {label == 'マップ' && (
                 <FontAwesome name="map-marker" size={20} color={isDarkMode ? 'white' : 'black'} />
               )}
+              {label == 'メディア' && (
+                <FontAwesome name="camera" size={20} color={isDarkMode ? 'white' : 'black'} />
+              )}
+              {label == 'スケジュール' && (
+                <FontAwesome name="calendar" size={20} color={isDarkMode ? 'white' : 'black'} />
+              )}
               <Text className={`text-light-text dark:text-dark-text text-md font-semibold`}>
                 {label as string}
               </Text>

@@ -49,7 +49,6 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (planList) {
         LogUtil.log('set storage plan list', { level: 'info' });
-        console.log(planList);
         setPlanList(JSON.parse(planList));
       }
     } catch (error) {

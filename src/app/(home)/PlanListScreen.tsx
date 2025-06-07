@@ -23,6 +23,15 @@ function PlanCard({ plan }: { plan: Tables<'plan'> & { schedule: Tables<'schedul
       .sort((a, b) => dayjs(a.from).diff(dayjs(b.from)))
       .map((schedule) => dayjs(schedule.from).format('M/D'));
   }, [plan]);
+    
+    // === Effect ===
+    useFocusEffect(useCallback(() => {
+        const ctrl = new AbortController();
+        fetchPlan(ctrl);
+        return () => {
+            ctrl.abort();
+        };
+    }, []))
 
   // === Method ===
   /** プラン選択処理 */
@@ -71,7 +80,9 @@ function PlanCard({ plan }: { plan: Tables<'plan'> & { schedule: Tables<'schedul
             <Text className={`font-bold text-md text-light-text dark:text-dark-text`}>
               {plan.title}
             </Text>
-            <Text className="text-light-text dark:text-dark-text text-xs"></Text>
+            <Text className="text-light-text dark:text-dark-text text-sm">
+              {plan.memo || 'メモがありません'}
+            </Text>
           </View>
         </View>
         <View className="flex flex-row justify-between items-center">

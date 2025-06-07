@@ -103,7 +103,7 @@ const list = async (c: Hono.Context) => {
     .eq('user_id', user.id)
     .eq('delete_flag', false)
     .eq('schedule.delete_flag', false)
-    .order('from', { ascending: false });
+    .order('created_at', { ascending: false });
   if (error) {
     console.error(error);
     return c.json(error, 403);

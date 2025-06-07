@@ -36,6 +36,9 @@ export default function ProfileEditorScreen() {
     }
   };
 
+  /**
+   * プロフィールを保存する
+   */
   const handleSave = async () => {
     const base64Image = avatar
       ? await fetch(avatar)

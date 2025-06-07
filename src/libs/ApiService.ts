@@ -166,6 +166,70 @@ async function upsertSchedule(
   return response.data!;
 }
 
+// ============ Media ============
+/**
+ * プランのメディア一覧を取得
+ *
+ * @param planId {string} プランID
+ * @param session {Session | null} Supabaseのセッション情報
+ * @param ctrl {AbortController}
+ * @returns Tables<'media'>[]
+ */
+async function fetchPlanMediaList(
+  planId: string,
+  session: Session | null,
+  ctrl?: AbortController
+): Promise<Tables<'media'>[]> {
+  const response = await apiRequest<Tables<'media'>[]>('/media/list', {
+    method: 'POST',
+    session,
+    body: { planId },
+    ctrl,
+  });
+  if (response.error) throw response.error;
+  return response.data! as Tables<'media'>[];
+}
+
+/**
+ * プランのメディアをアップロード
+ *
+ * @param planId {string} プランID
+ * @param images {string[]} Base64形式の画像データ
+ * @param session {Session | null} Supabaseのセッション情報
+ * @param ctrl {AbortController}
+ * @returns
+ */
+async function uploadPlanMedias(
+  planId: string,
+  images: string[],
+  session: Session | null,
+  ctrl?: AbortController
+) {
+  const response = await apiRequest<void>('/media', {
+    method: 'POST',
+    session,
+    body: { planId, images },
+    ctrl,
+  });
+  if (response.error) throw response.error;
+  return response.data!;
+}
+
+async function deletePlanMedias(
+  planId: string,
+  mediaIdList: string[],
+  session: Session | null,
+  ctrl?: AbortController
+) {
+  const response = await apiRequest<void>('/media/delete', {
+    method: 'POST',
+    session,
+    body: { planId, mediaIdList },
+    ctrl,
+  });
+  if (response.error) throw response.error;
+}
+
 // ============ Profile ============
 async function getProfile(session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<Tables<'profile'>>('/profile', {
@@ -231,6 +295,9 @@ export {
   fetchScheduleList,
   deleteSchedule,
   upsertSchedule,
+  fetchPlanMediaList,
+  uploadPlanMedias,
+  deletePlanMedias,
   getProfile,
   updateProfile,
   fetchBlog,
