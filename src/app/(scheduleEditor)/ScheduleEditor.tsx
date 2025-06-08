@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { router } from 'expo-router';
-import { Json, Tables } from '@/src/libs/database.types';
+import { Tables } from '@/src/libs/database.types';
 import { Text, TextInput, View } from 'react-native';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
 import DatePicker from '../../components/Common/DatePicker';
 import dayjs from '@/src/libs/dayjs';
 import MapModal from './component/MapModal';
-import { Place } from '@/src/entities/Place';
 import { upsertSchedule } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
 
@@ -37,9 +36,7 @@ export default function ScheduleEditor() {
   };
 
   /** マップから選択した場所を追加 */
-  const handleSelectedPlaceList = (placeList: Place[]) => {
-    const schedule = { ...editSchedule, place_list: placeList as unknown as Json[] };
-    setEditSchedule({ ...schedule } as Tables<'schedule'>);
+  const handleSelectedPlaceList = () => {
     setOpenMapModal(false);
   };
 
@@ -138,13 +135,7 @@ export default function ScheduleEditor() {
         <Button theme="theme" onPress={handleScheduleSubmit} text="保存" />
       </BackgroundView>
       {/* マップモーダル */}
-      {openMapModal && (
-        <MapModal
-          isOpen={openMapModal}
-          placeList={(editSchedule.place_list as unknown as Place[]) || []}
-          onClose={handleSelectedPlaceList}
-        />
-      )}
+      {openMapModal && <MapModal isOpen={openMapModal} onClose={handleSelectedPlaceList} />}
     </>
   );
 }

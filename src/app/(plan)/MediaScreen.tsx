@@ -128,7 +128,7 @@ export default function MediaScreen() {
 
   return (
     <BackgroundView>
-      <Header title="メディア" onBack={() => router.back()} />
+      <Header title={`${plan?.title}のメディア`} onBack={() => router.back()} />
       {/* イメージビュー */}
       <FlatList
         data={images}

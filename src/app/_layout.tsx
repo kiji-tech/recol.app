@@ -18,6 +18,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import mobileAds from 'react-native-google-mobile-ads';
 import { MenuProvider } from 'react-native-popup-menu';
 import * as Font from 'expo-font';
+import { LocationProvider } from '../contexts/LocationContext';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -113,11 +114,13 @@ const RouteLayout = () => {
     <AuthProvider>
       <MenuProvider>
         <PlanProvider>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <ThemeProvider>
-              <Layout />
-            </ThemeProvider>
-          </GestureHandlerRootView>
+          <LocationProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <ThemeProvider>
+                <Layout />
+              </ThemeProvider>
+            </GestureHandlerRootView>
+          </LocationProvider>
         </PlanProvider>
       </MenuProvider>
     </AuthProvider>

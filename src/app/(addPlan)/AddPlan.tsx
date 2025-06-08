@@ -4,19 +4,14 @@ import { BackgroundView } from '@/src/components';
 import { borderColor } from '@/src/themes/ColorUtil';
 import { router } from 'expo-router';
 import { View, Text, TextInput, ScrollView } from 'react-native';
-import * as Location from 'expo-location';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { usePlan } from '@/src/contexts/PlanContext';
 
 export default function AddPlan() {
   // === Member ===
   const [title, setTitle] = useState<string>('');
   const { session } = useAuth();
-
-  // Location Permissions
-  const [status, requestPermission] = Location.useForegroundPermissions();
-  if (status == null) {
-    requestPermission();
-  }
+  const { fetchPlan } = usePlan();
 
   // === Method ===
   /** 登録 */
@@ -33,7 +28,8 @@ export default function AddPlan() {
       },
     });
     if (res.ok) {
-      alert(`${title}`);
+      // リストを再取得しておく
+      await fetchPlan();
       // 一覧に戻る
       router.back();
     } else {

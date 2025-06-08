@@ -20,18 +20,20 @@ function PlanCard({ plan }: { plan: Tables<'plan'> & { schedule: Tables<'schedul
 
   const planDates = useMemo(() => {
     return plan.schedule
-      .sort((a, b) => dayjs(a.from).diff(dayjs(b.from)))
-      .map((schedule) => dayjs(schedule.from).format('M/D'));
+      .sort((a: Tables<'schedule'>, b: Tables<'schedule'>) => dayjs(a.from).diff(dayjs(b.from)))
+      .map((schedule: Tables<'schedule'>) => dayjs(schedule.from).format('M/D'));
   }, [plan]);
-    
-    // === Effect ===
-    useFocusEffect(useCallback(() => {
-        const ctrl = new AbortController();
-        fetchPlan(ctrl);
-        return () => {
-            ctrl.abort();
-        };
-    }, []))
+
+  // === Effect ===
+  useFocusEffect(
+    useCallback(() => {
+      const ctrl = new AbortController();
+      fetchPlan(ctrl);
+      return () => {
+        ctrl.abort();
+      };
+    }, [])
+  );
 
   // === Method ===
   /** プラン選択処理 */

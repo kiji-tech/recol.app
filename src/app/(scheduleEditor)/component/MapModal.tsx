@@ -1,67 +1,192 @@
-import React from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import Map from '@/src/components/GoogleMaps/Map';
 import { Place } from '@/src/entities/Place';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { View } from 'react-native';
-import * as Location from 'expo-location';
+import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
+import MapBottomSheet from '@/src/components/GoogleMaps/BottomSheet/MapBottomSheet';
+import { useLocation } from '@/src/contexts/LocationContext';
+import { MapCategory } from '@/src/entities/MapCategory';
+import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
+import { useFocusEffect } from 'expo-router';
+import { Region } from 'react-native-maps';
+import { usePlan } from '@/src/contexts/PlanContext';
+import { LATITUDE_OFFSET } from '@/src/libs/ConstValue';
+import MapSearchBar from '@/src/components/GoogleMaps/MapSearchBar';
 
 type Props = {
   isOpen: boolean;
-  placeList: Place[];
-  onClose: (placeIdList: Place[]) => void;
+  onClose: () => void;
 };
 
-export default function MapModal({ isOpen, placeList, onClose }: Props) {
+export default function MapModal({ isOpen, onClose }: Props) {
+  // === Member ===
+  const DEFAULT_RADIUS = 4200;
+  const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
+  const bottomSheetRef = useRef<BottomSheet | null>(null);
+  const { currentRegion } = useLocation();
+  const { editSchedule, setEditSchedule } = usePlan();
+  const [placeList, setPlaceList] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-  const [selectedPlaceList, setSelectedPlaceList] = useState<Place[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<MapCategory>('selected');
+  const [region, setRegion] = useState<Region | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  /** Map上の半径の計算 */
+  const radius = useMemo(() => {
+    if (!region) return 0;
+    return DEFAULT_RADIUS * region!.longitudeDelta * 10;
+  }, [region]);
 
-  // Location Permissions
-  const [status, requestPermission] = Location.useForegroundPermissions();
-  if (status == null) {
-    requestPermission();
-  }
+  // === Method ===
+  /** ロケーション情報設定処理 */
+  const settingPlaces = (places: Place[]) => {
+    if (!places || places.length == 0) {
+      alert('検索結果がありません.');
+      return;
+    }
+    setPlaceList(places);
+    setSelectedPlace(null);
+  };
 
-  // ==== Method ====
-  /** 場所を選択したときのイベントハンドラ */
-  const handleSelectedPlace = (place: Place | null) => {
+  /** 座標のロケーション情報取得 */
+  const fetchLocation = async (latitude: number, longitude: number) => {
+    if (selectedCategory === 'selected') return;
+    setIsLoading(true);
+    try {
+      const response = await searchNearby(
+        latitude + LATITUDE_OFFSET,
+        longitude,
+        selectedCategory,
+        radius
+      );
+      settingPlaces(response);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /** カテゴリ選択 */
+  const handleSelectedCategory = (category: MapCategory) => {
+    setSelectedCategory(category);
+    setPlaceList([]);
+  };
+
+  /** 場所選択 */
+  const handleSelectedPlace = (place: Place) => {
+    setRegion((prev) => {
+      return { ...(prev || {}), ...place.location } as Region;
+    });
     setSelectedPlace(place);
   };
 
+  /** テキスト検索 実行処理 */
+  const handleTextSearch = async (searchText: string) => {
+    setIsLoading(true);
+    setSelectedCategory('text');
+    try {
+      const response = await searchPlaceByText(
+        region?.latitude || 0,
+        region?.longitude || 0,
+        searchText,
+        radius
+      );
+      settingPlaces(response);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /** スケジュールに対する場所の追加 */
   const handleAdd = (place: Place) => {
-    setSelectedPlaceList([...selectedPlaceList, place]);
+    setEditSchedule({
+      ...editSchedule,
+      place_list: [...(editSchedule.place_list || []), place],
+    });
   };
-    
+
+  /** スケジュールに対する場所の削除 */
   const handleRemove = (place: Place) => {
-    setSelectedPlaceList(selectedPlaceList.filter((p) => p.id !== place.id));
+    setEditSchedule({
+      ...editSchedule,
+      place_list: (editSchedule.place_list || []).filter((p: Place) => p.id !== place.id),
+    });
   };
 
+  /** モーダルを閉じる */
   const handleClose = () => {
-    onClose(selectedPlaceList);
+    onClose();
   };
 
-  useEffect(() => {
-    setSelectedPlaceList([...placeList]);
-  }, [placeList]);
+  // === Effect ===
+  /** 初回ロケーション情報取得処理 */
+  useFocusEffect(
+    useCallback(() => {
+      if (currentRegion) {
+        setRegion(
+          editSchedule.place_list?.length > 0
+            ? {
+                ...editSchedule.place_list[0].location,
+                latitudeDelta: 0.025,
+                longitudeDelta: 0.025,
+              }
+            : currentRegion
+        );
+        fetchLocation(currentRegion.latitude, currentRegion.longitude);
+      }
+    }, [currentRegion])
+  );
 
-  if (!isOpen) {
-    return <></>;
-  }
+  /** カテゴリ変更時にロケーション情報取得処理 */
+  useFocusEffect(
+    useCallback(() => {
+      if (region) {
+        fetchLocation(region.latitude, region.longitude);
+      }
+    }, [selectedCategory])
+  );
 
+  // === Render ===
+  if (!isOpen || !currentRegion) return null;
   return (
     <>
       <View className=" w-screen h-screen absolute top-0 left-0 mt-20">
-        <Map
+        {/* 検索バー */}
+        <MapSearchBar
+          radius={radius}
+          region={region || currentRegion}
+          currentRegion={currentRegion}
           isSearch={true}
-          isMarker={true}
+          onSearch={handleTextSearch}
+          onBack={handleClose}
+        />
+
+        {/* マップ */}
+        <View className="w-screen h-screen absolute top-0 left-0">
+          <Map
+            radius={radius}
+            region={region || currentRegion}
+            placeList={placeList}
+            selectedPlaceList={editSchedule.place_list || []}
+            isMarker={true}
+            isCallout={true}
+            isCenterCircle={true}
+            onRegionChange={setRegion}
+            onSelectedPlace={handleSelectedPlace}
+          />
+        </View>
+        {/* マップボトムシート */}
+        <MapBottomSheet
+          placeList={placeList}
           selectedPlace={selectedPlace}
-          selectedPlaceList={selectedPlaceList}
-          onSelectPlace={(place: Place | null) => handleSelectedPlace(place)}
-          onMarkerDeselect={() => {
-            // setSelectedPlace(null);
-          }}
+          selectedPlaceList={editSchedule.place_list || []}
+          selectedCategory={selectedCategory}
+          isSelected={selectedCategory === 'selected'}
           onAdd={handleAdd}
           onRemove={handleRemove}
-          onBack={handleClose}
+          onSelectedPlace={handleSelectedPlace}
+          onSelectedCategory={handleSelectedCategory}
+          bottomSheetRef={bottomSheetRef}
+          scrollRef={scrollRef}
         />
       </View>
     </>

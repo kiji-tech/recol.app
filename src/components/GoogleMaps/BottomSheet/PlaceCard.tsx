@@ -30,11 +30,7 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
           {place.photos && place.photos.length > 0 ? (
             <Image
               className={`w-32 h-32`}
-              src={
-                place.photos
-                  ? `https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`
-                  : ''
-              }
+              src={`https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`}
             />
           ) : (
             // TODO: No Imageに差し替え

@@ -9,7 +9,7 @@ export default function RateViewer({ rating }: Props) {
     <View className="flex flex-row">
       <Text className="text-lg text-light-text dark:text-dark-text">
         {Array.from({ length: 5 }, (_, index) => (
-          <Text key={index} className="text-lg text-light-text dark:text-dark-text">
+          <Text key={index} className="text-sm text-light-text dark:text-dark-text">
             {index < rating - 1 ? '★' : '☆'}
           </Text>
         ))}

@@ -139,6 +139,8 @@ export default function ScheduleScreen(): ReactNode {
   // === Effect ===
   useFocusEffect(useCallback(initView, [plan, session]));
 
+  if (!viewPlan) return <></>;
+
   // === Render ===
   return (
     <BackgroundView>
