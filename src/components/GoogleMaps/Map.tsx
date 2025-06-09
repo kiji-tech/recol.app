@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import MapView, { Callout, Circle, Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
-import { SCREEN_HEIGHT } from '@gorhom/bottom-sheet';
 import { Place } from '@/src/entities/Place';
 import { LATITUDE_OFFSET } from '@/src/libs/ConstValue';
 

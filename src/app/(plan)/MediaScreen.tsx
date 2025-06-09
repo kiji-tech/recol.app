@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, View, Image } from 'react-native';
+import { TouchableOpacity, View, Image, Text } from 'react-native';
 import { Header, IconButton } from '@/src/components';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import BackgroundView from '@/src/components/BackgroundView';
@@ -14,13 +14,13 @@ import { Tables } from '@/src/libs/database.types';
 
 export default function MediaScreen() {
   // === Member ===
-  const router = useRouter();
   const { isDarkMode } = useTheme();
   const { plan } = usePlan();
   const { session } = useAuth();
   const [images, setImages] = useState<Tables<'media'>[]>([]);
   const [selectedImages, setSelectedImages] = useState<Tables<'media'>[]>([]);
   const [mode, setMode] = useState<'normal' | 'select'>('normal');
+  const [visibleImage, setVisibleImage] = useState<Tables<'media'> | null>(null);
 
   // === Method ===
   const fetchImages = useCallback(async () => {
@@ -30,9 +30,15 @@ export default function MediaScreen() {
       });
     }
   }, [plan, session]);
+
+  const handleCloseImageView = () => {
+    setVisibleImage(null);
+  };
+
   const handlePressImage = (item: Tables<'media'>) => {
     if (mode === 'normal') {
       // ポップアップ（全画面表示）
+      setVisibleImage(item);
     } else {
       // 選択モード →  画像の選択
       let updateImages = [];
@@ -125,10 +131,38 @@ export default function MediaScreen() {
   );
 
   // === Render ===
-
+  /**  画像が選択された場合 */
+  if (visibleImage) {
+    return (
+      <View className="w-screen h-screen absolute top-0 left-0 bg-light-background dark:bg-dark-background">
+        <View className="absolute top-24 left-4 z-50">
+          <IconButton
+            icon={<AntDesign name="close" size={14} color={isDarkMode ? 'white' : 'black'} />}
+            onPress={handleCloseImageView}
+          />
+        </View>
+        <View className="flex justify-center items-center w-screen h-screen">
+          <Image
+            className="w-full aspect-square object-contain"
+            source={{
+              uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${visibleImage.url}`,
+            }}
+          />
+        </View>
+      </View>
+    );
+  }
   return (
     <BackgroundView>
-      <Header title={`${plan?.title}のメディア`} onBack={() => router.back()} />
+      <Header title={`${plan?.title}のメディア`} />
+      {images.length === 0 && (
+        <View className="flex justify-center items-center h-full">
+          <Text className="text-light-text dark:text-dark-text text-xl">
+            メディアは登録されていません
+          </Text>
+        </View>
+      )}
+
       {/* イメージビュー */}
       <FlatList
         data={images}

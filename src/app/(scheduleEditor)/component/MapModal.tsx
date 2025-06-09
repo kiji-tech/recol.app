@@ -13,6 +13,7 @@ import { Region } from 'react-native-maps';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { LATITUDE_OFFSET } from '@/src/libs/ConstValue';
 import MapSearchBar from '@/src/components/GoogleMaps/MapSearchBar';
+import { Tables } from '@/src/libs/database.types';
 
 type Props = {
   isOpen: boolean;
@@ -100,16 +101,16 @@ export default function MapModal({ isOpen, onClose }: Props) {
   const handleAdd = (place: Place) => {
     setEditSchedule({
       ...editSchedule,
-      place_list: [...(editSchedule.place_list || []), place],
-    });
+      place_list: [...(editSchedule?.place_list || []), place],
+    } as unknown as Tables<'schedule'>);
   };
 
   /** スケジュールに対する場所の削除 */
   const handleRemove = (place: Place) => {
     setEditSchedule({
       ...editSchedule,
-      place_list: (editSchedule.place_list || []).filter((p: Place) => p.id !== place.id),
-    });
+      place_list: (editSchedule?.place_list || []).filter((p: unknown) => (p as Place).id !== place.id),
+    } as unknown as Tables<'schedule'>);
   };
 
   /** モーダルを閉じる */
@@ -123,9 +124,9 @@ export default function MapModal({ isOpen, onClose }: Props) {
     useCallback(() => {
       if (currentRegion) {
         setRegion(
-          editSchedule.place_list?.length > 0
+          editSchedule?.place_list?.length > 0
             ? {
-                ...editSchedule.place_list[0].location,
+                ...editSchedule?.place_list[0].location,
                 latitudeDelta: 0.025,
                 longitudeDelta: 0.025,
               }
@@ -166,7 +167,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
             radius={radius}
             region={region || currentRegion}
             placeList={placeList}
-            selectedPlaceList={editSchedule.place_list || []}
+            selectedPlaceList={(editSchedule?.place_list as unknown as Place[]) || []}
             isMarker={true}
             isCallout={true}
             isCenterCircle={true}
@@ -178,7 +179,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
         <MapBottomSheet
           placeList={placeList}
           selectedPlace={selectedPlace}
-          selectedPlaceList={editSchedule.place_list || []}
+          selectedPlaceList={(editSchedule?.place_list as unknown as Place[]) || []}
           selectedCategory={selectedCategory}
           isSelected={selectedCategory === 'selected'}
           onAdd={handleAdd}

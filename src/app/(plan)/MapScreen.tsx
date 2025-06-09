@@ -1,7 +1,6 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { useRouter } from 'expo-router';
 import { BackgroundView, Header, RateViewer } from '@/src/components';
 import { Region } from 'react-native-maps';
 import { useLocation } from '@/src/contexts/LocationContext';
@@ -60,7 +59,6 @@ const ScheduleInfoCard = ({
  */
 export default function MapScreen() {
   // === Member ===
-  const router = useRouter();
   const { plan } = usePlan();
   const { currentRegion } = useLocation();
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(
@@ -107,7 +105,7 @@ export default function MapScreen() {
   // === Render ===
   return (
     <BackgroundView>
-      <Header title={`${plan?.title}のマップ`} onBack={() => router.back()} />
+      <Header title={`${plan?.title}のマップ`} />
       <View className="w-screen flex-1">
         <Map
           radius={radius}
