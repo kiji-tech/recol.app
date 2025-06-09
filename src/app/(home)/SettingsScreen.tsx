@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { BackgroundView, Button } from '@/src/components';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { supabase } from '@/src/libs/supabase';
 import { router } from 'expo-router';
 import { Text, View, Switch, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -50,7 +49,7 @@ const SCHEDULE_NOTIFICATION_KEY = STORAGE_KEYS.SCHEDULE_NOTIFICATION_KEY;
 const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
 
 export default function Settings() {
-  const { user, profile } = useAuth();
+  const { user, profile, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const [scheduleNotification, setScheduleNotification] = useState(true);
   const [chatNotification, setChatNotification] = useState(true);
@@ -89,7 +88,7 @@ export default function Settings() {
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    await logout();
     router.navigate('/(auth)/SignIn');
   };
 

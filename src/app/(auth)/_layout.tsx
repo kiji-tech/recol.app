@@ -10,6 +10,10 @@ export default function AuthLayout() {
         name="ForgetPassword"
         options={{ title: 'パスワード再発行', headerShown: false }}
       />
+      <Stack.Screen
+        name="ResetPassword"
+        options={{ title: 'パスワード再登録', headerShown: false }}
+      />
     </Stack>
   );
 }

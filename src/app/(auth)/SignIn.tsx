@@ -44,38 +44,41 @@ export default function SignInScreen() {
           className="h-96 w-96 rounded-xl mb-4"
         />
         {/* form */}
-        <TextInput
-          keyboardType="email-address"
-          placeholder="メールアドレス..."
-          placeholderTextColor="gray"
-          className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
-                text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
-                `}
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-        />
-        <TextInput
-          placeholder="パスワード..."
-          placeholderTextColor="gray"
-          className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
-                text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
-                `}
-          value={password}
-          secureTextEntry={true}
-          onChangeText={(text) => setPassword(text)}
-        />
+        <View className="w-full flex flex-col gap-4">
+          <TextInput
+            keyboardType="email-address"
+            placeholder="メールアドレス..."
+            placeholderTextColor="gray"
+            className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
+            text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
+            `}
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+          />
+          <TextInput
+            placeholder="パスワード..."
+            placeholderTextColor="gray"
+            className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
+            text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
+            `}
+            value={password}
+            secureTextEntry={true}
+            onChangeText={(text) => setPassword(text)}
+          />
 
-        {/* サインイン */}
-        <View className="w-full flex flex-col gap-4 ">
+          {/* サインイン */}
           <Button theme={'theme'} text="サインイン" onPress={signInWithPassword} />
+          {/* 新規登録 */}
           <Button theme={'theme'} text="新規登録" onPress={() => router.push('/(auth)/SignUp')} />
           {/* TODO: Googleでサインイン */}
-          {/* 新規登録 */}
+          {/* パスワードを忘れた */}
+          <Link
+            href="/(auth)/ForgetPassword"
+            className="text-xs border-b-[1px] text-light-text dark:text-dark-text border-light-border dark:border-dark-border ml-4"
+          >
+            パスワードを忘れた方はこちら
+          </Link>
         </View>
-        {/* パスワードを忘れた */}
-        <Link href="/(auth)/ForgetPassword" className="text-xs border-b-[1px] ">
-          パスワードを忘れた方はこちら
-        </Link>
       </View>
     </BackgroundView>
   );

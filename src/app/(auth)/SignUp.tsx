@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 
 import { BackgroundView, Button } from '@/src/components';
-import { Alert, Text, TextInput, View } from 'react-native';
-import { Link, router } from 'expo-router';
-import { supabase } from '@/src/libs/supabase';
+import { Alert, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 export default function SignUpScreen() {
   // ==== Member ===
+  const router = useRouter();
+  const { signup } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
@@ -28,16 +30,13 @@ export default function SignUpScreen() {
     // verify
     if (!verify()) return;
 
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      Alert.alert(error.message);
-      return;
-    }
-    if (!session) Alert.alert('Please check your inbox for email verification!');
-    router.navigate('/(home)');
+    signup(email, password)
+      .then(() => {
+        router.navigate('/(home)/SettingScreen');
+      })
+      .catch((error) => {
+        Alert.alert(error.message);
+      });
   };
 
   return (
@@ -47,45 +46,51 @@ export default function SignUpScreen() {
           Welcome to the Re:col
         </Text>
         {/* 画像 */}
-        <View className="bg-light-theme h-96 w-96 rounded-xl mb-4"></View>
+        <Image
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          source={require('../../../assets/images/icon.png')}
+          className="h-96 w-96 rounded-xl mb-4"
+        />
         {/* form */}
-        <TextInput
-          placeholder="メールアドレス"
-          placeholderTextColor="gray"
-          className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
+        <View className="w-full flex flex-col gap-4">
+          <TextInput
+            placeholder="メールアドレス"
+            placeholderTextColor="gray"
+            className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
                 `}
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-        />
-        <TextInput
-          placeholder="パスワード"
-          placeholderTextColor="gray"
-          className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+          />
+          <TextInput
+            placeholder="パスワード"
+            placeholderTextColor="gray"
+            className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
                 `}
-          value={password}
-          secureTextEntry={true}
-          onChangeText={(text) => setPassword(text)}
-        />
-        <TextInput
-          placeholder="パスワード（確認）"
-          placeholderTextColor="gray"
-          className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
+            value={password}
+            secureTextEntry={true}
+            onChangeText={(text) => setPassword(text)}
+          />
+          <TextInput
+            placeholder="パスワード（確認）"
+            placeholderTextColor="gray"
+            className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
                 `}
-          value={password2}
-          secureTextEntry={true}
-          onChangeText={(text) => setPassword2(text)}
-        />
+            value={password2}
+            secureTextEntry={true}
+            onChangeText={(text) => setPassword2(text)}
+          />
 
-        {/* サインイン */}
-        <View className="w-full flex flex-col gap-4 ">
+          {/* サインイン */}
           <Button theme={'theme'} text="新規登録" onPress={signUpWithPassword} />
+          <TouchableOpacity onPress={() => router.back()}>
+            <Text className="text-xs border-b-[1px] text-light-text dark:text-dark-text border-light-border dark:border-dark-border ml-4">
+              ログイン画面に戻る
+            </Text>
+          </TouchableOpacity>
         </View>
-        <Link href="/(auth)/SignIn" className="text-xs border-b-[1px] ">
-          ログイン画面に戻る
-        </Link>
       </View>
     </BackgroundView>
   );

@@ -3,6 +3,8 @@ import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../libs/supabase';
 import { getProfile } from '../libs/ApiService';
 import { Tables } from '../libs/database.types';
+import * as Linking from 'expo-linking';
+import { useRouter } from 'expo-router';
 
 // 型定義
 export type AuthContextType = {
@@ -13,11 +15,14 @@ export type AuthContextType = {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  signup: (email: string, password: string) => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Tables<'profile'> | null>(null);
@@ -48,6 +53,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // 認証状態の変化を監視
     const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      console.log(_event);
+      if (_event == 'PASSWORD_RECOVERY') {
+        router.navigate('/(auth)/ResetPassword');
+      }
+
       setSession(session);
       setUser(session?.user ?? null);
       if (session) {
@@ -86,6 +96,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false);
   };
 
+  // サインアップ関数
+  const signup = async (email: string, password: string) => {
+    setLoading(true);
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) throw error;
+    setSession(data.session);
+    setUser(data.session?.user ?? null);
+    if (data.session) {
+      try {
+        const profileData = await getProfile(data.session);
+        setProfile(profileData);
+      } catch {
+        setProfile(null);
+      }
+    } else {
+      setProfile(null);
+    }
+    setLoading(false);
+  };
+
+  // パスワードリセット関数
+  const resetPassword = async (email: string) => {
+    setLoading(true);
+    const resetPasswordURL = Linking.createURL('/(auth)/ResetPassword');
+    console.log(resetPasswordURL);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: resetPasswordURL,
+    });
+    setLoading(false);
+    if (error) throw error;
+  };
+
   // ログアウト関数
   const logout = async () => {
     setLoading(true);
@@ -97,7 +139,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, setProfile, loading, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, session, profile, setProfile, loading, login, logout, signup, resetPassword }}
+    >
       {children}
     </AuthContext.Provider>
   );
