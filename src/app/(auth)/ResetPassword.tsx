@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { BackgroundView, Button } from '@/src/components';
+import { useAuth } from '@/src/contexts/AuthContext';
 import { Alert, Text, TextInput, View } from 'react-native';
+import { router } from 'expo-router';
 
 export default function ResetPassword() {
+  const { updateUserPassword } = useAuth();
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
 
@@ -11,6 +14,10 @@ export default function ResetPassword() {
       Alert.alert('パスワードが一致しません');
       return;
     }
+    updateUserPassword(password).then(() => {
+      Alert.alert('パスワードを変更しました');
+      router.navigate('/(auth)/Login');
+    });
   };
 
   return (

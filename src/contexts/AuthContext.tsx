@@ -17,6 +17,7 @@ export type AuthContextType = {
   logout: () => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
+  updateUserPassword: (password: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -120,12 +121,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const resetPassword = async (email: string) => {
     setLoading(true);
     const resetPasswordURL = Linking.createURL('/(auth)/ResetPassword');
-    console.log(resetPasswordURL);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: resetPasswordURL,
     });
     setLoading(false);
     if (error) throw error;
+  };
+
+  // ユーザー情報更新関数
+  const updateUserPassword = async (password: string) => {
+    setLoading(true);
+    const { data, error } = await supabase.auth.updateUser({ password });
+    if (error) throw error;
+    if (data.user) {
+      setUser(data.user);
+      if (session) {
+        setSession({ ...session, user: data.user });
+      }
+    }
+    setLoading(false);
   };
 
   // ログアウト関数
@@ -140,7 +154,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, session, profile, setProfile, loading, login, logout, signup, resetPassword }}
+      value={{
+        user,
+        session,
+        profile,
+        setProfile,
+        loading,
+        login,
+        logout,
+        signup,
+        resetPassword,
+        updateUserPassword,
+      }}
     >
       {children}
     </AuthContext.Provider>
