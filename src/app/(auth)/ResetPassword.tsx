@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { BackgroundView, Button } from '@/src/components';
+import { BackgroundView, Button, Header } from '@/src/components';
 import { useAuth } from '@/src/contexts/AuthContext';
-import { Alert, Text, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
+import { Alert, TextInput, View } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function ResetPassword() {
+  const router = useRouter();
   const { updateUserPassword } = useAuth();
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
@@ -14,15 +15,19 @@ export default function ResetPassword() {
       Alert.alert('パスワードが一致しません');
       return;
     }
-    updateUserPassword(password).then(() => {
-      Alert.alert('パスワードを変更しました');
-      router.navigate('/(auth)/Login');
-    });
+    updateUserPassword(password)
+      .then(() => {
+        Alert.alert('パスワードを変更しました');
+        router.navigate('/(home)');
+      })
+      .catch((error) => {
+        Alert.alert(error.message);
+      });
   };
 
   return (
     <BackgroundView>
-      <Text>ResetPassword</Text>
+      <Header title="パスワードをリセット" />
       <View className="w-full flex flex-col gap-4">
         <TextInput
           placeholder="パスワード"

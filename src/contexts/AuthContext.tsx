@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // 認証状態の変化を監視
     const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      console.log(_event);
+      console.log({ _event });
       if (_event == 'PASSWORD_RECOVERY') {
         router.navigate('/(auth)/ResetPassword');
       }
@@ -121,6 +121,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const resetPassword = async (email: string) => {
     setLoading(true);
     const resetPasswordURL = Linking.createURL('/(auth)/ResetPassword');
+    console.log(resetPasswordURL);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: resetPasswordURL,
     });
