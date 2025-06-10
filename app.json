@@ -21,7 +21,8 @@
                 "ITSAppUsesNonExemptEncryption": false
             },
             "userInterfaceStyle": "automatic",
-            "deploymentTarget": "15.1"
+            "deploymentTarget": "15.1",
+            "googleServicesFile": "./google-services.plist"
         },
         "android": {
             "package": "com.libetech.recol",
@@ -35,7 +36,8 @@
                 "android.permission.ACCESS_COARSE_LOCATION",
                 "android.permission.ACCESS_FINE_LOCATION"
             ],
-            "userInterfaceStyle": "automatic"
+            "userInterfaceStyle": "automatic",
+            "googleServicesFile": "./google-services.json"
         },
         "web": {
             "favicon": "./assets/favicon.png",

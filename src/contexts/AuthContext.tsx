@@ -5,6 +5,7 @@ import { getProfile } from '../libs/ApiService';
 import { Tables } from '../libs/database.types';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
+import { LogUtil } from '../libs/LogUtil';
 
 // 型定義
 export type AuthContextType = {
@@ -18,6 +19,7 @@ export type AuthContextType = {
   signup: (email: string, password: string) => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updateUserPassword: (password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -54,7 +56,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // 認証状態の変化を監視
     const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      console.log({ _event });
+      LogUtil.log({ _event }, { level: 'info' });
       if (_event == 'PASSWORD_RECOVERY') {
         router.navigate('/(auth)/ResetPassword');
       }
@@ -121,7 +123,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const resetPassword = async (email: string) => {
     setLoading(true);
     const resetPasswordURL = Linking.createURL('/(auth)/ResetPassword');
-    console.log(resetPasswordURL);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: resetPasswordURL,
     });
@@ -153,6 +154,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false);
   };
 
+  // Googleサインイン関数
+  const signInWithGoogle = async () => {
+    setLoading(true);
+    try {
+      const redirectTo = Linking.createURL('/(home)');
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo,
+        },
+      });
+      if (error) throw error;
+      // ブラウザで認証が行われるため、ここでの後続処理は不要
+    } catch (e) {
+      // 必要に応じてエラーハンドリング
+      throw e;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -166,6 +188,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         signup,
         resetPassword,
         updateUserPassword,
+        signInWithGoogle,
       }}
     >
       {children}

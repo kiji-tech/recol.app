@@ -89,3 +89,6 @@ expo-env.d.ts
 
 *.abb
 *.apk
+
+google-services.*
+google-services-web.json
