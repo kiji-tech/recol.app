@@ -30,7 +30,8 @@ export default function SignInScreen() {
         router.navigate('/(home)');
       })
       .catch((e) => {
-        Alert.alert(e.message);
+        LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+        Alert.alert('メールアドレス､パスワードを正しく入力してください');
       });
   };
 
@@ -39,8 +40,9 @@ export default function SignInScreen() {
       LogUtil.log('Googleでサインイン', { level: 'info' });
       await signInWithGoogle();
     } catch (e: unknown) {
+      LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
       if (e instanceof Error) {
-        Alert.alert(e.message);
+        Alert.alert('Googleサインインに失敗しました');
       } else {
         Alert.alert('Googleサインインに失敗しました');
       }
@@ -70,6 +72,7 @@ export default function SignInScreen() {
             `}
             value={email}
             onChangeText={(text) => setEmail(text)}
+            autoCapitalize="none"
           />
           <TextInput
             placeholder="パスワード..."
@@ -80,6 +83,7 @@ export default function SignInScreen() {
             value={password}
             secureTextEntry={true}
             onChangeText={(text) => setPassword(text)}
+            autoCapitalize="none"
           />
 
           {/* サインイン */}

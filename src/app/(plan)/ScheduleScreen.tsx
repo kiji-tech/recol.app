@@ -13,6 +13,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import PlanInformation from '@/src/components/PlanInformation';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null) => {
   const router = useRouter();
@@ -106,12 +107,14 @@ export default function ScheduleScreen(): ReactNode {
         }
         setViewPlan({ ...data } as Tables<'plan'> & { schedule: Tables<'schedule'>[] });
       })
-      .catch((e) => {
-        if (e)
+      .catch((error) => {
+        if (error) {
+          LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
           Alert.alert(
             'エラー',
             'プランの読み込み中にエラーが発生しました。もう一度お試しください。'
           );
+        }
       });
 
     return () => {

@@ -3,6 +3,7 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import React, { useState } from 'react';
 import { Alert, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 export default function ForgetPassword() {
   const router = useRouter();
@@ -15,7 +16,8 @@ export default function ForgetPassword() {
         router.navigate('/(auth)/SignIn');
       })
       .catch((error) => {
-        Alert.alert(error.message);
+        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+        Alert.alert('パスワードをリセットするためのメールを送信できませんでした。');
       });
   };
 

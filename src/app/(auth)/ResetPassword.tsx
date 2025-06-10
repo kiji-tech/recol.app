@@ -3,6 +3,7 @@ import { BackgroundView, Button, Header } from '@/src/components';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { Alert, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -21,7 +22,8 @@ export default function ResetPassword() {
         router.navigate('/(home)');
       })
       .catch((error) => {
-        Alert.alert(error.message);
+        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+        Alert.alert('パスワードを変更できませんでした。');
       });
   };
 

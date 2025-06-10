@@ -4,6 +4,7 @@ import { BackgroundView, Button } from '@/src/components';
 import { Alert, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 export default function SignUpScreen() {
   // ==== Member ===
@@ -35,7 +36,8 @@ export default function SignUpScreen() {
         router.navigate('/(home)/SettingScreen');
       })
       .catch((error) => {
-        Alert.alert(error.message);
+        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+        Alert.alert('新規登録に失敗しました');
       });
   };
 

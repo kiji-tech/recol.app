@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Header } from '@/src/components';
 import { BackgroundView } from '@/src/components';
 import { borderColor } from '@/src/themes/ColorUtil';
