@@ -5,10 +5,10 @@ export default {
   android: {
     ...appJson.expo.android,
     // EAS ビルダー上では env、ローカル開発では実ファイル
-    googleServicesFile: process.env.GOOGLE_SERVICES_ANDROID ?? './google-services.json',
+    googleServicesFile: process.env.GOOGLE_SERVICES_ANDROID_FILE ?? './google-services.json',
   },
   ios: {
     ...appJson.expo.ios,
-    googleServicesFile: process.env.GOOGLE_SERVICES_IOS ?? './google-services.plist',
+    googleServicesFile: process.env.GOOGLE_SERVICES_IOS_FILE ?? './google-services.plist',
   },
 };
