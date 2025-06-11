@@ -62,11 +62,10 @@
     "react-dom": "18.3.1",
     "react-i18next": "^15.4.0",
     "react-native": "0.76.9",
-    "react-native-admob-native-ads": "^0.7.6",
     "react-native-dotenv": "^3.4.11",
     "react-native-elements": "^3.4.3",
-    "react-native-gesture-handler": "^2.25.0",
-    "react-native-google-mobile-ads": "^15.4.0",
+    "react-native-gesture-handler": "~2.20.2",
+    "react-native-google-mobile-ads": "14.11.0",
     "react-native-maps": "1.18.0",
     "react-native-modal-datetime-picker": "^18.0.0",
     "react-native-popup-menu": "^0.17.0",
@@ -88,7 +87,6 @@
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.0",
     "@types/react": "~18.3.12",
-    "@types/react-native": "^0.73.0",
     "@types/react-test-renderer": "^18.2.0",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
@@ -105,5 +103,11 @@
     "typescript-eslint": "^8.23.0"
   },
   "private": true,
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "expo": {
+      "doctor": {
+          "reactNativeDirectoryCheck": {
+              "listUnknownPackages": false
+          }
+      }
+  }
 }
