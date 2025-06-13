@@ -33,11 +33,20 @@ export default function SignUpScreen() {
 
     signup(email, password)
       .then(() => {
-        router.navigate('/(home)/SettingScreen');
+        router.navigate('/(home)/SettingsScreen');
       })
       .catch((error) => {
-        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-        Alert.alert('新規登録に失敗しました');
+        if (error.code) {
+          switch (error.code) {
+            case 'user_already_exists':
+              LogUtil.log(`すでに登録されているメールアドレス: ${email}`);
+              Alert.alert('新規登録に失敗しました', 'すでに登録されているメールアドレスです｡');
+              break;
+            default:
+              LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+              Alert.alert('新規登録に失敗しました');
+          }
+        }
       });
   };
 
@@ -63,6 +72,7 @@ export default function SignUpScreen() {
                 `}
             value={email}
             onChangeText={(text) => setEmail(text)}
+            autoCapitalize="none"
           />
           <TextInput
             placeholder="パスワード"
@@ -73,6 +83,7 @@ export default function SignUpScreen() {
             value={password}
             secureTextEntry={true}
             onChangeText={(text) => setPassword(text)}
+            autoCapitalize="none"
           />
           <TextInput
             placeholder="パスワード（確認）"
@@ -83,6 +94,7 @@ export default function SignUpScreen() {
             value={password2}
             secureTextEntry={true}
             onChangeText={(text) => setPassword2(text)}
+            autoCapitalize="none"
           />
 
           {/* サインイン */}

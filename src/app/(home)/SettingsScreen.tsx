@@ -88,8 +88,8 @@ export default function Settings() {
   };
 
   const handleSignOut = async () => {
-    await logout();
     router.navigate('/(auth)/SignIn');
+    await logout();
   };
 
   return (

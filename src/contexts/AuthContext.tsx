@@ -159,16 +159,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(true);
     try {
       const redirectTo = Linking.createURL('/(home)');
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo,
+          skipBrowserRedirect: true,
         },
       });
-      if (error) throw error;
+      LogUtil.log(JSON.stringify(data), { level: 'info' });
+
+      if (error) {
+        LogUtil.log(JSON.stringify(error), { level: 'error' });
+        throw error;
+      }
       // ブラウザで認証が行われるため、ここでの後続処理は不要
     } catch (e) {
       // 必要に応じてエラーハンドリング
+      LogUtil.log(JSON.stringify(e), { level: 'error' });
       throw e;
     } finally {
       setLoading(false);

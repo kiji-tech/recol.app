@@ -1,15 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BackgroundView, Button } from '@/src/components';
-import { Alert, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { useState } from 'react';
+import { Alert, Image, Text, TextInput, View } from 'react-native';
 import { Link, router } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
-import { AntDesign } from '@expo/vector-icons';
 import { LogUtil } from '@/src/libs/LogUtil';
 import GoogleSignInButton from '@/src/components/Common/GoogleSignInButton';
 export default function SignInScreen() {
   // ==== Member ===
-  const { login, signInWithGoogle } = useAuth();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -33,20 +31,6 @@ export default function SignInScreen() {
         LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
         Alert.alert('メールアドレス､パスワードを正しく入力してください');
       });
-  };
-
-  const handleGoogleSignIn = async () => {
-    try {
-      LogUtil.log('Googleでサインイン', { level: 'info' });
-      await signInWithGoogle();
-    } catch (e: unknown) {
-      LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
-      if (e instanceof Error) {
-        Alert.alert('Googleサインインに失敗しました');
-      } else {
-        Alert.alert('Googleサインインに失敗しました');
-      }
-    }
   };
 
   return (
@@ -90,7 +74,6 @@ export default function SignInScreen() {
           <Button theme={'theme'} text="サインイン" onPress={handleSignInWithPassword} />
           {/* 新規登録 */}
           <Button theme={'theme'} text="新規登録" onPress={() => router.push('/(auth)/SignUp')} />
-          {/* TODO: Googleでサインイン */}
           {/* パスワードを忘れた */}
           <Link
             href="/(auth)/ForgetPassword"
@@ -100,6 +83,7 @@ export default function SignInScreen() {
           </Link>
 
           <View className="flex flex-row justify-center items-center gap-2 my-10">
+            {/* Googleでサインイン */}
             <GoogleSignInButton />
           </View>
         </View>

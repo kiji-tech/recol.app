@@ -40,6 +40,7 @@ export default function ResetPassword() {
           value={password}
           secureTextEntry={true}
           onChangeText={(text) => setPassword(text)}
+          autoCapitalize="none"
         />
         <TextInput
           placeholder="パスワード（確認）"
@@ -50,6 +51,7 @@ export default function ResetPassword() {
           value={password2}
           secureTextEntry={true}
           onChangeText={(text) => setPassword2(text)}
+          autoCapitalize="none"
         />
 
         {/* サインイン */}

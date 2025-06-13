@@ -74,10 +74,15 @@ file_size_limit = "50MiB"
 enabled = true
 
 # Uncomment to configure local storage buckets
-# [storage.buckets.images]
-# public = false
-# file_size_limit = "50MiB"
-# allowed_mime_types = ["image/png", "image/jpeg"]
+[storage.buckets.avatars]
+public = true
+file_size_limit = "50MiB"
+allowed_mime_types = ["image/*"]
+
+[storage.buckets.medias]
+public = true
+file_size_limit = "50MiB"
+allowed_mime_types = ["image/*", "video/*"]
 
 [auth]
 enabled = true
@@ -174,6 +179,13 @@ redirect_uri = ""
 url = ""
 # If enabled, the nonce check will be skipped. Required for local sign in with Google auth.
 skip_nonce_check = false
+
+[auth.external.google]
+enabled = true
+client_id = "env(SUPABASE_AUTH_GOOGLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_GOOGLE_SECRET)"
+redirect_uri = "env(SUPABASE_AUTH_GOOGLE_REDIRECT_URL)"
+url = ""
 
 [edge_runtime]
 enabled = true

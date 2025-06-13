@@ -34,6 +34,7 @@ export default function ForgetPassword() {
             `}
           value={email}
           onChangeText={(text) => setEmail(text)}
+          autoCapitalize="none"
         />
         <Button text="パスワードをリセット" onPress={handleResetPassword} />
       </View>
