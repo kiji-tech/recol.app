@@ -19,6 +19,7 @@ import mobileAds from 'react-native-google-mobile-ads';
 import { MenuProvider } from 'react-native-popup-menu';
 import * as Font from 'expo-font';
 import { LocationProvider } from '../contexts/LocationContext';
+import { StripeProvider } from '@stripe/stripe-react-native';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -36,7 +37,6 @@ SplashScreen.setOptions({
 
 const Layout = () => {
   const [ready, setReady] = useState(false);
-
   useEffect(() => {
     (async () => {
       // ここでフォントや API をプリロード
@@ -112,17 +112,19 @@ const Layout = () => {
 const RouteLayout = () => {
   return (
     <AuthProvider>
-      <MenuProvider>
-        <PlanProvider>
-          <LocationProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <ThemeProvider>
-                <Layout />
-              </ThemeProvider>
-            </GestureHandlerRootView>
-          </LocationProvider>
-        </PlanProvider>
-      </MenuProvider>
+      <StripeProvider publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}>
+        <MenuProvider>
+          <PlanProvider>
+            <LocationProvider>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <ThemeProvider>
+                  <Layout />
+                </ThemeProvider>
+              </GestureHandlerRootView>
+            </LocationProvider>
+          </PlanProvider>
+        </MenuProvider>
+      </StripeProvider>
     </AuthProvider>
   );
 };

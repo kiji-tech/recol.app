@@ -1,7 +1,8 @@
 import React from 'react';
 import { BackgroundView, Header } from '@/src/components';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import { useRouter } from 'expo-router';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 const PlanItem = ({ title, free, premium }: { title: string; free: string; premium: string }) => {
   return (
@@ -17,6 +18,17 @@ const PlanItem = ({ title, free, premium }: { title: string; free: string; premi
 
 export default function SampleScreen() {
   const router = useRouter();
+
+  const handlePayment = (type: 'm' | 'y') => {
+    LogUtil.log({ type }, { level: 'info' });
+    const url =
+      type === 'm'
+        ? 'https://buy.stripe.com/test_14AcN41ZA6H65bG8dC5Ne04'
+        : 'https://buy.stripe.com/test_cN29B5000000000000';
+
+    Linking.openURL(url);
+  };
+
   // === Render ===
 
   return (
@@ -47,7 +59,10 @@ export default function SampleScreen() {
           {/* プレミアムプランはこちらから */}
           <View className="flex flex-row justify-around items-start gap-2">
             {/* 月額 */}
-            <TouchableOpacity className="flex flex-col items-center justify-center bg-light-warn dark:bg-dark-warn rounded-md w-1/2 h-28 p-4">
+            <TouchableOpacity
+              className="flex flex-col items-center justify-center bg-light-warn dark:bg-dark-warn rounded-md w-1/2 h-28 p-4"
+              onPress={() => handlePayment('m')}
+            >
               <Text className="text-3xl text-light-text dark:text-dark-text">400円</Text>
               <Text className="text-sm text-light-text dark:text-dark-text"> / 月額</Text>
             </TouchableOpacity>

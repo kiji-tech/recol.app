@@ -1,11 +1,14 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../libs/supabase';
-import { getProfile } from '../libs/ApiService';
+import { createStripeCustomer, getProfile, updateProfile } from '../libs/ApiService';
 import { Tables } from '../libs/database.types';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { LogUtil } from '../libs/LogUtil';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { Alert } from 'react-native';
+import { StripeUtil } from '../../supabase/functions/libs/StripeUtil';
 
 // 型定義
 export type AuthContextType = {
@@ -30,54 +33,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Tables<'profile'> | null>(null);
   const [loading, setLoading] = useState(true);
-
-  // 初回マウント時にセッション取得
-  useEffect(() => {
-    const getSessionAndProfile = async () => {
-      setLoading(true);
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        setSession(data.session);
-        setUser(data.session.user);
-        try {
-          const profileData = await getProfile(data.session);
-          setProfile(profileData);
-        } catch {
-          setProfile(null);
-        }
-      } else {
-        setSession(null);
-        setUser(null);
-        setProfile(null);
-      }
-      setLoading(false);
-    };
-    getSessionAndProfile();
-
-    // 認証状態の変化を監視
-    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      LogUtil.log({ _event }, { level: 'info' });
-      if (_event == 'PASSWORD_RECOVERY') {
-        router.navigate('/(auth)/ResetPassword');
-      }
-
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session) {
-        try {
-          const profileData = await getProfile(session);
-          setProfile(profileData);
-        } catch {
-          setProfile(null);
-        }
-      } else {
-        setProfile(null);
-      }
-    });
-    return () => {
-      listener?.subscription.unsubscribe();
-    };
-  }, []);
 
   // ログイン関数
   const login = async (email: string, password: string) => {
@@ -156,31 +111,109 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Googleサインイン関数
   const signInWithGoogle = async () => {
-    setLoading(true);
     try {
-      const redirectTo = Linking.createURL('/(home)');
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      LogUtil.log('userInfo: ' + JSON.stringify(userInfo), { level: 'info' });
+      if (!userInfo?.data?.idToken) {
+        throw new Error('no ID token present!');
+      }
+      const { data, error } = await supabase.auth.signInWithIdToken({
         provider: 'google',
-        options: {
-          redirectTo,
-          skipBrowserRedirect: true,
-        },
+        token: userInfo?.data?.idToken,
       });
-      LogUtil.log(JSON.stringify(data), { level: 'info' });
 
       if (error) {
-        LogUtil.log(JSON.stringify(error), { level: 'error' });
+        LogUtil.log('signInWithIdToken error: ' + JSON.stringify(error), { level: 'error' });
         throw error;
       }
-      // ブラウザで認証が行われるため、ここでの後続処理は不要
-    } catch (e) {
-      // 必要に応じてエラーハンドリング
-      LogUtil.log(JSON.stringify(e), { level: 'error' });
-      throw e;
-    } finally {
-      setLoading(false);
+      LogUtil.log('signInWithIdToken data: ' + JSON.stringify(data), { level: 'info' });
+      router.navigate('/(home)');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        LogUtil.log(JSON.stringify(error), { level: 'error' });
+      }
+      if (typeof error === 'object' && error !== null && 'code' in error) {
+        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+          // user cancelled the login flow
+        } else if (error.code === statusCodes.IN_PROGRESS) {
+          // operation (e.g. sign in) is in progress already
+        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          // play services not available or outdated
+        }
+      } else {
+        // some other error happened
+      }
     }
   };
+
+  const fetchProfile = async () => {
+    if (!session) return;
+    getProfile(session)
+      .then(async (data) => {
+        setProfile(data);
+        if (!data.stripe_customer_id) {
+          // stripの顧客IDを作成・紐づけ・更新する
+          await createStripeCustomer(session);
+          // 更新完了後､再起実行
+          //   await fetchProfile();
+        }
+      })
+      .catch((e) => {
+        if (e && e.message) {
+          //   Alert.alert(e.message);
+          setProfile(null);
+        }
+      });
+  };
+
+  // 初回マウント時にセッション取得
+  useEffect(() => {
+    const getSessionAndProfile = async () => {
+      setLoading(true);
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        setSession(data.session);
+        setUser(data.session.user);
+      } else {
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+      }
+      setLoading(false);
+    };
+    getSessionAndProfile();
+
+    // 認証状態の変化を監視
+    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      LogUtil.log({ _event }, { level: 'info' });
+      if (_event == 'PASSWORD_RECOVERY') {
+        router.navigate('/(auth)/ResetPassword');
+      }
+
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session) {
+        try {
+          const profileData = await getProfile(session);
+          setProfile(profileData);
+        } catch {
+          setProfile(null);
+        }
+      } else {
+        setProfile(null);
+      }
+    });
+    return () => {
+      listener?.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    // プロフィール再取得
+    if (!session) return;
+    fetchProfile();
+  }, [session, user]);
 
   return (
     <AuthContext.Provider

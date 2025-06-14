@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 const app = new Hono().basePath('/plan');
 
 const MAXIMUM_FREE_PLAN = 4;
-const MAXIMUM_BASIC_PLAN = 12;
+const MAXIMUM_PREMIUM_PLAN = 20;
 
 /**
  * プランの作成数が制限を超えているかどうかをチェックする
@@ -34,8 +34,8 @@ const maximumVerifyChecker = async (supabase: SupabaseClient, user: User) => {
         return IS_OVER;
       }
       break;
-    case 'Basic':
-      if (count > MAXIMUM_BASIC_PLAN) {
+    case 'Premium':
+      if (count > MAXIMUM_PREMIUM_PLAN) {
         return IS_OVER;
       }
       break;
@@ -121,11 +121,6 @@ const get = async (c: Hono.Context) => {
   return c.json(data);
 };
 
-/**
- *
- * @param c
- * @returns
- */
 const list = async (c: Hono.Context) => {
   console.log('[POST] plan/list');
   const supabase = generateSupabase(c);

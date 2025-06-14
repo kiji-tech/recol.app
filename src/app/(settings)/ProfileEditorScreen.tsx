@@ -56,7 +56,14 @@ export default function ProfileEditorScreen() {
           })
       : null;
 
-    updateProfile(displayName, base64Image, session)
+    updateProfile(
+      {
+        ...profile,
+        display_name: displayName,
+        avatar_url: base64Image || null,
+      } as Tables<'profile'>,
+      session
+    )
       .then((profile: Tables<'profile'>) => {
         LogUtil.log(profile, {});
         setProfile(profile);

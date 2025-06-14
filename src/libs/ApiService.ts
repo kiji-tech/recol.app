@@ -266,8 +266,7 @@ async function getProfile(session: Session | null, ctrl?: AbortController) {
 }
 
 async function updateProfile(
-  displayName: string,
-  avatarUrl: string | null,
+  profile: Tables<'profile'>,
   session: Session | null,
   ctrl?: AbortController
 ) {
@@ -275,12 +274,21 @@ async function updateProfile(
     method: 'PUT',
     session,
     body: {
-      display_name: displayName,
-      avatar_url: avatarUrl,
+      ...profile,
+      avatar_url: profile.avatar_url || null,
     },
     ctrl,
   });
   return response.data!;
+}
+
+// ============ Stripe ============
+async function createStripeCustomer(session: Session | null, ctrl?: AbortController) {
+  await apiRequest<Tables<'profile'>>('/stripe/customer', {
+    method: 'POST',
+    session,
+    ctrl,
+  });
 }
 
 // ============ MicroCMS ============
@@ -327,4 +335,5 @@ export {
   updateProfile,
   fetchBlog,
   fetchBlogList,
+  createStripeCustomer,
 };

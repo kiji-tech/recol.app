@@ -119,6 +119,7 @@ export type Database = {
           display_name: string | null
           payment_plan: Database["public"]["Enums"]["PaymentPlan"] | null
           role: Database["public"]["Enums"]["Role"] | null
+          stripe_customer_id: string | null
           uid: string
           updated_at: string | null
         }
@@ -128,6 +129,7 @@ export type Database = {
           display_name?: string | null
           payment_plan?: Database["public"]["Enums"]["PaymentPlan"] | null
           role?: Database["public"]["Enums"]["Role"] | null
+          stripe_customer_id?: string | null
           uid: string
           updated_at?: string | null
         }
@@ -137,6 +139,7 @@ export type Database = {
           display_name?: string | null
           payment_plan?: Database["public"]["Enums"]["PaymentPlan"] | null
           role?: Database["public"]["Enums"]["Role"] | null
+          stripe_customer_id?: string | null
           uid?: string
           updated_at?: string | null
         }

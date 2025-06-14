@@ -3,6 +3,26 @@ import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
 const app = new Hono().basePath('/profile');
 
+const get = async (c: Hono.Context) => {
+  console.log('[GET] profile');
+  const supabase = generateSupabase(c);
+  const user = await getUser(c, supabase);
+  if (!user) {
+    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
+  }
+  const { data, error } = await supabase
+    .from('profile')
+    .select('*')
+    .eq('uid', user.id)
+    .maybeSingle();
+  if (error) {
+    console.error(error);
+    return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
+  }
+
+  return c.json(data);
+};
+
 const update = async (c: Hono.Context) => {
   console.log('[PUT] profile');
   const supabase = generateSupabase(c);
@@ -13,7 +33,14 @@ const update = async (c: Hono.Context) => {
     return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
 
-  let finalAvatarUrl = avatar_url;
+  // 古いアバター画像を削除
+  const { data: oldProfile } = await supabase
+    .from('profile')
+    .select('avatar_url')
+    .eq('uid', user.id)
+    .maybeSingle();
+
+  let finalAvatarUrl = oldProfile?.avatar_url || null;
   if (avatar_url && avatar_url.startsWith('data:image')) {
     // Base64画像をデコード
     const base64Data = avatar_url.split(',')[1];
@@ -23,13 +50,6 @@ const update = async (c: Hono.Context) => {
     const fileExt = avatar_url.split(';')[0].split('/')[1];
     const fileName = `${user.id}_${Date.now()}.${fileExt}`;
     const filePath = `${fileName}`;
-
-    // 古いアバター画像を削除
-    const { data: oldProfile } = await supabase
-      .from('profile')
-      .select('avatar_url')
-      .eq('uid', user.id)
-      .maybeSingle();
 
     if (oldProfile?.avatar_url) {
       const oldFilePath = oldProfile.avatar_url.split('/').pop();
@@ -71,30 +91,6 @@ const update = async (c: Hono.Context) => {
   return c.json(data);
 };
 
-/**
- *
- * @param c
- * @returns
- */
-const get = async (c: Hono.Context) => {
-  console.log('[GET] profile');
-  const supabase = generateSupabase(c);
-  const user = await getUser(c, supabase);
-  if (!user) {
-    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
-  }
-  const { data, error } = await supabase
-    .from('profile')
-    .select('*')
-    .eq('uid', user.id)
-    .maybeSingle();
-  if (error) {
-    console.error(error);
-    return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
-  }
-
-  return c.json(data);
-};
 app.get('/', get);
 app.put('/', update);
 Deno.serve(app.fetch);
