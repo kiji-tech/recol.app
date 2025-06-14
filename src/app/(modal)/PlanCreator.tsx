@@ -27,11 +27,12 @@ export default function PlanCreator() {
         router.back();
       })
       .catch((e: ApiErrorResponse) => {
+        console.log(e);
         if (e && e.message) {
           Alert.alert(e.message);
         }
         if (e.code.startsWith('PP')) {
-          router.navigate('/(modal)/PaymentPlan');
+          router.push('/(modal)/PaymentPlan');
         }
       });
   };

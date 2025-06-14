@@ -1,5 +1,6 @@
 import { Hono } from 'jsr:@hono/hono';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
+import { getMessage } from '../libs/MessageUtil.ts';
 const app = new Hono().basePath('/media');
 
 const list = async (c: Hono.Context) => {
@@ -8,12 +9,12 @@ const list = async (c: Hono.Context) => {
   const user = await getUser(c, supabase);
 
   if (!user) {
-    return c.json({ error: 'User not found' }, 403);
+    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
 
   const { planId } = await c.req.json();
   if (!planId) {
-    return c.json({ error: 'Invalid request' }, 400);
+    return c.json({ message: getMessage('C009', ['プランID']), code: 'C009' }, 400);
   }
 
   const { data, error } = await supabase
@@ -24,7 +25,7 @@ const list = async (c: Hono.Context) => {
 
   if (error) {
     console.error(error);
-    return c.json({ error }, 403);
+    return c.json({ message: getMessage('C005', ['メディア']), code: 'C005' }, 400);
   }
   return c.json(data);
 };
@@ -35,12 +36,12 @@ const post = async (c: Hono.Context) => {
   const user = await getUser(c, supabase);
 
   if (!user) {
-    return c.json({ error: 'User not found' }, 403);
+    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
 
   const { planId, images } = await c.req.json();
   if (!planId || !images) {
-    return c.json({ error: 'Invalid request' }, 400);
+    return c.json({ message: getMessage('C009', ['プランID､メディア']), code: 'C009' }, 400);
   }
 
   // ファイル名を生成
@@ -57,12 +58,12 @@ const post = async (c: Hono.Context) => {
     });
 
     if (uploadError) {
-      console.log({
+      console.error({
         uploadError,
         filePath,
         contentType: `image/${fileExt}`,
       });
-      return c.json({ error: 'Failed to upload media image' }, 500);
+      return c.json({ message: getMessage('C006', ['メディア']), code: 'C006' }, 500);
     }
     // 公開URLを取得
     uploadedImages.push(filePath);
@@ -78,7 +79,7 @@ const post = async (c: Hono.Context) => {
 
     if (error) {
       console.error(error);
-      return c.json({ error }, 403);
+      return c.json({ message: getMessage('C006', ['メディア']), code: 'C006' }, 500);
     }
   }
 
@@ -91,22 +92,25 @@ const deleteMedia = async (c: Hono.Context) => {
   const user = await getUser(c, supabase);
 
   if (!user) {
-    return c.json({ error: 'User not found' }, 403);
+    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
 
   const { planId, mediaIdList } = await c.req.json();
   if (!planId || !mediaIdList) {
-    return c.json({ error: 'Invalid request' }, 400);
+    return c.json({ message: getMessage('C009', ['プランID､メディア']), code: 'C009' }, 400);
   }
 
-  const { error } = await supabase.from('media').update({ delete_flag: true }).in('uid', mediaIdList);
+  const { error } = await supabase
+    .from('media')
+    .update({ delete_flag: true })
+    .in('uid', mediaIdList);
 
   if (error) {
     console.error(error);
-    return c.json({ error }, 403);
+    return c.json({ message: getMessage('C008', ['メディア']), code: 'C008' }, 500);
   }
 
-  return c.json({ message: 'Media deleted successfully' });
+  return c.json({ message: getMessage('C004', ['メディア']), code: 'C004' });
 };
 
 app.post('/list', list);

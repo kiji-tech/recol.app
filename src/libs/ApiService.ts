@@ -38,11 +38,11 @@ async function apiRequest<T, B = Record<string, unknown>>(
 
   const data = await res.json();
   if (!res.ok) {
-    if (data.error) {
-      LogUtil.log(data.error, { level: 'error', notify: true });
-      throw data.error;
+    if (data.message && data.code) {
+      LogUtil.log(data.message, { level: 'error', notify: true });
+      throw data;
     }
-    throw new Error(`API error: ${res.status} ${res.statusText}`);
+    throw new Error(`Other API error: ${res.status} ${res.statusText}`);
   }
 
   return { data: data, error: null };

@@ -7,7 +7,7 @@ const Messages = {
   C006: '{0}の登録に失敗しました｡',
   C007: '{0}の更新に失敗しました｡',
   C008: '{0}の削除に失敗しました｡',
-  P001: 'プランの作成数が制限を超えています\nプランを更新してください｡',
+  PP001: 'プランの作成数が制限を超えています\nプランを更新してください｡',
 };
 const getMessage = (code: string, params: string[] = []): string => {
   const message = Messages[code as keyof typeof Messages] || '';

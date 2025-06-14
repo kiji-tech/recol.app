@@ -1,12 +1,8 @@
 import { Hono } from 'jsr:@hono/hono';
 import { generateSupabase } from '../libs/supabase.ts';
+import { getMessage } from '../libs/MessageUtil.ts';
 const app = new Hono().basePath('/message');
 
-/**
- *
- * @param c
- * @returns
- */
 const create = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
   const { title, from, to, locations } = await c.req.json();
@@ -17,7 +13,7 @@ const create = async (c: Hono.Context) => {
     .select('*');
 
   if (error) {
-    return c.json({ error }, 403);
+    return c.json({ message: getMessage('C005', ['メッセージ']), code: 'C005' }, 400);
   }
 
   return c.json({ data, error });
@@ -34,17 +30,12 @@ const update = async (c: Hono.Context) => {
     .select('*');
 
   if (error) {
-    return c.json({ error }, 403);
+    return c.json({ message: getMessage('C007', ['メッセージ']), code: 'C007' }, 400);
   }
 
   return c.json({ data, error });
 };
 
-/**
- *
- * @param c
- * @returns
- */
 const get = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
   const uid = c.req.param('uid');
@@ -52,11 +43,6 @@ const get = async (c: Hono.Context) => {
   return c.json({ data, error });
 };
 
-/**
- *
- * @param c
- * @returns
- */
 const list = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
   const { data, error } = await supabase.from('messages').select('*').limit(100);

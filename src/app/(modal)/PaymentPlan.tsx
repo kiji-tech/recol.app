@@ -1,28 +1,9 @@
 import React from 'react';
+import { Text, View } from 'react-native';
 import { BackgroundView, Header } from '@/src/components';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useRouter } from 'expo-router';
-import { View } from 'react-native';
 import { Enums } from '@/src/libs/database.types';
-
-const PaymentPlanItem = ({
-  paymentPlan,
-  userPlan,
-}: {
-  paymentPlan: Enums<'PaymentPlan'>;
-  userPlan: Enums<'PaymentPlan'> | null;
-}) => {
-  return (
-    <View>
-      <View className="border border-light-border dark:border-dark-border">
-        {paymentPlan}
-        {paymentPlan === userPlan && (
-          <View className="bg-light-info dark:bg-dark-info h-10 w-10 rounded-full" />
-        )}
-      </View>
-    </View>
-  );
-};
 
 export default function PaymentPlan() {
   const { profile } = useAuth();
@@ -30,11 +11,30 @@ export default function PaymentPlan() {
 
   return (
     <BackgroundView>
-      <Header title="" onBack={() => router.back()} />
+      <Header title="プレミアムプラン紹介" onBack={() => router.back()} />
       <View className="flex flex-col">
-        <PaymentPlanItem paymentPlan="Free" userPlan={profile?.payment_plan || null} />
-        <PaymentPlanItem paymentPlan="Basic" userPlan={profile?.payment_plan || null} />
-        <PaymentPlanItem paymentPlan="Premium" userPlan={profile?.payment_plan || null} />
+        {/* 前段 */}
+        <View>
+          <Text>プレミアムプラン</Text>
+        </View>
+        {/* 比較表 */}
+        <View className="flex flex-row">
+          <Text className="w-32">フリー</Text>
+          <Text className="w-32">プレミアム</Text>
+          <Text className="flex-1" />
+        </View>
+        <View className="flex flex-row">
+          <Text className="w-32">広告表示</Text>
+          <Text className="w-32">○</Text>
+          <Text className="w-32">×</Text>
+          <Text className="flex-1" />
+        </View>
+
+        {/* プレミアムプランはこちらから */}
+        <View>
+          {/* 月額 */}
+          {/* 年額 */}
+        </View>
       </View>
     </BackgroundView>
   );

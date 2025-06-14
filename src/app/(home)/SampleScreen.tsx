@@ -1,96 +1,64 @@
-import React, { useCallback, useRef, useState } from 'react';
-import Map from '@/src/components/GoogleMaps/Map';
-import MapBottomSheet from '@/src/components/GoogleMaps/BottomSheet/MapBottomSheet';
-import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
-import { MapCategory } from '@/src/entities/MapCategory';
-import { Region } from 'react-native-maps';
-import { useLocation } from '@/src/contexts/LocationContext';
-import { searchNearby } from '@/src/apis/GoogleMaps';
-import { Place } from '@/src/entities/Place';
-import { useFocusEffect } from 'expo-router';
+import React from 'react';
+import { BackgroundView, Header } from '@/src/components';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
+
+const PlanItem = ({ title, free, premium }: { title: string; free: string; premium: string }) => {
+  return (
+    <View className="flex flex-row justify-between  border-light-border dark:border-dark-border border-b">
+      <Text className="p-4 flex-1 text-center text-light-text dark:text-dark-text">{title}</Text>
+      <Text className="p-4 w-32 text-center text-light-text dark:text-dark-text ">{free}</Text>
+      <Text className="p-4 w-40 text-center text-light-text dark:text-dark-text font-bold">
+        {premium}
+      </Text>
+    </View>
+  );
+};
+
 export default function SampleScreen() {
-  const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
-  const bottomSheetRef = useRef<BottomSheet | null>(null);
-  const { currentRegion } = useLocation();
-  const [placeList, setPlaceList] = useState<Place[]>([]);
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-  const [selectedPlaceList, setSelectedPlaceList] = useState<Place[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<MapCategory>('selected');
-  const [region, setRegion] = useState<Region | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // === Method ===
-  /** ロケーション情報設定処理 */
-  const settingPlaces = (places: Place[]) => {
-    if (!places || places.length == 0) {
-      alert('検索結果がありません.');
-      return;
-    }
-    setPlaceList(places);
-    setSelectedPlace(null);
-  };
-
-  /** 座標のロケーション情報取得 */
-  const fetchLocation = async (latitude: number, longitude: number) => {
-    if (selectedCategory === 'selected') return;
-    setIsLoading(true);
-    try {
-      const response = await searchNearby(latitude, longitude, selectedCategory, radius);
-      settingPlaces(response);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  /** カテゴリ選択 */
-  const handleSelectedCategory = (category: MapCategory) => {
-    setSelectedCategory(category);
-    // 場所データの再取得
-    if (selectedCategory === 'selected') return;
-    fetchLocation(region!.latitude, region!.longitude);
-  };
-
-  /** 場所選択 */
-  const handleSelectedPlace = (place: Place) => {
-    setRegion((prev) => {
-      return { ...(prev || {}), ...place.location } as Region;
-    });
-    setSelectedPlace(place);
-  };
-
-  // === Effect ===
-  useFocusEffect(useCallback(() => {}, []));
-
+  const router = useRouter();
   // === Render ===
 
   return (
-    <>
-      {/* 検索バー */}
+    <BackgroundView>
+      <Header title="プレミアムプラン紹介" onBack={() => router.back()} />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View className="flex flex-col gap-8 pb-8">
+          {/* 前段 */}
+          <View>
+            <Text className="text-light-text dark:text-dark-text">プレミアムプランにすると...</Text>
+          </View>
+          {/* 比較表 */}
+          <View className="">
+            <View className="flex flex-row justify-between border-b border-light-border dark:border-dark-border">
+              <Text className="p-4 flex-1" />
+              <Text className="p-4 w-32 text-center text-light-text dark:text-dark-text ">
+                フリー
+              </Text>
+              <Text className="p-4 w-40 text-center text-light-text dark:text-dark-text font-bold">
+                プレミアム
+              </Text>
+            </View>
+            <PlanItem title="プラン数" free="4プラン / 年" premium="20プラン / 年" />
+            <PlanItem title="ストレージ容量" free="1GB / プラン" premium="100GB / プラン" />
+            <PlanItem title="広告表示" free="○" premium="-" />
+          </View>
 
-      {/* マップ */}
-      <Map
-        region={region || currentRegion}
-        placeList={placeList}
-        selectedPlaceList={selectedPlaceList}
-        isMarker={true}
-        isCallout={true}
-        isCenterCircle={true}
-        onRegionChange={setRegion}
-      />
-      {/* マップボトムシート */}
-      <MapBottomSheet
-        placeList={placeList}
-        selectedPlace={selectedPlace}
-        selectedPlaceList={selectedPlaceList}
-        selectedCategory={selectedCategory}
-        isSelected={false}
-        onAdd={() => {}}
-        onRemove={() => {}}
-        onSelectedPlace={handleSelectedPlace}
-        onSelectedCategory={handleSelectedCategory}
-        bottomSheetRef={bottomSheetRef}
-        scrollRef={scrollRef}
-      />
-    </>
+          {/* プレミアムプランはこちらから */}
+          <View className="flex flex-row justify-around items-start gap-2">
+            {/* 月額 */}
+            <TouchableOpacity className="flex flex-col items-center justify-center bg-light-warn dark:bg-dark-warn rounded-md w-1/2 h-28 p-4">
+              <Text className="text-3xl text-light-text dark:text-dark-text">400円</Text>
+              <Text className="text-sm text-light-text dark:text-dark-text"> / 月額</Text>
+            </TouchableOpacity>
+            {/* 年額 */}
+            <TouchableOpacity className="flex flex-col items-center justify-center bg-light-danger dark:bg-dark-danger rounded-md w-1/2 h-28 p-4">
+              <Text className="text-3xl text-light-text dark:text-dark-text">4,000円</Text>
+              <Text className="text-md text-light-text dark:text-dark-text"> / 年額</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </BackgroundView>
   );
 }

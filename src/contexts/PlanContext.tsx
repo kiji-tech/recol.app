@@ -5,7 +5,6 @@ import { fetchPlanList } from '../libs/ApiService';
 import { useAuth } from './AuthContext';
 import { LogUtil } from '../libs/LogUtil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from 'react-native';
 
 const PLAN_LIST_STORAGE_KEY = '@plan_list';
 
@@ -71,11 +70,6 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
             }
           );
           await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(response));
-        }
-      })
-      .catch((e) => {
-        if (e && e.message) {
-          Alert.alert(e.message);
         }
       })
       .finally(() => {

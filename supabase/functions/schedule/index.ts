@@ -1,5 +1,6 @@
 import { Hono } from 'jsr:@hono/hono';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
+import { getMessage } from '../libs/MessageUtil.ts';
 const app = new Hono().basePath('/schedule');
 
 const get = async (c: Hono.Context) => {
@@ -7,6 +8,7 @@ const get = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
   const scheduleId = c.req.param('scheduleId');
   const planId = c.req.param('planId');
+
   if (planId != null) {
     const { data, error } = await supabase
       .from('schedule')
@@ -16,7 +18,7 @@ const get = async (c: Hono.Context) => {
 
     if (error) {
       console.error(error);
-      return c.json({ error }, 403);
+      return c.json({ message: getMessage('C005', ['スケジュール']), code: 'C005' }, 400);
     }
     return c.json(data);
   } else if (!scheduleId) {
@@ -28,11 +30,11 @@ const get = async (c: Hono.Context) => {
 
     if (error) {
       console.error(error);
-      return c.json({ error }, 403);
+      return c.json({ message: getMessage('C005', ['スケジュール']), code: 'C005' }, 400);
     }
     return c.json(data);
   } else {
-    return c.json({ error: 'Invalid request' }, 400);
+    return c.json({ message: getMessage('C009', ['スケジュールID']), code: 'C009' }, 400);
   }
 };
 
@@ -41,7 +43,7 @@ const upsert = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
   const user = await getUser(c, supabase);
   if (!user) {
-    return c.json({ error: 'User not found' }, 403);
+    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
   const { schedule } = await c.req.json();
   console.log({ user, schedule });
@@ -52,11 +54,11 @@ const upsert = async (c: Hono.Context) => {
     .select('*');
   if (error) {
     console.error(error);
-    return c.json({ error }, 403);
+    return c.json({ message: getMessage('C007', ['スケジュール']), code: 'C007' }, 400);
   }
   if (error) {
     console.error(error);
-    return c.json({ error }, 403);
+    return c.json({ message: getMessage('C007', ['スケジュール']), code: 'C007' }, 400);
   }
 
   return c.json(data);
@@ -68,7 +70,7 @@ const deleteSchedule = async (c: Hono.Context) => {
   const { uid } = await c.req.json();
   const user = await getUser(c, supabase);
   if (!user) {
-    return c.json({ error: 'User not found' }, 403);
+    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
 
   // 削除フラグの更新
@@ -78,7 +80,7 @@ const deleteSchedule = async (c: Hono.Context) => {
     .eq('uid', uid);
   if (error) {
     console.error(error);
-    return c.json({ error }, 403);
+    return c.json({ message: getMessage('C008', ['スケジュール']), code: 'C008' }, 400);
   }
   return c.json(data);
 };

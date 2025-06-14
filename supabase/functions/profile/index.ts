@@ -1,5 +1,6 @@
 import { Hono } from 'jsr:@hono/hono';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
+import { getMessage } from '../libs/MessageUtil.ts';
 const app = new Hono().basePath('/profile');
 
 const update = async (c: Hono.Context) => {
@@ -9,7 +10,7 @@ const update = async (c: Hono.Context) => {
 
   const user = await getUser(c, supabase);
   if (!user) {
-    return c.json({ error: 'User not found' }, 403);
+    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
 
   let finalAvatarUrl = avatar_url;
@@ -43,12 +44,12 @@ const update = async (c: Hono.Context) => {
     });
 
     if (uploadError) {
-      console.log({
+      console.error({
         uploadError,
         filePath,
         contentType: `image/${fileExt}`,
       });
-      return c.json({ error: 'Failed to upload avatar' }, 500);
+      return c.json({ message: getMessage('C006', ['アバター']), code: 'C006' }, 500);
     }
 
     // 公開URLを取得
@@ -64,7 +65,7 @@ const update = async (c: Hono.Context) => {
 
   if (error) {
     console.error(error);
-    return c.json({ error }, 403);
+    return c.json({ message: getMessage('C007', ['プロフィール']), code: 'C007' }, 400);
   }
 
   return c.json(data);
@@ -80,7 +81,7 @@ const get = async (c: Hono.Context) => {
   const supabase = generateSupabase(c);
   const user = await getUser(c, supabase);
   if (!user) {
-    return c.json({ error: 'User not found' }, 403);
+    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
   const { data, error } = await supabase
     .from('profile')
@@ -89,7 +90,7 @@ const get = async (c: Hono.Context) => {
     .maybeSingle();
   if (error) {
     console.error(error);
-    return c.json({ error }, 403);
+    return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
   }
 
   return c.json(data);
