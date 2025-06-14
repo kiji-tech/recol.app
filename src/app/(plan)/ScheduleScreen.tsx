@@ -13,7 +13,6 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import PlanInformation from '@/src/components/PlanInformation';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { LogUtil } from '@/src/libs/LogUtil';
 
 const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null) => {
   const router = useRouter();
@@ -107,13 +106,9 @@ export default function ScheduleScreen(): ReactNode {
         }
         setViewPlan({ ...data } as Tables<'plan'> & { schedule: Tables<'schedule'>[] });
       })
-      .catch((error) => {
-        if (error) {
-          LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-          Alert.alert(
-            'エラー',
-            'プランの読み込み中にエラーが発生しました。もう一度お試しください。'
-          );
+      .catch((e) => {
+        if (e && e.message) {
+          Alert.alert(e.message);
         }
       });
 
@@ -124,19 +119,15 @@ export default function ScheduleScreen(): ReactNode {
 
   /** 予定の削除 */
   const handleDeleteSchedule = async (schedule: Tables<'schedule'>) => {
-    try {
-      if (!session) {
-        throw new Error('セッションが無効です');
-      }
-      await deleteSchedule(schedule.uid, session);
-      initView();
-    } catch (error) {
-      if (error)
-        Alert.alert(
-          'エラー',
-          'スケジュールの削除中にエラーが発生しました。もう一度お試しください。'
-        );
-    }
+    deleteSchedule(schedule.uid, session)
+      .then(() => {
+        initView();
+      })
+      .catch((e) => {
+        if (e && e.message) {
+          Alert.alert(e.message);
+        }
+      });
   };
 
   // === Effect ===

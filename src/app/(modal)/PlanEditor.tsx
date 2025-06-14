@@ -24,7 +24,9 @@ export default function PlanEditor() {
         router.back();
       })
       .catch((e) => {
-        alert(e);
+        if (e && e.message) {
+          Alert.alert(e.message);
+        }
       });
   };
 

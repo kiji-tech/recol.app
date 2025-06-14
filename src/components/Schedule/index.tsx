@@ -89,7 +89,7 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
       })
       .catch((e) => {
         if (e && e.message) {
-          alert(e.message);
+          Alert.alert(e.message);
         }
       });
 

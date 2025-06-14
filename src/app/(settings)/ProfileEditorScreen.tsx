@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { useRouter } from 'expo-router';
-import { View, Text, TextInput, Image } from 'react-native';
+import { View, Text, TextInput, Image, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -56,11 +56,17 @@ export default function ProfileEditorScreen() {
           })
       : null;
 
-    await updateProfile(displayName, base64Image, session).then((profile: Tables<'profile'>) => {
-      LogUtil.log(profile, {});
-      setProfile(profile);
-      router.back();
-    });
+    updateProfile(displayName, base64Image, session)
+      .then((profile: Tables<'profile'>) => {
+        LogUtil.log(profile, {});
+        setProfile(profile);
+        router.back();
+      })
+      .catch((e) => {
+        if (e && e.message) {
+          Alert.alert(e.message);
+        }
+      });
   };
 
   // === Render ===

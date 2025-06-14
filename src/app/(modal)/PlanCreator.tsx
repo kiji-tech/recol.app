@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Alert } from 'react-native';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Button, Header } from '@/src/components';
 import { BackgroundView } from '@/src/components';
 import { borderColor } from '@/src/themes/ColorUtil';
@@ -14,6 +14,7 @@ export default function PlanCreator() {
   const [title, setTitle] = useState<string>('');
   const { session } = useAuth();
   const { fetchPlan } = usePlan();
+  const router = useRouter();
 
   // === Method ===
   /** 登録 */
@@ -26,8 +27,11 @@ export default function PlanCreator() {
         router.back();
       })
       .catch((e: ApiErrorResponse) => {
-        Alert.alert(e.message);
+        if (e && e.message) {
+          Alert.alert(e.message);
+        }
         if (e.code.startsWith('PP')) {
+          router.navigate('/(modal)/PaymentPlan');
         }
       });
   };

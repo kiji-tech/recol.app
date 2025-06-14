@@ -5,6 +5,7 @@ import { fetchPlanList } from '../libs/ApiService';
 import { useAuth } from './AuthContext';
 import { LogUtil } from '../libs/LogUtil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 const PLAN_LIST_STORAGE_KEY = '@plan_list';
 
@@ -57,24 +58,29 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const fetchPlan = async (ctrl?: AbortController) => {
-    try {
-      setPlanLoading(true);
-      const response = await fetchPlanList(session, ctrl);
-      LogUtil.log(`set API plan list, ${response.length}`, { level: 'info' });
-      setPlanList(response);
-      if (plan) {
-        setPlan(
-          response.find((p) => p.uid === plan.uid) as Tables<'plan'> & {
-            schedule: Tables<'schedule'>[];
-          }
-        );
-      }
-      await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(response));
-    } catch (error) {
-      LogUtil.log(error, { level: 'error' });
-    } finally {
-      setPlanLoading(false);
-    }
+    setPlanLoading(true);
+    fetchPlanList(session, ctrl)
+      .then(async (response) => {
+        LogUtil.log(`set API plan list, ${response.length}`, { level: 'info' });
+        setPlanList(response);
+
+        if (plan) {
+          setPlan(
+            response.find((p) => p.uid === plan.uid) as Tables<'plan'> & {
+              schedule: Tables<'schedule'>[];
+            }
+          );
+          await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(response));
+        }
+      })
+      .catch((e) => {
+        if (e && e.message) {
+          Alert.alert(e.message);
+        }
+      })
+      .finally(() => {
+        setPlanLoading(false);
+      });
   };
 
   const clearStoragePlan = async () => {

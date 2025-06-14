@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { Tables } from '@/src/libs/database.types';
-import { Text, TextInput, View } from 'react-native';
+import { Alert, Text, TextInput, View } from 'react-native';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
 import DatePicker from '../../components/Common/DatePicker';
@@ -27,12 +27,15 @@ export default function ScheduleEditor() {
       to: dayjs(editSchedule.to).format(DATE_FORMAT),
     };
 
-    try {
-      await upsertSchedule(schedule as Tables<'schedule'>, session);
-      router.back();
-    } catch {
-      alert('登録に失敗しました');
-    }
+    await upsertSchedule(schedule as Tables<'schedule'>, session)
+      .then(() => {
+        router.back();
+      })
+      .catch((e) => {
+        if (e && e.message) {
+          Alert.alert(e.message);
+        }
+      });
   };
 
   /** マップから選択した場所を追加 */

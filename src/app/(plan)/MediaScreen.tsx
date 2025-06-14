@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, View, Image, Text } from 'react-native';
+import { TouchableOpacity, View, Image, Text, Alert } from 'react-native';
 import { Header, IconButton } from '@/src/components';
 import { useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
@@ -25,9 +25,15 @@ export default function MediaScreen() {
   // === Method ===
   const fetchImages = useCallback(async () => {
     if (plan) {
-      fetchPlanMediaList(plan.uid!, session).then((data) => {
-        setImages(data);
-      });
+      fetchPlanMediaList(plan.uid!, session)
+        .then((data) => {
+          setImages(data);
+        })
+        .catch((e) => {
+          if (e && e.message) {
+            Alert.alert(e.message);
+          }
+        });
     }
   }, [plan, session]);
 
@@ -104,21 +110,33 @@ export default function MediaScreen() {
     }
 
     // データのアップロード
-    await uploadPlanMedias(plan!.uid!, uploadImages, session).then(() => {
-      // 画像一覧を更新
-      fetchImages();
-    });
+    await uploadPlanMedias(plan!.uid!, uploadImages, session)
+      .then(() => {
+        // 画像一覧を更新
+        fetchImages();
+      })
+      .catch((e) => {
+        if (e && e.message) {
+          Alert.alert(e.message);
+        }
+      });
   };
 
-  const handleDeleteImages = async () => {
-    await deletePlanMedias(
+  const handleDeleteImages = () => {
+    deletePlanMedias(
       plan!.uid!,
       selectedImages.map((item) => item.uid!),
       session
-    ).then(() => {
-      // 画像一覧を更新
-      fetchImages();
-    });
+    )
+      .then(() => {
+        // 画像一覧を更新
+        fetchImages();
+      })
+      .catch((e) => {
+        if (e && e.message) {
+          Alert.alert(e.message);
+        }
+      });
   };
 
   // === Effect ===

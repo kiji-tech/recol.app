@@ -58,8 +58,15 @@ function PlanCard({ plan }: { plan: Tables<'plan'> & { schedule: Tables<'schedul
       {
         text: '削除',
         onPress: async () => {
-          await deletePlan(plan.uid, session);
-          await fetchPlan();
+          deletePlan(plan.uid, session)
+            .then(() => {
+              fetchPlan();
+            })
+            .catch((e) => {
+              if (e && e.message) {
+                Alert.alert(e.message);
+              }
+            });
         },
       },
     ]);

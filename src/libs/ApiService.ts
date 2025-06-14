@@ -80,7 +80,6 @@ async function fetchPlanList(
     '/plan/list',
     { method: 'POST', session, ctrl }
   );
-  if (response.error) throw response.error;
   return response.data!;
 }
 
@@ -91,7 +90,6 @@ async function createPlan(plan: Tables<'plan'>, session: Session | null, ctrl?: 
     body: plan,
     ctrl,
   });
-  if (response.error) throw response.error;
   return response.data!;
 }
 /**
@@ -104,7 +102,6 @@ async function updatePlan(plan: Tables<'plan'>, session: Session | null, ctrl?: 
     body: plan,
     ctrl,
   });
-  if (response.error) throw response.error;
   return response.data!;
 }
 
@@ -116,13 +113,12 @@ async function updatePlan(plan: Tables<'plan'>, session: Session | null, ctrl?: 
  * @param ctrl {AbortController}
  */
 async function deletePlan(planId: string, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<void>('/plan/delete', {
+  await apiRequest<void>('/plan/delete', {
     method: 'POST',
     session,
     body: { planId },
     ctrl,
   });
-  if (response.error) throw response.error;
 }
 
 // ============ Schedule ============
@@ -140,7 +136,6 @@ async function fetchSchedule(scheduleId: string, session: Session | null, ctrl?:
     session,
     ctrl,
   });
-  if (response.error) throw response.error;
   return response.data!;
 }
 
@@ -158,7 +153,6 @@ async function fetchScheduleList(planId: string, session: Session | null, ctrl?:
     session,
     ctrl,
   });
-  if (response.error) throw response.error;
   return response.data!;
 }
 
@@ -170,13 +164,12 @@ async function fetchScheduleList(planId: string, session: Session | null, ctrl?:
  * @param ctrl {AbortController}
  */
 async function deleteSchedule(uid: string, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<void>('/schedule/delete', {
+  await apiRequest<void>('/schedule/delete', {
     method: 'POST',
     session,
     body: { uid },
     ctrl,
   });
-  if (response.error) throw response.error;
 }
 
 /**
@@ -198,7 +191,6 @@ async function upsertSchedule(
     body: { schedule },
     ctrl,
   });
-  if (response.error) throw response.error;
   return response.data!;
 }
 
@@ -222,7 +214,6 @@ async function fetchPlanMediaList(
     body: { planId },
     ctrl,
   });
-  if (response.error) throw response.error;
   return response.data! as Tables<'media'>[];
 }
 
@@ -247,7 +238,6 @@ async function uploadPlanMedias(
     body: { planId, images },
     ctrl,
   });
-  if (response.error) throw response.error;
   return response.data!;
 }
 
@@ -257,13 +247,12 @@ async function deletePlanMedias(
   session: Session | null,
   ctrl?: AbortController
 ) {
-  const response = await apiRequest<void>('/media/delete', {
+  await apiRequest<void>('/media/delete', {
     method: 'POST',
     session,
     body: { planId, mediaIdList },
     ctrl,
   });
-  if (response.error) throw response.error;
 }
 
 // ============ Profile ============
@@ -273,7 +262,6 @@ async function getProfile(session: Session | null, ctrl?: AbortController) {
     session,
     ctrl,
   });
-  if (response.error) throw response.error;
   return response.data!;
 }
 
@@ -292,7 +280,6 @@ async function updateProfile(
     },
     ctrl,
   });
-  if (response.error) throw response.error;
   return response.data!;
 }
 
