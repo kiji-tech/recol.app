@@ -1,4 +1,5 @@
 import { MapCategory } from '../entities/MapCategory';
+import { LogUtil } from '../libs/LogUtil';
 
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
 
@@ -166,11 +167,11 @@ async function searchNearby(
     }),
   })
     .then((response) => response.json())
-    .catch(() => {
-      //   console.log(e)
+    .catch((e) => {
+      LogUtil.log(e, { level: 'error' });
     });
   if (response.error) {
-    // console.error(JSON.stringify(response));
+    LogUtil.log(response, { level: 'error' });
   }
 
   return response.places;

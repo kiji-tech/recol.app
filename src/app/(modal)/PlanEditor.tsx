@@ -8,6 +8,7 @@ import * as Location from 'expo-location';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Tables } from '@/src/libs/database.types';
+import { updatePlan } from '@/src/libs/ApiService';
 
 export default function PlanEditor() {
   // === Member ===
@@ -18,23 +19,13 @@ export default function PlanEditor() {
   // === Method ===
   /** 登録 */
   const handlerSubmit = async () => {
-    const body = JSON.stringify({
-      ...plan,
-    });
-    const res = await fetch(process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL + '/plan', {
-      body,
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: `Bearer ${session?.access_token}`,
-      },
-    });
-    if (res.ok) {
-      // 一覧に戻る
-      router.back();
-    } else {
-      alert(JSON.stringify(await res.json()));
-    }
+    updatePlan(plan!, session)
+      .then(() => {
+        router.back();
+      })
+      .catch((e) => {
+        alert(e);
+      });
   };
 
   // Location Permissions

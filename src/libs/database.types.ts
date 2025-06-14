@@ -14,7 +14,7 @@ export type Database = {
           created_at: string
           delete_flag: boolean | null
           plan_id: string | null
-          uid: string | null
+          uid: string
           upload_user_id: string | null
           url: string | null
         }
@@ -22,7 +22,7 @@ export type Database = {
           created_at?: string
           delete_flag?: boolean | null
           plan_id?: string | null
-          uid?: string | null
+          uid?: string
           upload_user_id?: string | null
           url?: string | null
         }
@@ -30,7 +30,7 @@ export type Database = {
           created_at?: string
           delete_flag?: boolean | null
           plan_id?: string | null
-          uid?: string | null
+          uid?: string
           upload_user_id?: string | null
           url?: string | null
         }
@@ -117,6 +117,8 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           display_name: string | null
+          payment_plan: Database["public"]["Enums"]["PaymentPlan"] | null
+          role: Database["public"]["Enums"]["Role"] | null
           uid: string
           updated_at: string | null
         }
@@ -124,6 +126,8 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
+          payment_plan?: Database["public"]["Enums"]["PaymentPlan"] | null
+          role?: Database["public"]["Enums"]["Role"] | null
           uid: string
           updated_at?: string | null
         }
@@ -131,6 +135,8 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
+          payment_plan?: Database["public"]["Enums"]["PaymentPlan"] | null
+          role?: Database["public"]["Enums"]["Role"] | null
           uid?: string
           updated_at?: string | null
         }
@@ -194,6 +200,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      PaymentPlan: "Free" | "Basic" | "Premium"
+      Role: "Admin" | "SuperUser" | "User"
       schedule_category: "movement" | "meals" | "sightseeing" | "other"
     }
     CompositeTypes: {
@@ -310,6 +318,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      PaymentPlan: ["Free", "Basic", "Premium"],
+      Role: ["Admin", "SuperUser", "User"],
       schedule_category: ["movement", "meals", "sightseeing", "other"],
     },
   },

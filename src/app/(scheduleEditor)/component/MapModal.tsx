@@ -14,6 +14,7 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { LATITUDE_OFFSET } from '@/src/libs/ConstValue';
 import MapSearchBar from '@/src/components/GoogleMaps/MapSearchBar';
 import { Tables } from '@/src/libs/database.types';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 type Props = {
   isOpen: boolean;
@@ -109,7 +110,9 @@ export default function MapModal({ isOpen, onClose }: Props) {
   const handleRemove = (place: Place) => {
     setEditSchedule({
       ...editSchedule,
-      place_list: (editSchedule?.place_list || []).filter((p: unknown) => (p as Place).id !== place.id),
+      place_list: (editSchedule?.place_list || []).filter(
+        (p: unknown) => (p as Place).id !== place.id
+      ),
     } as unknown as Tables<'schedule'>);
   };
 

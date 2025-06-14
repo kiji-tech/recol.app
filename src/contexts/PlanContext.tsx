@@ -17,6 +17,7 @@ type PlanContextType = {
   setEditSchedule: (schedule: Tables<'schedule'>) => void;
   planLoading: boolean;
   fetchPlan: (ctrl?: AbortController) => Promise<void>;
+  clearStoragePlan: () => void;
 };
 
 const PlanContext = createContext<PlanContextType | null>(null);
@@ -45,11 +46,10 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchStoragePlan = async () => {
     try {
-      const planList = await AsyncStorage.getItem(PLAN_LIST_STORAGE_KEY);
-
-      if (planList) {
-        LogUtil.log('set storage plan list', { level: 'info' });
-        setPlanList(JSON.parse(planList));
+      const list = JSON.parse((await AsyncStorage.getItem(PLAN_LIST_STORAGE_KEY)) || '[]');
+      if (list && list.length > 0) {
+        LogUtil.log(`set storage plan list ${list.length}`, { level: 'info' });
+        setPlanList(JSON.parse(list));
       }
     } catch (error) {
       LogUtil.log(error, { level: 'error' });
@@ -59,20 +59,26 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
   const fetchPlan = async (ctrl?: AbortController) => {
     try {
       setPlanLoading(true);
-      const planList = await fetchPlanList(session, ctrl);
-      LogUtil.log('set API plan list', { level: 'info' });
-      setPlanList(planList);
+      const response = await fetchPlanList(session, ctrl);
+      LogUtil.log(`set API plan list, ${response.length}`, { level: 'info' });
+      setPlanList(response);
       if (plan) {
         setPlan(
-          planList.find((p) => p.uid === plan.uid) as Tables<'plan'> & {
+          response.find((p) => p.uid === plan.uid) as Tables<'plan'> & {
             schedule: Tables<'schedule'>[];
           }
         );
       }
-      await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(planList));
+      await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(response));
+    } catch (error) {
+      LogUtil.log(error, { level: 'error' });
     } finally {
       setPlanLoading(false);
     }
+  };
+
+  const clearStoragePlan = async () => {
+    await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, '[]');
   };
 
   return (
@@ -86,6 +92,7 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
         setEditSchedule,
         planLoading,
         fetchPlan,
+        clearStoragePlan,
       }}
     >
       {children}

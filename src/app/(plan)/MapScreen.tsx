@@ -62,12 +62,20 @@ export default function MapScreen() {
   const { plan } = usePlan();
   const { currentRegion } = useLocation();
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(
-    plan?.schedule && plan?.schedule[0].place_list && plan?.schedule[0].place_list.length > 0
+    plan &&
+      plan.schedule &&
+      plan.schedule.length > 0 &&
+      plan.schedule[0].place_list &&
+      plan.schedule[0].place_list.length > 0
       ? (plan!.schedule[0].place_list[0] as unknown as Place)
       : null
   );
   const [region, setRegion] = useState<Region | null>(
-    plan?.schedule && plan?.schedule[0].place_list && plan?.schedule[0].place_list.length > 0
+    plan &&
+      plan.schedule &&
+      plan.schedule.length > 0 &&
+      plan.schedule[0].place_list &&
+      plan.schedule[0].place_list.length > 0
       ? {
           ...(plan!.schedule[0].place_list[0] as unknown as Place).location,
           latitudeDelta: 0.025,

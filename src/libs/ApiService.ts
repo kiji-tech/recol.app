@@ -1,11 +1,17 @@
 import { Session } from '@supabase/supabase-js';
 import { Tables } from './database.types';
+import { LogUtil } from './LogUtil';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL;
 
+export type ApiErrorResponse = {
+  message: string;
+  code: string;
+};
+
 type ApiResponse<T> = {
   data: T | null;
-  error: Error | null;
+  error: ApiErrorResponse | null;
 };
 
 const createHeaders = (session: Session | null) => ({
@@ -22,24 +28,24 @@ async function apiRequest<T, B = Record<string, unknown>>(
     ctrl?: AbortController;
   }
 ): Promise<ApiResponse<T>> {
-  try {
-    const { method, session, body, ctrl } = options;
-    const res = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method,
-      headers: createHeaders(session),
-      body: body ? JSON.stringify(body) : undefined,
-      signal: ctrl?.signal,
-    });
+  const { method, session, body, ctrl } = options;
+  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method,
+    headers: createHeaders(session),
+    body: body ? JSON.stringify(body) : undefined,
+    signal: ctrl?.signal,
+  });
 
-    if (!res.ok) {
-      throw new Error(`API error: ${res.status} ${res.statusText}`);
+  const data = await res.json();
+  if (!res.ok) {
+    if (data.error) {
+      LogUtil.log(data.error, { level: 'error', notify: true });
+      throw data.error;
     }
-
-    const data = await res.json();
-    return { data, error: null };
-  } catch (error) {
-    return { data: null, error: error as Error };
+    throw new Error(`API error: ${res.status} ${res.statusText}`);
   }
+
+  return { data: data, error: null };
 }
 
 // ============ Plan ============
@@ -56,7 +62,6 @@ async function fetchPlan(planId: string, session: Session | null, ctrl?: AbortCo
     `/plan/${planId}`,
     { method: 'GET', session, ctrl }
   );
-  if (response.error) throw response.error;
   return response.data!;
 }
 
@@ -79,6 +84,37 @@ async function fetchPlanList(
   return response.data!;
 }
 
+async function createPlan(plan: Tables<'plan'>, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Tables<'plan'> & { schedule: Tables<'schedule'>[] }>('/plan', {
+    method: 'POST',
+    session,
+    body: plan,
+    ctrl,
+  });
+  if (response.error) throw response.error;
+  return response.data!;
+}
+/**
+ * プランの更新
+ */
+async function updatePlan(plan: Tables<'plan'>, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Tables<'plan'> & { schedule: Tables<'schedule'>[] }>('/plan', {
+    method: 'PUT',
+    session,
+    body: plan,
+    ctrl,
+  });
+  if (response.error) throw response.error;
+  return response.data!;
+}
+
+/**
+ * プランの削除
+ *
+ * @param planId {string}
+ * @param session {Session | null}
+ * @param ctrl {AbortController}
+ */
 async function deletePlan(planId: string, session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<void>('/plan/delete', {
     method: 'POST',
@@ -290,6 +326,8 @@ async function fetchBlogList() {
 export {
   fetchPlan,
   fetchPlanList,
+  createPlan,
+  updatePlan,
   deletePlan,
   fetchSchedule,
   fetchScheduleList,

@@ -9,6 +9,7 @@ import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '@/src/libs/ConstValue';
 import { CommonUtil } from '@/src/libs/CommonUtil';
+import { usePlan } from '@/src/contexts/PlanContext';
 
 interface SettingItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -50,6 +51,7 @@ const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
 
 export default function Settings() {
   const { user, profile, logout } = useAuth();
+  const { clearStoragePlan } = usePlan();
   const { theme, setTheme } = useTheme();
   const [scheduleNotification, setScheduleNotification] = useState(true);
   const [chatNotification, setChatNotification] = useState(true);
@@ -88,7 +90,8 @@ export default function Settings() {
   };
 
   const handleSignOut = async () => {
-    router.navigate('/(auth)/SignIn');
+    router.replace('/(auth)/SignIn');
+    await clearStoragePlan();
     await logout();
   };
 

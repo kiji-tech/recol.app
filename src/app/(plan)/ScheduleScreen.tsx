@@ -23,7 +23,7 @@ const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }
   // === Method ===
   /** プランの編集 */
   const handleEditPress = () => {
-    router.push(`/(planEditor)/PlanEditor`);
+    router.push(`/(modal)/PlanEditor`);
   };
 
   /** スケジュールの追加 */

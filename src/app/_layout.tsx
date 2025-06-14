@@ -74,13 +74,14 @@ const Layout = () => {
   useEffect(() => {
     initializeApp();
   }, []);
+
   const initializeApp = async () => {
     // セッションチェック
     const {
       data: { session },
     } = await supabase.auth.getSession();
     if (!session) {
-      router.navigate('/(auth)/SignIn');
+      router.replace('/(auth)/SignIn');
     }
 
     // 広告初期化
@@ -93,12 +94,11 @@ const Layout = () => {
     <View onLayout={onLayout} style={{ flex: 1 }}>
       <Stack>
         <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
-        <Stack.Screen name="(addPlan)" options={{ title: '計画作成', headerShown: false }} />
         <Stack.Screen name="(blog)" options={{ title: 'ブログ', headerShown: false }} />
         <Stack.Screen name="(plan)" options={{ title: '計画表示', headerShown: false }} />
         <Stack.Screen name="(chat)" options={{ title: 'チャット', headerShown: false }} />
         <Stack.Screen name="(settings)" options={{ title: '設定', headerShown: false }} />
-        <Stack.Screen name="(planEditor)" options={{ title: 'プラン編集', headerShown: false }} />
+        <Stack.Screen name="(modal)" options={{ title: '', headerShown: false }} />
         <Stack.Screen
           name="(scheduleEditor)"
           options={{ title: 'スケジュール編集', headerShown: false }}

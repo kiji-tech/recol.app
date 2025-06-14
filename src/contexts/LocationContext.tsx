@@ -3,6 +3,7 @@ import * as Location from 'expo-location';
 import { createContext, useState } from 'react';
 import { Region } from 'react-native-maps';
 import { useFocusEffect } from 'expo-router';
+import { LogUtil } from '../libs/LogUtil';
 
 type LocationContextType = {
   currentRegion: Region | null;
@@ -23,9 +24,9 @@ const LocationProvider = ({ children }: { children: React.ReactNode }) => {
    * 現在位置を取得
    */
   const getCurrentPosition = async () => {
-    console.log('current location get');
+    LogUtil.log('current location get', { level: 'info' });
     const location = await Location.getCurrentPositionAsync({}).catch((error) => {
-      console.log('current location get error', error);
+      LogUtil.log(`current location get error: ${error}`, { level: 'error' });
     });
     if (!location) return;
     setCurrentRegion({
