@@ -1,6 +1,7 @@
 import { Session } from '@supabase/supabase-js';
 import { Tables } from './database.types';
 import { LogUtil } from './LogUtil';
+import Stripe from 'stripe';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL;
 
@@ -44,6 +45,8 @@ async function apiRequest<T, B = Record<string, unknown>>(
     }
     throw new Error(`Other API error: ${res.status} ${res.statusText}`);
   }
+  LogUtil.log(`=== apiRequest ${endpoint} ===`);
+  LogUtil.log(data, { level: 'info' });
 
   return { data: data, error: null };
 }
@@ -283,14 +286,58 @@ async function updateProfile(
 }
 
 // ============ Stripe ============
+async function createPaymentSheet(
+  redirectURL: string,
+  session: Session | null,
+  ctrl?: AbortController
+) {
+  const response = await apiRequest<{
+    paymentIntent: Stripe.PaymentIntent;
+    ephemeralKey: Stripe.EphemeralKey;
+    customerId: string;
+  }>('/stripe/payment-sheet', {
+    method: 'POST',
+    session,
+    body: { redirectURL },
+    ctrl,
+  });
+  return response.data!;
+}
 async function createStripeCustomer(session: Session | null, ctrl?: AbortController) {
-  await apiRequest<Tables<'profile'>>('/stripe/customer', {
+  const response = await apiRequest<Stripe.Customer>('/stripe/customer', {
     method: 'POST',
     session,
     ctrl,
   });
+  return response.data!;
+}
+async function createStripeSubscription(
+  priceId: string,
+  session: Session | null,
+  ctrl?: AbortController
+) {
+  const response = await apiRequest<Stripe.Subscription>('/stripe/subscription', {
+    method: 'POST',
+    session,
+    body: { priceId },
+    ctrl,
+  });
+  return response.data!;
 }
 
+async function cancelStripeSubscription(
+  subscriptionId: string,
+  session: Session | null,
+  ctrl?: AbortController
+) {
+  const response = await apiRequest<Stripe.Subscription>('/stripe/cancel-subscription', {
+    method: 'POST',
+    session,
+    body: { subscriptionId },
+    ctrl,
+  });
+  return response.data!;
+}
 // ============ MicroCMS ============
 async function fetchBlog(id: string, ctrl?: AbortController) {
   const url = process.env.EXPO_PUBLIC_MICROCMS_URI! + '/blogs/' + id;
@@ -335,5 +382,8 @@ export {
   updateProfile,
   fetchBlog,
   fetchBlogList,
+  createPaymentSheet,
   createStripeCustomer,
+  createStripeSubscription,
+  cancelStripeSubscription,
 };

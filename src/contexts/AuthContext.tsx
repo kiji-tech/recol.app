@@ -1,20 +1,19 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../libs/supabase';
-import { createStripeCustomer, getProfile, updateProfile } from '../libs/ApiService';
+import { getProfile } from '../libs/ApiService';
 import { Tables } from '../libs/database.types';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { LogUtil } from '../libs/LogUtil';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
-import { Alert } from 'react-native';
-import { StripeUtil } from '../../supabase/functions/libs/StripeUtil';
 
 // 型定義
 export type AuthContextType = {
   user: User | null;
   session: Session | null;
   profile: Tables<'profile'> | null;
+  fetchProfile: () => Promise<void>;
   setProfile: (profile: Tables<'profile'> | null) => void;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -147,21 +146,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  /** プロフィール取得 */
   const fetchProfile = async () => {
     if (!session) return;
     getProfile(session)
       .then(async (data) => {
         setProfile(data);
-        if (!data.stripe_customer_id) {
-          // stripの顧客IDを作成・紐づけ・更新する
-          await createStripeCustomer(session);
-          // 更新完了後､再起実行
-          //   await fetchProfile();
-        }
       })
       .catch((e) => {
         if (e && e.message) {
-          //   Alert.alert(e.message);
           setProfile(null);
         }
       });
@@ -221,6 +214,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user,
         session,
         profile,
+        fetchProfile,
         setProfile,
         loading,
         login,

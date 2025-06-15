@@ -32,7 +32,7 @@ export default function PlanCreator() {
           Alert.alert(e.message);
         }
         if (e.code.startsWith('PP')) {
-          router.push('/(modal)/PaymentPlan');
+          router.push('/(payment)/PaymentPlan');
         }
       });
   };

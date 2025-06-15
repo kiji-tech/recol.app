@@ -132,6 +132,19 @@ export default function Settings() {
             onPress={() => router.push('/(settings)/ProfileEditorScreen')}
           />
         </View>
+        <View className="pb-4 border-b border-light-border dark:border-dark-border">
+          <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">プラン</Text>
+          <Text className="px-4 py-2 text-md text-light-text dark:text-dark-text">
+            {profile?.payment_plan == 'Free' ? '無料プラン' : 'プレミアムプラン'}
+          </Text>
+          {profile?.payment_plan == 'Free' && (
+            <Button
+              theme="info"
+              text="プレミアムプランを購入する"
+              onPress={() => router.push('/(payment)/PaymentPlan')}
+            />
+          )}
+        </View>
 
         {/* アプリ設定 */}
         <View className="mb-4">

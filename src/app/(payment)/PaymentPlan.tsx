@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { BackgroundView, Header } from '@/src/components';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { LogUtil } from '@/src/libs/LogUtil';
 import { useAuth } from '@/src/contexts/AuthContext';
-import {
-  cancelStripeSubscription,
-  createStripeCustomer,
-  createStripeSubscription,
-} from '@/src/libs/ApiService';
-import { Tables } from '@/src/libs/database.types';
-import * as Linking from 'expo-linking';
-import { initPaymentSheet, PaymentSheetError, useStripe } from '@stripe/stripe-react-native';
+import { useRouter } from 'expo-router';
+import { PaymentSheetError, useStripe } from '@stripe/stripe-react-native';
+import { cancelStripeSubscription, createStripeSubscription } from '@/src/libs/ApiService';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 const PlanItem = ({ title, free, premium }: { title: string; free: string; premium: string }) => {
   return (
@@ -25,16 +19,25 @@ const PlanItem = ({ title, free, premium }: { title: string; free: string; premi
   );
 };
 
-export default function SampleScreen() {
+export default function PaymentPlan() {
   const router = useRouter();
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
-  const { user, profile, session, setProfile } = useAuth();
+  const { session } = useAuth();
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
 
   // === Method ===
   const setupSubscription = async (type: 'm' | 'y') => {
+    LogUtil.log('setup subscription.');
     const priceId =
-      type === 'm' ? 'price_1RZor5CrMIHt8njNWsI17j1j' : 'price_1RZor5CrMIHt8njNWsI17j1j';
+      type == 'm'
+        ? process.env.EXPO_PUBLIC_STRIPE_MONTHLY_PLAN
+        : process.env.EXPO_PUBLIC_STRIPE_YEARLY_PLAN;
+    if (!priceId) {
+      LogUtil.log({ type, priceId }, { level: 'error' });
+      throw new Error('Price ID is not set');
+    }
+    LogUtil.log({ priceId }, { level: 'info' });
+
     const subscription = await createStripeSubscription(priceId, session);
     setSubscriptionId(subscription.id);
     initPaymentSheet({
@@ -45,29 +48,24 @@ export default function SampleScreen() {
   };
 
   const handlePayment = async (type: 'm' | 'y') => {
-    LogUtil.log({ type }, { level: 'info' });
+    LogUtil.log('handle payment.');
     // Subscriptionの作成
     await setupSubscription(type);
 
     // PaymentSheetの表示
     const { error } = await presentPaymentSheet();
-    if (error) {
-      if (error.code === PaymentSheetError.Failed) {
-        // Handle failed
-      } else if (error.code === PaymentSheetError.Canceled) {
-        // Handle canceled
-        if (subscriptionId) {
-          cancelStripeSubscription(subscriptionId, session);
-        }
+    if (
+      error &&
+      (error.code === PaymentSheetError.Failed || error.code === PaymentSheetError.Canceled)
+    ) {
+      if (subscriptionId) {
+        await cancelStripeSubscription(subscriptionId, session);
       }
     } else {
       // Payment succeeded
-      if (subscriptionId) {
-        cancelStripeSubscription(subscriptionId, session);
-      }
+      // 支払い完了画面へ遷移
+      router.push('/(payment)/SubscriptionComplete');
     }
-    // 支払い完了画面へ遷移
-    router.push('/(payment)/SubscriptionComplete');
   };
 
   // === Render ===
@@ -107,7 +105,10 @@ export default function SampleScreen() {
               <Text className="text-sm text-light-text dark:text-dark-text"> / 月額</Text>
             </TouchableOpacity>
             {/* 年額 */}
-            <TouchableOpacity className="flex flex-col items-center justify-center bg-light-danger dark:bg-dark-danger rounded-md w-1/2 h-28 p-4">
+            <TouchableOpacity
+              className="flex flex-col items-center justify-center bg-light-danger dark:bg-dark-danger rounded-md w-1/2 h-28 p-4"
+              onPress={() => handlePayment('y')}
+            >
               <Text className="text-3xl text-light-text dark:text-dark-text">4,000円</Text>
               <Text className="text-md text-light-text dark:text-dark-text"> / 年額</Text>
             </TouchableOpacity>

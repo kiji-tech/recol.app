@@ -195,6 +195,60 @@ export type Database = {
           },
         ]
       }
+      subscription: {
+        Row: {
+          canceled_at: string | null
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          customer_id: string
+          end_at: string | null
+          invoice_id: string
+          price_id: string
+          start_at: string | null
+          status: string | null
+          trial_end: string | null
+          trial_start: string | null
+          uid: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          canceled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          customer_id: string
+          end_at?: string | null
+          invoice_id: string
+          price_id: string
+          start_at?: string | null
+          status?: string | null
+          trial_end?: string | null
+          trial_start?: string | null
+          uid: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          canceled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          customer_id?: string
+          end_at?: string | null
+          invoice_id?: string
+          price_id?: string
+          start_at?: string | null
+          status?: string | null
+          trial_end?: string | null
+          trial_start?: string | null
+          uid?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

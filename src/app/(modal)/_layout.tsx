@@ -7,7 +7,6 @@ const RouteLayout = () => {
     <Stack>
       <Stack.Screen name="PlanCreator" options={{ title: '計画登録', headerShown: false }} />
       <Stack.Screen name="PlanEditor" options={{ title: '計画編集', headerShown: false }} />
-      <Stack.Screen name="PaymentPlan" options={{ title: 'プラン更新', headerShown: false }} />
       <Stack.Screen name="NotFound" options={{ title: '404 NotFound', headerShown: true }} />
     </Stack>
   );

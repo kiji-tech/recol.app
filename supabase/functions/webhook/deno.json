@@ -1,0 +1,7 @@
+{
+    "imports": {
+        "dayjs": "npm:dayjs@1.11.13",
+        "dayjs/utc": "npm:dayjs/plugin/utc",
+        "stripe": "npm:stripe@17.1.0"
+    }
+}

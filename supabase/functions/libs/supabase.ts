@@ -1,22 +1,24 @@
-import { createClient, SupabaseClient } from 'jsr:@supabase/supabase-js@2';
+import { createClient, SupabaseClient } from 'npm:@supabase/supabase-js';
 
 /**
  * Supabaseクライアントを生成する
  * @param c {Hono.Context} context
  * @returns {SupabaseClient} supabase client
  */
-const generateSupabase = (c: Hono.Context) => {
-  return createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? '', {
+const generateSupabase = (c: Hono.Context, admin?: boolean = false) => {
+  const key = admin
+    ? (Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '')
+    : (Deno.env.get('SUPABASE_ANON_KEY') ?? '');
+
+  const authorization = c.req.header('Authorization') ?? '';
+  const headers = authorization ? { Authorization: authorization } : {};
+  return createClient(Deno.env.get('SUPABASE_URL') ?? '', key, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
     },
     global: {
-      headers: c
-        ? {
-            Authorization: c.req.header('Authorization') ?? '',
-          }
-        : {},
+      headers: headers,
     },
   });
 };

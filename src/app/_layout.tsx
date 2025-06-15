@@ -4,7 +4,7 @@ import { router, Stack } from 'expo-router';
 import { supabase } from '../libs/supabase';
 import { PlanProvider } from '../contexts/PlanContext';
 import { AuthProvider } from '../contexts/AuthContext';
-import { View } from 'react-native';
+import { Linking, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import {
@@ -19,7 +19,7 @@ import mobileAds from 'react-native-google-mobile-ads';
 import { MenuProvider } from 'react-native-popup-menu';
 import * as Font from 'expo-font';
 import { LocationProvider } from '../contexts/LocationContext';
-import { StripeProvider } from '@stripe/stripe-react-native';
+import { StripeProvider, useStripe } from '@stripe/stripe-react-native';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -110,6 +110,38 @@ const Layout = () => {
 };
 
 const RouteLayout = () => {
+  // === Stripe Redirect処理 ===
+  const { handleURLCallback } = useStripe();
+
+  const handleDeepLink = useCallback(
+    async (url: string | null) => {
+      if (url) {
+        const stripeHandled = await handleURLCallback(url);
+        if (stripeHandled) {
+          // This was a Stripe URL - you can return or add extra handling here as you see fit
+        } else {
+          // This was NOT a Stripe URL – handle as you normally would
+        }
+      }
+    },
+    [handleURLCallback]
+  );
+
+  useEffect(() => {
+    const getUrlAsync = async () => {
+      const initialUrl = await Linking.getInitialURL();
+      handleDeepLink(initialUrl);
+    };
+
+    getUrlAsync();
+
+    const deepLinkListener = Linking.addEventListener('url', (event: { url: string }) => {
+      handleDeepLink(event.url);
+    });
+
+    return () => deepLinkListener.remove();
+  }, [handleDeepLink]);
+
   return (
     <AuthProvider>
       <StripeProvider publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}>
