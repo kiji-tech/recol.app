@@ -12,15 +12,13 @@ import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts/PlanContext';
 
 const PlanComponent = () => {
-    // === Member ===
-    const { profile } = useAuth();
-    
-    // === Method ===
-    const handleChangePlan = () => {
+  // === Member ===
+  const { profile } = useAuth();
 
-    }
+  // === Method ===
+  const handleChangePlan = () => {};
 
-    const handleCancelPlan = () => {
+  const handleCancelPlan = () => {};
 
   return (
     <View>
@@ -36,11 +34,7 @@ const PlanComponent = () => {
             onPress={handleChangePlan}
           />
           {/* 解約 */}
-          <Button
-            theme="danger"
-            text="プランを解約する"
-            onPress={handleCancelPlan}
-          />
+          <Button theme="danger" text="プランを解約する" onPress={handleCancelPlan} />
         </>
       )}
       {/* プラン更新 */}
