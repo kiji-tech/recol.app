@@ -12,9 +12,11 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 export type AuthContextType = {
   user: User | null;
   session: Session | null;
-  profile: Tables<'profile'> | null;
+  profile: (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null;
   fetchProfile: () => Promise<void>;
-  setProfile: (profile: Tables<'profile'> | null) => void;
+  setProfile: (
+    profile: (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null
+  ) => void;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -30,7 +32,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<Tables<'profile'> | null>(null);
+  const [profile, setProfile] = useState<
+    (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null
+  >(null);
   const [loading, setLoading] = useState(true);
 
   // ログイン関数

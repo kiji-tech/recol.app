@@ -11,6 +11,50 @@ import { STORAGE_KEYS } from '@/src/libs/ConstValue';
 import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts/PlanContext';
 
+const PlanComponent = () => {
+    // === Member ===
+    const { profile } = useAuth();
+    
+    // === Method ===
+    const handleChangePlan = () => {
+
+    }
+
+    const handleCancelPlan = () => {
+
+  return (
+    <View>
+      <Text>{profile!.subscription.length > 0 ? 'プレミアムプラン' : '無料プラン'}</Text>
+      {profile!.subscription.length > 0 && (
+        <>
+          {/* プランの有効期限 */}
+          <Text>有効期限: {profile!.subscription[0].current_period_end}</Text>
+          {/* プラン切り替え */}
+          <Button
+            theme="info"
+            text={`${profile!.subscription[0].price_id == '${process.env.EXPO_PUBLIC_STRIPE_PREMIUM_MONTHLY_PRICE_ID}' ? '年' : '月'}プランを切り替える`}
+            onPress={handleChangePlan}
+          />
+          {/* 解約 */}
+          <Button
+            theme="danger"
+            text="プランを解約する"
+            onPress={handleCancelPlan}
+          />
+        </>
+      )}
+      {/* プラン更新 */}
+      {profile!.subscription.length > 0 && (
+        <Button
+          theme="info"
+          text="プランを更新する"
+          onPress={() => router.push('/(payment)/PaymentPlan')}
+        />
+      )}
+    </View>
+  );
+};
+
 interface SettingItemProps {
   icon: keyof typeof Ionicons.glyphMap;
   title: string;
@@ -135,9 +179,9 @@ export default function Settings() {
         <View className="pb-4 border-b border-light-border dark:border-dark-border">
           <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">プラン</Text>
           <Text className="px-4 py-2 text-md text-light-text dark:text-dark-text">
-            {profile?.payment_plan == 'Free' ? '無料プラン' : 'プレミアムプラン'}
+            {profile!.subscription.length > 0 ? 'プレミアムプラン' : '無料プラン'}
           </Text>
-          {profile?.payment_plan == 'Free' && (
+          {profile?.subscription.length == 0 && (
             <Button
               theme="info"
               text="プレミアムプランを購入する"

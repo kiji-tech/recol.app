@@ -12,8 +12,10 @@ const get = async (c: Hono.Context) => {
   }
   const { data, error } = await supabase
     .from('profile')
-    .select('*')
+    .select('*, subscription(*)')
     .eq('uid', user.id)
+    .eq('subscription.user_id', user.id)
+    .eq('subscription.status', 'active')
     .maybeSingle();
   if (error) {
     console.error(error);
@@ -80,7 +82,9 @@ const update = async (c: Hono.Context) => {
   const { data, error } = await supabase
     .from('profile')
     .upsert({ uid: user.id, display_name, avatar_url: finalAvatarUrl }, { onConflict: 'uid' })
-    .select('*')
+    .select('*, subscription(*)')
+    .eq('subscription.user_id', user.id)
+    .eq('subscription.status', 'active')
     .maybeSingle();
 
   if (error) {

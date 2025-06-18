@@ -260,11 +260,14 @@ async function deletePlanMedias(
 
 // ============ Profile ============
 async function getProfile(session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Tables<'profile'>>('/profile', {
-    method: 'GET',
-    session,
-    ctrl,
-  });
+  const response = await apiRequest<Tables<'profile'> & { subscription: Tables<'subscription'>[] }>(
+    '/profile',
+    {
+      method: 'GET',
+      session,
+      ctrl,
+    }
+  );
   return response.data!;
 }
 
@@ -273,15 +276,18 @@ async function updateProfile(
   session: Session | null,
   ctrl?: AbortController
 ) {
-  const response = await apiRequest<Tables<'profile'>>('/profile', {
-    method: 'PUT',
-    session,
-    body: {
-      ...profile,
-      avatar_url: profile.avatar_url || null,
-    },
-    ctrl,
-  });
+  const response = await apiRequest<Tables<'profile'> & { subscription: Tables<'subscription'>[] }>(
+    '/profile',
+    {
+      method: 'PUT',
+      session,
+      body: {
+        ...profile,
+        avatar_url: profile.avatar_url || null,
+      },
+      ctrl,
+    }
+  );
   return response.data!;
 }
 

@@ -14,9 +14,6 @@
             "icon": "./assets/images/icon.png",
             "supportsTablet": true,
             "bundleIdentifier": "com.libetech.recol",
-            "config": {
-                "googleMapsApiKey": "AIzaSyDZg8Pd1pIXO0NWl1lWo0JJM1UCixBqarQ"
-            },
             "infoPlist": {
                 "ITSAppUsesNonExemptEncryption": false
             },
@@ -27,11 +24,6 @@
         "android": {
             "package": "com.libetech.recol",
             "packageName": "com.libetech.recol",
-            "config": {
-                "googleMaps": {
-                    "apiKey": "AIzaSyB3kyCKbNsUC_mcyeZpiiT3OWISKfe2Joo"
-                }
-            },
             "permissions": [
                 "android.permission.ACCESS_COARSE_LOCATION",
                 "android.permission.ACCESS_FINE_LOCATION"

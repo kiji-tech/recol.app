@@ -75,7 +75,7 @@ const postSubscription = async (c: Hono.Context) => {
   const customerId = await getCustomerId(c);
   console.log({ priceId, customerId });
   const subscription = await StripeUtil.createSubscription(customerId, priceId);
-
+  console.log({ subscription });
   return c.json(subscription);
 };
 
@@ -86,7 +86,7 @@ const cancelSubscription = async (c: Hono.Context) => {
   if (!user) {
     return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
-  const subscriptionId = c.req.param('subscriptionId');
+  const { subscriptionId } = c.req.json();
   const subscription = await StripeUtil.cancelSubscription(subscriptionId);
   return c.json(subscription);
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { BackgroundView, Header } from '@/src/components';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useRouter } from 'expo-router';
@@ -24,6 +24,7 @@ export default function PaymentPlan() {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const { session } = useAuth();
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // === Method ===
   const setupSubscription = async (type: 'm' | 'y') => {
@@ -40,7 +41,7 @@ export default function PaymentPlan() {
 
     const subscription = await createStripeSubscription(priceId, session);
     setSubscriptionId(subscription.id);
-    initPaymentSheet({
+    await initPaymentSheet({
       merchantDisplayName: `Re:Col プレミアムプラン ${type === 'm' ? '月額' : '年額'}`,
       paymentIntentClientSecret: subscription.latest_invoice?.confirmation_secret?.client_secret,
       allowsDelayedPaymentMethods: true,
@@ -49,6 +50,7 @@ export default function PaymentPlan() {
 
   const handlePayment = async (type: 'm' | 'y') => {
     LogUtil.log('handle payment.');
+    setIsLoading(true);
     // Subscriptionの作成
     await setupSubscription(type);
 
@@ -58,6 +60,8 @@ export default function PaymentPlan() {
       error &&
       (error.code === PaymentSheetError.Failed || error.code === PaymentSheetError.Canceled)
     ) {
+      Alert.alert(`支払い${subscriptionId}に失敗しました.`, JSON.stringify(error));
+      LogUtil.log({ error }, { level: 'error', notify: true });
       if (subscriptionId) {
         await cancelStripeSubscription(subscriptionId, session);
       }
