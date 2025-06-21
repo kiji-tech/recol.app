@@ -21,7 +21,6 @@ export default function SignInScreen() {
   };
 
   const handleSignInWithPassword = async () => {
-    // verify
     if (!verify()) return;
     login(email, password)
       .then(() => {

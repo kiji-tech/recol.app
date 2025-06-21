@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { BackgroundView, Header } from '@/src/components';
+import { BackgroundView, Button, Header } from '@/src/components';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { PaymentSheetError, useStripe } from '@stripe/stripe-react-native';
 import { cancelStripeSubscription, createStripeSubscription } from '@/src/libs/ApiService';
 import { LogUtil } from '@/src/libs/LogUtil';
+import dayjs from 'dayjs';
+import { SubscriptionUtil } from '@/src/libs/SubscriptionUtil';
 
 const PlanItem = ({ title, free, premium }: { title: string; free: string; premium: string }) => {
   return (
@@ -19,14 +21,50 @@ const PlanItem = ({ title, free, premium }: { title: string; free: string; premi
   );
 };
 
+const PlanTable = () => {
+  return (
+    <View className="">
+      <View className="flex flex-row justify-between border-b border-light-border dark:border-dark-border">
+        <Text className="p-4 flex-1" />
+        <Text className="p-4 w-32 text-center text-light-text dark:text-dark-text ">フリー</Text>
+        <Text className="p-4 w-40 text-center text-light-text dark:text-dark-text font-bold">
+          プレミアム
+        </Text>
+      </View>
+      <PlanItem title="プラン数" free="4プラン / 年" premium="20プラン / 年" />
+      <PlanItem title="ストレージ容量" free="1GB / プラン" premium="100GB / プラン" />
+      <PlanItem title="広告表示" free="○" premium="-" />
+    </View>
+  );
+};
+
+const SubscriptionInfo = () => {
+  const { profile } = useAuth();
+  return (
+    <View>
+      <Text className="text-light-text dark:text-dark-text">
+        {SubscriptionUtil.isMonthly(profile!.subscription) ? '月額' : '年額'}プランに契約中です。
+      </Text>
+      <Text className="text-light-text dark:text-dark-text">
+        プランを変更した場合は､今の有効期限に加算します｡
+      </Text>
+      <Text className="text-light-text dark:text-dark-text">
+        有効期限は､{dayjs(profile!.subscription[0].current_period_end).format('YYYY-MM-DD')}
+        までです。
+      </Text>
+    </View>
+  );
+};
+
 export default function PaymentPlan() {
   const router = useRouter();
-  const { initPaymentSheet, presentPaymentSheet } = useStripe();
-  const { session } = useAuth();
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const { session, profile } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   // === Method ===
+  /** Stripeの支払いシートをセットアップ */
   const setupSubscription = async (type: 'm' | 'y') => {
     LogUtil.log('setup subscription.');
     const priceId =
@@ -48,6 +86,7 @@ export default function PaymentPlan() {
     });
   };
 
+  /** プレミアムプランの支払い */
   const handlePayment = async (type: 'm' | 'y') => {
     LogUtil.log('handle payment.');
     setIsLoading(true);
@@ -60,9 +99,9 @@ export default function PaymentPlan() {
       error &&
       (error.code === PaymentSheetError.Failed || error.code === PaymentSheetError.Canceled)
     ) {
-      Alert.alert(`支払い${subscriptionId}に失敗しました.`, JSON.stringify(error));
       LogUtil.log({ error }, { level: 'error', notify: true });
       if (subscriptionId) {
+        Alert.alert(`支払い${subscriptionId}に失敗しました.`, JSON.stringify(error));
         await cancelStripeSubscription(subscriptionId, session);
       }
     } else {
@@ -72,50 +111,74 @@ export default function PaymentPlan() {
     }
   };
 
+  /** プレミアムプランの解約 */
+  const handleCancel = async () => {
+    LogUtil.log('handle cancel.');
+
+    if (!profile!.subscription || profile!.subscription.length == 0) {
+      Alert.alert('プレミアムプランには契約していません。');
+      return;
+    }
+
+    Alert.alert(
+      'プレミアムプランを解約しますか？',
+      `${dayjs(profile!.subscription[0].current_period_end).format('YYYY-MM-DD')}までは`,
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        {
+          text: '解約する',
+          style: 'destructive',
+          onPress: async () => {
+            setIsLoading(true);
+            await cancelStripeSubscription(profile!.subscription[0].uid, session);
+            setIsLoading(false);
+          },
+        },
+      ]
+    );
+  };
+
   // === Render ===
   return (
     <BackgroundView>
-      <Header title="プレミアムプラン紹介" onBack={() => router.back()} />
+      <Header title="プレミアムプラン" onBack={() => router.back()} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className="flex flex-col gap-8 pb-8">
           {/* 前段 */}
-          <View>
-            <Text className="text-light-text dark:text-dark-text">プレミアムプランにすると...</Text>
-          </View>
+          <View></View>
           {/* 比較表 */}
-          <View className="">
-            <View className="flex flex-row justify-between border-b border-light-border dark:border-dark-border">
-              <Text className="p-4 flex-1" />
-              <Text className="p-4 w-32 text-center text-light-text dark:text-dark-text ">
-                フリー
-              </Text>
-              <Text className="p-4 w-40 text-center text-light-text dark:text-dark-text font-bold">
-                プレミアム
-              </Text>
-            </View>
-            <PlanItem title="プラン数" free="4プラン / 年" premium="20プラン / 年" />
-            <PlanItem title="ストレージ容量" free="1GB / プラン" premium="100GB / プラン" />
-            <PlanItem title="広告表示" free="○" premium="-" />
-          </View>
+          <PlanTable />
+
+          {profile!.subscription && profile!.subscription.length > 0 && <SubscriptionInfo />}
 
           {/* プレミアムプランはこちらから */}
           <View className="flex flex-row justify-around items-start gap-2">
             {/* 月額 */}
-            <TouchableOpacity
-              className="flex flex-col items-center justify-center bg-light-warn dark:bg-dark-warn rounded-md w-1/2 h-28 p-4"
-              onPress={() => handlePayment('m')}
-            >
-              <Text className="text-3xl text-light-text dark:text-dark-text">400円</Text>
-              <Text className="text-sm text-light-text dark:text-dark-text"> / 月額</Text>
-            </TouchableOpacity>
+            {!SubscriptionUtil.isMonthly(profile!.subscription) && (
+              <TouchableOpacity
+                className="flex flex-col items-center justify-center bg-light-warn dark:bg-dark-warn rounded-md w-1/2 h-28 p-4"
+                onPress={() => handlePayment('m')}
+                disabled={isLoading && SubscriptionUtil.isMonthly(profile!.subscription)}
+              >
+                <Text className="text-3xl text-light-text dark:text-dark-text">400円</Text>
+                <Text className="text-sm text-light-text dark:text-dark-text"> / 月額</Text>
+              </TouchableOpacity>
+            )}
             {/* 年額 */}
-            <TouchableOpacity
-              className="flex flex-col items-center justify-center bg-light-danger dark:bg-dark-danger rounded-md w-1/2 h-28 p-4"
-              onPress={() => handlePayment('y')}
-            >
-              <Text className="text-3xl text-light-text dark:text-dark-text">4,000円</Text>
-              <Text className="text-md text-light-text dark:text-dark-text"> / 年額</Text>
-            </TouchableOpacity>
+            {!SubscriptionUtil.isYearly(profile!.subscription) && (
+              <TouchableOpacity
+                className="flex flex-col items-center justify-center bg-light-danger dark:bg-dark-danger rounded-md w-1/2 h-28 p-4"
+                onPress={() => handlePayment('y')}
+                disabled={isLoading && SubscriptionUtil.isYearly(profile!.subscription)}
+              >
+                <Text className="text-3xl text-light-text dark:text-dark-text">4,000円</Text>
+                <Text className="text-md text-light-text dark:text-dark-text"> / 年額</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+          {/* 解約 */}
+          <View className="flex flex-row justify-center w-full">
+            <Button text="解約する" onPress={handleCancel} disabled={isLoading} theme="danger" />
           </View>
         </View>
       </ScrollView>

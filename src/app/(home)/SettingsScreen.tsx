@@ -10,42 +10,45 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '@/src/libs/ConstValue';
 import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts/PlanContext';
+import dayjs from 'dayjs';
 
 const PlanComponent = () => {
   // === Member ===
   const { profile } = useAuth();
+  const { isDarkMode } = useTheme();
+
+  console.log({ profile });
 
   // === Method ===
-  const handleChangePlan = () => {};
-
-  const handleCancelPlan = () => {};
 
   return (
-    <View>
-      <Text>{profile!.subscription.length > 0 ? 'プレミアムプラン' : '無料プラン'}</Text>
-      {profile!.subscription.length > 0 && (
-        <>
-          {/* プランの有効期限 */}
-          <Text>有効期限: {profile!.subscription[0].current_period_end}</Text>
+    <TouchableOpacity
+      className="flex flex-row items-start justify-between"
+      onPress={() => router.push('/(payment)/PaymentPlan')}
+    >
+      {profile!.subscription && profile!.subscription.length === 0 && (
+        <View className="flex flex-row items-start justify-between ">
+          <Text className="text-light-text dark:text-dark-text">無料プラン</Text>
           {/* プラン切り替え */}
           <Button
             theme="info"
-            text={`${profile!.subscription[0].price_id == '${process.env.EXPO_PUBLIC_STRIPE_PREMIUM_MONTHLY_PRICE_ID}' ? '年' : '月'}プランを切り替える`}
-            onPress={handleChangePlan}
+            text="プランを更新する"
+            onPress={() => router.push('/(payment)/PaymentPlan')}
           />
-          {/* 解約 */}
-          <Button theme="danger" text="プランを解約する" onPress={handleCancelPlan} />
-        </>
+        </View>
       )}
-      {/* プラン更新 */}
-      {profile!.subscription.length > 0 && (
-        <Button
-          theme="info"
-          text="プランを更新する"
-          onPress={() => router.push('/(payment)/PaymentPlan')}
-        />
+
+      {profile!.subscription && profile!.subscription.length > 0 && (
+        <View className="flex-col items-start justify-between">
+          <Text className="text-light-text dark:text-dark-text mb-2 text-lg">プレミアムプラン</Text>
+          {/* プランの有効期限 */}
+          <Text className="text-light-text dark:text-dark-text mb-2 text-sm">
+            有効期限: {dayjs(profile?.subscription[0].current_period_end).format('YYYY-MM-DD')}
+          </Text>
+        </View>
       )}
-    </View>
+      <Ionicons name="chevron-forward" size={20} color={isDarkMode ? 'white' : 'black'} />
+    </TouchableOpacity>
   );
 };
 
@@ -172,16 +175,9 @@ export default function Settings() {
         </View>
         <View className="pb-4 border-b border-light-border dark:border-dark-border">
           <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">プラン</Text>
-          <Text className="px-4 py-2 text-md text-light-text dark:text-dark-text">
-            {profile!.subscription.length > 0 ? 'プレミアムプラン' : '無料プラン'}
-          </Text>
-          {profile?.subscription.length == 0 && (
-            <Button
-              theme="info"
-              text="プレミアムプランを購入する"
-              onPress={() => router.push('/(payment)/PaymentPlan')}
-            />
-          )}
+          <View className="px-4 py-2 text-md text-light-text dark:text-dark-text">
+            <PlanComponent />
+          </View>
         </View>
 
         {/* アプリ設定 */}

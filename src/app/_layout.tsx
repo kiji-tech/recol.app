@@ -103,6 +103,7 @@ const Layout = () => {
           name="(scheduleEditor)"
           options={{ title: 'スケジュール編集', headerShown: false }}
         />
+        <Stack.Screen name="(payment)" options={{ title: 'プラン更新', headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ title: 'ログイン', headerShown: false }} />
       </Stack>
     </View>

@@ -1,6 +1,7 @@
 import { Hono } from 'jsr:@hono/hono';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
+import { LogUtil } from '../libs/LogUtil.ts';
 const app = new Hono().basePath('/profile');
 
 const get = async (c: Hono.Context) => {
@@ -20,6 +21,23 @@ const get = async (c: Hono.Context) => {
   if (error) {
     console.error(error);
     return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
+  }
+
+  if (!data) {
+    // プロフィールがない場合は作成して返却する
+    LogUtil.log(`${user.id}のプロフィールがないため作成します`, { level: 'info' });
+    const { data: newData, error: newError } = await supabase
+      .from('profile')
+      .insert({ uid: user.id })
+      .select('*, subscription(*)')
+      .eq('subscription.user_id', user.id)
+      .eq('subscription.status', 'active')
+      .maybeSingle();
+    if (newError) {
+      console.error(newError);
+      return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
+    }
+    return c.json(newData);
   }
 
   return c.json(data);
