@@ -29,7 +29,6 @@ export default function MediaScreen() {
   // === Method ===
   const fetchImages = useCallback(async () => {
     if (plan) {
-      setIsLoading(true);
       fetchPlanMediaList(plan.uid!, session)
         .then((data) => {
           setImages(data);
@@ -38,9 +37,6 @@ export default function MediaScreen() {
           if (e && e.message) {
             Alert.alert(e.message);
           }
-        })
-        .finally(() => {
-          setIsLoading(false);
         });
     }
   }, [plan, session]);
@@ -85,16 +81,18 @@ export default function MediaScreen() {
    * 画像を追加・アップロード
    */
   const handleAddImages = async () => {
+    setIsLoading(true);
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
       aspect: [1, 1],
-      quality: 1,
+      quality: 0.75,
       allowsMultipleSelection: true,
       base64: true,
     });
 
     if (result.canceled) {
+      setIsLoading(false);
       return;
     }
     const images = result.assets.map((a) => a.uri);
@@ -118,11 +116,11 @@ export default function MediaScreen() {
         : null;
       if (base64Image) {
         // データのアップロード
-        setUploadedImage((prev) => [...prev, base64Image]);
         await uploadPlanMedias(plan!.uid!, [base64Image], session)
           .then(() => {
             // 画像一覧を更新
             fetchImages();
+            setUploadedImage((prev) => [...prev, base64Image]);
           })
           .catch((e) => {
             if (e && e.message) {
@@ -133,6 +131,7 @@ export default function MediaScreen() {
     }
     setUploadedImage([]);
     setAddImage([]);
+    setIsLoading(false);
   };
 
   const handleDeleteImages = () => {
@@ -197,9 +196,9 @@ export default function MediaScreen() {
       )}
       {/* アニメーションバー  */}
       {addImage.length > 0 && (
-        <View className="absolute top-[128px] w-full z-50">
+        <View className="absolute top-[120px] w-full z-50">
           <Progress.Bar
-            progress={uploadedImage.length / addImage.length}
+            // progress={uploadedImage.length / addImage.length}
             width={Dimensions.get('window').width}
             height={10}
             color={isDarkMode ? '#17AC38' : '#B5F3C3'}
@@ -210,6 +209,11 @@ export default function MediaScreen() {
               zIndex: 50,
             }}
           />
+          <View className="flex flex-row justify-center items-center">
+            <Text className="text-light-text dark:text-dark-text text-md">
+              {uploadedImage.length} / {addImage.length}
+            </Text>
+          </View>
         </View>
       )}
 
@@ -248,12 +252,16 @@ export default function MediaScreen() {
             icon={<AntDesign name="delete" size={24} color={isDarkMode ? 'white' : 'black'} />}
             onPress={handleDeleteImages}
             theme="danger"
+            disabled={isLoading}
+            loading={isLoading}
           />
         )}
         {mode === 'normal' && (
           <IconButton
             icon={<AntDesign name="plus" size={24} color={isDarkMode ? 'white' : 'black'} />}
             onPress={handleAddImages}
+            disabled={isLoading}
+            loading={isLoading}
           />
         )}
       </View>
