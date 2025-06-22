@@ -46,7 +46,7 @@ const maximumVerifyChecker = async (supabase: SupabaseClient, user: User) => {
 const create = async (c: Hono.Context) => {
   console.log('[POST] plan');
   const supabase = generateSupabase(c);
-  const { title } = await c.req.json();
+  const { title, memo } = await c.req.json();
 
   const user = await getUser(c, supabase);
   if (!user) {
@@ -60,7 +60,7 @@ const create = async (c: Hono.Context) => {
   // planを作成
   const { data, error } = await supabase
     .from('plan')
-    .insert({ title, user_id: user.id })
+    .insert({ title, memo, user_id: user.id })
     .select('*');
 
   if (error) {
