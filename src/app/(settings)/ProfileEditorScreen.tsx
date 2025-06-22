@@ -64,7 +64,7 @@ export default function ProfileEditorScreen() {
       } as Tables<'profile'>,
       session
     )
-      .then((profile: Tables<'profile'>) => {
+      .then((profile: Tables<'profile'> & { subscription: Tables<'subscription'>[] }) => {
         LogUtil.log(profile, {});
         setProfile(profile);
         router.back();
