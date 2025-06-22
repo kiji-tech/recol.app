@@ -12,6 +12,8 @@ import { Tables } from '@/src/libs/database.types';
 export default function PlanCreator() {
   // === Member ===
   const [title, setTitle] = useState<string>('');
+  const [memo, setMemo] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { session } = useAuth();
   const { fetchPlan } = usePlan();
   const router = useRouter();
@@ -19,7 +21,8 @@ export default function PlanCreator() {
   // === Method ===
   /** 登録 */
   const handlerSubmit = async () => {
-    createPlan({ title } as Tables<'plan'>, session)
+    setIsLoading(true);
+    createPlan({ title, memo } as Tables<'plan'>, session)
       .then(async () => {
         // リストを再取得しておく
         await fetchPlan();
@@ -34,6 +37,9 @@ export default function PlanCreator() {
         if (e.code.startsWith('PP')) {
           router.push('/(payment)/PaymentPlan');
         }
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -57,16 +63,41 @@ export default function PlanCreator() {
                 ${borderColor} text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background
                 `}
           onChangeText={(text) => setTitle(text)}
+          editable={!isLoading}
         />
       </View>
+      <View className="w-full flex flex-col justify-start items-start">
+        <Text className="text-lg font-bold text-light-text dark:text-dark-text">メモ</Text>
+        <TextInput
+          multiline={true}
+          placeholder="メモを入力してください｡"
+          placeholderTextColor="gray"
+          className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
+                        border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
+          onChangeText={(text) => setMemo(text)}
+        />
+      </View>
+
       <View>
         <Text className="text-lg font-bold text-light-text dark:text-dark-text">
           友達を追加する
         </Text>
-        <Button theme="info" text="選択" onPress={() => alert('準備中')} />
+        <Button
+          theme="info"
+          text="選択"
+          onPress={() => alert('準備中')}
+          disabled={isLoading}
+          loading={isLoading}
+        />
       </View>
       <View className="w-full justify-center">
-        <Button theme="theme" text="登録する" onPress={handlerSubmit} />
+        <Button
+          theme="theme"
+          text="登録する"
+          onPress={handlerSubmit}
+          disabled={isLoading}
+          loading={isLoading}
+        />
       </View>
     </BackgroundView>
   );
