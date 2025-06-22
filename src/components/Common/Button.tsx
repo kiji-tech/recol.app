@@ -20,17 +20,15 @@ const Button = ({
   const { isDarkMode } = useTheme();
   return (
     <TouchableOpacity
-      className="flex flex-row justify-center items-center"
-      onPress={onPress}
-      disabled={disabled}
-    >
-      {loading && <ActivityIndicator className="mr-2" color={isDarkMode ? 'white' : 'black'} />}
-      <View
-        className={`
+      className={`
             ${disabled ? 'opacity-20' : ''}
             rounded-md w-full flex justify-center item-center py-4 px-8 bg-light-${theme} dark:bg-dark-${theme}
             `}
-      >
+      onPress={onPress}
+      disabled={disabled}
+    >
+      <View className="flex flex-row justify-center items-center">
+        {loading && <ActivityIndicator className="mr-2" color={isDarkMode ? 'white' : 'black'} />}
         <Text className={`text-light-text dark:text-dark-text text-lg text-center`}>{text}</Text>
       </View>
     </TouchableOpacity>

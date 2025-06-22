@@ -82,13 +82,7 @@ export default function PlanCreator() {
         <Text className="text-lg font-bold text-light-text dark:text-dark-text">
           友達を追加する
         </Text>
-        <Button
-          theme="info"
-          text="選択"
-          onPress={() => alert('準備中')}
-          disabled={isLoading}
-          loading={isLoading}
-        />
+        <Button theme="info" text="選択" onPress={() => alert('準備中')} disabled={isLoading} />
       </View>
       <View className="w-full justify-center">
         <Button
@@ -96,7 +90,7 @@ export default function PlanCreator() {
           text="登録する"
           onPress={handlerSubmit}
           disabled={isLoading}
-          loading={isLoading}
+          loading={true || isLoading}
         />
       </View>
     </BackgroundView>
