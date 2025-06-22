@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, View, Image, Text, Alert } from 'react-native';
+import { TouchableOpacity, View, Image, Text, Alert, Dimensions } from 'react-native';
 import { Header, IconButton } from '@/src/components';
 import { useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
@@ -7,6 +7,7 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import BackgroundView from '@/src/components/BackgroundView';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import * as ImagePicker from 'expo-image-picker';
+import * as Progress from 'react-native-progress';
 import { FlatList } from 'react-native-gesture-handler';
 import { deletePlanMedias, fetchPlanMediaList, uploadPlanMedias } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
@@ -14,17 +15,21 @@ import { Tables } from '@/src/libs/database.types';
 
 export default function MediaScreen() {
   // === Member ===
-  const { isDarkMode } = useTheme();
-  const { plan } = usePlan();
-  const { session } = useAuth();
   const [images, setImages] = useState<Tables<'media'>[]>([]);
   const [selectedImages, setSelectedImages] = useState<Tables<'media'>[]>([]);
   const [mode, setMode] = useState<'normal' | 'select'>('normal');
   const [visibleImage, setVisibleImage] = useState<Tables<'media'> | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [uploadedImage, setUploadedImage] = useState<string[]>([]);
+  const [addImage, setAddImage] = useState<string[]>([]);
+  const { isDarkMode } = useTheme();
+  const { plan } = usePlan();
+  const { session } = useAuth();
 
   // === Method ===
   const fetchImages = useCallback(async () => {
     if (plan) {
+      setIsLoading(true);
       fetchPlanMediaList(plan.uid!, session)
         .then((data) => {
           setImages(data);
@@ -33,6 +38,9 @@ export default function MediaScreen() {
           if (e && e.message) {
             Alert.alert(e.message);
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   }, [plan, session]);
@@ -59,9 +67,12 @@ export default function MediaScreen() {
       if (updateImages.length === 0) {
         setMode('normal');
       }
-      console.log({ updateImages });
     }
   };
+
+  /**
+   * 画像を長押しした場合 選択モードに切り替える
+   */
   const handleLongPressImage = (item: Tables<'media'>) => {
     // 選択モード → 削除
     if (mode == 'normal') {
@@ -87,7 +98,8 @@ export default function MediaScreen() {
       return;
     }
     const images = result.assets.map((a) => a.uri);
-    const uploadImages = [];
+    setAddImage(images);
+    setUploadedImage([]);
     for (const image of images) {
       const base64Image = image
         ? await fetch(image)
@@ -105,21 +117,22 @@ export default function MediaScreen() {
             })
         : null;
       if (base64Image) {
-        uploadImages.push(base64Image);
+        // データのアップロード
+        setUploadedImage((prev) => [...prev, base64Image]);
+        await uploadPlanMedias(plan!.uid!, [base64Image], session)
+          .then(() => {
+            // 画像一覧を更新
+            fetchImages();
+          })
+          .catch((e) => {
+            if (e && e.message) {
+              Alert.alert(e.message);
+            }
+          });
       }
     }
-
-    // データのアップロード
-    await uploadPlanMedias(plan!.uid!, uploadImages, session)
-      .then(() => {
-        // 画像一覧を更新
-        fetchImages();
-      })
-      .catch((e) => {
-        if (e && e.message) {
-          Alert.alert(e.message);
-        }
-      });
+    setUploadedImage([]);
+    setAddImage([]);
   };
 
   const handleDeleteImages = () => {
@@ -180,6 +193,23 @@ export default function MediaScreen() {
           <Text className="text-light-text dark:text-dark-text text-xl">
             メディアは登録されていません
           </Text>
+        </View>
+      )}
+      {/* アニメーションバー  */}
+      {addImage.length > 0 && (
+        <View className="absolute top-[128px] w-full z-50">
+          <Progress.Bar
+            progress={uploadedImage.length / addImage.length}
+            width={Dimensions.get('window').width}
+            height={10}
+            color={isDarkMode ? '#17AC38' : '#B5F3C3'}
+            unfilledColor={isDarkMode ? '#5A5A5A' : '#D7D7D7'}
+            borderWidth={0}
+            borderRadius={0}
+            style={{
+              zIndex: 50,
+            }}
+          />
         </View>
       )}
 
