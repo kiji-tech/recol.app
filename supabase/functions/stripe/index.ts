@@ -79,6 +79,18 @@ const postSubscription = async (c: Hono.Context) => {
   return c.json(subscription);
 };
 
+const updateSubscription = async (c: Hono.Context) => {
+  console.log('[POST] stripe/update-subscription');
+  const supabase = generateSupabase(c);
+  const user = await getUser(c, supabase);
+  if (!user) {
+    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
+  }
+  const { subscriptionId, priceId } = await c.req.json();
+  const subscription = await StripeUtil.updateSubscription(subscriptionId, priceId);
+  return c.json(subscription);
+};
+
 const cancelSubscription = async (c: Hono.Context) => {
   console.log('[POST] stripe/cancel-subscription');
   const supabase = generateSupabase(c);
@@ -94,5 +106,6 @@ const cancelSubscription = async (c: Hono.Context) => {
 app.post('/payment-sheet', postPaymentSheet);
 app.post('/customer', postCustomer);
 app.post('/subscription', postSubscription);
+app.post('/update-subscription', updateSubscription);
 app.post('/cancel-subscription', cancelSubscription);
 Deno.serve(app.fetch);

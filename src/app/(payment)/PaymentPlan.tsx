@@ -4,7 +4,11 @@ import { BackgroundView, Button, Header } from '@/src/components';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { PaymentSheetError, useStripe } from '@stripe/stripe-react-native';
-import { cancelStripeSubscription, createStripeSubscription } from '@/src/libs/ApiService';
+import {
+  cancelStripeSubscription,
+  createStripeSubscription,
+  updateStripeSubscription,
+} from '@/src/libs/ApiService';
 import { LogUtil } from '@/src/libs/LogUtil';
 import dayjs from 'dayjs';
 import { SubscriptionUtil } from '@/src/libs/SubscriptionUtil';
@@ -46,7 +50,7 @@ const SubscriptionInfo = () => {
         {SubscriptionUtil.isMonthly(profile!.subscription) ? '月額' : '年額'}プランに契約中です。
       </Text>
       <Text className="text-light-text dark:text-dark-text">
-        プランを変更した場合は､今の有効期限に加算します｡
+        プラン変更時は、未使用期間の料金を差し引いて計算します。
       </Text>
       <Text className="text-light-text dark:text-dark-text">
         有効期限は､{dayjs(profile!.subscription[0].current_period_end).format('YYYY-MM-DD')}
@@ -59,9 +63,9 @@ const SubscriptionInfo = () => {
 export default function PaymentPlan() {
   const router = useRouter();
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const { session, profile } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
 
   // === Method ===
   /** Stripeの支払いシートをセットアップ */
@@ -86,10 +90,41 @@ export default function PaymentPlan() {
     });
   };
 
+  const setupUpdateSubscription = async (type: 'm' | 'y') => {
+    const priceId =
+      type == 'm'
+        ? process.env.EXPO_PUBLIC_STRIPE_MONTHLY_PLAN
+        : process.env.EXPO_PUBLIC_STRIPE_YEARLY_PLAN;
+
+    updateStripeSubscription(profile!.subscription[0].uid, priceId || '', session)
+      .then(() => {
+        // 支払い完了画面へ遷移
+        router.push('/(payment)/SubscriptionComplete');
+      })
+      .catch((e) => {
+        Alert.alert('プランの更新に失敗しました。');
+        LogUtil.log({ e }, { level: 'error', notify: true });
+        return;
+      });
+  };
+
   /** プレミアムプランの支払い */
   const handlePayment = async (type: 'm' | 'y') => {
     LogUtil.log('handle payment.');
     setIsLoading(true);
+    // すでにプレミアムプランに関する情報がある場合はプラン変更
+    if (profile!.subscription && profile!.subscription.length > 0) {
+      // Alert
+      Alert.alert(
+        'プランを更新しますか？',
+        'プラン変更時は、未使用期間の料金を差し引いて計算します。',
+        [
+          { text: 'キャンセル', style: 'cancel' },
+          { text: '更新する', style: 'destructive', onPress: () => setupUpdateSubscription(type) },
+        ]
+      );
+      return;
+    }
     // Subscriptionの作成
     await setupSubscription(type);
 
@@ -178,7 +213,13 @@ export default function PaymentPlan() {
           </View>
           {/* 解約 */}
           <View className="flex flex-row justify-center w-full">
-            <Button text="解約する" onPress={handleCancel} disabled={isLoading} theme="danger" />
+            <Button
+              text="解約する"
+              onPress={handleCancel}
+              disabled={isLoading}
+              loading={isLoading}
+              theme="danger"
+            />
           </View>
         </View>
       </ScrollView>

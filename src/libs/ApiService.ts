@@ -309,6 +309,7 @@ async function createPaymentSheet(
   });
   return response.data!;
 }
+
 async function createStripeCustomer(session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<Stripe.Customer>('/stripe/customer', {
     method: 'POST',
@@ -317,6 +318,7 @@ async function createStripeCustomer(session: Session | null, ctrl?: AbortControl
   });
   return response.data!;
 }
+
 async function createStripeSubscription(
   priceId: string,
   session: Session | null,
@@ -326,6 +328,21 @@ async function createStripeSubscription(
     method: 'POST',
     session,
     body: { priceId },
+    ctrl,
+  });
+  return response.data!;
+}
+
+async function updateStripeSubscription(
+  subscriptionId: string,
+  priceId: string,
+  session: Session | null,
+  ctrl?: AbortController
+) {
+  const response = await apiRequest<Stripe.Subscription>('/stripe/update-subscription', {
+    method: 'POST',
+    session,
+    body: { subscriptionId, priceId },
     ctrl,
   });
   return response.data!;
@@ -390,6 +407,7 @@ export {
   fetchBlogList,
   createPaymentSheet,
   createStripeCustomer,
+  updateStripeSubscription,
   createStripeSubscription,
   cancelStripeSubscription,
 };

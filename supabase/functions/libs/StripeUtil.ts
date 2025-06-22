@@ -34,6 +34,12 @@ export class StripeUtil {
     return paymentIntent;
   }
 
+  /** サブスクリプションの取得 */
+  public static async getSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
+    return await stripe.subscriptions.retrieve(subscriptionId);
+  }
+
+  /** サブスクリプションの作成 */
   public static async createSubscription(
     customerId: string,
     priceId: string
@@ -49,6 +55,30 @@ export class StripeUtil {
     return subscription;
   }
 
+  /** サブスクリプションの更新 */
+  public static async updateSubscription(
+    subscriptionId: string,
+    newPriceId: string
+  ): Promise<Stripe.Subscription> {
+    // 既存のサブスクリプションを取得
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+    // サブスクリプションを更新
+    const updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
+      items: [
+        {
+          id: subscription.items.data[0].id,
+          price: newPriceId,
+        },
+      ],
+      proration_behavior: 'create_prorations', // 按分計算を有効にする
+      billing_cycle_anchor: 'now', // 即座に新しい請求サイクルを開始
+    });
+
+    return updatedSubscription;
+  }
+
+  /** サブスクリプションのキャンセル */
   public static async cancelSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
     const subscription = await stripe.subscriptions.cancel(subscriptionId);
     return subscription;
