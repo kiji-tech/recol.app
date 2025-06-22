@@ -131,6 +131,8 @@ export default function MediaScreen() {
       .then(() => {
         // 画像一覧を更新
         fetchImages();
+        setSelectedImages([]);
+        setMode('normal');
       })
       .catch((e) => {
         if (e && e.message) {
