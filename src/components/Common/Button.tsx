@@ -1,10 +1,12 @@
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { useTheme } from '@/src/contexts/ThemeContext';
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 
 interface Props {
   text: string;
   theme?: 'theme' | 'info' | 'warn' | 'danger' | 'background';
   disabled?: boolean;
+  loading?: boolean;
   onPress: () => void;
 }
 
@@ -12,10 +14,17 @@ const Button = ({
   text,
   theme = 'background',
   disabled = false,
+  loading = false,
   onPress = () => void 0,
 }: Props) => {
+  const { isDarkMode } = useTheme();
   return (
-    <TouchableOpacity onPress={onPress} disabled={disabled}>
+    <TouchableOpacity
+      className="flex flex-row justify-center items-center"
+      onPress={onPress}
+      disabled={disabled}
+    >
+      {loading && <ActivityIndicator className="mr-2" color={isDarkMode ? 'white' : 'black'} />}
       <View
         className={`
             ${disabled ? 'opacity-20' : ''}
