@@ -43,14 +43,14 @@ export default function PlanEditor() {
   }
 
   return (
-    <ScrollView>
-      <BackgroundView>
-        <Header
-          title="新しい計画を作成する"
-          onBack={() => {
-            router.back();
-          }}
-        />
+    <BackgroundView>
+      <Header
+        title="新しい計画を作成する"
+        onBack={() => {
+          router.back();
+        }}
+      />
+      <ScrollView>
         {/* タイトル */}
         <View className="w-full flex flex-col justify-start items-start">
           <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
@@ -95,7 +95,7 @@ export default function PlanEditor() {
         <View className="w-full justify-center">
           <Button theme="theme" text="登録する" onPress={handlerSubmit} />
         </View>
-      </BackgroundView>
-    </ScrollView>
+      </ScrollView>
+    </BackgroundView>
   );
 }
