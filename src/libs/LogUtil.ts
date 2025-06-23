@@ -20,11 +20,6 @@ interface LogData {
 }
 
 export class LogUtil {
-  private static readonly SLACK_WEBHOOK_URL = process.env.EXPO_PUBLIC_SLACK_WEBHOOK_URL;
-  private static readonly ENABLE_SLACK_NOTIFICATION =
-    process.env.EXPO_PUBLIC_ENABLE_SLACK_NOTIFICATION == 'ON';
-  private static readonly ENABLE_CONSOLE_LOG = process.env.EXPO_PUBLIC_ENABLE_CONSOLE_LOG == 'ON';
-
   /**
    * ログを出力し、必要に応じてSlackに通知する
    */
@@ -48,7 +43,7 @@ export class LogUtil {
     }
 
     // コンソールへの出力
-    if (this.ENABLE_CONSOLE_LOG) {
+    if (process.env.EXPO_PUBLIC_ENABLE_CONSOLE_LOG == 'ON') {
       switch (level) {
         case 'info':
           console.log(JSON.stringify(logData));
@@ -63,15 +58,19 @@ export class LogUtil {
     }
 
     // Slack通知が有効で、通知フラグがtrueの場合
-    if (this.ENABLE_SLACK_NOTIFICATION && notify && this.SLACK_WEBHOOK_URL) {
-      await fetch(this.SLACK_WEBHOOK_URL, {
+    console.log(process.env.EXPO_PUBLIC_ENABLE_SLACK_NOTIFICATION);
+    if (process.env.EXPO_PUBLIC_ENABLE_SLACK_NOTIFICATION == 'ON' && notify) {
+      console.log('notification slack');
+      await fetch(process.env.EXPO_PUBLIC_SLACK_WEBHOOK_URL || '', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          text: `🚨 *${level.toUpperCase()}*\n${message}\n\`\`\`${JSON.stringify(logData)}\`\`\``,
+          text: `*【${level.toUpperCase()}】*\n${message}\n\`\`\`${JSON.stringify(logData)}\`\`\``,
         }),
+      }).catch((e) => {
+        console.error(e);
       });
     }
   }
