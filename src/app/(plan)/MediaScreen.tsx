@@ -12,6 +12,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { deletePlanMedias, fetchPlanMediaList, uploadPlanMedias } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { Tables } from '@/src/libs/database.types';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 export default function MediaScreen() {
   // === Member ===
@@ -90,11 +91,12 @@ export default function MediaScreen() {
       allowsMultipleSelection: true,
       base64: true,
     });
-
     if (result.canceled) {
+      LogUtil.log('canceled', { level: 'info' });
       setIsLoading(false);
       return;
     }
+    LogUtil.log(`add images ${JSON.stringify(result.assets)}`, { level: 'info', notify: true });
     const images = result.assets.map((a) => a.uri);
     setAddImage(images);
     setUploadedImage([]);
@@ -110,7 +112,10 @@ export default function MediaScreen() {
                 reader.readAsDataURL(blob);
               });
             })
-            .catch(() => {
+            .catch((e) => {
+              if (e && e.message) {
+                LogUtil.log(`fetch image error ${image}`, { level: 'error', notify: true });
+              }
               return null;
             })
         : null;
@@ -124,7 +129,7 @@ export default function MediaScreen() {
           })
           .catch((e) => {
             if (e && e.message) {
-              Alert.alert(e.message);
+              LogUtil.log(`upload image error ${base64Image}`, { level: 'error', notify: true });
             }
           });
       }
