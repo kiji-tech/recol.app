@@ -32,7 +32,7 @@ export default function Home() {
     }, [session])
   );
 
-  if (loading || !blogs || !isThemeLoaded) return <Loading />;
+  if (loading) return <Loading />;
 
   return (
     <BackgroundView>
