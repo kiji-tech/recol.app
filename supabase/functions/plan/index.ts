@@ -53,6 +53,7 @@ const create = async (c: Hono.Context) => {
     return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
 
+  // プランの作成数が制限を超えているかどうかをチェックする
   if (await maximumVerifyChecker(supabase, user)) {
     return c.json({ message: getMessage('PP001'), code: 'PP001' }, 400);
   }
