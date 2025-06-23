@@ -11,15 +11,22 @@ import { STORAGE_KEYS } from '@/src/libs/ConstValue';
 import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts/PlanContext';
 import dayjs from 'dayjs';
+import { SubscriptionUtil } from '@/src/libs/SubscriptionUtil';
 
 const PlanComponent = () => {
   // === Member ===
   const { profile } = useAuth();
   const { isDarkMode } = useTheme();
 
-  console.log({ profile });
-
   // === Method ===
+
+  if (SubscriptionUtil.isAdmin(profile!) || SubscriptionUtil.isSuperUser(profile!)) {
+    return (
+      <View>
+        <Text className="text-light-text dark:text-dark-text">スーパーユーザーです</Text>
+      </View>
+    );
+  }
 
   return (
     <TouchableOpacity

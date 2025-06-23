@@ -47,7 +47,7 @@ const SubscriptionInfo = () => {
   return (
     <View>
       <Text className="text-light-text dark:text-dark-text">
-        {SubscriptionUtil.isMonthly(profile!.subscription) ? '月額' : '年額'}プランに契約中です。
+        {SubscriptionUtil.isMonthly(profile!) ? '月額' : '年額'}プランに契約中です。
       </Text>
       <Text className="text-light-text dark:text-dark-text">
         プラン変更時は、未使用期間の料金を差し引いて計算します。
@@ -189,22 +189,22 @@ export default function PaymentPlan() {
           {/* プレミアムプランはこちらから */}
           <View className="flex flex-row justify-around items-start gap-2">
             {/* 月額 */}
-            {!SubscriptionUtil.isMonthly(profile!.subscription) && (
+            {!SubscriptionUtil.isMonthly(profile!) && (
               <TouchableOpacity
                 className="flex flex-col items-center justify-center bg-light-warn dark:bg-dark-warn rounded-md w-1/2 h-28 p-4"
                 onPress={() => handlePayment('m')}
-                disabled={isLoading && SubscriptionUtil.isMonthly(profile!.subscription)}
+                disabled={isLoading && SubscriptionUtil.isMonthly(profile!)}
               >
                 <Text className="text-3xl text-light-text dark:text-dark-text">400円</Text>
                 <Text className="text-sm text-light-text dark:text-dark-text"> / 月額</Text>
               </TouchableOpacity>
             )}
             {/* 年額 */}
-            {!SubscriptionUtil.isYearly(profile!.subscription) && (
+            {!SubscriptionUtil.isYearly(profile!) && (
               <TouchableOpacity
                 className="flex flex-col items-center justify-center bg-light-danger dark:bg-dark-danger rounded-md w-1/2 h-28 p-4"
                 onPress={() => handlePayment('y')}
-                disabled={isLoading && SubscriptionUtil.isYearly(profile!.subscription)}
+                disabled={isLoading && SubscriptionUtil.isYearly(profile!)}
               >
                 <Text className="text-3xl text-light-text dark:text-dark-text">4,000円</Text>
                 <Text className="text-md text-light-text dark:text-dark-text"> / 年額</Text>

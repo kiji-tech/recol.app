@@ -1,9 +1,10 @@
 import { Hono } from 'jsr:@hono/hono';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
-import { SupabaseClient, User } from '@supabase/supabase-js';
+import { Tables } from '../libs/database.types.ts';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { SubscriptionUtil } from '../libs/SubscriptionUtil.ts';
 import type { FileObject } from '@supabase/storage-js';
-import { Tables } from '@/src/libs/database.types.js';
 const app = new Hono().basePath('/media');
 
 const FREE_STORAGE_LIMIT_GB = 1; // 上限を1GBに設定
@@ -18,7 +19,7 @@ const PREMIUM_STORAGE_LIMIT_GB = 10; // 上限を100GBに設定
  */
 const checkStorageCapacity = async (
   supabase: SupabaseClient,
-  subscription: Tables<'subscription'> | null,
+  profile: Tables<'profile'> & { subscription: Tables<'subscription'>[] | null },
   planId: string,
   images: string[]
 ) => {
@@ -44,7 +45,7 @@ const checkStorageCapacity = async (
 
   // 合計サイズが上限を超えるかチェック
   const totalSize = existingSize + newImagesSize;
-  const limitBytes = subscription
+  const limitBytes = SubscriptionUtil.isPremiumUser(profile)
     ? PREMIUM_STORAGE_LIMIT_GB * 1024 * 1024 * 1024
     : FREE_STORAGE_LIMIT_GB * 1024 * 1024 * 1024;
 
@@ -163,11 +164,12 @@ const post = async (c: Hono.Context) => {
   }
 
   // profile 取得
-  const { data: subscription, error: subscriptionError } = await supabase
-    .from('subscription')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('status', 'active')
+  const { data: profile, error: subscriptionError } = await supabase
+    .from('profile')
+    .select('*,subscription(*)')
+    .eq('uid', user.id)
+    .eq('subscription.status', 'active')
+    .eq('subscription.user_id', user.id)
     .maybeSingle();
 
   if (subscriptionError) {
@@ -180,7 +182,7 @@ const post = async (c: Hono.Context) => {
   }
 
   // 1. ストレージ容量チェック
-  const capacityCheckResult = await checkStorageCapacity(supabase, subscription, planId, images);
+  const capacityCheckResult = await checkStorageCapacity(supabase, profile, planId, images);
   if (capacityCheckResult) {
     return c.json(capacityCheckResult.error, capacityCheckResult.status);
   }
