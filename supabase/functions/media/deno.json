@@ -1,6 +1,9 @@
 {
     "imports": {
         "dayjs": "npm:dayjs@1.11.13",
-        "dayjs/utc": "npm:dayjs/plugin/utc"
+        "dayjs/utc": "npm:dayjs/plugin/utc",
+        "hono": "jsr:@hono/hono@^4.5.1",
+        "@supabase/supabase-js": "npm:@supabase/supabase-js@^2.45.0",
+        "@supabase/storage-js": "npm:@supabase/storage-js@2.5.5"
     }
 }

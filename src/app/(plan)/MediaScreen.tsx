@@ -96,7 +96,6 @@ export default function MediaScreen() {
       setIsLoading(false);
       return;
     }
-    LogUtil.log(`add images ${JSON.stringify(result.assets)}`, { level: 'info', notify: true });
     const images = result.assets.map((a) => a.uri);
     setAddImage(images);
     setUploadedImage([]);
@@ -114,7 +113,7 @@ export default function MediaScreen() {
             })
             .catch((e) => {
               if (e && e.message) {
-                LogUtil.log(`fetch image error ${image}`, { level: 'error', notify: true });
+                LogUtil.log(`fetch image error ${e.message}`, { level: 'error', notify: true });
               }
               return null;
             })
@@ -129,7 +128,7 @@ export default function MediaScreen() {
           })
           .catch((e) => {
             if (e && e.message) {
-              LogUtil.log(`upload image error ${base64Image}`, { level: 'error', notify: true });
+              LogUtil.log(`upload image error ${e.message}`, { level: 'error', notify: true });
             }
           });
       }
