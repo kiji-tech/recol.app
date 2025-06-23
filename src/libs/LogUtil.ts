@@ -58,9 +58,7 @@ export class LogUtil {
     }
 
     // Slack通知が有効で、通知フラグがtrueの場合
-    console.log(process.env.EXPO_PUBLIC_ENABLE_SLACK_NOTIFICATION);
     if (process.env.EXPO_PUBLIC_ENABLE_SLACK_NOTIFICATION == 'ON' && notify) {
-      console.log('notification slack');
       await fetch(process.env.EXPO_PUBLIC_SLACK_WEBHOOK_URL || '', {
         method: 'POST',
         headers: {
