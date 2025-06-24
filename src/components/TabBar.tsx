@@ -6,15 +6,18 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useTheme } from '../contexts/ThemeContext';
 import { MyBannerAd } from './Ad/BannerAd';
+import { useAuth } from '../contexts/AuthContext';
+import { SubscriptionUtil } from '../libs/SubscriptionUtil';
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { theme } = useTheme();
+  const { profile } = useAuth();
   const isDarkMode = theme === 'dark';
   const isIOS = Platform.OS === 'ios';
   return (
     <View
       className={`flex-col bg-dark-theme dark:bg-light-theme ${isIOS ? 'bottom-8' : 'bottom-8'}`}
     >
-      <MyBannerAd />
+      {profile && !SubscriptionUtil.isPremiumUser(profile!) && <MyBannerAd />}
       <View className="flex-row w-full border-[1px] border-light-border dark:border-dark-border mx-auto">
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
