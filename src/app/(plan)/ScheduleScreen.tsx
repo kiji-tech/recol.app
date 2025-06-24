@@ -35,6 +35,7 @@ const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }
     setEditSchedule(schedule);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
+
   return (
     <Menu>
       <MenuTrigger>
@@ -133,8 +134,6 @@ export default function ScheduleScreen(): ReactNode {
   // === Effect ===
   useFocusEffect(useCallback(initView, [plan, session]));
 
-  if (!viewPlan) return <></>;
-
   // === Render ===
   return (
     <BackgroundView>
@@ -145,9 +144,13 @@ export default function ScheduleScreen(): ReactNode {
         rightComponent={viewPlan ? <ScheduleMenu {...viewPlan} /> : undefined}
       />
       {/* Plan Information */}
-      <PlanInformation plan={viewPlan} />
-      {/* Schedule */}
-      <Schedule plan={viewPlan} onDelete={handleDeleteSchedule} />
+      {viewPlan && (
+        <>
+          <PlanInformation plan={viewPlan} />
+          {/* Schedule */}
+          <Schedule plan={viewPlan} onDelete={handleDeleteSchedule} />
+        </>
+      )}
     </BackgroundView>
   );
 }
