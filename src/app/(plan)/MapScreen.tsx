@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { BackgroundView, Header, RateViewer } from '@/src/components';
 import { Region } from 'react-native-maps';
@@ -35,8 +36,13 @@ const ScheduleInfoCard = ({
           >
             {place.photos && place.photos.length > 0 && (
               <Image
-                className="w-64 h-32 rounded-t-md"
-                src={`https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`}
+                style={{
+                  width: 256,
+                  height: 128,
+                  borderTopLeftRadius: 8,
+                  borderTopRightRadius: 8,
+                }}
+                source={`https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`}
               />
             )}
             <View className="p-2">

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { useRouter } from 'expo-router';
-import { View, Text, TextInput, Image, Alert } from 'react-native';
+import { View, Text, TextInput, Alert } from 'react-native';
+import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -89,7 +90,10 @@ export default function ProfileEditorScreen() {
                   source={{
                     uri: avatar,
                   }}
-                  className="w-full h-full"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                  }}
                 />
               ) : (
                 <View className="w-full h-full bg-light-shadow dark:bg-dark-shadow items-center justify-center">

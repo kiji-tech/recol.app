@@ -1,5 +1,6 @@
 import React from 'react';
-import { Image, View } from 'react-native';
+import { View } from 'react-native';
+import { Image } from 'expo-image';
 import { ScrollView } from 'react-native-gesture-handler';
 
 type Props = {
@@ -13,9 +14,15 @@ export default function ImageScrollView({ images }: Props) {
         {images.map((image, index) => (
           <View key={index} className="flex-none w-60 h-40 mr-4">
             <Image
-              src={image.src || '/placeholder.svg'}
+              source={image.src || '/placeholder.svg'}
               alt={image.alt}
-              className="w-full h-full object-cover rounded-lg  duration-300"
+              className="w-full h-full object-cover rounded-lg"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                borderRadius: 8,
+              }}
             />
           </View>
         ))}

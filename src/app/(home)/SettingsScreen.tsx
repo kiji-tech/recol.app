@@ -3,7 +3,8 @@ import { BackgroundView, Button } from '@/src/components';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { router } from 'expo-router';
-import { Text, View, Switch, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, View, Switch, ScrollView, TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -154,7 +155,10 @@ export default function Settings() {
                 source={{
                   uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`,
                 }}
-                className="w-full h-full"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                }}
               />
             ) : (
               <View className="w-full h-full bg-light-shadow dark:bg-dark-shadow items-center justify-center">

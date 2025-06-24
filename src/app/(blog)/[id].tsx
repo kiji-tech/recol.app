@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
   Text,
-  Image,
   Linking,
   ScrollView,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { BackgroundView, Header, Loading } from '@/src/components';
 import { fetchBlog } from '@/src/libs/ApiService';

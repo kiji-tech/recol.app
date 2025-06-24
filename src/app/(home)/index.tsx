@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { BackgroundView, Loading } from '@/src/components';
-import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
 import { fetchBlogList } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useFocusEffect } from 'expo-router';
@@ -53,7 +54,15 @@ export default function Home() {
             >
               {/* アイキャッチ */}
               {item.eyecatch?.url && (
-                <Image source={{ uri: item.eyecatch.url }} className="w-44 h-32 rounded-l-md" />
+                <Image
+                  source={{ uri: item.eyecatch.url }}
+                  style={{
+                    width: 176,
+                    height: 128,
+                    borderTopLeftRadius: 8,
+                    borderBottomLeftRadius: 8,
+                  }}
+                />
               )}
               {/* 右側 */}
               <View className="flex-1 gap-2 p-4 flex flex-col items-start justify-between">

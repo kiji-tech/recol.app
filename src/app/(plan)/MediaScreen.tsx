@@ -1,18 +1,19 @@
 import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, View, Image, Text, Alert, Dimensions } from 'react-native';
+import { TouchableOpacity, View, Text, Alert, Dimensions } from 'react-native';
+import { Image } from 'expo-image';
 import { Header, IconButton } from '@/src/components';
 import { useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import BackgroundView from '@/src/components/BackgroundView';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import * as ImagePicker from 'expo-image-picker';
-import * as Progress from 'react-native-progress';
 import { FlatList } from 'react-native-gesture-handler';
 import { deletePlanMedias, fetchPlanMediaList, uploadPlanMedias } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { Tables } from '@/src/libs/database.types';
 import { LogUtil } from '@/src/libs/LogUtil';
+import BackgroundView from '@/src/components/BackgroundView';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import * as ImagePicker from 'expo-image-picker';
+import * as Progress from 'react-native-progress';
 
 export default function MediaScreen() {
   // === Member ===
@@ -179,7 +180,14 @@ export default function MediaScreen() {
         </View>
         <View className="flex justify-center items-center w-screen h-screen">
           <Image
-            className="w-full aspect-square object-contain"
+            style={{
+              width: '100%',
+              height: 'auto',
+              aspectRatio: 1,
+              resizeMode: 'contain',
+              maxWidth: '100%',
+              maxHeight: '100%',
+            }}
             source={{
               uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${visibleImage.url}`,
             }}
@@ -244,7 +252,10 @@ export default function MediaScreen() {
                 source={{
                   uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${item.url}`,
                 }}
-                className="w-full h-full"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                }}
               />
             </TouchableOpacity>
           );

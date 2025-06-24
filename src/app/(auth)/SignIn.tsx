@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BackgroundView, Button } from '@/src/components';
-import { Alert, Image, Text, TextInput, View } from 'react-native';
+import { Alert, Text, TextInput, View } from 'react-native';
+import { Image } from 'expo-image';
 import { Link, router } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { LogUtil } from '@/src/libs/LogUtil';
@@ -42,7 +43,12 @@ export default function SignInScreen() {
         <Image
           // eslint-disable-next-line @typescript-eslint/no-require-imports
           source={require('../../../assets/images/icon.png')}
-          className="h-52 w-52 rounded-xl mb-4"
+          style={{
+            width: 208,
+            height: 208,
+            borderRadius: 100,
+            marginBottom: 16,
+          }}
         />
         {/* form */}
         <View className="w-full flex flex-col gap-4">

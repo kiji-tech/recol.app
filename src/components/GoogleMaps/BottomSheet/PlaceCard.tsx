@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
 import { Place } from '../../../entities/Place';
 import RateViewer from './RateViewer';
 
@@ -29,8 +30,13 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
           {/* イメージ画像 */}
           {place.photos && place.photos.length > 0 ? (
             <Image
-              className={`w-32 h-32`}
-              src={`https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`}
+              source={{
+                uri: `https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`,
+              }}
+              style={{
+                width: 128,
+                height: 112,
+              }}
             />
           ) : (
             // TODO: No Imageに差し替え

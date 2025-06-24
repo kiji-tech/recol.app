@@ -1,4 +1,5 @@
-import {View, Modal } from 'react-native';
+import React from 'react';
+import { View, Modal } from 'react-native';
 import BackgroundView from '../BackgroundView';
 import Header from '../Header/Header';
 
