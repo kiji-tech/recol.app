@@ -1,6 +1,6 @@
 ---
-description: expoに関するルール
-globs: 
+description: 
+globs: *.tsx,*.ts
 alwaysApply: false
 ---
 # expo ルール

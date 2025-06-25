@@ -1,7 +1,7 @@
 ---
 description: 
-globs: 
-alwaysApply: true
+globs: *.tsx,*.ts
+alwaysApply: false
 ---
 機能ごとに整理されたコンポーネントやロジックを管理するためのベストプラクティスを反映しています。
 
