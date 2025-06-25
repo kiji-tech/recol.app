@@ -42,7 +42,7 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       ctrl.abort();
     };
-  }, []);
+  }, [session]);
 
   const fetchStoragePlan = async () => {
     try {
