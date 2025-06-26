@@ -3,11 +3,56 @@ import { SupabaseClient, User } from 'jsr:@supabase/supabase-js@2';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
 import dayjs from 'dayjs';
+import { LogUtil } from '../libs/LogUtil.ts';
 
 const app = new Hono().basePath('/plan');
+const TTL = 60 * 60 * 24 * 25; // 25日
+const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
+const FiledMaskValue =
+  'id,types,reviews,displayName,formattedAddress,rating,location,photos,websiteUri,editorialSummary,currentOpeningHours.openNow,currentOpeningHours.weekdayDescriptions,googleMapsUri,googleMapsLinks.*';
 
-const MAXIMUM_FREE_PLAN = 4;
-const MAXIMUM_PREMIUM_PLAN = 20;
+const searchId = async (placeId: string) => {
+  const response = await fetch(`${GOOGLE_MAPS_API_URL}/${placeId}?languageCode=ja`, {
+    method: 'GET',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': Deno.env.get('GOOGLE_MAPS_API_KEY') || '',
+      'X-Goog-FieldMask': FiledMaskValue,
+    }),
+  }).then(async (response) => await response.text());
+
+  return response;
+};
+
+const fetchPlaceInfo = async (supabase: SupabaseClient, placeId: string) => {
+  const key = `google-place/${placeId}`;
+  const { data: cachePlaceData } = await supabase.storage.from('caches').download(key);
+  if (cachePlaceData) {
+    console.log(cachePlaceData);
+    LogUtil.log(`[fetchPlaceInfo] ${placeId} HIT!!!`, { level: 'info' });
+    const buf = await cachePlaceData.arrayBuffer();
+    return JSON.parse(new TextDecoder().decode(buf));
+  }
+
+  LogUtil.log(`[fetchPlaceInfo] ${placeId} MISS!!!`, { level: 'info' });
+  const placeData = await searchId(placeId);
+  if (placeData) {
+    // キャッシュに保存
+    const { error: storageSaveError } = await supabase.storage
+      .from('caches')
+      .upload(key, placeData, {
+        upsert: true,
+        contentType: 'application/json',
+        cacheControl: TTL,
+      });
+    if (storageSaveError) {
+      console.error('キャッシュ保存エラー');
+      console.error(storageSaveError);
+    }
+    return JSON.parse(placeData);
+  }
+  return null;
+};
 
 /**
  * プランの作成数が制限を超えているかどうかをチェックする
@@ -99,14 +144,14 @@ const update = async (c: Hono.Context) => {
 };
 
 const get = async (c: Hono.Context) => {
-  console.log('[GET] plan/');
+  console.log('[GET] plan/:uid');
   const supabase = generateSupabase(c);
   const uid = c.req.param('uid');
   const user = await getUser(c, supabase);
   if (!user) {
     return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
-  const { data, error } = await supabase
+  const { data: plan, error } = await supabase
     .from('plan')
     .select('*, schedule(*)')
     .eq('uid', uid)
@@ -119,7 +164,22 @@ const get = async (c: Hono.Context) => {
     return c.json({ message: getMessage('C005', ['プラン']), code: 'C005' }, 403);
   }
 
-  return c.json(data);
+  if (plan) {
+    const { schedule } = plan;
+    for (const sc of schedule) {
+      const { place_list } = sc;
+      const placeList = [];
+      for (const placeId of place_list) {
+        const placeData = await fetchPlaceInfo(supabase, placeId);
+        if (placeData) {
+          placeList.push(placeData);
+        }
+      }
+      sc.place_list = placeList;
+    }
+  }
+
+  return c.json(plan);
 };
 
 const list = async (c: Hono.Context) => {
@@ -129,7 +189,7 @@ const list = async (c: Hono.Context) => {
   if (!user) {
     return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
-  const { data, error } = await supabase
+  const { data: planList, error } = await supabase
     .from('plan')
     .select('*, schedule(*)')
     .eq('user_id', user.id)
@@ -140,7 +200,24 @@ const list = async (c: Hono.Context) => {
     console.error(error);
     return c.json({ message: getMessage('C005', ['プラン']), code: 'C005' }, 403);
   }
-  return c.json(data);
+
+  if (planList && planList.length > 0) {
+    for (const plan of planList) {
+      const { schedule } = plan;
+      for (const sc of schedule) {
+        const { place_list } = sc;
+        const placeList = [];
+        for (const placeId of place_list) {
+          const placeData = await fetchPlaceInfo(supabase, placeId);
+          if (placeData) {
+            placeList.push(placeData);
+          }
+        }
+        sc.place_list = placeList;
+      }
+    }
+  }
+  return c.json(planList);
 };
 
 const deletePlan = async (c: Hono.Context) => {

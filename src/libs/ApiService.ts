@@ -2,6 +2,7 @@ import { Session } from '@supabase/supabase-js';
 import { Tables } from './database.types';
 import { LogUtil } from './LogUtil';
 import Stripe from 'stripe';
+import { Place } from '../entities/Place';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL;
 
@@ -133,11 +134,14 @@ async function deletePlan(planId: string, session: Session | null, ctrl?: AbortC
  * @returns Tables<'schedule'>
  */
 async function fetchSchedule(scheduleId: string, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Tables<'schedule'>>(`/schedule/${scheduleId}`, {
-    method: 'GET',
-    session,
-    ctrl,
-  });
+  const response = await apiRequest<Tables<'schedule'> & { place_list: Place[] }>(
+    `/schedule/${scheduleId}`,
+    {
+      method: 'GET',
+      session,
+      ctrl,
+    }
+  );
   return response.data!;
 }
 
@@ -150,9 +154,10 @@ async function fetchSchedule(scheduleId: string, session: Session | null, ctrl?:
  * @returns Tables<'schedule'>[]
  */
 async function fetchScheduleList(planId: string, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Tables<'schedule'>[]>(`/schedule/${planId}`, {
-    method: 'GET',
+  const response = await apiRequest<Tables<'schedule'>[]>(`/schedule/list`, {
+    method: 'POST',
     session,
+    body: { planId },
     ctrl,
   });
   return response.data!;
@@ -290,6 +295,22 @@ async function updateProfile(
   return response.data!;
 }
 
+// ============ Cache ============
+async function fetchCachePlace(
+  placeIdList: string[],
+  session: Session | null,
+  ctrl?: AbortController
+) {
+  const response = await apiRequest<Place>(`/cache/place`, {
+    method: 'POST',
+    session,
+    body: { placeIdList },
+    ctrl,
+  });
+  console.log({ cachePlace: response.data });
+  return response.data!;
+}
+
 // ============ Stripe ============
 async function createPaymentSheet(
   redirectURL: string,
@@ -404,6 +425,7 @@ export {
   updateProfile,
   fetchBlog,
   fetchBlogList,
+  fetchCachePlace,
   createPaymentSheet,
   createStripeCustomer,
   updateStripeSubscription,

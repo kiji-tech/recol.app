@@ -3,10 +3,26 @@ import { generateSupabase } from '../libs/supabase.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 
 const app = new Hono().basePath('/cache');
+const TTL = 60 * 60 * 24 * 25; // 25日
+const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
+const FiledMaskValue =
+  'id,types,reviews,displayName,formattedAddress,rating,location,photos,websiteUri,editorialSummary,currentOpeningHours.openNow,currentOpeningHours.weekdayDescriptions,googleMapsUri,googleMapsLinks.*';
+
+const searchId = async (placeId: string) => {
+  const response = await fetch(`${GOOGLE_MAPS_API_URL}/${placeId}?languageCode=ja`, {
+    method: 'GET',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': Deno.env.get('GOOGLE_MAPS_API_KEY') || '',
+      'X-Goog-FieldMask': FiledMaskValue,
+    }),
+  }).then(async (response) => await response.text());
+
+  return response;
+};
 
 const getGooglePlacePhoto = async (c: Hono.Context) => {
   LogUtil.log('[GET] /cache/google-place/photo', { level: 'info' });
-  const TTL = 60 * 60 * 24 * 25; // 25日
   const id = c.req.param('id');
   const supabase = generateSupabase(c);
   // safeIdからSHA-256ハッシュ値を生成し、16進文字列としてUUID代わりに利用
@@ -14,7 +30,6 @@ const getGooglePlacePhoto = async (c: Hono.Context) => {
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const uuid = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
   const key = `google-place-photo/${uuid}`;
-  console.log({ key });
 
   // Storageを検索
   LogUtil.log(`[getGooglePlacePhoto] ${key}`, { level: 'info' });
@@ -41,7 +56,6 @@ const getGooglePlacePhoto = async (c: Hono.Context) => {
   }
   const contentType = upstream.headers.get('content-type') ?? 'image/jpeg';
   const buf = new Uint8Array(await upstream.arrayBuffer());
-  console.log({ contentType });
   // 取得したらStorageに保存
   const { error: storageError } = await supabase.storage.from('caches').upload(key, buf, {
     contentType,
@@ -61,5 +75,47 @@ const getGooglePlacePhoto = async (c: Hono.Context) => {
   });
 };
 
+const getPlace = async (c: Hono.Context) => {
+  LogUtil.log('[POST] /cache/place', { level: 'info' });
+  const { placeIdList } = await c.req.json();
+  LogUtil.log(JSON.stringify({ placeIdList }), { level: 'info' });
+
+  const supabase = generateSupabase(c);
+
+  const placeDataList = [];
+  for (const placeId of placeIdList) {
+    const key = `google-place/${placeId}`;
+    const { data: cachePlaceData } = await supabase.storage.from('caches').download(key);
+    if (cachePlaceData) {
+      LogUtil.log(`[getPlace] ${placeId} HIT!!!`, { level: 'info' });
+      const buf = await cachePlaceData.arrayBuffer();
+      placeDataList.push(JSON.parse(new TextDecoder().decode(buf)));
+      continue;
+    }
+
+    LogUtil.log(`[getPlace] ${placeId} MISS!!!`, { level: 'info' });
+    const placeData = await searchId(placeId);
+    if (placeData) {
+      // キャッシュに保存
+      const { error: storageSaveError } = await supabase.storage
+        .from('caches')
+        .upload(key, placeData, {
+          upsert: true,
+          contentType: 'application/json',
+          cacheControl: TTL,
+        });
+      if (storageSaveError) {
+        console.error('キャッシュ保存エラー');
+        console.error(storageSaveError);
+      }
+      placeDataList.push(JSON.parse(placeData));
+    }
+  }
+  return c.json(placeDataList, 200, {
+    'Cache-Control': `public, max-age=${TTL}`,
+  });
+};
+
 app.get('/google-place/photo/:id', getGooglePlacePhoto);
+app.post('/place', getPlace);
 Deno.serve(app.fetch);

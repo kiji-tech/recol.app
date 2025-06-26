@@ -14,6 +14,7 @@ export default function ImageScrollView({ images }: Props) {
         {images.map((image, index) => (
           <View key={index} className="flex-none w-60 h-40 mr-4">
             <Image
+              cachePolicy="memory-disk"
               source={image.src || '/placeholder.svg'}
               alt={image.alt}
               className="w-full h-full object-cover rounded-lg"

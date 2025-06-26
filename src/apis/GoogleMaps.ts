@@ -1,4 +1,7 @@
+import { Session } from '@supabase/supabase-js';
 import { MapCategory } from '../entities/MapCategory';
+import { fetchCachePlace } from '../libs/ApiService';
+import { Place } from '../entities/Place';
 import { LogUtil } from '../libs/LogUtil';
 
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
@@ -139,20 +142,21 @@ async function searchId(placeId: string) {
 }
 
 async function searchNearby(
+  session: Session | null,
   latitude: number,
   longitude: number,
   category: MapCategory,
   radius: number = 2000
-) {
+): Promise<Place[]> {
   const response = await fetch(`${GOOGLE_MAPS_API_URL}:searchNearby`, {
     method: 'POST',
     headers: new Headers({
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-      'X-Goog-FieldMask': FiledMaskValue,
+      'X-Goog-FieldMask': 'places.id',
     }),
     body: JSON.stringify({
-      maxResultCount: 20,
+      maxResultCount: process.env.EXPO_PUBLIC_GOOGLE_MAPS_MAX_RESULT_COUNT || 1,
       languageCode: 'ja',
       includedTypes: INCLUDED_TYPES[category],
       locationRestriction: {
@@ -165,19 +169,21 @@ async function searchNearby(
         },
       },
     }),
-  })
-    .then((response) => response.json())
-    .catch((e) => {
-      LogUtil.log(e, { level: 'error' });
-    });
-  if (response.error) {
-    LogUtil.log(response, { level: 'error' });
-  }
-
-  return response.places;
+  }).then(async (response) => {
+    const { places } = await response.json();
+    // cacheから取得する
+    const cachePlaces = await fetchCachePlace(
+      places.map((place: { id: string }) => place.id),
+      session
+    );
+    return cachePlaces;
+  });
+  console.log({ response });
+  return response as unknown as Place[];
 }
 
 async function searchPlaceByText(
+  session: Session | null,
   latitude: number,
   longitude: number,
   text: string,
@@ -188,7 +194,7 @@ async function searchPlaceByText(
     headers: new Headers({
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-      'X-Goog-FieldMask': FiledMaskValue,
+      'X-Goog-FieldMask': 'places.id',
     }),
     body: JSON.stringify({
       textQuery: text,
@@ -204,7 +210,15 @@ async function searchPlaceByText(
         },
       },
     }),
-  }).then((response) => response.json());
-  return response.places;
+  }).then(async (response) => {
+    const { places } = await response.json();
+    // cacheから取得する
+    const cachePlaces = await fetchCachePlace(
+      places.map((place: { id: string }) => place.id),
+      session
+    );
+    return cachePlaces;
+  });
+  return response;
 }
 export { searchId, searchNearby, searchPlaceByText };

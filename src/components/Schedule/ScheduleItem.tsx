@@ -4,12 +4,13 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { Tables } from '@/src/libs/database.types';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import { Place } from '@/src/entities/Place';
 
 type Props = {
-  item: Tables<'schedule'>;
+  item: Tables<'schedule'> & { place_list: Place[] };
   isEndDateView: boolean;
-  onPress: (schedule: Tables<'schedule'>) => void;
-  onLongPress: (schedule: Tables<'schedule'>) => void;
+  onPress: (schedule: Tables<'schedule'> & { place_list: Place[] }) => void;
+  onLongPress: (schedule: Tables<'schedule'> & { place_list: Place[] }) => void;
 };
 export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress }: Props) {
   const { isDarkMode } = useTheme();

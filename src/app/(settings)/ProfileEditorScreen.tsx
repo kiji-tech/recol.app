@@ -3,13 +3,13 @@ import { BackgroundView, Button, Header } from '@/src/components';
 import { useRouter } from 'expo-router';
 import { View, Text, TextInput, Alert } from 'react-native';
 import { Image } from 'expo-image';
-import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { updateProfile } from '@/src/libs/ApiService';
 import { Tables } from '@/src/libs/database.types';
 import { LogUtil } from '@/src/libs/LogUtil';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function ProfileEditorScreen() {
   // === Member ===

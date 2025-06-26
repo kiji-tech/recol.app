@@ -152,7 +152,7 @@ export type Database = {
           delete_flag: boolean | null
           description: string | null
           from: string | null
-          place_list: Json[] | null
+          place_list: string[] | null
           plan_id: string | null
           title: string | null
           to: string | null
@@ -165,7 +165,7 @@ export type Database = {
           delete_flag?: boolean | null
           description?: string | null
           from?: string | null
-          place_list?: Json[] | null
+          place_list?: string[] | null
           plan_id?: string | null
           title?: string | null
           to?: string | null
@@ -178,7 +178,7 @@ export type Database = {
           delete_flag?: boolean | null
           description?: string | null
           from?: string | null
-          place_list?: Json[] | null
+          place_list?: string[] | null
           plan_id?: string | null
           title?: string | null
           to?: string | null
@@ -247,7 +247,15 @@ export type Database = {
           updated_at?: string | null
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "subscription_user_id_fkey1"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["uid"]
+          },
+        ]
       }
     }
     Views: {

@@ -9,6 +9,7 @@ import { useRouter } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useAuth } from '@/src/contexts/AuthContext';
 import Button from '../Common/Button';
+import { Place } from '@/src/entities/Place';
 
 type Props = {
   plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
@@ -36,13 +37,13 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
       plan_id: plan!.uid,
       from: from.format('YYYY-MM-DDTHH:mm:00.000Z'),
       to: to.format('YYYY-MM-DDTHH:mm:00.000Z'),
-    } as Tables<'schedule'>;
+    } as Tables<'schedule'> & { place_list: Place[] };
     setEditSchedule(newSchedule);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
 
   /** アイテムクリックイベント */
-  const handleSchedulePress = (schedule: Tables<'schedule'>) => {
+  const handleSchedulePress = (schedule: Tables<'schedule'> & { place_list: Place[] }) => {
     const s = {
       ...schedule,
       plan_id: plan!.uid,
@@ -54,13 +55,13 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
         .set('hour', dayjs(schedule.to).get('hour'))
         .set('minute', dayjs(schedule.to).get('minute'))
         .format('YYYY-MM-DDTHH:mm:00.000Z'),
-    } as Tables<'schedule'>;
+    } as Tables<'schedule'> & { place_list: Place[] };
     setEditSchedule(s);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
 
   /** アイテム長押しイベント */
-  const handleScheduleLongPress = (schedule: Tables<'schedule'>) => {
+  const handleScheduleLongPress = (schedule: Tables<'schedule'> & { place_list: Place[] }) => {
     if (!onDelete) return;
     // 削除アラート
     Alert.alert(schedule.title!, 'このスケジュールを削除しますか？', [

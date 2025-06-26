@@ -4,6 +4,7 @@ import { Tables } from '../libs/database.types';
 import { fetchPlanList } from '../libs/ApiService';
 import { useAuth } from './AuthContext';
 import { LogUtil } from '../libs/LogUtil';
+import { Place } from '../entities/Place';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PLAN_LIST_STORAGE_KEY = '@plan_list';
@@ -14,7 +15,7 @@ type PlanContextType = {
   plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
   setPlan: (plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => void;
   editSchedule: Tables<'schedule'> | null;
-  setEditSchedule: (schedule: Tables<'schedule'>) => void;
+  setEditSchedule: (schedule: Tables<'schedule'> & { place_list: Place[] }) => void;
   planLoading: boolean;
   fetchPlan: (ctrl?: AbortController) => Promise<void>;
   clearStoragePlan: () => void;

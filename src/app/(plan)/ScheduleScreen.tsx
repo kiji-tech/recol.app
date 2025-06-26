@@ -13,6 +13,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import PlanInformation from '@/src/components/PlanInformation';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import { Place } from '@/src/entities/Place';
 
 const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null) => {
   const router = useRouter();
@@ -31,7 +32,7 @@ const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }
       plan_id: plan!.uid,
       from: dayjs().set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
       to: dayjs().add(1, 'hour').set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
-    } as Tables<'schedule'>;
+    } as Tables<'schedule'> & { place_list: Place[] };
     setEditSchedule(schedule);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };

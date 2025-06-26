@@ -64,13 +64,13 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
   // ==== Render ====
   return (
     <BottomSheetScrollView className="bg-light-background dark:bg-dark-background">
-      {/* TODO: スクロールできるようにする｡ */}
       {/* TODO: 画像を選択､拡大表示*/}
       {/* 写真一覧 */}
       {place.photos && (
         <ImageScrollView
           images={place.photos
             .filter((photo) => photo.name)
+            .slice(0, 5)
             .map((photo) => ({
               src: `${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(photo.name)}`,
               alt: place.displayName.text,

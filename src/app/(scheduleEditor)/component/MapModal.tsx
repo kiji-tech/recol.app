@@ -14,7 +14,7 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { LATITUDE_OFFSET } from '@/src/libs/ConstValue';
 import MapSearchBar from '@/src/components/GoogleMaps/MapSearchBar';
 import { Tables } from '@/src/libs/database.types';
-import { LogUtil } from '@/src/libs/LogUtil';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 type Props = {
   isOpen: boolean;
@@ -26,13 +26,16 @@ export default function MapModal({ isOpen, onClose }: Props) {
   const DEFAULT_RADIUS = 4200;
   const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
   const bottomSheetRef = useRef<BottomSheet | null>(null);
+  const { session } = useAuth();
   const { currentRegion } = useLocation();
   const { editSchedule, setEditSchedule } = usePlan();
   const [placeList, setPlaceList] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+  const [selectedPlaceList, setSelectedPlaceList] = useState<Place[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<MapCategory>('selected');
   const [region, setRegion] = useState<Region | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
   /** Map上の半径の計算 */
   const radius = useMemo(() => {
     if (!region) return 0;
@@ -56,6 +59,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
     setIsLoading(true);
     try {
       const response = await searchNearby(
+        session,
         latitude + LATITUDE_OFFSET,
         longitude,
         selectedCategory,
@@ -87,6 +91,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
     setSelectedCategory('text');
     try {
       const response = await searchPlaceByText(
+        session,
         region?.latitude || 0,
         region?.longitude || 0,
         searchText,
@@ -122,14 +127,19 @@ export default function MapModal({ isOpen, onClose }: Props) {
   };
 
   // === Effect ===
+  useFocusEffect(
+    useCallback(() => {
+      setSelectedPlaceList((editSchedule?.place_list as unknown as Place[]) || []);
+    }, [editSchedule?.place_list])
+  );
   /** 初回ロケーション情報取得処理 */
   useFocusEffect(
     useCallback(() => {
       if (currentRegion) {
         setRegion(
-          editSchedule?.place_list?.length > 0
+          editSchedule?.place_list && editSchedule?.place_list.length > 0
             ? {
-                ...editSchedule?.place_list[0].location,
+                ...(editSchedule?.place_list[0] as unknown as Place).location,
                 latitudeDelta: 0.025,
                 longitudeDelta: 0.025,
               }
@@ -170,7 +180,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
             radius={radius}
             region={region || currentRegion}
             placeList={placeList}
-            selectedPlaceList={(editSchedule?.place_list as unknown as Place[]) || []}
+            selectedPlaceList={selectedPlaceList || []}
             isMarker={true}
             isCallout={true}
             isCenterCircle={true}
@@ -182,7 +192,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
         <MapBottomSheet
           placeList={placeList}
           selectedPlace={selectedPlace}
-          selectedPlaceList={(editSchedule?.place_list as unknown as Place[]) || []}
+          selectedPlaceList={selectedPlaceList || []}
           selectedCategory={selectedCategory}
           isSelected={selectedCategory === 'selected'}
           onAdd={handleAdd}

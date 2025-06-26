@@ -45,6 +45,7 @@ export default function Home() {
               {/* アイキャッチ */}
               {item.eyecatch?.url && (
                 <Image
+                  cachePolicy="memory-disk"
                   source={{ uri: item.eyecatch.url }}
                   style={{
                     width: 176,
