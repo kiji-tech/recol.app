@@ -6,7 +6,6 @@ import { fetchBlogList } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useFocusEffect } from 'expo-router';
 import { Article } from '@/src/entities/Article';
-import { useTheme } from '@/src/contexts/ThemeContext';
 import { CommonUtil } from '@/src/libs/CommonUtil';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -15,25 +14,16 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function Home() {
   const { session } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const { isThemeLoaded } = useTheme();
 
   const [blogs, setBlogs] = useState<Article[]>([]);
 
   useFocusEffect(
     useCallback(() => {
-      setLoading(true);
-      fetchBlogList()
-        .then((blogs) => {
-          setBlogs(blogs);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      fetchBlogList().then((blogs) => {
+        setBlogs(blogs);
+      });
     }, [session])
   );
-
-  if (loading) return <Loading />;
 
   return (
     <BackgroundView>
