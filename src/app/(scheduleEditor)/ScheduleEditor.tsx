@@ -107,7 +107,6 @@ export default function ScheduleEditor() {
             />
           </View>
         </View>
-        {/* スケジュールの候補Map一覧 */}
         {/* マップから追加する */}
         <View className="w-full flex flex-col justify-start items-start gap-4">
           <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>候補</Text>
