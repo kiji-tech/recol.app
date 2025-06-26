@@ -72,7 +72,7 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
           images={place.photos
             .filter((photo) => photo.name)
             .map((photo) => ({
-              src: `https://places.googleapis.com/v1/${photo.name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`,
+              src: `${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(photo.name)}`,
               alt: place.displayName.text,
             }))}
         />

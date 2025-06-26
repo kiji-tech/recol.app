@@ -30,9 +30,8 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
           {/* イメージ画像 */}
           {place.photos && place.photos.length > 0 ? (
             <Image
-              source={{
-                uri: `https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`,
-              }}
+              cachePolicy="memory-disk"
+              source={`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(place.photos[0].name)}`}
               style={{
                 width: 128,
                 height: 112,
