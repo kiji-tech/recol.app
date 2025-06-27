@@ -108,7 +108,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
     setEditSchedule({
       ...editSchedule,
       place_list: [...(editSchedule?.place_list || []), place],
-    } as unknown as Tables<'schedule'>);
+    } as unknown as Tables<'schedule'> & { place_list: Place[] });
   };
 
   /** スケジュールに対する場所の削除 */
@@ -118,7 +118,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
       place_list: (editSchedule?.place_list || []).filter(
         (p: unknown) => (p as Place).id !== place.id
       ),
-    } as unknown as Tables<'schedule'>);
+    } as unknown as Tables<'schedule'> & { place_list: Place[] });
   };
 
   /** モーダルを閉じる */

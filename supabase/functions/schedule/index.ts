@@ -108,7 +108,6 @@ const list = async (c: Hono.Context) => {
       }
     }
   }
-  console.log({ scheduleList });
   return c.json(scheduleList);
 };
 

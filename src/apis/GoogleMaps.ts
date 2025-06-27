@@ -188,7 +188,7 @@ async function searchPlaceByText(
   longitude: number,
   text: string,
   radius: number = 2000
-) {
+): Promise<Place[]> {
   const response = await fetch(`${GOOGLE_MAPS_API_URL}:searchText`, {
     method: 'POST',
     headers: new Headers({
@@ -219,6 +219,7 @@ async function searchPlaceByText(
     );
     return cachePlaces;
   });
-  return response;
+  LogUtil.log(JSON.stringify({ response }), { level: 'info', notify: true });
+  return response as unknown as Place[];
 }
 export { searchId, searchNearby, searchPlaceByText };
