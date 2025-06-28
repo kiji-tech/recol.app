@@ -12,6 +12,7 @@ type Props = {
   selectedPlace: Place | null;
   selectedPlaceList: Place[];
   isSelected: boolean;
+  isLoading: boolean;
   selectedCategory: MapCategory;
   onAdd: (place: Place) => void;
   onRemove: (place: Place) => void;
@@ -26,6 +27,7 @@ export default function MapBottomSheet({
   selectedPlaceList,
   selectedCategory,
   isSelected = false,
+  isLoading = false,
   onAdd,
   onRemove,
   onSelectedPlace,
@@ -70,6 +72,7 @@ export default function MapBottomSheet({
             placeList={isSelected ? selectedPlaceList : placeList}
             selectedPlace={selectedPlace}
             selectedCategory={selectedCategory}
+            isLoading={isLoading}
             onSelect={handleSelect}
             ref={scrollRef}
           />

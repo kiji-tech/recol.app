@@ -1,0 +1,66 @@
+import React, { useMemo, useState } from 'react';
+import { TouchableOpacity } from 'react-native';
+import { Text } from 'react-native';
+import { Region } from 'react-native-maps';
+
+type Props = {
+  centerRegion: Region;
+  currentRegion: Region;
+  radius: number;
+  onPress: () => void;
+};
+
+export default function ResearchButton({ centerRegion, currentRegion, radius, onPress }: Props) {
+  const IS_RESEARCHED = true;
+  const RESEARCH_TIMER = 5000;
+  // ==== Member ====
+  const [isView, setIsView] = useState(false);
+  // ==== Method ====
+  const handlePress = () => {
+    setIsView(!IS_RESEARCHED);
+    reSearchTimer();
+    onPress();
+  };
+
+  const reSearchTimer = () => {
+    if (!isView) {
+      setTimeout(() => {
+        setIsView(IS_RESEARCHED);
+      }, RESEARCH_TIMER);
+    }
+  };
+
+  const isResearched = useMemo(() => {
+    const R = 6371; // 地球の半径 (km)
+    const dLat = (centerRegion.latitude - currentRegion.latitude) * (Math.PI / 180);
+    const dLon = (centerRegion.longitude - currentRegion.longitude) * (Math.PI / 180);
+
+    if (!currentRegion || !centerRegion) return false;
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(currentRegion.latitude * (Math.PI / 180)) *
+        Math.cos(centerRegion.latitude * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    reSearchTimer();
+    return distance > radius ? IS_RESEARCHED : !IS_RESEARCHED; // 距離をキロメートルで返す
+  }, [centerRegion, currentRegion]);
+
+  // ==== Render ====
+  if (!(isView === IS_RESEARCHED || isResearched === IS_RESEARCHED)) return null;
+
+  return (
+    <TouchableOpacity
+      className="w-1/2 py-2 px-4 mt-2 mx-auto rounded-xl  bg-light-background dark:bg-dark-background"
+      onPress={handlePress}
+    >
+      <Text className="text-center text-md text-light-text dark:text-dark-text">
+        エリアで再検索する
+      </Text>
+    </TouchableOpacity>
+  );
+}

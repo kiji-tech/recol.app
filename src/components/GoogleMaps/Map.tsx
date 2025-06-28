@@ -129,7 +129,7 @@ export default function Map({
         {/* センターサークル */}
         {isCenterCircle && (
           <CenterCircle
-            region={region}
+            region={{ ...region, latitude: region.latitude + LATITUDE_OFFSET }}
             radius={radius}
             fillColor="rgba(30,150,200,0.2)"
             strokeColor="#C1EBEE"

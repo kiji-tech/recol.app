@@ -1,20 +1,20 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
 import Map from '@/src/components/GoogleMaps/Map';
 import { Place } from '@/src/entities/Place';
-import { useState } from 'react';
 import { View } from 'react-native';
+import { Region } from 'react-native-maps';
 import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
 import MapBottomSheet from '@/src/components/GoogleMaps/BottomSheet/MapBottomSheet';
 import { useLocation } from '@/src/contexts/LocationContext';
 import { MapCategory } from '@/src/entities/MapCategory';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { useFocusEffect } from 'expo-router';
-import { Region } from 'react-native-maps';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { LATITUDE_OFFSET } from '@/src/libs/ConstValue';
 import MapSearchBar from '@/src/components/GoogleMaps/MapSearchBar';
 import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
+import ResearchButton from './ResearchButton';
 
 type Props = {
   isOpen: boolean;
@@ -29,7 +29,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
   const { session } = useAuth();
   const { currentRegion } = useLocation();
   const { editSchedule, setEditSchedule } = usePlan();
-  const [placeList, setPlaceList] = useState<Place[]>([]);
+  const [searchPlaceList, setSearchPlaceList] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [selectedPlaceList, setSelectedPlaceList] = useState<Place[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<MapCategory>('selected');
@@ -49,12 +49,13 @@ export default function MapModal({ isOpen, onClose }: Props) {
       alert('検索結果がありません.');
       return;
     }
-    setPlaceList(places);
+    setSearchPlaceList(places);
     setSelectedPlace(null);
   };
 
   /** 座標のロケーション情報取得 */
   const fetchLocation = async (latitude: number, longitude: number) => {
+    setSearchPlaceList([]);
     if (selectedCategory === 'selected') return;
     setIsLoading(true);
     try {
@@ -71,10 +72,23 @@ export default function MapModal({ isOpen, onClose }: Props) {
     }
   };
 
+  /** マップ選択時のスクロール位置計算 */
+  const calcScrollHeight = (selectedPlace: Place) => {
+    const PLACE_HEIGHT = 113;
+    const index = searchPlaceList.findIndex((place) => place.id === selectedPlace.id);
+    const selectedIndex = selectedPlaceList
+      ? selectedPlaceList.findIndex((place) => place.id === selectedPlace.id)
+      : -1;
+    if (selectedIndex !== -1) {
+      setSelectedCategory('selected');
+      return selectedIndex * PLACE_HEIGHT;
+    }
+    return index * PLACE_HEIGHT;
+  };
+
   /** カテゴリ選択 */
   const handleSelectedCategory = (category: MapCategory) => {
     setSelectedCategory(category);
-    setPlaceList([]);
   };
 
   /** 場所選択 */
@@ -88,6 +102,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
   /** テキスト検索 実行処理 */
   const handleTextSearch = async (searchText: string) => {
     setIsLoading(true);
+    setSearchPlaceList([]);
     setSelectedCategory('text');
     try {
       const response = await searchPlaceByText(
@@ -98,6 +113,16 @@ export default function MapModal({ isOpen, onClose }: Props) {
         radius
       );
       settingPlaces(response);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /** エリアで再検索 */
+  const handleResearch = async () => {
+    setIsLoading(true);
+    try {
+      await fetchLocation(region?.latitude || 0, region?.longitude || 0);
     } finally {
       setIsLoading(false);
     }
@@ -159,6 +184,18 @@ export default function MapModal({ isOpen, onClose }: Props) {
     }, [selectedCategory])
   );
 
+  /** マップ選択時のスクロール位置計算 */
+  useFocusEffect(
+    useCallback(() => {
+      if (selectedPlace) {
+        bottomSheetRef.current?.expand({});
+        setTimeout(() => {
+          scrollRef.current?.scrollTo({ x: 0, y: calcScrollHeight(selectedPlace), animated: true });
+        }, 600);
+      }
+    }, [selectedPlace])
+  );
+
   // === Render ===
   if (!isOpen || !currentRegion) return null;
   return (
@@ -174,12 +211,22 @@ export default function MapModal({ isOpen, onClose }: Props) {
           onBack={handleClose}
         />
 
+        {/* 再検索 */}
+        <View className="w-full absolute top-20 z-50">
+          <ResearchButton
+            centerRegion={region || currentRegion}
+            currentRegion={currentRegion}
+            radius={radius}
+            onPress={handleResearch}
+          />
+        </View>
+
         {/* マップ */}
         <View className="w-screen h-screen absolute top-0 left-0">
           <Map
             radius={radius}
             region={region || currentRegion}
-            placeList={placeList}
+            placeList={searchPlaceList}
             selectedPlaceList={selectedPlaceList || []}
             isMarker={true}
             isCallout={true}
@@ -188,13 +235,15 @@ export default function MapModal({ isOpen, onClose }: Props) {
             onSelectedPlace={handleSelectedPlace}
           />
         </View>
+
         {/* マップボトムシート */}
         <MapBottomSheet
-          placeList={placeList}
+          placeList={searchPlaceList}
           selectedPlace={selectedPlace}
           selectedPlaceList={selectedPlaceList || []}
           selectedCategory={selectedCategory}
           isSelected={selectedCategory === 'selected'}
+          isLoading={isLoading}
           onAdd={handleAdd}
           onRemove={handleRemove}
           onSelectedPlace={handleSelectedPlace}

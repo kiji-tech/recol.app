@@ -1,23 +1,26 @@
 import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef } from 'react';
 import PlaceCard from './PlaceCard';
-import { Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import { Place } from '@/src/entities/Place';
 import { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { ScrollResponderMixin } from 'react-native';
 import { MapCategory } from '@/src/entities/MapCategory';
+import { useTheme } from '@/src/contexts/ThemeContext';
 
 type Props = {
   placeList: Place[];
   selectedPlace: Place | null;
   selectedCategory: MapCategory;
+  isLoading: boolean;
   onSelect: (place: Place) => void;
 };
 const MapBottomSheetBody = forwardRef(
   (
-    { placeList, selectedPlace, onSelect, selectedCategory }: Props,
+    { placeList, selectedPlace, onSelect, selectedCategory, isLoading }: Props,
     ref: ForwardedRef<BottomSheetScrollViewMethods>
   ) => {
     // ==== Member ====
+    const { isDarkMode } = useTheme();
     const scrollRef = useRef<BottomSheetScrollViewMethods>(null);
     if (ref) {
       useImperativeHandle(ref, () => ({
@@ -45,7 +48,12 @@ const MapBottomSheetBody = forwardRef(
     return (
       <>
         <BottomSheetScrollView className="w-full flex-1" ref={scrollRef}>
-          {placeList && placeList.length == 0 && (
+          {isLoading && (
+            <View className="w-full p-8">
+              <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />
+            </View>
+          )}
+          {!isLoading && placeList && placeList.length == 0 && (
             <View className="w-full p-8">
               <Text className="text-center text-light-text dark:text-dark-text">
                 {selectedCategory == 'selected'

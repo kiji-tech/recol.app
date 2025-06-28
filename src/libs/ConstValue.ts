@@ -9,7 +9,7 @@ export const STORAGE_KEYS = {
 /** ==== Google Maps ==== */
 
 /** 緯度のオフセット */
-export const LATITUDE_OFFSET = 0;
+export const LATITUDE_OFFSET = 0.0025;
 
 /** デフォルトの半径 */
 export const DEFAULT_RADIUS = 4200;
