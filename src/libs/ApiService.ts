@@ -307,7 +307,6 @@ async function fetchCachePlace(
     body: { placeIdList },
     ctrl,
   });
-  LogUtil.log(JSON.stringify({ cachePlace: response.data }), { level: 'info', notify: true });
   return response.data!;
 }
 

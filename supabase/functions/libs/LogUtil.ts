@@ -22,9 +22,9 @@ interface LogData {
 export class LogUtil {
   private static readonly SLACK_WEBHOOK_URL = Deno.env.get('EXPO_PUBLIC_SLACK_WEBHOOK_URL');
   private static readonly ENABLE_SLACK_NOTIFICATION =
-    Deno.env.get('EXPO_PUBLIC_ENABLE_SLACK_NOTIFICATION') == 'ON';
+    Deno.env.get('ENABLE_SLACK_NOTIFICATION') == 'ON';
   private static readonly ENABLE_CONSOLE_LOG =
-    Deno.env.get('EXPO_PUBLIC_ENABLE_CONSOLE_LOG') == 'ON';
+    Deno.env.get('ENABLE_CONSOLE_LOG') == 'ON';
 
   /**
    * ログを出力し、必要に応じてSlackに通知する
