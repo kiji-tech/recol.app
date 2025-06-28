@@ -90,7 +90,7 @@ export default function PlanCreator() {
           text="登録する"
           onPress={handlerSubmit}
           disabled={isLoading}
-          loading={true || isLoading}
+          loading={isLoading}
         />
       </View>
     </BackgroundView>
