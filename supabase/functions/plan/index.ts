@@ -6,6 +6,10 @@ import dayjs from 'dayjs';
 import { LogUtil } from '../libs/LogUtil.ts';
 
 const app = new Hono().basePath('/plan');
+
+const MAXIMUM_FREE_PLAN = 4;
+const MAXIMUM_PREMIUM_PLAN = 20;
+
 const TTL = 60 * 60 * 24 * 25; // 25日
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
 const FiledMaskValue =
