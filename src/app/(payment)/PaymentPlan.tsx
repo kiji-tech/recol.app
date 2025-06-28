@@ -378,16 +378,16 @@ export default function PaymentPlan() {
             </Text>
             <View className="flex flex-row gap-3">
               <PlanCard
-                price="400円"
+                price="500円"
                 period="月額"
                 onPress={() => handlePayment('m')}
                 disabled={isLoading || SubscriptionUtil.isMonthly(profile!)}
                 isCurrentPlan={SubscriptionUtil.isMonthly(profile!)}
               />
               <PlanCard
-                price="4,000円"
+                price="5,000円"
                 period="年額"
-                originalPrice="4,800円"
+                originalPrice="6,000円"
                 discount="17%OFF"
                 isPopular={true}
                 onPress={() => handlePayment('y')}
