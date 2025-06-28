@@ -1,6 +1,6 @@
 export default {
   scheme: 'recol',
-  name: 'Re:Col',
+  name: 'Re:CoL',
   slug: 'yuru-tabi',
   version: '1.0.0',
   icon: './assets/images/icon.png',

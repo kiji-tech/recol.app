@@ -14,7 +14,8 @@ import * as ImagePicker from 'expo-image-picker';
 export default function ProfileEditorScreen() {
   // === Member ===
   const router = useRouter();
-  const { session, user, profile, setProfile } = useAuth();
+  const { session, user, getProfileInfo, setProfile } = useAuth();
+  const profile = getProfileInfo();
   const [avatar, setAvatar] = useState<string | null>(
     profile?.avatar_url
       ? `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`

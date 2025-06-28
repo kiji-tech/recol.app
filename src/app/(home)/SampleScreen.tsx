@@ -38,7 +38,7 @@ export default function SampleScreen() {
     const subscription = await createStripeSubscription(priceId, session);
     setSubscriptionId(subscription.id);
     initPaymentSheet({
-      merchantDisplayName: `Re:Col プレミアムプラン ${type === 'm' ? '月額' : '年額'}`,
+      merchantDisplayName: `Re:CoL プレミアムプラン ${type === 'm' ? '月額' : '年額'}`,
       paymentIntentClientSecret: subscription.latest_invoice?.confirmation_secret?.client_secret,
       allowsDelayedPaymentMethods: true,
     });

@@ -11,6 +11,7 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { deletePlan } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
+import MaskLoading from '@/src/components/MaskLoading';
 
 function PlanCard({ plan }: { plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] } }) {
   // === Member ===
@@ -116,7 +117,12 @@ export default function PlanListScreen() {
   // === Member ===
   const router = useRouter();
   const { isDarkMode } = useTheme();
-  const { planList, fetchPlan } = usePlan();
+  const { planList, fetchPlan, planLoading } = usePlan();
+
+  // === Method ===
+  const init = async (ctrl?: AbortController) => {
+    await fetchPlan(ctrl);
+  };
 
   // === Effect ===
   useFocusEffect(
@@ -128,11 +134,6 @@ export default function PlanListScreen() {
       };
     }, [])
   );
-
-  // === Method ===
-  const init = async (ctrl?: AbortController) => {
-    await fetchPlan(ctrl);
-  };
 
   // === Render ===
   const addButton = () => {
@@ -170,6 +171,7 @@ export default function PlanListScreen() {
             <PlanCard key={plan.uid} plan={plan} />
           ))}
       </View>
+      {planLoading && <MaskLoading />}
     </BackgroundView>
   );
 }

@@ -13,7 +13,8 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import PlanInformation from '@/src/components/PlanInformation';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { Schedule } from '@/src/entities/Plan';
+import { Plan, Schedule } from '@/src/entities/Plan';
+import MaskLoading from '@/src/components/MaskLoading';
 
 const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null) => {
   const router = useRouter();
@@ -84,7 +85,7 @@ const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
-  const { plan } = usePlan();
+  const { plan, planLoading } = usePlan();
   const { session } = useAuth();
   const [viewPlan, setViewPlan] = useState<
     (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null
@@ -98,7 +99,6 @@ export default function ScheduleScreen(): ReactNode {
       return;
     }
 
-    setViewPlan(null);
     const ctrl = new AbortController();
 
     fetchPlan(plan.uid, session, ctrl)
@@ -106,7 +106,7 @@ export default function ScheduleScreen(): ReactNode {
         if (!data) {
           throw new Error('プランデータの取得に失敗しました');
         }
-        setViewPlan({ ...data } as Tables<'plan'> & { schedule: Tables<'schedule'>[] });
+        setViewPlan({ ...data } as Plan);
       })
       .catch((e) => {
         if (e && e.message && e.message.indexOf('Aborted') < 0) {
@@ -152,6 +152,7 @@ export default function ScheduleScreen(): ReactNode {
           <ScheduleComponents plan={viewPlan} onDelete={handleDeleteSchedule} />
         </>
       )}
+      {planLoading && <MaskLoading />}
     </BackgroundView>
   );
 }
