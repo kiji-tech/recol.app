@@ -9,10 +9,12 @@ import dayjs from '@/src/libs/dayjs';
 import MapModal from './component/MapModal';
 import { upsertSchedule } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { Place } from '@/src/entities/Place';
+import { Schedule } from '@/src/entities/Plan';
 
 export default function ScheduleEditor() {
   // === Member ===
-  const { editSchedule, setEditSchedule } = usePlan();
+  const { editSchedule, setEditSchedule, fetchPlan } = usePlan();
   const { session } = useAuth();
   const [openMapModal, setOpenMapModal] = useState(false);
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
@@ -28,7 +30,9 @@ export default function ScheduleEditor() {
     };
 
     await upsertSchedule(schedule as Tables<'schedule'>, session)
-      .then(() => {
+      .then(async () => {
+        // プランの撮り直し
+        await fetchPlan();
         router.back();
       })
       .catch((e) => {
@@ -55,7 +59,7 @@ export default function ScheduleEditor() {
 
   // === Effect ===
   useEffect(() => {
-    if (!editSchedule) setEditSchedule({} as Tables<'schedule'>);
+    if (!editSchedule) setEditSchedule({} as Tables<'schedule'> & { place_list: Place[] });
   }, []);
 
   // === Render ===
@@ -70,7 +74,10 @@ export default function ScheduleEditor() {
           className={`flex flex-row justify-center rounded-xl items-center border-b-[1px] px-4 py-4 w-full text-3xl
             border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
           onChangeText={(text) => {
-            setEditSchedule({ ...editSchedule, title: text });
+            setEditSchedule({
+              ...editSchedule,
+              title: text,
+            } as Schedule);
           }}
           placeholderTextColor={'gray'}
         />
@@ -89,7 +96,7 @@ export default function ScheduleEditor() {
                   ...editSchedule,
                   from: date.format(DATE_FORMAT),
                   to,
-                });
+                } as Tables<'schedule'> & { place_list: Place[] });
               }}
             />
             <Text className="text-light-text dark:text-dark-text"> ― </Text>
@@ -102,7 +109,7 @@ export default function ScheduleEditor() {
                 setEditSchedule({
                   ...editSchedule,
                   to: date.format(DATE_FORMAT),
-                })
+                } as Schedule)
               }
             />
           </View>
@@ -128,7 +135,10 @@ export default function ScheduleEditor() {
             className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
                         border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
             onChangeText={(text) => {
-              setEditSchedule({ ...editSchedule, description: text });
+              setEditSchedule({
+                ...editSchedule,
+                description: text,
+              } as Schedule);
             }}
           />
         </View>

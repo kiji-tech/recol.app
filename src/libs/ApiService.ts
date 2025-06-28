@@ -3,6 +3,7 @@ import { Tables } from './database.types';
 import { LogUtil } from './LogUtil';
 import Stripe from 'stripe';
 import { Place } from '../entities/Place';
+import { Schedule } from '@/src/entities/Plan';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL;
 
@@ -154,7 +155,7 @@ async function fetchSchedule(scheduleId: string, session: Session | null, ctrl?:
  * @returns Tables<'schedule'>[]
  */
 async function fetchScheduleList(planId: string, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Tables<'schedule'>[]>(`/schedule/list`, {
+  const response = await apiRequest<Schedule[]>(`/schedule/list`, {
     method: 'POST',
     session,
     body: { planId },

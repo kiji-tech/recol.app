@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import React, { ReactNode, useCallback, useState } from 'react';
-import Schedule from '@/src/components/Schedule';
+import ScheduleComponents from '@/src/components/Schedule';
 import { BackgroundView, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useRouter } from 'expo-router';
@@ -13,7 +13,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import PlanInformation from '@/src/components/PlanInformation';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { Place } from '@/src/entities/Place';
+import { Schedule } from '@/src/entities/Plan';
 
 const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null) => {
   const router = useRouter();
@@ -32,7 +32,7 @@ const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }
       plan_id: plan!.uid,
       from: dayjs().set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
       to: dayjs().add(1, 'hour').set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
-    } as Tables<'schedule'> & { place_list: Place[] };
+    } as Schedule;
     setEditSchedule(schedule);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
@@ -109,7 +109,7 @@ export default function ScheduleScreen(): ReactNode {
         setViewPlan({ ...data } as Tables<'plan'> & { schedule: Tables<'schedule'>[] });
       })
       .catch((e) => {
-        if (e && e.message) {
+        if (e && e.message && e.message.indexOf('Aborted') < 0) {
           Alert.alert(e.message);
         }
       });
@@ -149,7 +149,7 @@ export default function ScheduleScreen(): ReactNode {
         <>
           <PlanInformation plan={viewPlan} />
           {/* Schedule */}
-          <Schedule plan={viewPlan} onDelete={handleDeleteSchedule} />
+          <ScheduleComponents plan={viewPlan} onDelete={handleDeleteSchedule} />
         </>
       )}
     </BackgroundView>

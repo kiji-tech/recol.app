@@ -5,9 +5,10 @@ import { Tables } from '@/src/libs/database.types';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { Place } from '@/src/entities/Place';
+import { Schedule } from '@/src/entities/Plan';
 
 type Props = {
-  item: Tables<'schedule'> & { place_list: Place[] };
+  item: Schedule;
   isEndDateView: boolean;
   onPress: (schedule: Tables<'schedule'> & { place_list: Place[] }) => void;
   onLongPress: (schedule: Tables<'schedule'> & { place_list: Place[] }) => void;

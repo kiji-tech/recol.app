@@ -10,18 +10,19 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { useAuth } from '@/src/contexts/AuthContext';
 import Button from '../Common/Button';
 import { Place } from '@/src/entities/Place';
+import { Schedule } from '@/src/entities/Plan';
 
 type Props = {
   plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
   onDelete?: (schedule: Tables<'schedule'>) => void;
 };
 
-export default function Schedule({ plan, onDelete }: Props): ReactNode {
+export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode {
   // === Member ===
   const DATE_FORMAT = 'YYYY-MM-DD';
   const { setEditSchedule } = usePlan();
   const { session } = useAuth();
-  const [scheduleList, setScheduleList] = useState<Tables<'schedule'>[]>([]);
+  const [scheduleList, setScheduleList] = useState<Schedule[]>([]);
   const router = useRouter();
 
   // === Method ====
@@ -61,7 +62,7 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
   };
 
   /** アイテム長押しイベント */
-  const handleScheduleLongPress = (schedule: Tables<'schedule'> & { place_list: Place[] }) => {
+  const handleScheduleLongPress = (schedule: Schedule) => {
     if (!onDelete) return;
     // 削除アラート
     Alert.alert(schedule.title!, 'このスケジュールを削除しますか？', [
@@ -85,7 +86,7 @@ export default function Schedule({ plan, onDelete }: Props): ReactNode {
     fetchScheduleList(plan.uid, session, ctrl)
       .then((data) => {
         if (data) {
-          setScheduleList(data.sort((a, b) => dayjs(a.from).diff(dayjs(b.from))));
+          setScheduleList(data.sort((a, b) => dayjs(a.from).diff(dayjs(b.from))) as Schedule[]);
         }
       })
       .catch((e) => {

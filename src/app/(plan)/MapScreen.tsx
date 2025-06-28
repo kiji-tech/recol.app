@@ -2,14 +2,14 @@ import React, { useMemo, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Image } from 'expo-image';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { BackgroundView, Header, RateViewer } from '@/src/components';
+import { RateViewer } from '@/src/components';
 import { Region } from 'react-native-maps';
 import { useLocation } from '@/src/contexts/LocationContext';
 import { Place } from '@/src/entities/Place';
-import Map from '@/src/components/GoogleMaps/Map';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Tables } from '@/src/libs/database.types';
 import { DEFAULT_RADIUS } from '@/src/libs/ConstValue';
+import Map from '@/src/components/GoogleMaps/Map';
 
 const ScheduleInfoCard = ({
   schedule,
@@ -118,8 +118,7 @@ export default function MapScreen() {
 
   // === Render ===
   return (
-    <BackgroundView>
-      <Header title={`${plan?.title}のマップ`} />
+    <View className="w-screen h-screen absolute top-0 left-0 mt-20">
       <View className="w-screen flex-1">
         <Map
           radius={radius}
@@ -132,7 +131,7 @@ export default function MapScreen() {
           onRegionChange={handleRegionChange}
         />
       </View>
-      <View className="h-64">
+      <View className="absolute bottom-40 w-screen bg-light-background dark:bg-dark-background rounded-t-3xl py-4">
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -148,6 +147,6 @@ export default function MapScreen() {
           ))}
         </ScrollView>
       </View>
-    </BackgroundView>
+    </View>
   );
 }
