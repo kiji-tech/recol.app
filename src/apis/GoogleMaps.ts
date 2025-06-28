@@ -8,18 +8,13 @@ const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
 
 // スポットは50個以下にする必要がある
 const INCLUDED_TYPES: Record<MapCategory, string[]> = {
+  cafe: ['cafe', 'coffee_shop', 'cafeteria', 'tea_house', 'cat_cafe', 'bakery'],
   meal: [
-    'bakery',
     'bar',
     'bar_and_grill',
-    'cafe',
-    'cafeteria',
-    'candy_store',
-    'cat_cafe',
     'chinese_restaurant',
     'chocolate_factory',
     'chocolate_shop',
-    'coffee_shop',
     'confectionery',
     'deli',
     'dessert_restaurant',
@@ -44,7 +39,6 @@ const INCLUDED_TYPES: Record<MapCategory, string[]> = {
     'spanish_restaurant',
     'steak_house',
     'sushi_restaurant',
-    'tea_house',
   ],
   hotel: [
     'bed_and_breakfast',
