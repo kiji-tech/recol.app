@@ -14,7 +14,7 @@ import MapSearchBar from '@/src/components/GoogleMaps/MapSearchBar';
 import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
 import ResearchButton from './ResearchButton';
-import { LATITUDE_OFFSET } from '@/src/libs/ConstValue';
+import { LATITUDE_OFFSET, SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
 
 type Props = {
   isOpen: boolean;
@@ -24,8 +24,8 @@ type Props = {
 export default function MapModal({ isOpen, onClose }: Props) {
   // === Member ===
   const DEFAULT_RADIUS = 4200;
-  const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
   const bottomSheetRef = useRef<BottomSheet | null>(null);
+  const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
   const { session } = useAuth();
   const { currentRegion } = useLocation();
   const { editSchedule, setEditSchedule } = usePlan();
@@ -180,12 +180,12 @@ export default function MapModal({ isOpen, onClose }: Props) {
   /** マップ選択時のスクロール位置計算 */
   useFocusEffect(
     useCallback(() => {
-      if (selectedPlace) {
-        bottomSheetRef.current?.expand({});
-        setTimeout(() => {
-          scrollRef.current?.scrollTo({ x: 0, y: calcScrollHeight(selectedPlace), animated: true });
-        }, 600);
-      }
+      if (!selectedPlace) return;
+      // ボトムシートが開いている状態じゃないと､スクロールイベントが発生しない
+      bottomSheetRef.current?.expand({});
+      setTimeout(() => {
+        scrollRef.current?.scrollTo({ x: 0, y: calcScrollHeight(selectedPlace), animated: true });
+      }, SCROLL_EVENT_TIMEOUT);
     }, [selectedPlace])
   );
 

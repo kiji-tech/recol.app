@@ -6,7 +6,8 @@ export const STORAGE_KEYS = {
   CHAT_NOTIFICATION_KEY: '@chat_notification_enabled',
 };
 
-/** ==== Google Maps ==== */
+export const SCROLL_EVENT_TIMEOUT = 600;
+/** ===================== Google Maps ===================== */
 
 /** 緯度のオフセット */
 export const LATITUDE_OFFSET = 0.004;

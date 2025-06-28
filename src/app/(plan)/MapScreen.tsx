@@ -1,16 +1,19 @@
-import React, { useMemo, useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { Linking, Text, TouchableOpacity, View } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import { Image } from 'expo-image';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { RateViewer } from '@/src/components';
+import { IconButton, RateViewer } from '@/src/components';
 import { Region } from 'react-native-maps';
 import { useLocation } from '@/src/contexts/LocationContext';
 import { Place } from '@/src/entities/Place';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Tables } from '@/src/libs/database.types';
 import { DEFAULT_RADIUS, LATITUDE_OFFSET } from '@/src/libs/ConstValue';
+import { useTheme } from '@/src/contexts/ThemeContext';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Map from '@/src/components/GoogleMaps/Map';
-import dayjs from 'dayjs';
 
 const ScheduleInfoCard = ({
   schedule,
@@ -19,47 +22,74 @@ const ScheduleInfoCard = ({
   schedule: Tables<'schedule'>;
   onPress: (place: Place) => void;
 }) => {
+  // === Member ===
+  const { isDarkMode } = useTheme();
   const placeList = useMemo(() => {
     return (schedule.place_list as unknown as Place[]) || [];
   }, [schedule]);
+
+  // === Render ===
   if (placeList.length === 0) return null;
   return (
-    <View className="flex flex-col gap-2">
-      <View className="px-4 py-2">
-        <Text className="text-light-text dark:text-dark-text text-xl">【{schedule?.title}】</Text>
-        <Text className="text-light-text dark:text-dark-text text-sm">
-          {dayjs(schedule.from).format('YYYY-MM-DD HH:mm')} ~ {dayjs(schedule.to).format('HH:mm')}
-        </Text>
-      </View>
-      <View className="flex flex-row gap-2">
-        {placeList.map((place) => (
-          <TouchableOpacity
-            key={place.id}
-            className="flex flex-col gap-2 rounded-md mr-4 border border-light-border dark:border-dark-border"
-            onPress={() => onPress(place)}
-          >
-            {place.photos && place.photos.length > 0 && (
-              <Image
-                style={{
-                  width: 256,
-                  height: 128,
-                  borderTopLeftRadius: 8,
-                  borderTopRightRadius: 8,
-                }}
-                source={`https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`}
-              />
-            )}
-            <View className="p-2">
-              {/* タイトル */}
-              <Text className="text-light-text dark:text-dark-text text-md w-full">
-                {place.displayName.text}
-              </Text>
-              {/* 評価 */}
-              <RateViewer rating={place.rating} />
+    <View className="flex flex-row gap-2">
+      {placeList.map((place) => (
+        <TouchableOpacity
+          key={place.id}
+          className="flex flex-col gap-2 rounded-md mr-4 bg-light-background dark:bg-dark-background border border-light-border dark:border-dark-border"
+          onPress={() => onPress(place)}
+        >
+          {place.photos && place.photos.length > 0 && (
+            <Image
+              style={{
+                width: 256,
+                height: 128,
+                borderTopLeftRadius: 4,
+                borderTopRightRadius: 4,
+              }}
+              source={`https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`}
+            />
+          )}
+          <View className="px-4 py-2 flex flex-col gap-2">
+            {/* タイトル */}
+            <Text className="text-light-text dark:text-dark-text text-md w-full">
+              {place.displayName.text}
+            </Text>
+            {/* 評価 */}
+            <RateViewer rating={place.rating} />
+            {/* ボタングループ */}
+            <View className="flex flex-row justify-start items-center gap-4">
+              {place.websiteUri && (
+                <IconButton
+                  icon={
+                    <MaterialCommunityIcons
+                      name="web"
+                      size={18}
+                      color={isDarkMode ? 'white' : 'black'}
+                      className={`text-light-text dark:text-dark-text`}
+                    />
+                  }
+                  theme="theme"
+                  onPress={() => Linking.openURL(place.websiteUri)}
+                />
+              )}
+              {place.googleMapsUri && (
+                <IconButton
+                  icon={
+                    <FontAwesome5
+                      name="map-marked-alt"
+                      size={18}
+                      color={isDarkMode ? 'white' : 'black'}
+                      className={`text-light-text dark:text-dark-text`}
+                    />
+                  }
+                  theme="theme"
+                  onPress={() => Linking.openURL(place.googleMapsUri)}
+                />
+              )}
             </View>
-          </TouchableOpacity>
-        ))}
-      </View>
+          </View>
+        </TouchableOpacity>
+      ))}
     </View>
   );
 };
@@ -69,6 +99,7 @@ const ScheduleInfoCard = ({
  */
 export default function MapScreen() {
   // === Member ===
+  const scrollRef = useRef<ScrollView>(null);
   const { plan } = usePlan();
   const { currentRegion } = useLocation();
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(
@@ -104,16 +135,32 @@ export default function MapScreen() {
   };
 
   const handleSelectedPlace = (place: Place) => {
-    setSelectedPlace(place);
     setRegion((prev) => {
-      if (!prev) return null;
       return {
-        ...prev,
+        ...(prev || {}),
         ...place.location,
         latitude: place.location.latitude - LATITUDE_OFFSET,
-      };
+      } as Region;
     });
+    setSelectedPlace(place);
   };
+
+  /** スクロールする際のX軸の計算 */
+  const calcScrollWidth = (place: Place) => {
+    const CARD_WIDTH = 256 + 18;
+    const index = placeList.findIndex((p) => p.id === place.id);
+    return index * CARD_WIDTH;
+  };
+
+  // === Effect ===
+  useFocusEffect(
+    useCallback(() => {
+      if (!selectedPlace) {
+        return;
+      }
+      scrollRef.current?.scrollTo({ x: calcScrollWidth(selectedPlace), animated: true });
+    }, [selectedPlace])
+  );
 
   // === Memo ===
   const placeList = useMemo(() => {
@@ -123,7 +170,7 @@ export default function MapScreen() {
   // === Render ===
   return (
     <View className="w-screen h-screen absolute top-0 left-0 mt-20">
-      <View className="w-screen flex-1">
+      <View className="w-screen h-40 flex-1">
         <Map
           radius={radius}
           region={region || currentRegion}
@@ -131,12 +178,14 @@ export default function MapScreen() {
           selectedPlaceList={placeList.filter((place) => place.id === selectedPlace?.id)}
           isMarker={true}
           isCallout={true}
-          isCenterCircle={true}
+          isCenterCircle={false}
           onRegionChange={handleRegionChange}
+          onSelectedPlace={handleSelectedPlace}
         />
       </View>
-      <View className="absolute bottom-48 w-screen bg-light-background dark:bg-dark-background rounded-3xl px-4 pt-2 pb-8">
+      <View className="absolute bottom-40 w-screen px-4 pt-2 pb-8">
         <ScrollView
+          ref={scrollRef}
           horizontal
           showsHorizontalScrollIndicator={false}
           alwaysBounceHorizontal={false}
