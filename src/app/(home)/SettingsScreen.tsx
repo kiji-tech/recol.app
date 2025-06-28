@@ -34,7 +34,7 @@ const PlanComponent = () => {
       className="flex flex-row items-start justify-between"
       onPress={() => router.push('/(payment)/PaymentPlan')}
     >
-      {profile!.subscription && profile!.subscription.length === 0 && (
+      {profile && profile!.subscription && profile!.subscription.length === 0 && (
         <View className="flex flex-row items-start justify-between ">
           <Text className="text-light-text dark:text-dark-text">無料プラン</Text>
           {/* プラン切り替え */}
@@ -46,7 +46,7 @@ const PlanComponent = () => {
         </View>
       )}
 
-      {profile!.subscription && profile!.subscription.length > 0 && (
+      {profile && profile!.subscription && profile!.subscription.length > 0 && (
         <View className="flex-col items-start justify-between">
           <Text className="text-light-text dark:text-dark-text mb-2 text-lg">プレミアムプラン</Text>
           {/* プランの有効期限 */}
