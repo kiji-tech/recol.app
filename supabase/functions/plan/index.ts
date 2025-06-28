@@ -2,8 +2,9 @@ import { Hono } from 'jsr:@hono/hono';
 import { SupabaseClient, User } from 'jsr:@supabase/supabase-js@2';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
-import dayjs from 'dayjs';
 import { LogUtil } from '../libs/LogUtil.ts';
+import { SubscriptionUtil } from '../libs/SubscriptionUtil.ts';
+import dayjs from 'dayjs';
 
 const app = new Hono().basePath('/plan');
 
@@ -75,20 +76,13 @@ const maximumVerifyChecker = async (supabase: SupabaseClient, user: User) => {
     .gte('created_at', from)
     .eq('user_id', user.id);
 
-  const { payment_plan } = profile;
-
-  switch (payment_plan) {
-    case 'Free':
-      if (count > MAXIMUM_FREE_PLAN) {
-        return IS_OVER;
-      }
-      break;
-    case 'Premium':
-      if (count > MAXIMUM_PREMIUM_PLAN) {
-        return IS_OVER;
-      }
-      break;
+  if (SubscriptionUtil.isPremiumUser(profile) && count > MAXIMUM_PREMIUM_PLAN) {
+    return IS_OVER;
   }
+  if (count > MAXIMUM_FREE_PLAN) {
+    return IS_OVER;
+  }
+
   return !IS_OVER;
 };
 
