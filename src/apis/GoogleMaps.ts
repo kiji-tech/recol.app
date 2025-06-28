@@ -156,7 +156,7 @@ async function searchNearby(
       'X-Goog-FieldMask': 'places.id',
     }),
     body: JSON.stringify({
-      maxResultCount: process.env.EXPO_PUBLIC_GOOGLE_MAPS_MAX_RESULT_COUNT || 1,
+      maxResultCount: process.env.EXPO_PUBLIC_GOOGLE_MAPS_MAX_RESULT_COUNT || 3,
       languageCode: 'ja',
       includedTypes: INCLUDED_TYPES[category],
       locationRestriction: {
@@ -198,7 +198,7 @@ async function searchPlaceByText(
     }),
     body: JSON.stringify({
       textQuery: text,
-      maxResultCount: 20,
+      maxResultCount: process.env.EXPO_PUBLIC_GOOGLE_MAPS_MAX_RESULT_COUNT || 3,
       languageCode: 'ja',
       locationBias: {
         circle: {
