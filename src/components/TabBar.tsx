@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
@@ -8,11 +8,23 @@ import { useTheme } from '../contexts/ThemeContext';
 import { MyBannerAd } from './Ad/BannerAd';
 import { useAuth } from '../contexts/AuthContext';
 import { SubscriptionUtil } from '../libs/SubscriptionUtil';
+import { Profile } from '../entities/Profile';
+import { useFocusEffect } from 'expo-router';
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { theme } = useTheme();
-  const { profile } = useAuth();
+  const [profile, setProfile] = useState<Profile>(null);
+  const { session, getProfileInfo } = useAuth();
   const isDarkMode = theme === 'dark';
   const isIOS = Platform.OS === 'ios';
+
+  // === Effect ===
+  useFocusEffect(
+    useCallback(() => {
+      setProfile(getProfileInfo());
+    }, [session])
+  );
+
+  // === Render ===
   return (
     <View
       className={`flex-col bg-dark-theme dark:bg-light-theme ${isIOS ? 'bottom-8' : 'bottom-8'}`}

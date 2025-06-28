@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../libs/supabase';
 import { getProfile } from '../libs/ApiService';
@@ -12,7 +12,7 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 export type AuthContextType = {
   user: User | null;
   session: Session | null;
-  profile: (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null;
+  getProfileInfo: () => (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null;
   fetchProfile: () => Promise<void>;
   setProfile: (
     profile: (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null
@@ -36,6 +36,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null
   >(null);
   const [loading, setLoading] = useState(true);
+
+  const getProfileInfo = useCallback(() => {
+    return profile;
+  }, [profile]);
 
   // ログイン関数
   const login = async (email: string, password: string) => {
@@ -217,7 +221,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       value={{
         user,
         session,
-        profile,
+        getProfileInfo,
         fetchProfile,
         setProfile,
         loading,

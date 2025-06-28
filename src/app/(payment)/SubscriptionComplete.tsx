@@ -2,9 +2,18 @@ import React, { useCallback } from 'react';
 import { View, Text } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { BackgroundView } from '@/src/components';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 export default function SubscriptionComplete() {
   const router = useRouter();
+  const { fetchProfile } = useAuth();
+
+  // === Effect ===
+  useFocusEffect(
+    useCallback(() => {
+      fetchProfile();
+    }, [])
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -16,6 +25,7 @@ export default function SubscriptionComplete() {
     }, [router])
   );
 
+  // === Render ===
   return (
     <BackgroundView>
       <View className="flex-1 items-center justify-center p-4">

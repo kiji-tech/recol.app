@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { BackgroundView, Button } from '@/src/components';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Text, View, Switch, ScrollView, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,10 +13,14 @@ import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts/PlanContext';
 import dayjs from 'dayjs';
 import { SubscriptionUtil } from '@/src/libs/SubscriptionUtil';
+import { Tables } from '@/src/libs/database.types';
 
-const PlanComponent = () => {
+const PlanComponent = ({
+  profile,
+}: {
+  profile: (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null;
+}) => {
   // === Member ===
-  const { profile } = useAuth();
   const { isDarkMode } = useTheme();
 
   // === Method ===
@@ -37,12 +41,6 @@ const PlanComponent = () => {
       {profile && profile!.subscription && profile!.subscription.length === 0 && (
         <View className="flex flex-row items-start justify-between ">
           <Text className="text-light-text dark:text-dark-text">無料プラン</Text>
-          {/* プラン切り替え */}
-          <Button
-            theme="info"
-            text="プランを更新する"
-            onPress={() => router.push('/(payment)/PaymentPlan')}
-          />
         </View>
       )}
 
@@ -99,27 +97,38 @@ const SCHEDULE_NOTIFICATION_KEY = STORAGE_KEYS.SCHEDULE_NOTIFICATION_KEY;
 const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
 
 export default function Settings() {
-  const { user, profile, logout } = useAuth();
+  const { session, user, getProfileInfo, logout } = useAuth();
   const { clearStoragePlan } = usePlan();
   const { theme, setTheme } = useTheme();
   const [scheduleNotification, setScheduleNotification] = useState(true);
   const [chatNotification, setChatNotification] = useState(true);
+  const [profile, setProfile] = useState<
+    (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null
+  >(null);
   const version = Constants.expoConfig?.version || '1.0.0';
   const isDarkMode = theme === 'dark';
 
   // 通知設定の読み込み
-  useEffect(() => {
-    const loadSettings = async () => {
-      const [scheduleEnabled, chatEnabled] = await Promise.all([
-        AsyncStorage.getItem(SCHEDULE_NOTIFICATION_KEY),
-        AsyncStorage.getItem(CHAT_NOTIFICATION_KEY),
-      ]);
+  useFocusEffect(
+    useCallback(() => {
+      const loadSettings = async () => {
+        const [scheduleEnabled, chatEnabled] = await Promise.all([
+          AsyncStorage.getItem(SCHEDULE_NOTIFICATION_KEY),
+          AsyncStorage.getItem(CHAT_NOTIFICATION_KEY),
+        ]);
 
-      setScheduleNotification(scheduleEnabled !== 'false');
-      setChatNotification(chatEnabled !== 'false');
-    };
-    loadSettings();
-  }, []);
+        setScheduleNotification(scheduleEnabled !== 'false');
+        setChatNotification(chatEnabled !== 'false');
+      };
+      loadSettings();
+    }, [])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      setProfile(getProfileInfo());
+    }, [session])
+  );
 
   // テーマ切り替え処理
   const handleThemeChange = (value: boolean) => {
@@ -187,7 +196,7 @@ export default function Settings() {
         <View className="pb-4 border-b border-light-border dark:border-dark-border">
           <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">プラン</Text>
           <View className="px-4 py-2 text-md text-light-text dark:text-dark-text">
-            <PlanComponent />
+            <PlanComponent profile={profile} />
           </View>
         </View>
 
