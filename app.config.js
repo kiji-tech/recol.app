@@ -123,6 +123,6 @@ export default {
     policy: 'appVersion',
   },
   updates: {
-    url: 'https://u.expo.dev/d0f16b33-31f2-4574-a7ab-9e3318729003',
+    url: 'https://u.expo.dev/c85fb288-4763-4861-afe1-77ae452bbd97',
   },
 };
