@@ -10,7 +10,6 @@ import { MapCategory } from '@/src/entities/MapCategory';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { LATITUDE_OFFSET } from '@/src/libs/ConstValue';
 import MapSearchBar from '@/src/components/GoogleMaps/MapSearchBar';
 import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
@@ -53,13 +52,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
     if (selectedCategory === 'selected') return;
     setIsLoading(true);
     try {
-      const response = await searchNearby(
-        session,
-        latitude + LATITUDE_OFFSET,
-        longitude,
-        selectedCategory,
-        radius
-      );
+      const response = await searchNearby(session, latitude, longitude, selectedCategory, radius);
       settingPlaces(response);
     } finally {
       setIsLoading(false);

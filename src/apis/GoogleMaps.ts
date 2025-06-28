@@ -3,6 +3,7 @@ import { MapCategory } from '../entities/MapCategory';
 import { fetchCachePlace } from '../libs/ApiService';
 import { Place } from '../entities/Place';
 import { LogUtil } from '../libs/LogUtil';
+import { LATITUDE_OFFSET } from '../libs/ConstValue';
 
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
 
@@ -115,25 +116,7 @@ const INCLUDED_TYPES: Record<MapCategory, string[]> = {
 };
 
 // 取得するフィールド
-const FiledMaskValue =
-  'places.id,places.types,places.reviews,places.displayName,places.formattedAddress,places.rating,places.location,places.photos,places.websiteUri,places.editorialSummary,places.currentOpeningHours.openNow,places.currentOpeningHours.weekdayDescriptions,places.googleMapsUri,places.googleMapsLinks.*';
-//   '*';
-
-async function searchId(placeId: string) {
-  const response = await fetch(`${GOOGLE_MAPS_API_URL}/${placeId}`, {
-    method: 'GET',
-    headers: new Headers({
-      'Content-Type': 'application/json',
-      'X-Goog-Api-Key': process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-      'X-Goog-FieldMask': FiledMaskValue,
-    }),
-  })
-    .then((response) => response.json())
-    .catch(() => {
-      //   console.log(e)
-    });
-  return response;
-}
+const FiledMaskValue = 'places.id';
 
 async function searchNearby(
   session: Session | null,
@@ -147,7 +130,7 @@ async function searchNearby(
     headers: new Headers({
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-      'X-Goog-FieldMask': 'places.id',
+      'X-Goog-FieldMask': FiledMaskValue,
     }),
     body: JSON.stringify({
       maxResultCount: process.env.EXPO_PUBLIC_GOOGLE_MAPS_MAX_RESULT_COUNT || 3,
@@ -156,7 +139,7 @@ async function searchNearby(
       locationRestriction: {
         circle: {
           center: {
-            latitude,
+            latitude: latitude + LATITUDE_OFFSET,
             longitude,
           },
           radius: radius,
@@ -188,7 +171,7 @@ async function searchPlaceByText(
     headers: new Headers({
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-      'X-Goog-FieldMask': 'places.id',
+      'X-Goog-FieldMask': FiledMaskValue,
     }),
     body: JSON.stringify({
       textQuery: text,
@@ -197,7 +180,7 @@ async function searchPlaceByText(
       locationBias: {
         circle: {
           center: {
-            latitude,
+            latitude: latitude + LATITUDE_OFFSET,
             longitude,
           },
           radius,
@@ -216,4 +199,4 @@ async function searchPlaceByText(
   LogUtil.log(JSON.stringify({ response }), { level: 'info', notify: true });
   return response as unknown as Place[];
 }
-export { searchId, searchNearby, searchPlaceByText };
+export { searchNearby, searchPlaceByText };
