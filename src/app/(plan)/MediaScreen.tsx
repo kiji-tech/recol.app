@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { TouchableOpacity, View, Text, Alert, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
-import { Header, IconButton } from '@/src/components';
+import { IconButton } from '@/src/components';
 import { useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useTheme } from '@/src/contexts/ThemeContext';

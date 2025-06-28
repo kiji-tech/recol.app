@@ -14,6 +14,7 @@ import MapSearchBar from '@/src/components/GoogleMaps/MapSearchBar';
 import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
 import ResearchButton from './ResearchButton';
+import { LATITUDE_OFFSET } from '@/src/libs/ConstValue';
 
 type Props = {
   isOpen: boolean;
@@ -81,7 +82,11 @@ export default function MapModal({ isOpen, onClose }: Props) {
   /** 場所選択 */
   const handleSelectedPlace = (place: Place) => {
     setRegion((prev) => {
-      return { ...(prev || {}), ...place.location } as Region;
+      return {
+        ...(prev || {}),
+        ...place.location,
+        latitude: place.location.latitude - LATITUDE_OFFSET,
+      } as Region;
     });
     setSelectedPlace(place);
   };

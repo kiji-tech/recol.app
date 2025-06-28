@@ -8,8 +8,9 @@ import { useLocation } from '@/src/contexts/LocationContext';
 import { Place } from '@/src/entities/Place';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Tables } from '@/src/libs/database.types';
-import { DEFAULT_RADIUS } from '@/src/libs/ConstValue';
+import { DEFAULT_RADIUS, LATITUDE_OFFSET } from '@/src/libs/ConstValue';
 import Map from '@/src/components/GoogleMaps/Map';
+import dayjs from 'dayjs';
 
 const ScheduleInfoCard = ({
   schedule,
@@ -26,6 +27,9 @@ const ScheduleInfoCard = ({
     <View className="flex flex-col gap-2">
       <View className="px-4 py-2">
         <Text className="text-light-text dark:text-dark-text text-xl">【{schedule?.title}】</Text>
+        <Text className="text-light-text dark:text-dark-text text-sm">
+          {dayjs(schedule.from).format('YYYY-MM-DD HH:mm')} ~ {dayjs(schedule.to).format('HH:mm')}
+        </Text>
       </View>
       <View className="flex flex-row gap-2">
         {placeList.map((place) => (
@@ -100,13 +104,13 @@ export default function MapScreen() {
   };
 
   const handleSelectedPlace = (place: Place) => {
-    console.log({ place: place.displayName.text });
     setSelectedPlace(place);
     setRegion((prev) => {
       if (!prev) return null;
       return {
         ...prev,
         ...place.location,
+        latitude: place.location.latitude - LATITUDE_OFFSET,
       };
     });
   };
@@ -131,7 +135,7 @@ export default function MapScreen() {
           onRegionChange={handleRegionChange}
         />
       </View>
-      <View className="absolute bottom-40 w-screen bg-light-background dark:bg-dark-background rounded-t-3xl py-4">
+      <View className="absolute bottom-48 w-screen bg-light-background dark:bg-dark-background rounded-3xl px-4 pt-2 pb-8">
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
