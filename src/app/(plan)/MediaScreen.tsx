@@ -198,7 +198,6 @@ export default function MediaScreen() {
   }
   return (
     <BackgroundView>
-      <Header title={`${plan?.title}のメディア`} />
       {images.length === 0 && (
         <View className="flex justify-center items-center h-full">
           <Text className="text-light-text dark:text-dark-text text-xl">
@@ -208,9 +207,9 @@ export default function MediaScreen() {
       )}
       {/* アニメーションバー  */}
       {addImage.length > 0 && (
-        <View className="absolute top-[120px] w-full z-50">
+        <View className="absolute top-20 w-full z-50">
           <Progress.Bar
-            // progress={uploadedImage.length / addImage.length}
+            progress={uploadedImage.length / addImage.length}
             width={Dimensions.get('window').width}
             height={10}
             color={isDarkMode ? '#17AC38' : '#B5F3C3'}
@@ -221,11 +220,6 @@ export default function MediaScreen() {
               zIndex: 50,
             }}
           />
-          <View className="flex flex-row justify-center items-center">
-            <Text className="text-light-text dark:text-dark-text text-md">
-              {uploadedImage.length} / {addImage.length}
-            </Text>
-          </View>
         </View>
       )}
 
@@ -264,7 +258,7 @@ export default function MediaScreen() {
       <View className="absolute bottom-16 right-4">
         {mode === 'select' && (
           <IconButton
-            icon={<AntDesign name="delete" size={24} color={isDarkMode ? 'white' : 'black'} />}
+            icon={<AntDesign name="delete" size={24} color={'white'} />}
             onPress={handleDeleteImages}
             theme="danger"
             disabled={isLoading}
