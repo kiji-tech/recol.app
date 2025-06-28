@@ -2,7 +2,12 @@ import React, { useRef } from 'react';
 import { Platform } from 'react-native';
 import { BannerAd, BannerAdSize, TestIds, useForeground } from 'react-native-google-mobile-ads';
 
-const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : 'ca-app-pub-2018656716460271/3653393251';
+const adUnitId =
+  process.env.EXPO_PUBLIC_APP_ENV == 'development'
+    ? TestIds.ADAPTIVE_BANNER
+    : Platform.OS == 'ios'
+      ? process.env.EXPO_PUBLIC_ADMOB_IOS_UNIT_ID
+      : process.env.EXPO_PUBLIC_ADMOB_ANDROID_UNIT_ID;
 
 export const MyBannerAd = () => {
   const bannerRef = useRef<BannerAd | null>(null);
@@ -16,6 +21,8 @@ export const MyBannerAd = () => {
       }
     }
   });
+
+  if (!adUnitId) return;
 
   return (
     <BannerAd ref={bannerRef} unitId={adUnitId} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />

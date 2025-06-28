@@ -11,10 +11,9 @@ import { SubscriptionUtil } from '../libs/SubscriptionUtil';
 import { Profile } from '../entities/Profile';
 import { useFocusEffect } from 'expo-router';
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
-  const { theme } = useTheme();
+  const { isDarkMode } = useTheme();
   const [profile, setProfile] = useState<Profile>(null);
   const { session, getProfileInfo } = useAuth();
-  const isDarkMode = theme === 'dark';
   const isIOS = Platform.OS === 'ios';
 
   // === Effect ===
