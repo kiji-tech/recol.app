@@ -36,12 +36,6 @@ export default function MapModal({ isOpen, onClose }: Props) {
   const [region, setRegion] = useState<Region | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  /** Map上の半径の計算 */
-  const radius = useMemo(() => {
-    if (!region) return 0;
-    return DEFAULT_RADIUS * region!.longitudeDelta * 10;
-  }, [region]);
-
   // === Method ===
   /** ロケーション情報設定処理 */
   const settingPlaces = (places: Place[]) => {
@@ -157,6 +151,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
       setSelectedPlaceList((editSchedule?.place_list as unknown as Place[]) || []);
     }, [editSchedule?.place_list])
   );
+
   /** 初回ロケーション情報取得処理 */
   useFocusEffect(
     useCallback(() => {
@@ -195,6 +190,12 @@ export default function MapModal({ isOpen, onClose }: Props) {
       }
     }, [selectedPlace])
   );
+
+  /** Map上の半径の計算 */
+  const radius = useMemo(() => {
+    if (!region) return 0;
+    return DEFAULT_RADIUS * region!.longitudeDelta * 10;
+  }, [region]);
 
   // === Render ===
   if (!isOpen || !currentRegion) return null;
