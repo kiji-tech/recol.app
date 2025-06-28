@@ -92,3 +92,4 @@ expo-env.d.ts
 
 google-services.*
 google-services-web.json
+eas.json

@@ -1,10 +1,36 @@
-import appJson from './app.json' assert { type: 'json' };
-
 export default {
-  ...appJson.expo,
+  scheme: 'recol',
+  name: 'Re:Col',
+  slug: 'yuru-tabi',
+  version: '1.0.0',
+  icon: './assets/images/icon.png',
+  owner: 'shinji5761',
+  orientation: 'portrait',
+  userInterfaceStyle: 'automatic',
+  jsEngine: 'hermes',
+  newArchEnabled: false,
+  ios: {
+    icon: './assets/images/icon.png',
+    supportsTablet: true,
+    bundleIdentifier: 'com.libetech.recol',
+    infoPlist: {
+      ITSAppUsesNonExemptEncryption: false,
+    },
+    userInterfaceStyle: 'automatic',
+    deploymentTarget: '15.1',
+    googleServicesFile: process.env.GOOGLE_SERVICES_IOS_FILE ?? './google-services.plist',
+    config: {
+      googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY ?? '',
+    },
+  },
   android: {
-    ...appJson.expo.android,
-    // EAS ビルダー上では env、ローカル開発では実ファイル
+    package: 'com.libetech.recol',
+    packageName: 'com.libetech.recol',
+    permissions: [
+      'android.permission.ACCESS_COARSE_LOCATION',
+      'android.permission.ACCESS_FINE_LOCATION',
+    ],
+    userInterfaceStyle: 'automatic',
     googleServicesFile: process.env.GOOGLE_SERVICES_ANDROID_FILE ?? './google-services.json',
     config: {
       googleMaps: {
@@ -12,11 +38,91 @@ export default {
       },
     },
   },
-  ios: {
-    ...appJson.expo.ios,
-    googleServicesFile: process.env.GOOGLE_SERVICES_IOS_FILE ?? './google-services.plist',
-    config: {
-      googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY ?? '',
+  web: {
+    favicon: './assets/favicon.png',
+    bundler: 'metro',
+  },
+  plugins: [
+    [
+      'expo-build-properties',
+      {
+        android: {
+          compileSdkVersion: 35,
+          targetSdkVersion: 35,
+          buildToolsVersion: '35.0.0',
+          kotlinVersion: '1.9.25',
+        },
+        ios: {
+          useFrameworks: 'static',
+          deploymentTarget: '15.1',
+        },
+      },
+    ],
+    'expo-router',
+    [
+      'expo-location',
+      {
+        locationAlwaysAndWhenInUsePermission: 'Allow $(PRODUCT_NAME) to use your location.',
+      },
+    ],
+    [
+      'expo-tracking-transparency',
+      {
+        userTrackingPermission: 'This identifier will be used to deliver personalized ads to you.',
+      },
+    ],
+    'expo-font',
+    [
+      'expo-splash-screen',
+      {
+        image: './assets/images/icon.png',
+        resizeMode: 'contain',
+        imageWidth: 300,
+        duration: 1000,
+        fade: true,
+        backgroundColor: '#000000',
+        dark: {
+          backgroundColor: '#000000',
+        },
+      },
+    ],
+    [
+      'react-native-google-mobile-ads',
+      {
+        androidAppId: 'ca-app-pub-2018656716460271~9761357839',
+        iosAppId: 'ca-app-pub-2018656716460271~5429184177',
+        userTrackingUsageDescription:
+          'This identifier will be used to deliver personalized ads to you.',
+      },
+    ],
+    [
+      '@react-native-google-signin/google-signin',
+      {
+        iosUrlScheme: 'com.googleusercontent.apps.264549282449-siu16baee5bbs7f2i599eu0ul0kgfst4',
+      },
+    ],
+    [
+      '@stripe/stripe-react-native',
+      {
+        merchantIdentifier: 'merchant.com.libetech.recol',
+      },
+    ],
+  ],
+  experiments: {
+    typedRoutes: true,
+  },
+  extra: {
+    router: {
+      origin: false,
     },
+    eas: {
+      projectId: 'c85fb288-4763-4861-afe1-77ae452bbd97',
+    },
+  },
+  runtimeVersion: {
+    policy: 'appVersion',
+  },
+  updates: {
+    url: 'https://u.expo.dev/d0f16b33-31f2-4574-a7ab-9e3318729003',
   },
 };
