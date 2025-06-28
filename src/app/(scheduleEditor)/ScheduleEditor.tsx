@@ -29,7 +29,7 @@ export default function ScheduleEditor() {
       to: dayjs(editSchedule.to).format(DATE_FORMAT),
     };
 
-    await upsertSchedule(schedule as Tables<'schedule'>, session)
+    await upsertSchedule(schedule, session)
       .then(async () => {
         // プランの撮り直し
         await fetchPlan();

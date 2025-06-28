@@ -1,11 +1,13 @@
 import { Tables } from '@/src/libs/database.types';
 
 export class SubscriptionUtil {
-  static isAdmin(profile: Tables<'profile'>): boolean {
+  static isAdmin(profile: Tables<'profile'> | null): boolean {
+    if (!profile) return false;
     return profile.role == 'Admin' || profile.role == 'SuperUser';
   }
 
-  static isSuperUser(profile: Tables<'profile'>): boolean {
+  static isSuperUser(profile: Tables<'profile'> | null): boolean {
+    if (!profile) return false;
     return profile.role == 'SuperUser';
   }
 

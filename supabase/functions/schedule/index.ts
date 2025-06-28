@@ -125,7 +125,9 @@ const upsert = async (c: Hono.Context) => {
     .upsert(
       {
         ...schedule,
-        place_list: schedule.place_list.map((place: { id: string }) => place.id),
+        place_list: schedule.place_list
+          ? schedule.place_list.map((place: { id: string }) => place.id)
+          : [],
       },
       { onConflict: 'uid' }
     )

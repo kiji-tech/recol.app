@@ -63,14 +63,10 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
       .then(async (response) => {
         LogUtil.log(`set API plan list, ${response.length}`, { level: 'info' });
         setPlanList(response);
-
+        await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(response));
         if (plan) {
-          setPlan(
-            response.find((p) => p.uid === plan.uid) as Tables<'plan'> & {
-              schedule: Tables<'schedule'>[];
-            }
-          );
-          await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(response));
+          const updatePlan = response.find((p) => p.uid === plan.uid);
+          if (updatePlan) setPlan(updatePlan);
         }
       })
       .finally(() => {

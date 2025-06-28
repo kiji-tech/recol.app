@@ -196,7 +196,7 @@ async function upsertSchedule(
   const response = await apiRequest<Tables<'schedule'>[]>('/schedule', {
     method: 'POST',
     session,
-    body: { schedule },
+    body: { schedule } as { schedule: Schedule },
     ctrl,
   });
   return response.data!;
