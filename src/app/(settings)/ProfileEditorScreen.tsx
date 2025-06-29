@@ -13,8 +13,8 @@ import * as ImagePicker from 'expo-image-picker';
 
 export default function ProfileEditorScreen() {
   // === Member ===
-  const router = useRouter();
   const { session, user, getProfileInfo, setProfile } = useAuth();
+  const router = useRouter();
   const profile = getProfileInfo();
   const [avatar, setAvatar] = useState<string | null>(
     profile?.avatar_url
@@ -22,6 +22,7 @@ export default function ProfileEditorScreen() {
       : null
   );
   const [displayName, setDisplayName] = useState(profile?.display_name ?? '');
+  const [isLoading, setIsLoading] = useState(false);
 
   // === Method ===
   const handlePickImage = async () => {
@@ -42,40 +43,45 @@ export default function ProfileEditorScreen() {
    * プロフィールを保存する
    */
   const handleSave = async () => {
-    const base64Image = avatar
-      ? await fetch(avatar)
-          .then((response) => response.blob())
-          .then((blob) => {
-            return new Promise<string>((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onloadend = () => resolve(reader.result as string);
-              reader.onerror = reject;
-              reader.readAsDataURL(blob);
-            });
-          })
-          .catch(() => {
-            return null;
-          })
-      : null;
+    setIsLoading(true);
+    try {
+      const base64Image = avatar
+        ? await fetch(avatar)
+            .then((response) => response.blob())
+            .then((blob) => {
+              return new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result as string);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+              });
+            })
+            .catch(() => {
+              return null;
+            })
+        : null;
 
-    updateProfile(
-      {
-        ...profile,
-        display_name: displayName,
-        avatar_url: base64Image || null,
-      } as Tables<'profile'>,
-      session
-    )
-      .then((profile: Tables<'profile'> & { subscription: Tables<'subscription'>[] }) => {
-        LogUtil.log(profile, {});
-        setProfile(profile);
-        router.back();
-      })
-      .catch((e) => {
-        if (e && e.message) {
-          Alert.alert(e.message);
-        }
-      });
+      updateProfile(
+        {
+          ...profile,
+          display_name: displayName,
+          avatar_url: base64Image || null,
+        } as Tables<'profile'>,
+        session
+      )
+        .then((profile: Tables<'profile'> & { subscription: Tables<'subscription'>[] }) => {
+          LogUtil.log(profile, { level: 'info' });
+          setProfile(profile);
+          router.back();
+        })
+        .catch((e) => {
+          if (e && e.message) {
+            Alert.alert(e.message);
+          }
+        });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // === Render ===
@@ -129,10 +135,17 @@ export default function ProfileEditorScreen() {
             onChangeText={setDisplayName}
             placeholder="表示名を入力"
             placeholderTextColor="gray"
+            editable={!isLoading}
           />
         </View>
 
-        <Button onPress={handleSave} text="保存" theme="theme" />
+        <Button
+          onPress={handleSave}
+          text="保存"
+          theme="theme"
+          disabled={isLoading}
+          loading={isLoading}
+        />
       </View>
     </BackgroundView>
   );
