@@ -159,7 +159,7 @@ const PlanCard = ({
 
       {isCurrentPlan && (
         <View className="absolute -top-3 self-center">
-          <View className="bg-light-info dark:bg-dark-info px-3 py-1 rounded-full">
+          <View className="bg-light-danger dark:bg-dark-danger px-3 py-1 rounded-full">
             <Text className="text-light-text dark:text-dark-text text-xs font-bold">契約済み</Text>
           </View>
         </View>
