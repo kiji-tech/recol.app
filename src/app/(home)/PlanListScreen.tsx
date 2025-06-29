@@ -11,7 +11,6 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { deletePlan } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
-import MaskLoading from '@/src/components/MaskLoading';
 
 function PlanCard({ plan }: { plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] } }) {
   // === Member ===
@@ -152,7 +151,7 @@ export default function PlanListScreen() {
     <BackgroundView>
       <Header title="計画一覧" rightComponent={addButton()} />
       {/* プランがない場合 */}
-      {planList.length === 0 && (
+      {!planLoading && planList.length === 0 && (
         <View className="flex flex-col justify-center items-center h-full">
           <Text className="text-light-text dark:text-dark-text text-lg font-bold">
             プランがありません
@@ -171,7 +170,6 @@ export default function PlanListScreen() {
             <PlanCard key={plan.uid} plan={plan} />
           ))}
       </View>
-      {planLoading && <MaskLoading />}
     </BackgroundView>
   );
 }
