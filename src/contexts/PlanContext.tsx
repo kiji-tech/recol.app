@@ -46,14 +46,10 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
   }, [session]);
 
   const fetchStoragePlan = async () => {
-    try {
-      const list = JSON.parse((await AsyncStorage.getItem(PLAN_LIST_STORAGE_KEY)) || '[]');
-      if (list && list.length > 0) {
-        LogUtil.log(`set storage plan list ${list.length}`, { level: 'info' });
-        setPlanList(JSON.parse(list));
-      }
-    } catch (error) {
-      LogUtil.log(error, { level: 'error' });
+    const list = JSON.parse((await AsyncStorage.getItem(PLAN_LIST_STORAGE_KEY)) || '[]');
+    if (list && list.length > 0) {
+      LogUtil.log(`set storage plan list ${list.length}`, { level: 'info' });
+      setPlanList(JSON.parse(list));
     }
   };
 
@@ -61,7 +57,6 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
     setPlanLoading(true);
     fetchPlanList(session, ctrl)
       .then(async (response) => {
-        LogUtil.log(`set API plan list, ${response.length}`, { level: 'info' });
         setPlanList(response);
         await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(response));
         if (plan) {

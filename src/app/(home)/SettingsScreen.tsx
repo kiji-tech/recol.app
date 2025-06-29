@@ -108,28 +108,6 @@ export default function Settings() {
   const version = Constants.expoConfig?.version || '1.0.0';
   const isDarkMode = theme === 'dark';
 
-  // 通知設定の読み込み
-  useFocusEffect(
-    useCallback(() => {
-      const loadSettings = async () => {
-        const [scheduleEnabled, chatEnabled] = await Promise.all([
-          AsyncStorage.getItem(SCHEDULE_NOTIFICATION_KEY),
-          AsyncStorage.getItem(CHAT_NOTIFICATION_KEY),
-        ]);
-
-        setScheduleNotification(scheduleEnabled !== 'false');
-        setChatNotification(chatEnabled !== 'false');
-      };
-      loadSettings();
-    }, [])
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      setProfile(getProfileInfo());
-    }, [session])
-  );
-
   // テーマ切り替え処理
   const handleThemeChange = (value: boolean) => {
     setTheme(value ? 'dark' : 'light');
@@ -153,6 +131,31 @@ export default function Settings() {
     await logout();
   };
 
+  // === Effect ===
+  // 通知設定の読み込み
+  useFocusEffect(
+    useCallback(() => {
+      const loadSettings = async () => {
+        const [scheduleEnabled, chatEnabled] = await Promise.all([
+          AsyncStorage.getItem(SCHEDULE_NOTIFICATION_KEY),
+          AsyncStorage.getItem(CHAT_NOTIFICATION_KEY),
+        ]);
+
+        setScheduleNotification(scheduleEnabled !== 'false');
+        setChatNotification(chatEnabled !== 'false');
+      };
+      loadSettings();
+    }, [])
+  );
+
+  // === プロフィールの読み込み ===
+  useFocusEffect(
+    useCallback(() => {
+      setProfile(getProfileInfo());
+    }, [session])
+  );
+
+  // === Render ===
   return (
     <BackgroundView>
       <ScrollView className="gap-8 flex flex-col" showsVerticalScrollIndicator={false}>
