@@ -37,7 +37,7 @@ export default function SignInScreen() {
     <BackgroundView>
       <View className="flex flex-col items-center w-full gap-8">
         <Text className="text-4xl font-bold text-light-text dark:text-dark-text">
-          Welcome to the Re:col
+          Welcome to the Re:CoL
         </Text>
         {/* 画像 */}
         <Image
