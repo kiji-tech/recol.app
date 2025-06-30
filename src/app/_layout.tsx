@@ -120,8 +120,24 @@ const RouteLayout = () => {
         const stripeHandled = await handleURLCallback(url);
         if (stripeHandled) {
           // This was a Stripe URL - you can return or add extra handling here as you see fit
-        } else {
-          // This was NOT a Stripe URL – handle as you normally would
+        }
+        const urlObj = new URL(url);
+        const token = urlObj.searchParams.get('token');
+        if (url.includes('reset-password')) {
+          if (token) {
+            // パスワードリセット画面に遷移
+            router.push({
+              pathname: '/(auth)/ResetPassword',
+              params: { token },
+            });
+          }
+        } else if (url.includes('complete-signup')) {
+          if (token) {
+            // アカウント登録画面に遷移
+            router.push({
+              pathname: '/(home)',
+            });
+          }
         }
       }
     },

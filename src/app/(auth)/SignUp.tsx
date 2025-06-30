@@ -34,6 +34,7 @@ export default function SignUpScreen() {
 
     signup(email, password)
       .then(() => {
+        // メールを送信しました
         router.navigate('/(home)/SettingsScreen');
       })
       .catch((error) => {
