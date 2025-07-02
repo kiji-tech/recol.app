@@ -36,9 +36,7 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const ctrl = new AbortController();
-
     fetchStoragePlan();
-
     fetchPlan(ctrl);
     return () => {
       ctrl.abort();

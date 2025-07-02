@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { BackgroundView, Button } from '@/src/components';
 import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { LogUtil } from '@/src/libs/LogUtil';
 
@@ -18,11 +18,11 @@ export default function SignUpScreen() {
   // ==== Method ===
   const verify = (): boolean => {
     if (!email || !password || !password2) {
-      alert('入力してください');
+      Alert.alert('入力してください');
       return false;
     }
     if (password != password2) {
-      alert('パスワードが一致しません');
+      Alert.alert('パスワードが一致しません');
       return false;
     }
     return true;
@@ -31,11 +31,12 @@ export default function SignUpScreen() {
   const signUpWithPassword = async () => {
     // verify
     if (!verify()) return;
+    LogUtil.log(`signUpWithPassword: ${email}`, { level: 'info' });
 
     signup(email, password)
       .then(() => {
         // メールを送信しました
-        router.navigate('/(home)/SettingsScreen');
+        router.navigate('/(auth)/RequestNewAccount');
       })
       .catch((error) => {
         if (error.code) {
@@ -113,6 +114,9 @@ export default function SignUpScreen() {
           </TouchableOpacity>
         </View>
       </View>
+      <Link href="/(auth)/CompleteNewAccount">
+        <Text className="text-lg text-light-text dark:text-dark-text">登録完了画面へ進む</Text>
+      </Link>
     </BackgroundView>
   );
 }

@@ -8,7 +8,7 @@ import { Link } from 'expo-router';
  */
 export default function RequestNewAccount() {
   const resendEmail = () => {
-    console.log('メールを再送信する');
+    console.log('TODO: メールを再送信する');
   };
 
   return (

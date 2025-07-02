@@ -64,7 +64,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // サインアップ関数
   const signup = async (email: string, password: string) => {
     setLoading(true);
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: 'recol://(auth)/CompleteNewAccount',
+      },
+    });
     if (error) throw error;
     setSession(data.session);
     setUser(data.session?.user ?? null);

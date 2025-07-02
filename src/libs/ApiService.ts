@@ -277,6 +277,18 @@ async function getProfile(session: Session | null, ctrl?: AbortController) {
   return response.data!;
 }
 
+async function createProfile(session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Tables<'profile'> & { subscription: Tables<'subscription'>[] }>(
+    '/profile',
+    {
+      method: 'POST',
+      session,
+      ctrl,
+    }
+  );
+  return response.data!;
+}
+
 async function updateProfile(
   profile: Tables<'profile'>,
   session: Session | null,
@@ -423,6 +435,7 @@ export {
   uploadPlanMedias,
   deletePlanMedias,
   getProfile,
+  createProfile,
   updateProfile,
   fetchBlog,
   fetchBlogList,
