@@ -50,7 +50,6 @@ export default {
           compileSdkVersion: 35,
           targetSdkVersion: 35,
           buildToolsVersion: '35.0.0',
-          kotlinVersion: '1.9.25',
         },
         ios: {
           useFrameworks: 'static',

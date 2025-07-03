@@ -131,7 +131,7 @@ export default function CompleteNewAccount() {
 
   // === Method ===
   const handleGetStarted = () => {
-    router.replace('/(home)');
+    router.replace('/(auth)/SignIn');
   };
 
   // パーティクルの位置を生成
