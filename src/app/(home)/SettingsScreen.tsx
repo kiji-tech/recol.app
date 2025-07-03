@@ -14,6 +14,9 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import dayjs from 'dayjs';
 import { SubscriptionUtil } from '@/src/libs/SubscriptionUtil';
 import { Tables } from '@/src/libs/database.types';
+import { updateProfile } from '@/src/libs/ApiService';
+// import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 
 const PlanComponent = ({
   profile,
@@ -24,7 +27,6 @@ const PlanComponent = ({
   const { isDarkMode } = useTheme();
 
   // === Method ===
-
   if (SubscriptionUtil.isAdmin(profile!) || SubscriptionUtil.isSuperUser(profile!)) {
     return (
       <View>
@@ -93,18 +95,19 @@ const SettingItem: React.FC<SettingItemProps> = ({
 );
 
 // TODO: 将来的にはDB化
-const SCHEDULE_NOTIFICATION_KEY = STORAGE_KEYS.SCHEDULE_NOTIFICATION_KEY;
 const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
 
 export default function Settings() {
   const { session, user, getProfileInfo, logout } = useAuth();
   const { clearStoragePlan } = usePlan();
   const { theme, setTheme } = useTheme();
-  const [scheduleNotification, setScheduleNotification] = useState(true);
-  const [chatNotification, setChatNotification] = useState(true);
   const [profile, setProfile] = useState<
     (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null
   >(null);
+  const [scheduleNotification, setScheduleNotification] = useState(
+    profile?.enabled_schedule_notification || false
+  );
+  const [chatNotification, setChatNotification] = useState(false);
   const version = Constants.expoConfig?.version || '1.0.0';
   const isDarkMode = theme === 'dark';
 
@@ -115,7 +118,34 @@ export default function Settings() {
 
   // スケジュール通知設定の変更
   const handleScheduleNotificationChange = async (value: boolean) => {
-    await AsyncStorage.setItem(SCHEDULE_NOTIFICATION_KEY, String(value));
+    if (!profile) return;
+    let token = profile.notification_token;
+    if (value) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        if (status !== 'granted') {
+          setScheduleNotification(false);
+          return;
+        }
+      }
+    }
+    if (!token) {
+      const expoToken = await Notifications.getExpoPushTokenAsync({
+        projectId: Constants?.expoConfig?.extra?.eas?.projectId,
+      });
+      token = expoToken.data;
+    }
+
+    await updateProfile(
+      {
+        ...profile,
+        enabled_schedule_notification: value,
+        notification_token: token,
+      } as Tables<'profile'>,
+      session
+    );
+    setProfile(getProfileInfo());
     setScheduleNotification(value);
   };
 
@@ -136,12 +166,8 @@ export default function Settings() {
   useFocusEffect(
     useCallback(() => {
       const loadSettings = async () => {
-        const [scheduleEnabled, chatEnabled] = await Promise.all([
-          AsyncStorage.getItem(SCHEDULE_NOTIFICATION_KEY),
-          AsyncStorage.getItem(CHAT_NOTIFICATION_KEY),
-        ]);
+        const [chatEnabled] = await Promise.all([AsyncStorage.getItem(CHAT_NOTIFICATION_KEY)]);
 
-        setScheduleNotification(scheduleEnabled !== 'false');
         setChatNotification(chatEnabled !== 'false');
       };
       loadSettings();

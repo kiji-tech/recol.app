@@ -84,7 +84,8 @@ const create = async (c: Hono.Context) => {
 const update = async (c: Hono.Context) => {
   console.log('[PUT] profile');
   const supabase = generateSupabase(c);
-  const { display_name, avatar_url } = await c.req.json();
+  const { display_name, avatar_url, notification_token, enabled_schedule_notification } =
+    await c.req.json();
 
   const user = await getUser(c, supabase);
   if (!user) {
@@ -137,7 +138,16 @@ const update = async (c: Hono.Context) => {
   // プロフィールを更新
   const { data, error } = await supabase
     .from('profile')
-    .upsert({ uid: user.id, display_name, avatar_url: finalAvatarUrl }, { onConflict: 'uid' })
+    .upsert(
+      {
+        uid: user.id,
+        display_name,
+        avatar_url: finalAvatarUrl,
+        notification_token,
+        enabled_schedule_notification,
+      },
+      { onConflict: 'uid' }
+    )
     .select('*, subscription(*)')
     .eq('subscription.user_id', user.id)
     .eq('subscription.status', 'active')
