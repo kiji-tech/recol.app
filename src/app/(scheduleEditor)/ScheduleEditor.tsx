@@ -17,7 +17,7 @@ import { LogUtil } from '@/src/libs/LogUtil';
 export default function ScheduleEditor() {
   // === Member ===
   const { editSchedule, setEditSchedule, fetchPlan } = usePlan();
-  const { session } = useAuth();
+  const { session, profile } = useAuth();
   const [openMapModal, setOpenMapModal] = useState(false);
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
 
@@ -35,7 +35,10 @@ export default function ScheduleEditor() {
       .then(async () => {
         LogUtil.log('complete update schedule', { level: 'info' });
         // 通知処理の見直し
-        await NotificationUtil.upsertUserSchedule(editSchedule as Schedule);
+        await NotificationUtil.upsertUserSchedule(
+          editSchedule as Schedule,
+          profile?.enabled_schedule_notification ?? false
+        );
 
         // プランの撮り直し
         await fetchPlan();

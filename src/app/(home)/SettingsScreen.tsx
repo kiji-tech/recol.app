@@ -17,6 +17,7 @@ import { Tables } from '@/src/libs/database.types';
 import { updateProfile } from '@/src/libs/ApiService';
 // import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import { NotificationUtil } from '@/src/libs/NotificationUtil';
 
 const PlanComponent = ({
   profile,
@@ -120,6 +121,13 @@ export default function Settings() {
   const handleScheduleNotificationChange = async (value: boolean) => {
     if (!profile) return;
     let token = profile.notification_token;
+
+    // スケジュール通知を無効にした場合は､既存のスケジュールを全削除
+    if (!value) {
+      await NotificationUtil.removeAllScheduleNotification();
+      return;
+    }
+
     if (value) {
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
       if (existingStatus !== 'granted') {
@@ -129,6 +137,7 @@ export default function Settings() {
           return;
         }
       }
+      // ONになった場合は､今あるスケジュールに対してすべての通知を設定する
     }
     if (!token) {
       const expoToken = await Notifications.getExpoPushTokenAsync({
@@ -155,6 +164,7 @@ export default function Settings() {
     setChatNotification(value);
   };
 
+  // サインアウト処理
   const handleSignOut = async () => {
     router.replace('/(auth)/SignIn');
     await clearStoragePlan();

@@ -24,9 +24,14 @@ export class NotificationUtil {
    * すでに同じIDをのものがあるかチェック
    * あればキャンセルリクエストを送る
    */
-  static async upsertUserSchedule(schedule: Schedule) {
+  static async upsertUserSchedule(schedule: Schedule, enabled: boolean) {
     LogUtil.log('upsertUserSchedule', { level: 'info' });
     await this.removeScheduleNotification(schedule);
+
+    if (!enabled) {
+      LogUtil.log('schedule notification is disabled', { level: 'info' });
+      return;
+    }
 
     const targetDate = dayjs(schedule.from);
     if (targetDate.isBefore(dayjs().add(-5, 'minute'))) {
@@ -59,6 +64,15 @@ export class NotificationUtil {
     if (cancelNotification && cancelNotification.identifier) {
       LogUtil.log(`cancelNotification: ${cancelNotification.identifier}`, { level: 'info' });
       await Notifications.cancelScheduledNotificationAsync(cancelNotification.identifier);
+    }
+  }
+
+  /** スケジュール通知の全削除処理 */
+  static async removeAllScheduleNotification() {
+    LogUtil.log('removeAllScheduleNotification', { level: 'info' });
+    const notifications = await Notifications.getAllScheduledNotificationsAsync();
+    for (const notification of notifications) {
+      await Notifications.cancelScheduledNotificationAsync(notification.identifier);
     }
   }
 }
