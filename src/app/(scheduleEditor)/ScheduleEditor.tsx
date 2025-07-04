@@ -11,6 +11,7 @@ import { upsertSchedule } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { Place } from '@/src/entities/Place';
 import { Schedule } from '@/src/entities/Plan';
+import { NotificationUtil } from '@/src/libs/NotificationUtil';
 
 export default function ScheduleEditor() {
   // === Member ===
@@ -27,10 +28,13 @@ export default function ScheduleEditor() {
       ...editSchedule,
       from: dayjs(editSchedule.from).format(DATE_FORMAT),
       to: dayjs(editSchedule.to).format(DATE_FORMAT),
-    };
+    } as Schedule;
 
     await upsertSchedule(schedule, session)
       .then(async () => {
+        // 通知処理の見直し
+        await NotificationUtil.upsertUserSchedule(editSchedule as Schedule);
+
         // プランの撮り直し
         await fetchPlan();
         router.back();

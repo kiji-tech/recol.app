@@ -112,7 +112,7 @@ const list = async (c: Hono.Context) => {
 };
 
 const upsert = async (c: Hono.Context) => {
-  console.log('[UPSERT] schedule/:id');
+  console.log('[UPSERT] schedule');
   const supabase = generateSupabase(c);
   const user = await getUser(c, supabase);
   if (!user) {
