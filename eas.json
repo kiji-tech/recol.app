@@ -5,8 +5,6 @@
     },
     "build": {
         "base": {
-            "node": "22.15.1",
-            "corepack": true,
             "android": {
                 "env": {
                     "PLATFORM": "android"
