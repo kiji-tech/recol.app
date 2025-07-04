@@ -20,6 +20,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 import * as Font from 'expo-font';
 import { LocationProvider } from '../contexts/LocationContext';
 import { StripeProvider, useStripe } from '@stripe/stripe-react-native';
+import { NotificationUtil } from '@/src/libs/NotificationUtil';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -114,6 +115,7 @@ const RouteLayout = () => {
   // === Stripe Redirect処理 ===
   const { handleURLCallback } = useStripe();
 
+  // === DeepLink処理 ===
   const handleDeepLink = useCallback(
     async (url: string | null) => {
       if (url) {
@@ -129,13 +131,6 @@ const RouteLayout = () => {
             router.push({
               pathname: '/(auth)/ResetPassword',
               params: { token },
-            });
-          }
-        } else if (url.includes('complete-signup')) {
-          if (token) {
-            // アカウント登録画面に遷移
-            router.push({
-              pathname: '/(home)',
             });
           }
         }
@@ -158,6 +153,11 @@ const RouteLayout = () => {
 
     return () => deepLinkListener.remove();
   }, [handleDeepLink]);
+
+  // === Notifications 初期化 ===
+  useEffect(() => {
+    NotificationUtil.initializeNotifications();
+  }, []);
 
   return (
     <AuthProvider>
