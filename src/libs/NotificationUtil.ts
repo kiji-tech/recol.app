@@ -29,19 +29,15 @@ export class NotificationUtil {
     const targetDate = dayjs(schedule.from).add(-5, 'minutes');
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: `【5分前です】${schedule.title}`,
-        body: schedule.description,
+        title: `【5分前です】${schedule.title}` || '',
+        body: schedule.description || '',
         data: {
           scheduleId: schedule.uid,
         },
       },
       trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
-        year: Number(targetDate.format('YYYY')),
-        month: Number(targetDate.format('MM')),
-        day: Number(targetDate.format('DD')),
-        hour: Number(targetDate.format('HH')),
-        minute: Number(targetDate.format('mm')),
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+        date: targetDate.toDate(),
       },
     });
   }

@@ -25,9 +25,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
 
   // === Render ===
   return (
-    <View
-      className={`flex-col bg-dark-theme dark:bg-light-theme ${isIOS ? 'bottom-8' : 'bottom-8'} z-10`}
-    >
+    <View className={`flex-col bg-dark-theme dark:bg-light-theme ${isIOS && 'bottom-8'} z-10`}>
       {profile && !SubscriptionUtil.isPremiumUser(profile!) && <MyBannerAd />}
       <View className="flex-row w-full border-[1px] border-light-border dark:border-dark-border mx-auto">
         {state.routes.map((route, index) => {
