@@ -12,6 +12,7 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { Place } from '@/src/entities/Place';
 import { Schedule } from '@/src/entities/Plan';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 export default function ScheduleEditor() {
   // === Member ===
@@ -32,6 +33,7 @@ export default function ScheduleEditor() {
 
     await upsertSchedule(schedule, session)
       .then(async () => {
+        LogUtil.log('complete update schedule', { level: 'info' });
         // 通知処理の見直し
         await NotificationUtil.upsertUserSchedule(editSchedule as Schedule);
 

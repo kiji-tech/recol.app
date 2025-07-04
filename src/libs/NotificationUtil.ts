@@ -1,6 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import { Schedule } from '../entities/Plan';
-import dayjs from 'dayjs';
+import dayjs from '@/src/libs/dayjs';
+import { LogUtil } from './LogUtil';
 
 export class NotificationUtil {
   /** 初期化処理 */
@@ -24,9 +25,15 @@ export class NotificationUtil {
    * あればキャンセルリクエストを送る
    */
   static async upsertUserSchedule(schedule: Schedule) {
+    LogUtil.log('upsertUserSchedule', { level: 'info' });
     await this.removeScheduleNotification(schedule);
 
-    const targetDate = dayjs(schedule.from).add(-5, 'minutes');
+    const targetDate = dayjs(schedule.from);
+    if (targetDate.isBefore(dayjs().add(-5, 'minute'))) {
+      LogUtil.log('targetDate is before now', { level: 'info' });
+      return;
+    }
+    LogUtil.log(`add notification targetDate: ${targetDate}`, { level: 'info' });
     await Notifications.scheduleNotificationAsync({
       content: {
         title: `【5分前です】${schedule.title}` || '',
@@ -44,11 +51,13 @@ export class NotificationUtil {
 
   /** スケジュール通知の削除処理 */
   static async removeScheduleNotification(schedule: Schedule) {
+    LogUtil.log('removeScheduleNotification', { level: 'info' });
     const notifications = await Notifications.getAllScheduledNotificationsAsync();
     const cancelNotification = notifications.find(
       (notification) => notification.content.data.scheduleId === schedule.uid
     );
     if (cancelNotification && cancelNotification.identifier) {
+      LogUtil.log(`cancelNotification: ${cancelNotification.identifier}`, { level: 'info' });
       await Notifications.cancelScheduledNotificationAsync(cancelNotification.identifier);
     }
   }

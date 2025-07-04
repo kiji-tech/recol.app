@@ -46,13 +46,13 @@ export class LogUtil {
     if (process.env.EXPO_PUBLIC_ENABLE_CONSOLE_LOG == 'ON') {
       switch (level) {
         case 'info':
-          console.log(JSON.stringify(logData));
+          console.log(`[${level.toUpperCase()}] ${message}`);
           break;
         case 'warn':
-          console.warn(JSON.stringify(logData));
+          console.warn(`[${level.toUpperCase()}] ${message}`);
           break;
         case 'error':
-          console.error(JSON.stringify(logData));
+          console.error(`[${level.toUpperCase()}] ${message}`);
           break;
       }
     }
