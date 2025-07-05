@@ -9,6 +9,7 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { updateProfile } from '@/src/libs/ApiService';
 import { Tables } from '@/src/libs/database.types';
 import { LogUtil } from '@/src/libs/LogUtil';
+import { Profile } from '@/src/entities/Profile';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function ProfileEditorScreen() {
@@ -66,7 +67,7 @@ export default function ProfileEditorScreen() {
           ...profile,
           display_name: displayName,
           avatar_url: base64Image || null,
-        } as Tables<'profile'>,
+        } as Profile,
         session
       )
         .then((profile: Tables<'profile'> & { subscription: Tables<'subscription'>[] }) => {

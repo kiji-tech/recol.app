@@ -4,6 +4,7 @@ import { LogUtil } from './LogUtil';
 import Stripe from 'stripe';
 import { Place } from '../entities/Place';
 import { Plan, Schedule } from '@/src/entities/Plan';
+import { Profile } from '../entities/Profile';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL;
 
@@ -165,6 +166,15 @@ async function fetchScheduleList(planId: string, session: Session | null, ctrl?:
   return response.data!;
 }
 
+async function fetchScheduleListForNotification(session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Schedule[]>(`/schedule/list/notification`, {
+    method: 'POST',
+    session,
+    ctrl,
+  });
+  return response.data!;
+}
+
 /**
  * スケジュールの削除
  *
@@ -289,23 +299,16 @@ async function createProfile(session: Session | null, ctrl?: AbortController) {
   return response.data!;
 }
 
-async function updateProfile(
-  profile: Tables<'profile'>,
-  session: Session | null,
-  ctrl?: AbortController
-) {
-  const response = await apiRequest<Tables<'profile'> & { subscription: Tables<'subscription'>[] }>(
-    '/profile',
-    {
-      method: 'PUT',
-      session,
-      body: {
-        ...profile,
-        avatar_url: profile.avatar_url || null,
-      },
-      ctrl,
-    }
-  );
+async function updateProfile(profile: Profile, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Profile>('/profile', {
+    method: 'PUT',
+    session,
+    body: {
+      ...profile,
+      avatar_url: profile?.avatar_url || null,
+    },
+    ctrl,
+  });
   return response.data!;
 }
 
@@ -429,6 +432,7 @@ export {
   deletePlan,
   fetchSchedule,
   fetchScheduleList,
+  fetchScheduleListForNotification,
   deleteSchedule,
   upsertSchedule,
   fetchPlanMediaList,

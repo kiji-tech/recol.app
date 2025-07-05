@@ -3,6 +3,7 @@ import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { SupabaseClient } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
+import dayjs from 'dayjs';
 
 const app = new Hono().basePath('/schedule');
 const TTL = 60 * 60 * 24 * 25; // 25日
@@ -111,6 +112,35 @@ const list = async (c: Hono.Context) => {
   return c.json(scheduleList);
 };
 
+const listForNotification = async (c: Hono.Context) => {
+  console.log('[POST] schedule/list/notification');
+  const supabase = generateSupabase(c);
+  const user = await getUser(c, supabase);
+  if (!user) {
+    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
+  }
+  const { data, error } = await supabase
+    .from('plan')
+    .select('*, schedule(*)')
+    .eq('user_id', user.id)
+    .eq('delete_flag', false)
+    .eq('schedule.delete_flag', false)
+    .gte('schedule.from', dayjs().toISOString());
+  if (error) {
+    console.error(error);
+    return c.json({ message: getMessage('C005', ['プラン']), code: 'C005' }, 403);
+  }
+
+  const scheduleList = [];
+  for (const plan of data) {
+    const { schedule } = plan;
+    for (const sc of schedule) {
+      scheduleList.push(sc);
+    }
+  }
+  return c.json(scheduleList);
+};
+
 const upsert = async (c: Hono.Context) => {
   console.log('[UPSERT] schedule');
   const supabase = generateSupabase(c);
@@ -162,6 +192,7 @@ const deleteSchedule = async (c: Hono.Context) => {
 
 app.get('/:id', get);
 app.post('/list', list);
+app.post('/list/notification', listForNotification);
 app.post('/delete', deleteSchedule);
 app.post('/', upsert);
 

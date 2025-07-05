@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { BackgroundView, Loading } from '@/src/components';
+import { BackgroundView, Header } from '@/src/components';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
 import { fetchBlogList } from '@/src/libs/ApiService';
@@ -27,6 +27,7 @@ export default function Home() {
 
   return (
     <BackgroundView>
+      <Header title="Re:CoL" />
       {/* TODO: タブバー */}
       {/* 新着・おすすめ・旅行先・グッズ */}
       <>

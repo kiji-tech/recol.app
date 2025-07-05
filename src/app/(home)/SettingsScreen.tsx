@@ -14,10 +14,11 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import dayjs from 'dayjs';
 import { SubscriptionUtil } from '@/src/libs/SubscriptionUtil';
 import { Tables } from '@/src/libs/database.types';
-import { updateProfile } from '@/src/libs/ApiService';
-// import * as Device from 'expo-device';
+import { fetchScheduleListForNotification, updateProfile } from '@/src/libs/ApiService';
 import * as Notifications from 'expo-notifications';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
+import { LogUtil } from '@/src/libs/LogUtil';
+import { Profile } from '@/src/entities/Profile';
 
 const PlanComponent = ({
   profile,
@@ -99,15 +100,9 @@ const SettingItem: React.FC<SettingItemProps> = ({
 const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
 
 export default function Settings() {
-  const { session, user, getProfileInfo, logout } = useAuth();
+  const { session, user, getProfileInfo, logout, setProfile, fetchProfile } = useAuth();
   const { clearStoragePlan } = usePlan();
   const { theme, setTheme } = useTheme();
-  const [profile, setProfile] = useState<
-    (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null
-  >(null);
-  const [scheduleNotification, setScheduleNotification] = useState(
-    profile?.enabled_schedule_notification || false
-  );
   const [chatNotification, setChatNotification] = useState(false);
   const version = Constants.expoConfig?.version || '1.0.0';
   const isDarkMode = theme === 'dark';
@@ -119,26 +114,30 @@ export default function Settings() {
 
   // スケジュール通知設定の変更
   const handleScheduleNotificationChange = async (value: boolean) => {
-    if (!profile) return;
-    let token = profile.notification_token;
+    if (!getProfileInfo()) return;
+    setProfile({ ...getProfileInfo(), enabled_schedule_notification: value } as Profile);
+    let token = getProfileInfo()?.notification_token;
 
     // スケジュール通知を無効にした場合は､既存のスケジュールを全削除
     if (!value) {
+      LogUtil.log('removeAllScheduleNotification', { level: 'info' });
       await NotificationUtil.removeAllScheduleNotification();
     }
 
     if (value) {
+      LogUtil.log('Permission check', { level: 'info' });
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
       if (existingStatus !== 'granted') {
+        LogUtil.log('Permission Request', { level: 'info' });
         const { status } = await Notifications.requestPermissionsAsync();
         if (status !== 'granted') {
-          setScheduleNotification(false);
+          setProfile({ ...getProfileInfo(), enabled_schedule_notification: false } as Profile);
           return;
         }
       }
-      // ONになった場合は､今あるスケジュールに対してすべての通知を設定する
     }
     if (!token) {
+      LogUtil.log('トークンを取得する', { level: 'info' });
       const expoToken = await Notifications.getExpoPushTokenAsync({
         projectId: Constants?.expoConfig?.extra?.eas?.projectId,
       });
@@ -147,14 +146,18 @@ export default function Settings() {
 
     await updateProfile(
       {
-        ...profile,
+        ...getProfileInfo(),
         enabled_schedule_notification: value,
         notification_token: token,
-      } as Tables<'profile'>,
+      } as Profile,
       session
     );
-    setProfile(getProfileInfo());
-    setScheduleNotification(value);
+
+    // ONになった場合は､今あるスケジュールに対してすべての通知を設定する
+    const scheduleList = await fetchScheduleListForNotification(session);
+    for (const schedule of scheduleList) {
+      await NotificationUtil.upsertUserSchedule(schedule, value);
+    }
   };
 
   // チャット通知設定の変更
@@ -186,7 +189,7 @@ export default function Settings() {
   // === プロフィールの読み込み ===
   useFocusEffect(
     useCallback(() => {
-      setProfile(getProfileInfo());
+      fetchProfile();
     }, [session])
   );
 
@@ -197,10 +200,10 @@ export default function Settings() {
         {/* プロフィールセクション */}
         <View className="items-center p-6 border-b border-light-border dark:border-dark-border">
           <View className="w-24 h-24 rounded-full overflow-hidden border-2 border-light-border dark:border-dark-border">
-            {profile?.avatar_url ? (
+            {getProfileInfo()?.avatar_url ? (
               <Image
                 source={{
-                  uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`,
+                  uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${getProfileInfo()?.avatar_url}`,
                 }}
                 style={{
                   width: '100%',
@@ -214,7 +217,7 @@ export default function Settings() {
             )}
           </View>
           <Text className="text-xl font-bold text-light-text dark:text-dark-text">
-            {profile?.display_name || 'ユーザー名未設定'}
+            {getProfileInfo()?.display_name || 'ユーザー名未設定'}
           </Text>
           <Text className="text-light-text dark:text-dark-text">{user?.email}</Text>
         </View>
@@ -234,7 +237,7 @@ export default function Settings() {
         <View className="pb-4 border-b border-light-border dark:border-dark-border">
           <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">プラン</Text>
           <View className="px-4 py-2 text-md text-light-text dark:text-dark-text">
-            <PlanComponent profile={profile} />
+            <PlanComponent profile={getProfileInfo()} />
           </View>
         </View>
 
@@ -268,7 +271,7 @@ export default function Settings() {
             </View>
             <View className="absolute right-4">
               <Switch
-                value={scheduleNotification}
+                value={getProfileInfo()?.enabled_schedule_notification ?? false}
                 onValueChange={handleScheduleNotificationChange}
               />
             </View>

@@ -18,6 +18,11 @@ export class NotificationUtil {
     });
   }
 
+  static async fetchAllScheduleNotification() {
+    const notifications = await Notifications.getAllScheduledNotificationsAsync();
+    LogUtil.log(JSON.stringify(notifications), { level: 'info' });
+  }
+
   /**
    * スケジュール通知の同期処理
    * 今あるスケジュールを取得
@@ -41,7 +46,7 @@ export class NotificationUtil {
     LogUtil.log(`add notification targetDate: ${targetDate}`, { level: 'info' });
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: `【5分前です】${schedule.title}` || '',
+        title: `【Re:CoL】${schedule.title}` || '',
         body: schedule.description || '',
         data: {
           scheduleId: schedule.uid,

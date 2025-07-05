@@ -242,8 +242,8 @@ const deletePlan = async (c: Hono.Context) => {
   return c.json(data);
 };
 
-app.post('/list', list);
 app.get('/:uid', get);
+app.post('/list', list);
 app.post('/', create);
 app.put('/', update);
 app.post('/delete', deletePlan);
