@@ -83,8 +83,7 @@ const maximumVerifyChecker = async (supabase: SupabaseClient, user: User) => {
 
   if (SubscriptionUtil.isPremiumUser(profile) && count > MAXIMUM_PREMIUM_PLAN) {
     return IS_OVER;
-  }
-  if (count > MAXIMUM_FREE_PLAN) {
+  } else if (!SubscriptionUtil.isPremiumUser(profile) && count > MAXIMUM_FREE_PLAN) {
     return IS_OVER;
   }
 
