@@ -7,7 +7,7 @@ import { borderColor } from '@/src/themes/ColorUtil';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { ApiErrorResponse, createPlan } from '@/src/libs/ApiService';
-import { Tables } from '@/src/libs/database.types';
+import { Plan } from '@/src/entities/Plan';
 
 export default function PlanCreator() {
   // === Member ===
@@ -22,7 +22,7 @@ export default function PlanCreator() {
   /** 登録 */
   const handlerSubmit = async () => {
     setIsLoading(true);
-    createPlan({ title, memo } as Tables<'plan'>, session)
+    createPlan({ title, memo } as Plan, session)
       .then(async () => {
         // リストを再取得しておく
         await fetchPlan();

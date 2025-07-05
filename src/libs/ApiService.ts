@@ -3,7 +3,7 @@ import { Tables } from './database.types';
 import { LogUtil } from './LogUtil';
 import Stripe from 'stripe';
 import { Place } from '../entities/Place';
-import { Schedule } from '@/src/entities/Plan';
+import { Plan, Schedule } from '@/src/entities/Plan';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL;
 
@@ -88,11 +88,11 @@ async function fetchPlanList(
   return response.data!;
 }
 
-async function createPlan(plan: Tables<'plan'>, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Tables<'plan'> & { schedule: Tables<'schedule'>[] }>('/plan', {
+async function createPlan(plan: Plan, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Plan>('/plan', {
     method: 'POST',
     session,
-    body: plan,
+    body: plan as Plan,
     ctrl,
   });
   return response.data!;
@@ -100,11 +100,11 @@ async function createPlan(plan: Tables<'plan'>, session: Session | null, ctrl?: 
 /**
  * プランの更新
  */
-async function updatePlan(plan: Tables<'plan'>, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Tables<'plan'> & { schedule: Tables<'schedule'>[] }>('/plan', {
+async function updatePlan(plan: Plan, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Plan>('/plan', {
     method: 'PUT',
     session,
-    body: plan,
+    body: plan as Plan,
     ctrl,
   });
   return response.data!;
