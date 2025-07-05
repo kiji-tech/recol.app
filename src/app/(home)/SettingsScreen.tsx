@@ -125,7 +125,6 @@ export default function Settings() {
     // スケジュール通知を無効にした場合は､既存のスケジュールを全削除
     if (!value) {
       await NotificationUtil.removeAllScheduleNotification();
-      return;
     }
 
     if (value) {
