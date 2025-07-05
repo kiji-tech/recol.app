@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { Platform, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native';
 import { Region } from 'react-native-maps';
 
@@ -11,9 +11,10 @@ type Props = {
 };
 
 export default function ResearchButton({ centerRegion, currentRegion, radius, onPress }: Props) {
+  // ==== Member ====
   const IS_RESEARCHED = true;
   const RESEARCH_TIMER = 5000;
-  // ==== Member ====
+  const platform = Platform.OS;
   const [isView, setIsView] = useState(false);
   // ==== Method ====
   const handlePress = () => {
@@ -54,13 +55,15 @@ export default function ResearchButton({ centerRegion, currentRegion, radius, on
   if (!(isView === IS_RESEARCHED || isResearched === IS_RESEARCHED)) return null;
 
   return (
-    <TouchableOpacity
-      className="w-1/2 py-2 px-4 mt-2 mx-auto rounded-xl  bg-light-background dark:bg-dark-background"
-      onPress={handlePress}
-    >
-      <Text className="text-center text-md text-light-text dark:text-dark-text">
-        エリアで再検索する
-      </Text>
-    </TouchableOpacity>
+    <View className={`w-full absolute ${platform === 'ios' ? 'top-36' : 'top-20'} z-50`}>
+      <TouchableOpacity
+        className="w-1/2 py-2 px-4 mt-2 mx-auto rounded-xl  bg-light-background dark:bg-dark-background"
+        onPress={handlePress}
+      >
+        <Text className="text-center text-md text-light-text dark:text-dark-text">
+          エリアで再検索する
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 }
