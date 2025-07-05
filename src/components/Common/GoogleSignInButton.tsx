@@ -5,7 +5,7 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useAuth } from '@/src/contexts/AuthContext';
 
-export default function GoogleSignInButton() {
+export default function GoogleSignInButton({ disabled }: { disabled: boolean }) {
   const { isDarkMode } = useTheme();
   const { signInWithGoogle } = useAuth();
 
@@ -16,6 +16,7 @@ export default function GoogleSignInButton() {
 
   return (
     <TouchableOpacity
+      disabled={disabled}
       onPress={signInWithGoogle}
       className="flex flex-row items-center justify-center p-4 rounded-full border-light-border dark:border-dark-border border"
     >

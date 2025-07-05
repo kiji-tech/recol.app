@@ -3,13 +3,21 @@ description:
 globs: *.tsx,*.ts
 alwaysApply: false
 ---
+
 # expo ルール
+
 **適応されているルールのファイル名を出力すること｡**
 
 - TypeScriptで書くこと
 - React Nativeの記法とする
 - DBの構造はファイル [database.types.ts](mdc:src/libs/database.types.ts) を参考にすること
-- classNameで色を定義するルールは､  [colors.ts](mdc:src/themes/colors.ts) を使用すること
-    - light､darkの2つを使用すること
-    - classNameで定義できない場合は､ [ThemeContext.tsx](mdc:src/contexts/ThemeContext.tsx) から､**isDarkMode**を取得して設定すること
+- classNameで色を定義するルールは､ [colors.ts](mdc:src/themes/colors.ts) を使用すること
+  - light､darkの2つを使用すること
+  - classNameで定義できない場合は､ [ThemeContext.tsx](mdc:src/contexts/ThemeContext.tsx) から､**isDarkMode**を取得して設定すること
 - 画面､コンポーネントを待つ場合は､ [Loading.tsx](mdc:src/components/Loading.tsx) を使用すること
+
+## ライブラリ
+
+| ライブラリ名          | 概要                   | GitHub                                               |
+| --------------------- | ---------------------- | ---------------------------------------------------- |
+| toastify-react-native | トースト表示ライブラリ | https://github.com/zahidalidev/toastify-react-native |

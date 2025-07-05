@@ -43,8 +43,7 @@ async function apiRequest<T, B = Record<string, unknown>>(
   const data = await res.json();
   if (!res.ok) {
     if (data.message && data.code) {
-      if (data.message.indexOf('Aborted') >= 0) return { data: null, error: null };
-      LogUtil.log(data.message, { level: 'error', notify: true });
+      LogUtil.log(JSON.stringify(data), { level: 'error', notify: true });
       throw data;
     }
     throw new Error(`Other API error: ${res.status} ${res.statusText}`);

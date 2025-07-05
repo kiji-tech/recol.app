@@ -8,7 +8,6 @@ export class StripeUtil {
     const customer = await stripe.customers.create({
       email,
     });
-    console.log({ customer });
     return customer;
   }
 

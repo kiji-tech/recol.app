@@ -1,17 +1,17 @@
 import React from 'react';
-import { View } from 'react-native';
+import ToastManager, { Toast } from 'toastify-react-native';
 
-import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { BackgroundView, Button } from '@/src/components';
 
 export default function SampleScreen() {
-  const handleNotificationList = async () => {
-    NotificationUtil.fetchAllScheduleNotification();
+  const handle = async () => {
+    Toast.warn('Warning message!');
   };
 
   return (
     <BackgroundView>
-      <Button text="Notification List" onPress={handleNotificationList} />
+      <ToastManager />
+      <Button text="handler" onPress={handle} />
     </BackgroundView>
   );
 }

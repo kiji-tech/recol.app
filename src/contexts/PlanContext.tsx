@@ -62,6 +62,14 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
           if (updatePlan) setPlan(updatePlan);
         }
       })
+      .catch((e) => {
+        LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+        if (e.message.includes('Aborted')) {
+          LogUtil.log('Aborted', { level: 'warn' });
+          return;
+        }
+        throw e;
+      })
       .finally(() => {
         setPlanLoading(false);
       });

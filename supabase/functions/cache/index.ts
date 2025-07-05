@@ -19,7 +19,7 @@ const searchId = async (placeId: string) => {
     headers: { 'X-Goog-Api-Key': apiKey },
   });
   if (!upstream.ok) {
-    console.error(await upstream.json());
+    LogUtil.log(JSON.stringify({ upstream }), { level: 'error' });
     return null;
   }
   return await upstream.text();
@@ -55,8 +55,7 @@ const getPlace = async (c: Hono.Context) => {
           cacheControl: TTL,
         });
       if (storageSaveError) {
-        console.error('キャッシュ保存エラー');
-        console.error(storageSaveError);
+        LogUtil.log(JSON.stringify({ storageSaveError }), { level: 'error' });
       }
       placeDataList.push(JSON.parse(placeData));
     }

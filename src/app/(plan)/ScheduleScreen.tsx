@@ -8,13 +8,15 @@ import { deleteSchedule, fetchPlan } from '@/src/libs/ApiService';
 import { useFocusEffect } from '@react-navigation/native';
 import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import PlanInformation from '@/src/components/PlanInformation';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { Plan, Schedule } from '@/src/entities/Plan';
 import MaskLoading from '@/src/components/MaskLoading';
+import ToastManager, { Toast } from 'toastify-react-native';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null) => {
   const router = useRouter();
@@ -93,8 +95,14 @@ export default function ScheduleScreen(): ReactNode {
 
   // === Method ===
   const initView = () => {
-    if (!plan?.uid || !session) {
-      Alert.alert('エラー', 'プランの情報が取得できませんでした。');
+    if (!session) {
+      Toast.warn('ログイン情報が見つかりませんでした');
+      router.navigate('/(auth)/SignIn');
+      return;
+    }
+
+    if (!plan?.uid) {
+      Toast.warn('プランの情報が取得できませんでした');
       router.back();
       return;
     }
@@ -104,13 +112,18 @@ export default function ScheduleScreen(): ReactNode {
     fetchPlan(plan.uid, session, ctrl)
       .then((data) => {
         if (!data) {
-          throw new Error('プランデータの取得に失敗しました');
+          Toast.warn('プランの情報が取得できませんでした');
         }
         setViewPlan({ ...data } as Plan);
       })
       .catch((e) => {
-        if (e && e.message && e.message.indexOf('Aborted') < 0) {
-          Alert.alert(e.message);
+        LogUtil.log(JSON.stringify(e), { level: 'warn', notify: true });
+        if (e.message.includes('Aborted')) {
+          LogUtil.log('Aborted', { level: 'warn' });
+          return;
+        }
+        if (e && e.message) {
+          Toast.warn('プランの情報が取得に失敗しました');
         }
       });
 
@@ -123,11 +136,13 @@ export default function ScheduleScreen(): ReactNode {
   const handleDeleteSchedule = async (schedule: Tables<'schedule'>) => {
     deleteSchedule(schedule.uid, session)
       .then(() => {
+        Toast.success(`${schedule.title} を削除しました`);
         initView();
       })
       .catch((e) => {
+        LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
         if (e && e.message) {
-          Alert.alert(e.message);
+          Toast.warn(e.message);
         }
       });
   };
@@ -153,6 +168,7 @@ export default function ScheduleScreen(): ReactNode {
         </>
       )}
       {planLoading && <MaskLoading />}
+      <ToastManager />
     </BackgroundView>
   );
 }

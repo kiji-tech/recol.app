@@ -11,6 +11,8 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { deletePlan } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { LogUtil } from '@/src/libs/LogUtil';
+import ToastManager, { Toast } from 'toastify-react-native';
 
 function PlanCard({ plan }: { plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] } }) {
   // === Member ===
@@ -120,7 +122,14 @@ export default function PlanListScreen() {
 
   // === Method ===
   const init = async (ctrl?: AbortController) => {
-    await fetchPlan(ctrl);
+    await fetchPlan(ctrl).catch((e) => {
+      if (e.message.includes('Aborted')) {
+        LogUtil.log('Aborted', { level: 'warn' });
+        return;
+      }
+      LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+      Toast.warn('プランの取得に失敗しました');
+    });
   };
 
   // === Effect ===
@@ -135,6 +144,7 @@ export default function PlanListScreen() {
   );
 
   // === Render ===
+  /** プラン追加ボタン */
   const addButton = () => {
     return (
       <IconButton
@@ -170,6 +180,7 @@ export default function PlanListScreen() {
             <PlanCard key={plan.uid} plan={plan} />
           ))}
       </View>
+      <ToastManager />
     </BackgroundView>
   );
 }

@@ -87,6 +87,7 @@
         "react-native-view-shot": "~4.0.3",
         "react-native-web": "~0.20.0",
         "stripe": "^18.3.0",
+        "toastify-react-native": "^7.2.0",
         "zod": "^3.25.71"
     },
     "devDependencies": {
