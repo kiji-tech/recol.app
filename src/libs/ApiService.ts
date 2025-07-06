@@ -3,7 +3,8 @@ import { Tables } from './database.types';
 import { LogUtil } from './LogUtil';
 import Stripe from 'stripe';
 import { Place } from '../entities/Place';
-import { Schedule } from '@/src/entities/Plan';
+import { Plan, Schedule } from '@/src/entities/Plan';
+import { Profile } from '../entities/Profile';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL;
 
@@ -42,7 +43,7 @@ async function apiRequest<T, B = Record<string, unknown>>(
   const data = await res.json();
   if (!res.ok) {
     if (data.message && data.code) {
-      LogUtil.log(data.message, { level: 'error', notify: true });
+      LogUtil.log(JSON.stringify(data), { level: 'error', notify: true });
       throw data;
     }
     throw new Error(`Other API error: ${res.status} ${res.statusText}`);
@@ -55,43 +56,25 @@ async function apiRequest<T, B = Record<string, unknown>>(
 // ============ Plan ============
 /**
  * プラン情報の取得
- *
- * @param planId {string}
- * @param session  {Session | null}
- * @param ctrl {AbortController}
- * @returns Tables<'plan'>
  */
 async function fetchPlan(planId: string, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Tables<'plan'> & { schedule: Tables<'schedule'>[] }>(
-    `/plan/${planId}`,
-    { method: 'GET', session, ctrl }
-  );
+  const response = await apiRequest<Plan>(`/plan/${planId}`, { method: 'GET', session, ctrl });
   return response.data!;
 }
 
 /**
  * プラン一覧の取得
- *
- * @param session {Session | null}
- * @param ctrl {AbortController}
- * @returns Tables<'plan'> & { schedule: Tables<'schedule'>[] }[]
  */
-async function fetchPlanList(
-  session: Session | null,
-  ctrl?: AbortController
-): Promise<(Tables<'plan'> & { schedule: Tables<'schedule'>[] })[]> {
-  const response = await apiRequest<(Tables<'plan'> & { schedule: Tables<'schedule'>[] })[]>(
-    '/plan/list',
-    { method: 'POST', session, ctrl }
-  );
+async function fetchPlanList(session: Session | null, ctrl?: AbortController): Promise<Plan[]> {
+  const response = await apiRequest<Plan[]>('/plan/list', { method: 'POST', session, ctrl });
   return response.data!;
 }
 
-async function createPlan(plan: Tables<'plan'>, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Tables<'plan'> & { schedule: Tables<'schedule'>[] }>('/plan', {
+async function createPlan(plan: Plan, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Plan>('/plan', {
     method: 'POST',
     session,
-    body: plan,
+    body: plan as Plan,
     ctrl,
   });
   return response.data!;
@@ -99,11 +82,11 @@ async function createPlan(plan: Tables<'plan'>, session: Session | null, ctrl?: 
 /**
  * プランの更新
  */
-async function updatePlan(plan: Tables<'plan'>, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Tables<'plan'> & { schedule: Tables<'schedule'>[] }>('/plan', {
+async function updatePlan(plan: Plan, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Plan>('/plan', {
     method: 'PUT',
     session,
-    body: plan,
+    body: plan as Plan,
     ctrl,
   });
   return response.data!;
@@ -111,10 +94,6 @@ async function updatePlan(plan: Tables<'plan'>, session: Session | null, ctrl?: 
 
 /**
  * プランの削除
- *
- * @param planId {string}
- * @param session {Session | null}
- * @param ctrl {AbortController}
  */
 async function deletePlan(planId: string, session: Session | null, ctrl?: AbortController) {
   await apiRequest<void>('/plan/delete', {
@@ -128,31 +107,18 @@ async function deletePlan(planId: string, session: Session | null, ctrl?: AbortC
 // ============ Schedule ============
 /**
  * スケジュール情報の取得
- *
- * @param scheduleId {string}
- * @param session {Session | null}
- * @param ctrl {AbortController}
- * @returns Tables<'schedule'>
  */
 async function fetchSchedule(scheduleId: string, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Tables<'schedule'> & { place_list: Place[] }>(
-    `/schedule/${scheduleId}`,
-    {
-      method: 'GET',
-      session,
-      ctrl,
-    }
-  );
+  const response = await apiRequest<Schedule>(`/schedule/${scheduleId}`, {
+    method: 'GET',
+    session,
+    ctrl,
+  });
   return response.data!;
 }
 
 /**
  * スケジュール一覧の取得
- *
- * @param planId {string}
- * @param session {Session | null}
- * @param ctrl {AbortController}
- * @returns Tables<'schedule'>[]
  */
 async function fetchScheduleList(planId: string, session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<Schedule[]>(`/schedule/list`, {
@@ -165,11 +131,19 @@ async function fetchScheduleList(planId: string, session: Session | null, ctrl?:
 }
 
 /**
+ * 通知を追加するスケジュール一覧の取得
+ */
+async function fetchScheduleListForNotification(session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Schedule[]>(`/schedule/list/notification`, {
+    method: 'POST',
+    session,
+    ctrl,
+  });
+  return response.data!;
+}
+
+/**
  * スケジュールの削除
- *
- * @param uid {string}
- * @param session {Session | null}
- * @param ctrl {AbortController}
  */
 async function deleteSchedule(uid: string, session: Session | null, ctrl?: AbortController) {
   await apiRequest<void>('/schedule/delete', {
@@ -182,21 +156,12 @@ async function deleteSchedule(uid: string, session: Session | null, ctrl?: Abort
 
 /**
  * スケジュールの作成・更新
- *
- * @param schedule {Tables<'schedule'>}
- * @param session {Session | null}
- * @param ctrl {AbortController}
- * @returns Tables<'schedule'>
  */
-async function upsertSchedule(
-  schedule: Tables<'schedule'>,
-  session: Session | null,
-  ctrl?: AbortController
-) {
-  const response = await apiRequest<Tables<'schedule'>[]>('/schedule', {
+async function upsertSchedule(schedule: Schedule, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Schedule>('/schedule', {
     method: 'POST',
     session,
-    body: { schedule } as { schedule: Schedule },
+    body: { schedule },
     ctrl,
   });
   return response.data!;
@@ -205,11 +170,6 @@ async function upsertSchedule(
 // ============ Media ============
 /**
  * プランのメディア一覧を取得
- *
- * @param planId {string} プランID
- * @param session {Session | null} Supabaseのセッション情報
- * @param ctrl {AbortController}
- * @returns Tables<'media'>[]
  */
 async function fetchPlanMediaList(
   planId: string,
@@ -227,12 +187,6 @@ async function fetchPlanMediaList(
 
 /**
  * プランのメディアをアップロード
- *
- * @param planId {string} プランID
- * @param images {string[]} Base64形式の画像データ
- * @param session {Session | null} Supabaseのセッション情報
- * @param ctrl {AbortController}
- * @returns
  */
 async function uploadPlanMedias(
   planId: string,
@@ -249,6 +203,9 @@ async function uploadPlanMedias(
   return response.data!;
 }
 
+/**
+ * プランのメディアを削除
+ */
 async function deletePlanMedias(
   planId: string,
   mediaIdList: string[],
@@ -264,6 +221,9 @@ async function deletePlanMedias(
 }
 
 // ============ Profile ============
+/**
+ * プロフィールの取得
+ */
 async function getProfile(session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<Tables<'profile'> & { subscription: Tables<'subscription'>[] }>(
     '/profile',
@@ -276,27 +236,41 @@ async function getProfile(session: Session | null, ctrl?: AbortController) {
   return response.data!;
 }
 
-async function updateProfile(
-  profile: Tables<'profile'>,
-  session: Session | null,
-  ctrl?: AbortController
-) {
+/**
+ * プロフィールの作成
+ */
+async function createProfile(session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<Tables<'profile'> & { subscription: Tables<'subscription'>[] }>(
     '/profile',
     {
-      method: 'PUT',
+      method: 'POST',
       session,
-      body: {
-        ...profile,
-        avatar_url: profile.avatar_url || null,
-      },
       ctrl,
     }
   );
   return response.data!;
 }
 
+/**
+ * プロフィールの更新
+ */
+async function updateProfile(profile: Profile, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Profile>('/profile', {
+    method: 'PUT',
+    session,
+    body: {
+      ...profile,
+      avatar_url: profile?.avatar_url || null,
+    },
+    ctrl,
+  });
+  return response.data!;
+}
+
 // ============ Cache ============
+/**
+ * GoogleMap Place情報の取得
+ */
 async function fetchCachePlace(
   placeIdList: string[],
   session: Session | null,
@@ -312,6 +286,10 @@ async function fetchCachePlace(
 }
 
 // ============ Stripe ============
+
+/**
+ * 支払いシートの作成
+ */
 async function createPaymentSheet(
   redirectURL: string,
   session: Session | null,
@@ -330,6 +308,9 @@ async function createPaymentSheet(
   return response.data!;
 }
 
+/**
+ * Stripe顧客の作成
+ */
 async function createStripeCustomer(session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<Stripe.Customer>('/stripe/customer', {
     method: 'POST',
@@ -339,6 +320,9 @@ async function createStripeCustomer(session: Session | null, ctrl?: AbortControl
   return response.data!;
 }
 
+/**
+ * Stripeサブスクリプションの作成
+ */
 async function createStripeSubscription(
   priceId: string,
   session: Session | null,
@@ -353,6 +337,9 @@ async function createStripeSubscription(
   return response.data!;
 }
 
+/**
+ * Stripeサブスクリプションの更新
+ */
 async function updateStripeSubscription(
   subscriptionId: string,
   priceId: string,
@@ -368,6 +355,9 @@ async function updateStripeSubscription(
   return response.data!;
 }
 
+/**
+ * Stripeサブスクリプションのキャンセル
+ */
 async function cancelStripeSubscription(
   subscriptionId: string,
   session: Session | null,
@@ -382,6 +372,9 @@ async function cancelStripeSubscription(
   return response.data!;
 }
 // ============ MicroCMS ============
+/**
+ * ブログの取得
+ */
 async function fetchBlog(id: string, ctrl?: AbortController) {
   const url = process.env.EXPO_PUBLIC_MICROCMS_URI! + '/blogs/' + id;
   console.log({ url });
@@ -394,6 +387,9 @@ async function fetchBlog(id: string, ctrl?: AbortController) {
   return response.json();
 }
 
+/**
+ * ブログ一覧の取得
+ */
 async function fetchBlogList() {
   const response = await fetch(process.env.EXPO_PUBLIC_MICROCMS_URI! + '/blogs', {
     method: 'GET',
@@ -416,12 +412,14 @@ export {
   deletePlan,
   fetchSchedule,
   fetchScheduleList,
+  fetchScheduleListForNotification,
   deleteSchedule,
   upsertSchedule,
   fetchPlanMediaList,
   uploadPlanMedias,
   deletePlanMedias,
   getProfile,
+  createProfile,
   updateProfile,
   fetchBlog,
   fetchBlogList,

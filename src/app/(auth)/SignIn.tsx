@@ -11,25 +11,41 @@ export default function SignInScreen() {
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // ==== Method ===
   const verify = (): boolean => {
-    if (!email || !password) {
-      Alert.alert('メールアドレス､パスワードを正しく入力してください');
+    if (!email) {
+      Alert.alert('メールアドレスが入力されていません');
       return false;
     }
+    if (!password) {
+      Alert.alert('パスワードが入力されていません');
+      return false;
+    }
+
+    if (!email.includes('@')) {
+      Alert.alert('メールアドレスの形式が正しくありません');
+      return false;
+    }
+
     return true;
   };
 
+  /** ログイン処理 */
   const handleSignInWithPassword = async () => {
     if (!verify()) return;
+    setIsLoading(true);
     login(email, password)
       .then(() => {
         router.navigate('/(home)');
       })
       .catch((e) => {
         LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
-        Alert.alert('メールアドレス､パスワードを正しく入力してください');
+        Alert.alert('ログインに失敗しました');
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -37,7 +53,7 @@ export default function SignInScreen() {
     <BackgroundView>
       <View className="flex flex-col items-center w-full gap-8">
         <Text className="text-4xl font-bold text-light-text dark:text-dark-text">
-          Welcome to the Re:col
+          Welcome to the Re:CoL
         </Text>
         {/* 画像 */}
         <Image
@@ -60,6 +76,7 @@ export default function SignInScreen() {
             text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
             `}
             value={email}
+            editable={!isLoading}
             onChangeText={(text) => setEmail(text)}
             autoCapitalize="none"
           />
@@ -70,26 +87,46 @@ export default function SignInScreen() {
             text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
             `}
             value={password}
+            editable={!isLoading}
             secureTextEntry={true}
             onChangeText={(text) => setPassword(text)}
             autoCapitalize="none"
           />
 
           {/* サインイン */}
-          <Button theme={'theme'} text="サインイン" onPress={handleSignInWithPassword} />
+          <Button
+            theme={'theme'}
+            text="サインイン"
+            onPress={handleSignInWithPassword}
+            disabled={isLoading}
+            loading={isLoading}
+          />
           {/* 新規登録 */}
-          <Button theme={'theme'} text="新規登録" onPress={() => router.push('/(auth)/SignUp')} />
+          <Button
+            theme={'theme'}
+            text="新規登録"
+            onPress={() => router.push('/(auth)/SignUp')}
+            disabled={isLoading}
+            loading={isLoading}
+          />
           {/* パスワードを忘れた */}
           <Link
+            disabled={isLoading}
             href="/(auth)/ForgetPassword"
             className="text-sm text-light-text dark:text-dark-text ml-4"
           >
             パスワードを忘れた方はこちら
           </Link>
 
-          <View className="flex flex-row justify-center items-center gap-2 my-10">
+          <View className="flex flex-row justify-center items-center gap-4 mt-4">
+            <View className="w-1/3 h-px bg-light-border dark:bg-dark-border"></View>
+            <Text className="text-sm text-light-text dark:text-dark-text">または</Text>
+            <View className="w-1/3 h-px bg-light-border dark:bg-dark-border"></View>
+          </View>
+
+          <View className="flex flex-row justify-center items-center gap-2">
             {/* Googleでサインイン */}
-            <GoogleSignInButton />
+            <GoogleSignInButton disabled={isLoading} />
           </View>
         </View>
       </View>

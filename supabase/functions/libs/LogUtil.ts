@@ -23,8 +23,7 @@ export class LogUtil {
   private static readonly SLACK_WEBHOOK_URL = Deno.env.get('EXPO_PUBLIC_SLACK_WEBHOOK_URL');
   private static readonly ENABLE_SLACK_NOTIFICATION =
     Deno.env.get('ENABLE_SLACK_NOTIFICATION') == 'ON';
-  private static readonly ENABLE_CONSOLE_LOG =
-    Deno.env.get('ENABLE_CONSOLE_LOG') == 'ON';
+  private static readonly ENABLE_CONSOLE_LOG = Deno.env.get('ENABLE_CONSOLE_LOG') == 'ON';
 
   /**
    * ログを出力し、必要に応じてSlackに通知する
@@ -52,13 +51,13 @@ export class LogUtil {
     if (this.ENABLE_CONSOLE_LOG) {
       switch (level) {
         case 'info':
-          console.log(JSON.stringify(logData));
+          console.log(`[${level.toUpperCase()}] ${message}`);
           break;
         case 'warn':
-          console.warn(JSON.stringify(logData));
+          console.warn(`[${level.toUpperCase()}] ${message}`);
           break;
         case 'error':
-          console.error(JSON.stringify(logData));
+          console.error(`[${level.toUpperCase()}] ${message}`);
           break;
       }
     }

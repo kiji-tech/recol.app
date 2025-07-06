@@ -1,6 +1,6 @@
 export default {
   scheme: 'recol',
-  name: 'Re:Col',
+  name: 'Re:CoL',
   slug: 'yuru-tabi',
   version: '1.0.0',
   icon: './assets/images/icon.png',
@@ -50,7 +50,6 @@ export default {
           compileSdkVersion: 35,
           targetSdkVersion: 35,
           buildToolsVersion: '35.0.0',
-          kotlinVersion: '1.9.25',
         },
         ios: {
           useFrameworks: 'static',

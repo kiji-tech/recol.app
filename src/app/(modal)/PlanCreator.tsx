@@ -7,7 +7,9 @@ import { borderColor } from '@/src/themes/ColorUtil';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { ApiErrorResponse, createPlan } from '@/src/libs/ApiService';
-import { Tables } from '@/src/libs/database.types';
+import { Plan } from '@/src/entities/Plan';
+import { LogUtil } from '@/src/libs/LogUtil';
+import ToastManager, { Toast } from 'toastify-react-native';
 
 export default function PlanCreator() {
   // === Member ===
@@ -19,23 +21,31 @@ export default function PlanCreator() {
   const router = useRouter();
 
   // === Method ===
+  const verify = () => {
+    if (!title) {
+      Toast.warn('計画の題目を入力してください');
+      return false;
+    }
+    return true;
+  };
   /** 登録 */
   const handlerSubmit = async () => {
+    if (!verify()) return;
     setIsLoading(true);
-    createPlan({ title, memo } as Tables<'plan'>, session)
+    createPlan({ title, memo } as Plan, session)
       .then(async () => {
-        // リストを再取得しておく
         await fetchPlan();
-        // 一覧に戻る
+        Toast.success(`${title} を登録しました`);
         router.back();
       })
       .catch((e: ApiErrorResponse) => {
-        console.log(e);
-        if (e && e.message) {
-          Alert.alert(e.message);
-        }
+        LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
         if (e.code.startsWith('PP')) {
+          Toast.warn(e.message);
           router.push('/(payment)/PaymentPlan');
+          return;
+        } else if (e && e.message) {
+          Alert.alert('プランの登録に失敗しました', e.message);
         }
       })
       .finally(() => {
@@ -75,6 +85,7 @@ export default function PlanCreator() {
           className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
                         border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
           onChangeText={(text) => setMemo(text)}
+          editable={!isLoading}
         />
       </View>
 
@@ -82,7 +93,13 @@ export default function PlanCreator() {
         <Text className="text-lg font-bold text-light-text dark:text-dark-text">
           友達を追加する
         </Text>
-        <Button theme="info" text="選択" onPress={() => alert('準備中')} disabled={isLoading} />
+        <Button
+          theme="info"
+          text="選択"
+          onPress={() => alert('準備中')}
+          disabled={isLoading}
+          loading={isLoading}
+        />
       </View>
       <View className="w-full justify-center">
         <Button
@@ -93,6 +110,7 @@ export default function PlanCreator() {
           loading={isLoading}
         />
       </View>
+      <ToastManager />
     </BackgroundView>
   );
 }

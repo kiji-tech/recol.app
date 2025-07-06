@@ -6,6 +6,7 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { LogUtil } from '@/src/libs/LogUtil';
+import GoogleSignInButton from '@/src/components/Common/GoogleSignInButton';
 
 export default function SignUpScreen() {
   // ==== Member ===
@@ -14,29 +15,45 @@ export default function SignUpScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // ==== Method ===
   const verify = (): boolean => {
-    if (!email || !password || !password2) {
-      alert('入力してください');
+    if (!email) {
+      Alert.alert('メールアドレスが入力されていません');
       return false;
     }
+    if (!password || !password2) {
+      Alert.alert('パスワードが入力されていません');
+      return false;
+    }
+
+    if (!email.includes('@')) {
+      Alert.alert('メールアドレスの形式が正しくありません');
+      return false;
+    }
+
     if (password != password2) {
-      alert('パスワードが一致しません');
+      Alert.alert('パスワードが一致しません');
       return false;
     }
+
     return true;
   };
 
+  /** 新規登録処理 */
   const signUpWithPassword = async () => {
     // verify
     if (!verify()) return;
-
+    LogUtil.log(`signUpWithPassword: ${email}`, { level: 'info' });
+    setIsLoading(true);
     signup(email, password)
       .then(() => {
-        router.navigate('/(home)/SettingsScreen');
+        // メールを送信しました
+        router.navigate('/(auth)/RequestNewAccount');
       })
       .catch((error) => {
+        // TODO エラーの種類によってメッセージを変える
         if (error.code) {
           switch (error.code) {
             case 'user_already_exists':
@@ -45,9 +62,12 @@ export default function SignUpScreen() {
               break;
             default:
               LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-              Alert.alert('新規登録に失敗しました');
+              Alert.alert('新規登録に失敗しました', error.message);
           }
         }
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -55,9 +75,8 @@ export default function SignUpScreen() {
     <BackgroundView>
       <View className="flex flex-col items-center w-full gap-8 ">
         <Text className="text-4xl font-bold text-light-text dark:text-dark-text">
-          Welcome to the Re:col
+          Welcome to the Re:CoL
         </Text>
-        {/* 画像 */}
         <Image
           // eslint-disable-next-line @typescript-eslint/no-require-imports
           source={require('../../../assets/images/icon.png')}
@@ -77,6 +96,7 @@ export default function SignUpScreen() {
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
                 `}
             value={email}
+            editable={!isLoading}
             onChangeText={(text) => setEmail(text)}
             autoCapitalize="none"
           />
@@ -84,9 +104,9 @@ export default function SignUpScreen() {
             placeholder="パスワード"
             placeholderTextColor="gray"
             className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
-                text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
-                `}
+                text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border`}
             value={password}
+            editable={!isLoading}
             secureTextEntry={true}
             onChangeText={(text) => setPassword(text)}
             autoCapitalize="none"
@@ -98,18 +118,34 @@ export default function SignUpScreen() {
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
                 `}
             value={password2}
+            editable={!isLoading}
             secureTextEntry={true}
             onChangeText={(text) => setPassword2(text)}
             autoCapitalize="none"
           />
 
           {/* サインイン */}
-          <Button theme={'theme'} text="新規登録" onPress={signUpWithPassword} />
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text className="text-xs border-b-[1px] text-light-text dark:text-dark-text border-light-border dark:border-dark-border ml-4">
+          <Button
+            theme={'theme'}
+            text="新規登録"
+            onPress={signUpWithPassword}
+            disabled={isLoading}
+            loading={isLoading}
+          />
+          <TouchableOpacity onPress={() => router.back()} disabled={isLoading}>
+            <Text className="text-sm text-light-text dark:text-dark-text ml-4">
               ログイン画面に戻る
             </Text>
           </TouchableOpacity>
+          <View className="flex flex-row justify-center items-center gap-4 mt-4">
+            <View className="w-1/3 h-px bg-light-border dark:bg-dark-border"></View>
+            <Text className="text-sm text-light-text dark:text-dark-text">または</Text>
+            <View className="w-1/3 h-px bg-light-border dark:bg-dark-border"></View>
+          </View>
+          <View className="flex flex-row justify-center items-center gap-2">
+            {/* Googleでサインイン */}
+            <GoogleSignInButton disabled={isLoading} />
+          </View>
         </View>
       </View>
     </BackgroundView>

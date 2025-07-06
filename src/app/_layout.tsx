@@ -20,6 +20,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 import * as Font from 'expo-font';
 import { LocationProvider } from '../contexts/LocationContext';
 import { StripeProvider, useStripe } from '@stripe/stripe-react-native';
+import { NotificationUtil } from '@/src/libs/NotificationUtil';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -114,14 +115,24 @@ const RouteLayout = () => {
   // === Stripe Redirect処理 ===
   const { handleURLCallback } = useStripe();
 
+  // === DeepLink処理 ===
   const handleDeepLink = useCallback(
     async (url: string | null) => {
       if (url) {
         const stripeHandled = await handleURLCallback(url);
         if (stripeHandled) {
           // This was a Stripe URL - you can return or add extra handling here as you see fit
-        } else {
-          // This was NOT a Stripe URL – handle as you normally would
+        }
+        const urlObj = new URL(url);
+        const token = urlObj.searchParams.get('token');
+        if (url.includes('reset-password')) {
+          if (token) {
+            // パスワードリセット画面に遷移
+            router.push({
+              pathname: '/(auth)/ResetPassword',
+              params: { token },
+            });
+          }
         }
       }
     },
@@ -142,6 +153,11 @@ const RouteLayout = () => {
 
     return () => deepLinkListener.remove();
   }, [handleDeepLink]);
+
+  // === Notifications 初期化 ===
+  useEffect(() => {
+    NotificationUtil.initializeNotifications();
+  }, []);
 
   return (
     <AuthProvider>

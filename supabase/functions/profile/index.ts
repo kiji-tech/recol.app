@@ -2,7 +2,40 @@ import { Hono } from 'jsr:@hono/hono';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
+import { StripeUtil } from '../libs/StripeUtil.ts';
 const app = new Hono().basePath('/profile');
+
+const createProfile = async (c: Hono.Context) => {
+  const supabase = generateSupabase(c);
+  const user = await getUser(c, supabase);
+  if (!user) {
+    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
+  }
+
+  // プロフィールがない場合は作成して返却する
+  LogUtil.log(`${user.id}のプロフィールがないため作成します`, { level: 'info' });
+  const customer = await StripeUtil.createCustomer(user.email!);
+  LogUtil.log('Stripeアカウントの作成', { level: 'info' });
+  // プロフィールを作成
+  LogUtil.log('プロフィールの作成', { level: 'info' });
+  if (!customer) {
+    LogUtil.log('Stripeアカウントの作成に失敗しました', { level: 'error' });
+    throw new Error(getMessage('C005', ['プロフィール']));
+  }
+
+  const { data: newData, error: newError } = await supabase
+    .from('profile')
+    .insert({ uid: user.id, stripe_customer_id: customer.id })
+    .select('*, subscription(*)')
+    .eq('subscription.user_id', user.id)
+    .eq('subscription.status', 'active')
+    .maybeSingle();
+  if (newError) {
+    LogUtil.log(newError, { level: 'error', notify: true });
+    throw newError;
+  }
+  return newData;
+};
 
 const get = async (c: Hono.Context) => {
   console.log('[GET] profile');
@@ -18,27 +51,32 @@ const get = async (c: Hono.Context) => {
     .eq('subscription.user_id', user.id)
     .eq('subscription.status', 'active')
     .maybeSingle();
+
+  if (!data) {
+    const newData = await createProfile(c).catch(() => {
+      return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
+    });
+    return c.json(newData);
+  }
+
   if (error) {
-    console.error(error);
     return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
   }
 
-  if (!data) {
-    // プロフィールがない場合は作成して返却する
-    LogUtil.log(`${user.id}のプロフィールがないため作成します`, { level: 'info' });
-    const { data: newData, error: newError } = await supabase
-      .from('profile')
-      .insert({ uid: user.id })
-      .select('*, subscription(*)')
-      .eq('subscription.user_id', user.id)
-      .eq('subscription.status', 'active')
-      .maybeSingle();
-    if (newError) {
-      console.error(newError);
-      return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
-    }
-    return c.json(newData);
+  return c.json(data);
+};
+
+const create = async (c: Hono.Context) => {
+  console.log('[POST] profile');
+  const supabase = generateSupabase(c);
+  const user = await getUser(c, supabase);
+  if (!user) {
+    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
+
+  const data = await createProfile(c).catch(() => {
+    return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
+  });
 
   return c.json(data);
 };
@@ -46,7 +84,8 @@ const get = async (c: Hono.Context) => {
 const update = async (c: Hono.Context) => {
   console.log('[PUT] profile');
   const supabase = generateSupabase(c);
-  const { display_name, avatar_url } = await c.req.json();
+  const { display_name, avatar_url, notification_token, enabled_schedule_notification } =
+    await c.req.json();
 
   const user = await getUser(c, supabase);
   if (!user) {
@@ -99,7 +138,16 @@ const update = async (c: Hono.Context) => {
   // プロフィールを更新
   const { data, error } = await supabase
     .from('profile')
-    .upsert({ uid: user.id, display_name, avatar_url: finalAvatarUrl }, { onConflict: 'uid' })
+    .upsert(
+      {
+        uid: user.id,
+        display_name,
+        avatar_url: finalAvatarUrl,
+        notification_token,
+        enabled_schedule_notification,
+      },
+      { onConflict: 'uid' }
+    )
     .select('*, subscription(*)')
     .eq('subscription.user_id', user.id)
     .eq('subscription.status', 'active')
@@ -114,5 +162,6 @@ const update = async (c: Hono.Context) => {
 };
 
 app.get('/', get);
+app.post('/', create);
 app.put('/', update);
 Deno.serve(app.fetch);

@@ -155,7 +155,6 @@ async function searchNearby(
     );
     return cachePlaces;
   });
-  console.log({ response });
   return response as unknown as Place[];
 }
 

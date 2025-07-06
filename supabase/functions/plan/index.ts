@@ -69,7 +69,12 @@ const fetchPlaceInfo = async (supabase: SupabaseClient, placeId: string) => {
 const maximumVerifyChecker = async (supabase: SupabaseClient, user: User) => {
   const IS_OVER = true;
   const from = dayjs().add(-1, 'year').format('YYYY-MM-DD HH:mm');
-  const { data: profile } = await supabase.from('profile').select('payment_plan').maybeSingle();
+  const { data: profile } = await supabase
+    .from('profile')
+    .select('role, subscription(*)')
+    .eq('uid', user.id)
+    .maybeSingle();
+
   const { count } = await supabase
     .from('plan')
     .select('uid, created_at', { count: 'exact' })
@@ -78,8 +83,7 @@ const maximumVerifyChecker = async (supabase: SupabaseClient, user: User) => {
 
   if (SubscriptionUtil.isPremiumUser(profile) && count > MAXIMUM_PREMIUM_PLAN) {
     return IS_OVER;
-  }
-  if (count > MAXIMUM_FREE_PLAN) {
+  } else if (!SubscriptionUtil.isPremiumUser(profile) && count > MAXIMUM_FREE_PLAN) {
     return IS_OVER;
   }
 
@@ -238,8 +242,8 @@ const deletePlan = async (c: Hono.Context) => {
   return c.json(data);
 };
 
-app.post('/list', list);
 app.get('/:uid', get);
+app.post('/list', list);
 app.post('/', create);
 app.put('/', update);
 app.post('/delete', deletePlan);

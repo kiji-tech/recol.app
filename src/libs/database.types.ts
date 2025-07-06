@@ -117,6 +117,8 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           display_name: string | null
+          enabled_schedule_notification: boolean | null
+          notification_token: string | null
           payment_plan: Database["public"]["Enums"]["PaymentPlan"] | null
           role: Database["public"]["Enums"]["Role"] | null
           stripe_customer_id: string | null
@@ -127,6 +129,8 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
+          enabled_schedule_notification?: boolean | null
+          notification_token?: string | null
           payment_plan?: Database["public"]["Enums"]["PaymentPlan"] | null
           role?: Database["public"]["Enums"]["Role"] | null
           stripe_customer_id?: string | null
@@ -137,6 +141,8 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
+          enabled_schedule_notification?: boolean | null
+          notification_token?: string | null
           payment_plan?: Database["public"]["Enums"]["PaymentPlan"] | null
           role?: Database["public"]["Enums"]["Role"] | null
           stripe_customer_id?: string | null

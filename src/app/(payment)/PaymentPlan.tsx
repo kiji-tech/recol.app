@@ -52,18 +52,20 @@ const PlanTable = () => {
     <View className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
       <View className="bg-light-primary dark:bg-dark-primary">
         <View className="flex flex-row justify-between">
-          <Text className="p-4 flex-1 text-center text-white font-bold text-lg">機能</Text>
-          <View className="p-4 w-32 text-center">
-            <Text className="text-white font-bold">フリー</Text>
+          <Text className="p-4 flex-1 self-center text-center text-white font-bold text-lg">
+            機能
+          </Text>
+          <View className="p-4 w-32 self-center">
+            <Text className="text-center text-white font-bold">フリー</Text>
           </View>
-          <View className="p-4 w-40 text-center">
-            <Text className="text-white font-bold text-lg">プレミアム</Text>
-            <Text className="text-white/80 text-xs">すべての機能が使える</Text>
+          <View className="p-4 w-40 self-center">
+            <Text className="text-center text-white font-bold text-lg">プレミアム</Text>
+            <Text className="text-center text-white/80 text-xs">すべての機能が使える</Text>
           </View>
         </View>
       </View>
       <PlanItem title="プラン数" free="4プラン / 年" premium="20プラン / 年" highlight={true} />
-      <PlanItem title="ストレージ容量" free="1GB / プラン" premium="100GB / プラン" />
+      <PlanItem title="メディア容量" free="1GB / プラン" premium="100GB / プラン" />
       <PlanItem title="広告表示" free="○" premium="-" />
       {/* <PlanItem title="AI分析機能" free="-" premium="○" highlight={true} />
       <PlanItem title="優先サポート" free="-" premium="○" />
@@ -157,7 +159,7 @@ const PlanCard = ({
 
       {isCurrentPlan && (
         <View className="absolute -top-3 self-center">
-          <View className="bg-light-info dark:bg-dark-info px-3 py-1 rounded-full">
+          <View className="bg-light-danger dark:bg-dark-danger px-3 py-1 rounded-full">
             <Text className="text-light-text dark:text-dark-text text-xs font-bold">契約済み</Text>
           </View>
         </View>
@@ -239,7 +241,7 @@ export default function PaymentPlan() {
     }
 
     await initPaymentSheet({
-      merchantDisplayName: `Re:Col プレミアムプラン ${type === 'm' ? '月額' : '年額'}`,
+      merchantDisplayName: `Re:CoL プレミアムプラン ${type === 'm' ? '月額' : '年額'}`,
       paymentIntentClientSecret: clientSecret,
       allowsDelayedPaymentMethods: true,
     });
@@ -350,13 +352,10 @@ export default function PaymentPlan() {
               プレミアムプランで
             </Text>
             <Text className="text-2xl font-bold text-light-primary dark:text-dark-primary text-center">
-              より良い旅を体験
-            </Text>
-            <Text className="text-gray-600 dark:text-gray-400 text-center mt-2">
-              無制限のプラン作成、AI分析機能、優先サポートで
+              より良い休日を体験
             </Text>
             <Text className="text-gray-600 dark:text-gray-400 text-center">
-              あなたの旅をより豊かにします
+              あなたの旅･休日をより豊かにします
             </Text>
           </View>
 

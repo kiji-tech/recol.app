@@ -29,9 +29,11 @@ export default function SubscriptionComplete() {
   return (
     <BackgroundView>
       <View className="flex-1 items-center justify-center p-4">
-        <Text className="mb-4 text-center text-6xl">🎉</Text>
-        <Text className="mb-2 text-center text-2xl font-bold">アップグレードが完了しました！</Text>
-        <Text className="text-center text-lg">
+        <Text className="mb-4 text-light-text dark:text-dark-text text-center text-6xl">🎉</Text>
+        <Text className="mb-2 text-light-text dark:text-dark-text text-center text-2xl font-bold">
+          アップグレードが完了しました！
+        </Text>
+        <Text className="text-center text-light-text dark:text-dark-text text-lg">
           プレミアムプランへようこそ。全ての機能をお楽しみいただけます。
         </Text>
       </View>

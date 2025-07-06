@@ -11,11 +11,13 @@ import { upsertSchedule } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { Place } from '@/src/entities/Place';
 import { Schedule } from '@/src/entities/Plan';
+import { NotificationUtil } from '@/src/libs/NotificationUtil';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 export default function ScheduleEditor() {
   // === Member ===
   const { editSchedule, setEditSchedule, fetchPlan } = usePlan();
-  const { session } = useAuth();
+  const { session, profile } = useAuth();
   const [openMapModal, setOpenMapModal] = useState(false);
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
 
@@ -27,11 +29,18 @@ export default function ScheduleEditor() {
       ...editSchedule,
       from: dayjs(editSchedule.from).format(DATE_FORMAT),
       to: dayjs(editSchedule.to).format(DATE_FORMAT),
-    };
+    } as Schedule;
 
     await upsertSchedule(schedule, session)
       .then(async () => {
-        // プランの撮り直し
+        LogUtil.log('complete update schedule', { level: 'info' });
+        // 通知処理の見直し
+        await NotificationUtil.upsertUserSchedule(
+          editSchedule as Schedule,
+          profile?.enabled_schedule_notification ?? false
+        );
+
+        // プランの再取得
         await fetchPlan();
         router.back();
       })

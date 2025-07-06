@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTheme } from '@/src/contexts/ThemeContext';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 
 type Props = {
@@ -15,6 +16,7 @@ export default function IconButton({
   disabled = false,
   loading = false,
 }: Props) {
+  const { isDarkMode } = useTheme();
   return (
     <TouchableOpacity onPress={onPress} disabled={disabled}>
       <View
@@ -25,7 +27,7 @@ export default function IconButton({
         ${disabled ? 'opacity-50' : ''}
         `}
       >
-        {loading && <ActivityIndicator size="small" color="white" />}
+        {loading && <ActivityIndicator size="small" color={isDarkMode ? 'white' : 'black'} />}
         {!loading && icon}
       </View>
     </TouchableOpacity>

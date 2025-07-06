@@ -7,16 +7,16 @@ import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { LogUtil } from '../libs/LogUtil';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { Profile } from '../entities/Profile';
 
 // 型定義
 export type AuthContextType = {
   user: User | null;
   session: Session | null;
-  getProfileInfo: () => (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null;
+  profile: Profile;
+  getProfileInfo: () => Profile;
   fetchProfile: () => Promise<void>;
-  setProfile: (
-    profile: (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null
-  ) => void;
+  setProfile: (profile: Profile) => void;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -64,7 +64,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // サインアップ関数
   const signup = async (email: string, password: string) => {
     setLoading(true);
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: 'recol://(auth)/CompleteNewAccount',
+      },
+    });
     if (error) throw error;
     setSession(data.session);
     setUser(data.session?.user ?? null);
@@ -221,6 +227,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       value={{
         user,
         session,
+        profile,
         getProfileInfo,
         fetchProfile,
         setProfile,

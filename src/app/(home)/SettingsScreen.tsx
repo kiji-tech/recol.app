@@ -14,6 +14,11 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import dayjs from 'dayjs';
 import { SubscriptionUtil } from '@/src/libs/SubscriptionUtil';
 import { Tables } from '@/src/libs/database.types';
+import { fetchScheduleListForNotification, updateProfile } from '@/src/libs/ApiService';
+import * as Notifications from 'expo-notifications';
+import { NotificationUtil } from '@/src/libs/NotificationUtil';
+import { LogUtil } from '@/src/libs/LogUtil';
+import { Profile } from '@/src/entities/Profile';
 
 const PlanComponent = ({
   profile,
@@ -24,7 +29,6 @@ const PlanComponent = ({
   const { isDarkMode } = useTheme();
 
   // === Method ===
-
   if (SubscriptionUtil.isAdmin(profile!) || SubscriptionUtil.isSuperUser(profile!)) {
     return (
       <View>
@@ -93,42 +97,15 @@ const SettingItem: React.FC<SettingItemProps> = ({
 );
 
 // TODO: 将来的にはDB化
-const SCHEDULE_NOTIFICATION_KEY = STORAGE_KEYS.SCHEDULE_NOTIFICATION_KEY;
 const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
 
 export default function Settings() {
-  const { session, user, getProfileInfo, logout } = useAuth();
+  const { session, user, getProfileInfo, logout, setProfile, fetchProfile } = useAuth();
   const { clearStoragePlan } = usePlan();
   const { theme, setTheme } = useTheme();
-  const [scheduleNotification, setScheduleNotification] = useState(true);
-  const [chatNotification, setChatNotification] = useState(true);
-  const [profile, setProfile] = useState<
-    (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null
-  >(null);
+  const [chatNotification, setChatNotification] = useState(false);
   const version = Constants.expoConfig?.version || '1.0.0';
   const isDarkMode = theme === 'dark';
-
-  // 通知設定の読み込み
-  useFocusEffect(
-    useCallback(() => {
-      const loadSettings = async () => {
-        const [scheduleEnabled, chatEnabled] = await Promise.all([
-          AsyncStorage.getItem(SCHEDULE_NOTIFICATION_KEY),
-          AsyncStorage.getItem(CHAT_NOTIFICATION_KEY),
-        ]);
-
-        setScheduleNotification(scheduleEnabled !== 'false');
-        setChatNotification(chatEnabled !== 'false');
-      };
-      loadSettings();
-    }, [])
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      setProfile(getProfileInfo());
-    }, [session])
-  );
 
   // テーマ切り替え処理
   const handleThemeChange = (value: boolean) => {
@@ -137,8 +114,50 @@ export default function Settings() {
 
   // スケジュール通知設定の変更
   const handleScheduleNotificationChange = async (value: boolean) => {
-    await AsyncStorage.setItem(SCHEDULE_NOTIFICATION_KEY, String(value));
-    setScheduleNotification(value);
+    if (!getProfileInfo()) return;
+    setProfile({ ...getProfileInfo(), enabled_schedule_notification: value } as Profile);
+    let token = getProfileInfo()?.notification_token;
+
+    // スケジュール通知を無効にした場合は､既存のスケジュールを全削除
+    if (!value) {
+      LogUtil.log('removeAllScheduleNotification', { level: 'info' });
+      await NotificationUtil.removeAllScheduleNotification();
+    }
+
+    if (value) {
+      LogUtil.log('Permission check', { level: 'info' });
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      if (existingStatus !== 'granted') {
+        LogUtil.log('Permission Request', { level: 'info' });
+        const { status } = await Notifications.requestPermissionsAsync();
+        if (status !== 'granted') {
+          setProfile({ ...getProfileInfo(), enabled_schedule_notification: false } as Profile);
+          return;
+        }
+      }
+    }
+    if (!token) {
+      LogUtil.log('トークンを取得する', { level: 'info' });
+      const expoToken = await Notifications.getExpoPushTokenAsync({
+        projectId: Constants?.expoConfig?.extra?.eas?.projectId,
+      });
+      token = expoToken.data;
+    }
+
+    await updateProfile(
+      {
+        ...getProfileInfo(),
+        enabled_schedule_notification: value,
+        notification_token: token,
+      } as Profile,
+      session
+    );
+
+    // ONになった場合は､今あるスケジュールに対してすべての通知を設定する
+    const scheduleList = await fetchScheduleListForNotification(session);
+    for (const schedule of scheduleList) {
+      await NotificationUtil.upsertUserSchedule(schedule, value);
+    }
   };
 
   // チャット通知設定の変更
@@ -147,22 +166,44 @@ export default function Settings() {
     setChatNotification(value);
   };
 
+  // サインアウト処理
   const handleSignOut = async () => {
     router.replace('/(auth)/SignIn');
     await clearStoragePlan();
     await logout();
   };
 
+  // === Effect ===
+  // 通知設定の読み込み
+  useFocusEffect(
+    useCallback(() => {
+      const loadSettings = async () => {
+        const [chatEnabled] = await Promise.all([AsyncStorage.getItem(CHAT_NOTIFICATION_KEY)]);
+
+        setChatNotification(chatEnabled !== 'false');
+      };
+      loadSettings();
+    }, [])
+  );
+
+  // === プロフィールの読み込み ===
+  useFocusEffect(
+    useCallback(() => {
+      fetchProfile();
+    }, [session])
+  );
+
+  // === Render ===
   return (
     <BackgroundView>
       <ScrollView className="gap-8 flex flex-col" showsVerticalScrollIndicator={false}>
         {/* プロフィールセクション */}
         <View className="items-center p-6 border-b border-light-border dark:border-dark-border">
           <View className="w-24 h-24 rounded-full overflow-hidden border-2 border-light-border dark:border-dark-border">
-            {profile?.avatar_url ? (
+            {getProfileInfo()?.avatar_url ? (
               <Image
                 source={{
-                  uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`,
+                  uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${getProfileInfo()?.avatar_url}`,
                 }}
                 style={{
                   width: '100%',
@@ -176,7 +217,7 @@ export default function Settings() {
             )}
           </View>
           <Text className="text-xl font-bold text-light-text dark:text-dark-text">
-            {profile?.display_name || 'ユーザー名未設定'}
+            {getProfileInfo()?.display_name || 'ユーザー名未設定'}
           </Text>
           <Text className="text-light-text dark:text-dark-text">{user?.email}</Text>
         </View>
@@ -196,7 +237,7 @@ export default function Settings() {
         <View className="pb-4 border-b border-light-border dark:border-dark-border">
           <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">プラン</Text>
           <View className="px-4 py-2 text-md text-light-text dark:text-dark-text">
-            <PlanComponent profile={profile} />
+            <PlanComponent profile={getProfileInfo()} />
           </View>
         </View>
 
@@ -230,14 +271,14 @@ export default function Settings() {
             </View>
             <View className="absolute right-4">
               <Switch
-                value={scheduleNotification}
+                value={getProfileInfo()?.enabled_schedule_notification ?? false}
                 onValueChange={handleScheduleNotificationChange}
               />
             </View>
           </View>
 
-          {/* チャット通知設定 */}
-          <View className="flex-row items-center relative p-4 border-b border-light-border dark:border-dark-border">
+          {/* TODO: チャット通知設定 */}
+          {/* <View className="flex-row items-center relative p-4 border-b border-light-border dark:border-dark-border">
             <View className="flex-1 pr-16">
               <View className="flex-row items-center">
                 <Ionicons
@@ -254,7 +295,7 @@ export default function Settings() {
             <View className="absolute right-4">
               <Switch value={chatNotification} onValueChange={handleChatNotificationChange} />
             </View>
-          </View>
+          </View> */}
 
           <SettingItem
             icon="information-circle-outline"

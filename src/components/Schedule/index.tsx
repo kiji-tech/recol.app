@@ -11,6 +11,8 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import Button from '../Common/Button';
 import { Place } from '@/src/entities/Place';
 import { Schedule } from '@/src/entities/Plan';
+import { Toast } from 'toastify-react-native';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 type Props = {
   plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
@@ -90,8 +92,13 @@ export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode
         }
       })
       .catch((e) => {
+        if (e && e.message.includes('Aborted')) {
+          LogUtil.log('Aborted', { level: 'info' });
+          return;
+        }
+        LogUtil.log(JSON.stringify({ fetchScheduleList: e }), { level: 'error', notify: true });
         if (e && e.message) {
-          Alert.alert(e.message);
+          Toast.warn('スケジュールの取得に失敗しました');
         }
       });
 

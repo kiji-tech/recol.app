@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Linking, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, Platform, Text, TouchableOpacity, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { Image } from 'expo-image';
 import { usePlan } from '@/src/contexts/PlanContext';
@@ -46,7 +46,7 @@ const ScheduleInfoCard = ({
                 borderTopLeftRadius: 4,
                 borderTopRightRadius: 4,
               }}
-              source={`https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`}
+              source={`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(place.photos[0].name || '')}`}
             />
           )}
           <View className="px-4 py-2 flex flex-col gap-2">
@@ -100,6 +100,7 @@ const ScheduleInfoCard = ({
 export default function MapScreen() {
   // === Member ===
   const scrollRef = useRef<ScrollView>(null);
+  const platform = Platform.OS;
   const { plan } = usePlan();
   const { currentRegion } = useLocation();
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(
@@ -169,7 +170,7 @@ export default function MapScreen() {
 
   // === Render ===
   return (
-    <View className="w-screen h-screen absolute top-0 left-0 mt-20">
+    <View className="w-screen h-screen absolute top-0 left-0">
       <View className="w-screen h-40 flex-1">
         <Map
           radius={radius}
@@ -183,7 +184,9 @@ export default function MapScreen() {
           onSelectedPlace={handleSelectedPlace}
         />
       </View>
-      <View className="absolute bottom-40 w-screen px-4 pt-2 pb-8">
+      <View
+        className={`absolute ${platform === 'ios' ? 'bottom-20' : 'bottom-40'} w-screen px-4 pt-2 pb-8`}
+      >
         <ScrollView
           ref={scrollRef}
           horizontal

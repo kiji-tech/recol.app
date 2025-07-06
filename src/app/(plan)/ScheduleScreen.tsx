@@ -8,14 +8,17 @@ import { deleteSchedule, fetchPlan } from '@/src/libs/ApiService';
 import { useFocusEffect } from '@react-navigation/native';
 import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import PlanInformation from '@/src/components/PlanInformation';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { Schedule } from '@/src/entities/Plan';
+import { Plan, Schedule } from '@/src/entities/Plan';
+import MaskLoading from '@/src/components/MaskLoading';
+import ToastManager, { Toast } from 'toastify-react-native';
+import { LogUtil } from '@/src/libs/LogUtil';
 
-const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null) => {
+const ScheduleMenu = ({ plan }: { plan: Plan }) => {
   const router = useRouter();
   const { isDarkMode } = useTheme();
   const { setEditSchedule } = usePlan();
@@ -61,6 +64,7 @@ const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }
             optionText: {
               paddingVertical: 12,
               paddingHorizontal: 8,
+              color: 'black',
             },
           }}
           onSelect={handleEditPress}
@@ -71,6 +75,7 @@ const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }
             optionText: {
               paddingVertical: 12,
               paddingHorizontal: 8,
+              color: 'black',
             },
           }}
           onSelect={() => {
@@ -84,33 +89,41 @@ const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
-  const { plan } = usePlan();
+  const { plan, planLoading } = usePlan();
   const { session } = useAuth();
-  const [viewPlan, setViewPlan] = useState<
-    (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null
-  >(null);
+  const [viewPlan, setViewPlan] = useState<Plan | null>(plan || null);
 
   // === Method ===
   const initView = () => {
-    if (!plan?.uid || !session) {
-      Alert.alert('エラー', 'プランの情報が取得できませんでした。');
+    if (!session) {
+      Toast.warn('ログイン情報が見つかりませんでした');
+      router.navigate('/(auth)/SignIn');
+      return;
+    }
+
+    if (!plan?.uid) {
+      Toast.warn('プランの情報が取得できませんでした');
       router.back();
       return;
     }
 
-    setViewPlan(null);
     const ctrl = new AbortController();
 
     fetchPlan(plan.uid, session, ctrl)
       .then((data) => {
         if (!data) {
-          throw new Error('プランデータの取得に失敗しました');
+          Toast.warn('プランの情報が取得できませんでした');
         }
-        setViewPlan({ ...data } as Tables<'plan'> & { schedule: Tables<'schedule'>[] });
+        setViewPlan({ ...data } as Plan);
       })
       .catch((e) => {
-        if (e && e.message && e.message.indexOf('Aborted') < 0) {
-          Alert.alert(e.message);
+        if (e && e.message.includes('Aborted')) {
+          LogUtil.log('Aborted', { level: 'info' });
+          return;
+        }
+        LogUtil.log(JSON.stringify({ fetchPlan: e }), { level: 'error', notify: true });
+        if (e && e.message) {
+          Toast.warn('プランの情報が取得に失敗しました');
         }
       });
 
@@ -123,11 +136,13 @@ export default function ScheduleScreen(): ReactNode {
   const handleDeleteSchedule = async (schedule: Tables<'schedule'>) => {
     deleteSchedule(schedule.uid, session)
       .then(() => {
+        Toast.success(`${schedule.title} を削除しました`);
         initView();
       })
       .catch((e) => {
+        LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
         if (e && e.message) {
-          Alert.alert(e.message);
+          Toast.warn(e.message);
         }
       });
   };
@@ -142,7 +157,7 @@ export default function ScheduleScreen(): ReactNode {
       <Header
         title={`${viewPlan?.title || plan?.title || 'スケジュール'}の予定`}
         onBack={() => router.back()}
-        rightComponent={viewPlan ? <ScheduleMenu {...viewPlan} /> : undefined}
+        rightComponent={viewPlan ? <ScheduleMenu plan={viewPlan} /> : undefined}
       />
       {/* Plan Information */}
       {viewPlan && (
@@ -152,6 +167,8 @@ export default function ScheduleScreen(): ReactNode {
           <ScheduleComponents plan={viewPlan} onDelete={handleDeleteSchedule} />
         </>
       )}
+      {planLoading && <MaskLoading />}
+      <ToastManager />
     </BackgroundView>
   );
 }

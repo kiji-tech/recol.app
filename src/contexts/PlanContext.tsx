@@ -1,21 +1,20 @@
 import React, { useEffect } from 'react';
 import { createContext, useContext, useState } from 'react';
-import { Tables } from '../libs/database.types';
 import { fetchPlanList } from '../libs/ApiService';
 import { useAuth } from './AuthContext';
 import { LogUtil } from '../libs/LogUtil';
-import { Place } from '../entities/Place';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Plan, Schedule } from '../entities/Plan';
 
 const PLAN_LIST_STORAGE_KEY = '@plan_list';
 
 type PlanContextType = {
-  planList: (Tables<'plan'> & { schedule: Tables<'schedule'>[] })[];
-  setPlanList: (planList: (Tables<'plan'> & { schedule: Tables<'schedule'>[] })[]) => void;
-  plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
-  setPlan: (plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => void;
-  editSchedule: Tables<'schedule'> | null;
-  setEditSchedule: (schedule: Tables<'schedule'> & { place_list: Place[] }) => void;
+  planList: Plan[];
+  setPlanList: (planList: Plan[]) => void;
+  plan: Plan | null;
+  setPlan: (plan: Plan) => void;
+  editSchedule: Schedule | null;
+  setEditSchedule: (schedule: Schedule) => void;
   planLoading: boolean;
   fetchPlan: (ctrl?: AbortController) => Promise<void>;
   clearStoragePlan: () => void;
@@ -24,21 +23,15 @@ type PlanContextType = {
 const PlanContext = createContext<PlanContextType | null>(null);
 
 const PlanProvider = ({ children }: { children: React.ReactNode }) => {
-  const [planList, setPlanList] = useState<(Tables<'plan'> & { schedule: Tables<'schedule'>[] })[]>(
-    []
-  );
-  const [plan, setPlan] = useState<(Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null>(
-    null
-  );
+  const [planList, setPlanList] = useState<Plan[]>([]);
+  const [plan, setPlan] = useState<Plan | null>(null);
   const [planLoading, setPlanLoading] = useState(false);
   const { session } = useAuth();
-  const [editSchedule, setEditSchedule] = useState<Tables<'schedule'> | null>(null);
+  const [editSchedule, setEditSchedule] = useState<Schedule | null>(null);
 
   useEffect(() => {
     const ctrl = new AbortController();
-
     fetchStoragePlan();
-
     fetchPlan(ctrl);
     return () => {
       ctrl.abort();
@@ -46,14 +39,10 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
   }, [session]);
 
   const fetchStoragePlan = async () => {
-    try {
-      const list = JSON.parse((await AsyncStorage.getItem(PLAN_LIST_STORAGE_KEY)) || '[]');
-      if (list && list.length > 0) {
-        LogUtil.log(`set storage plan list ${list.length}`, { level: 'info' });
-        setPlanList(JSON.parse(list));
-      }
-    } catch (error) {
-      LogUtil.log(error, { level: 'error' });
+    const list = JSON.parse((await AsyncStorage.getItem(PLAN_LIST_STORAGE_KEY)) || '[]');
+    if (list && list.length > 0) {
+      LogUtil.log(`set storage plan list ${list.length}`, { level: 'info' });
+      setPlanList(JSON.parse(list));
     }
   };
 
@@ -61,13 +50,20 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
     setPlanLoading(true);
     fetchPlanList(session, ctrl)
       .then(async (response) => {
-        LogUtil.log(`set API plan list, ${response.length}`, { level: 'info' });
         setPlanList(response);
         await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(response));
         if (plan) {
           const updatePlan = response.find((p) => p.uid === plan.uid);
           if (updatePlan) setPlan(updatePlan);
         }
+      })
+      .catch((e) => {
+        if (e && e.message.includes('Aborted')) {
+          LogUtil.log('Aborted', { level: 'info' });
+          return;
+        }
+        LogUtil.log(JSON.stringify({ fetchPlanList: e }), { level: 'error', notify: true });
+        throw e;
       })
       .finally(() => {
         setPlanLoading(false);

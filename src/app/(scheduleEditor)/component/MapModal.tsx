@@ -15,6 +15,7 @@ import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
 import ResearchButton from './ResearchButton';
 import { LATITUDE_OFFSET, SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
+import { Schedule } from '@/src/entities/Plan';
 
 type Props = {
   isOpen: boolean;
@@ -24,8 +25,8 @@ type Props = {
 export default function MapModal({ isOpen, onClose }: Props) {
   // === Member ===
   const DEFAULT_RADIUS = 4200;
-  const bottomSheetRef = useRef<BottomSheet | null>(null);
-  const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const scrollRef = useRef<BottomSheetScrollViewMethods>(null);
   const { session } = useAuth();
   const { currentRegion } = useLocation();
   const { editSchedule, setEditSchedule } = usePlan();
@@ -53,8 +54,8 @@ export default function MapModal({ isOpen, onClose }: Props) {
     if (selectedCategory === 'selected') return;
     setIsLoading(true);
     try {
-      const response = await searchNearby(session, latitude, longitude, selectedCategory, radius);
-      settingPlaces(response);
+      const placeList = await searchNearby(session, latitude, longitude, selectedCategory, radius);
+      settingPlaces(placeList);
     } finally {
       setIsLoading(false);
     }
@@ -112,12 +113,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
 
   /** エリアで再検索 */
   const handleResearch = async () => {
-    setIsLoading(true);
-    try {
-      await fetchLocation(region?.latitude || 0, region?.longitude || 0);
-    } finally {
-      setIsLoading(false);
-    }
+    await fetchLocation(region?.latitude || 0, region?.longitude || 0);
   };
 
   /** スケジュールに対する場所の追加 */
@@ -135,7 +131,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
       place_list: (editSchedule?.place_list || []).filter(
         (p: unknown) => (p as Place).id !== place.id
       ),
-    } as unknown as Tables<'schedule'> & { place_list: Place[] });
+    } as unknown as Schedule);
   };
 
   /** モーダルを閉じる */
@@ -199,26 +195,17 @@ export default function MapModal({ isOpen, onClose }: Props) {
   if (!isOpen || !currentRegion) return null;
   return (
     <>
-      <View className=" w-screen h-screen absolute top-0 left-0 mt-20">
+      <View className=" w-screen h-screen absolute top-0 left-0">
         {/* 検索バー */}
-        <MapSearchBar
-          radius={radius}
-          region={region || currentRegion}
-          currentRegion={currentRegion}
-          isSearch={true}
-          onSearch={handleTextSearch}
-          onBack={handleClose}
-        />
+        <MapSearchBar onSearch={handleTextSearch} onBack={handleClose} />
 
         {/* 再検索 */}
-        <View className="w-full absolute top-20 z-50">
-          <ResearchButton
-            centerRegion={region || currentRegion}
-            currentRegion={currentRegion}
-            radius={radius}
-            onPress={handleResearch}
-          />
-        </View>
+        <ResearchButton
+          centerRegion={region || currentRegion}
+          currentRegion={currentRegion}
+          radius={radius}
+          onPress={handleResearch}
+        />
 
         {/* マップ */}
         <View className="w-screen h-screen absolute top-0 left-0">
@@ -247,8 +234,8 @@ export default function MapModal({ isOpen, onClose }: Props) {
           onRemove={handleRemove}
           onSelectedPlace={handleSelectedPlace}
           onSelectedCategory={handleSelectedCategory}
-          bottomSheetRef={bottomSheetRef}
-          scrollRef={scrollRef}
+          bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
+          scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
         />
       </View>
     </>

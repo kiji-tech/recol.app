@@ -11,8 +11,11 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { deletePlan } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { LogUtil } from '@/src/libs/LogUtil';
+import ToastManager, { Toast } from 'toastify-react-native';
+import { Plan, Schedule } from '@/src/entities/Plan';
 
-function PlanCard({ plan }: { plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] } }) {
+function PlanCard({ plan }: { plan: Plan }) {
   // === Member ===
   const router = useRouter();
   const { session } = useAuth();
@@ -20,24 +23,13 @@ function PlanCard({ plan }: { plan: Tables<'plan'> & { schedule: Tables<'schedul
 
   const planDates = useMemo(() => {
     return plan.schedule
-      .sort((a: Tables<'schedule'>, b: Tables<'schedule'>) => dayjs(a.from).diff(dayjs(b.from)))
-      .map((schedule: Tables<'schedule'>) => dayjs(schedule.from).format('M/D'));
+      .sort((a: Schedule, b: Schedule) => dayjs(a.from).diff(dayjs(b.from)))
+      .map((schedule: Schedule) => dayjs(schedule.from).format('YYYY/M/D'));
   }, [plan]);
-
-  // === Effect ===
-  useFocusEffect(
-    useCallback(() => {
-      const ctrl = new AbortController();
-      fetchPlan(ctrl);
-      return () => {
-        ctrl.abort();
-      };
-    }, [])
-  );
 
   // === Method ===
   /** プラン選択処理 */
-  const handleSelectPlan = (plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => {
+  const handleSelectPlan = (plan: Plan) => {
     // スケジュールを取得して設定
     setPlan(plan);
     router.push({
@@ -50,26 +42,30 @@ function PlanCard({ plan }: { plan: Tables<'plan'> & { schedule: Tables<'schedul
 
   /** プランの削除 */
   const handleDeletePlan = (plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => {
-    Alert.alert('削除しますか？', '削除すると元に戻すことはできません。', [
-      {
-        text: 'キャンセル',
-        style: 'cancel',
-      },
-      {
-        text: '削除',
-        onPress: async () => {
-          deletePlan(plan.uid, session)
-            .then(() => {
-              fetchPlan();
-            })
-            .catch((e) => {
-              if (e && e.message) {
-                Alert.alert(e.message);
-              }
-            });
+    Alert.alert(
+      '削除しますか？',
+      '年間プラン消費量は戻りません。\nそれでも削除してもよろしいですか？',
+      [
+        {
+          text: 'キャンセル',
+          style: 'cancel',
         },
-      },
-    ]);
+        {
+          text: '削除',
+          onPress: async () => {
+            deletePlan(plan.uid, session)
+              .then(() => {
+                fetchPlan();
+              })
+              .catch((e) => {
+                if (e && e.message) {
+                  Alert.alert(e.message);
+                }
+              });
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -83,7 +79,7 @@ function PlanCard({ plan }: { plan: Tables<'plan'> & { schedule: Tables<'schedul
     >
       <View className="flex flex-row gap-2 justify-between items-start">
         <View className="flex flex-row gap-4 justify-start items-center">
-          {/*  アイコン（TODO） */}
+          {/*  TODO: アイコン */}
           <View className="w-10 h-10 bg-light-info rounded-full"></View>
           <View className="flex flex-col gap-2 justify-start items-start">
             <Text className={`font-bold text-md text-light-text dark:text-dark-text`}>
@@ -116,11 +112,24 @@ export default function PlanListScreen() {
   // === Member ===
   const router = useRouter();
   const { isDarkMode } = useTheme();
-  const { planList, fetchPlan } = usePlan();
+  const { planList, fetchPlan, planLoading } = usePlan();
+
+  // === Method ===
+  const init = async (ctrl?: AbortController) => {
+    await fetchPlan(ctrl).catch((e) => {
+      if (e.message.includes('Aborted')) {
+        LogUtil.log('Aborted', { level: 'warn' });
+        return;
+      }
+      LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+      Toast.warn('プランの取得に失敗しました');
+    });
+  };
 
   // === Effect ===
   useFocusEffect(
     useCallback(() => {
+      LogUtil.log('plan list init');
       const ctrl = new AbortController();
       init(ctrl);
       return () => {
@@ -129,12 +138,8 @@ export default function PlanListScreen() {
     }, [])
   );
 
-  // === Method ===
-  const init = async (ctrl?: AbortController) => {
-    await fetchPlan(ctrl);
-  };
-
   // === Render ===
+  /** プラン追加ボタン */
   const addButton = () => {
     return (
       <IconButton
@@ -151,7 +156,7 @@ export default function PlanListScreen() {
     <BackgroundView>
       <Header title="計画一覧" rightComponent={addButton()} />
       {/* プランがない場合 */}
-      {planList.length === 0 && (
+      {!planLoading && planList.length === 0 && (
         <View className="flex flex-col justify-center items-center h-full">
           <Text className="text-light-text dark:text-dark-text text-lg font-bold">
             プランがありません
@@ -165,11 +170,9 @@ export default function PlanListScreen() {
       )}
       {/* プラン一覧 */}
       <View className="flex flex-col justify-start items-start gap-4">
-        {planList &&
-          planList.map((plan: Tables<'plan'> & { schedule: Tables<'schedule'>[] }) => (
-            <PlanCard key={plan.uid} plan={plan} />
-          ))}
+        {planList && planList.map((plan: Plan) => <PlanCard key={plan.uid} plan={plan} />)}
       </View>
+      <ToastManager />
     </BackgroundView>
   );
 }

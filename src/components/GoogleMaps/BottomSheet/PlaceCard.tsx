@@ -11,6 +11,7 @@ type Props = {
 };
 export default function PlaceCard({ place, selected = false, onSelect }: Props) {
   // ==== Member ====
+  const source = `${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(place?.photos[0]?.name || '')}`;
 
   // ==== Method ====
 
@@ -31,7 +32,7 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
           {place.photos && place.photos.length > 0 ? (
             <Image
               cachePolicy="memory-disk"
-              source={`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(place.photos[0].name)}`}
+              source={source}
               style={{
                 width: 128,
                 height: 112,
