@@ -277,8 +277,8 @@ export default function Settings() {
             </View>
           </View>
 
-          {/* チャット通知設定 */}
-          <View className="flex-row items-center relative p-4 border-b border-light-border dark:border-dark-border">
+          {/* TODO: チャット通知設定 */}
+          {/* <View className="flex-row items-center relative p-4 border-b border-light-border dark:border-dark-border">
             <View className="flex-1 pr-16">
               <View className="flex-row items-center">
                 <Ionicons
@@ -295,7 +295,7 @@ export default function Settings() {
             <View className="absolute right-4">
               <Switch value={chatNotification} onValueChange={handleChatNotificationChange} />
             </View>
-          </View>
+          </View> */}
 
           <SettingItem
             icon="information-circle-outline"
