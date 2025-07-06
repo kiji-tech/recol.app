@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput } from 'react-native';
+import { View, Text, TextInput, Platform } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import BackButton from './BackButton';
 import { useTheme } from '@/src/contexts/ThemeContext';
@@ -17,6 +17,7 @@ export default function Header({
   onSearch = null,
   rightComponent = null,
 }: Props) {
+  const platform = Platform.OS;
   const { isDarkMode } = useTheme();
   const [searchText, setSearchText] = useState<string>('');
   return (
@@ -47,7 +48,7 @@ export default function Header({
             onBlur={() => onSearch(searchText)}
             returnKeyType="search"
             placeholderTextColor={'gray'}
-            className={`w-full rounded-xl text-md
+            className={`w-full rounded-xl text-md ${platform === 'ios' && 'py-4'}
                         border-light-border dark:border-dark-border
                         text-light-text dark:text-dark-text`}
           />
