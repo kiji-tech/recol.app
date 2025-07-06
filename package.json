@@ -20,7 +20,8 @@
         "lint": "eslint src",
         "lint:fix": "eslint src --fix",
         "ios:simulator": "open -a Simulator",
-        "build:preview": "eas build --profile preview --platform android"
+        "build:preview": "eas build --profile preview --platform android",
+        "build:production": "eas build --profile production --platform android"
     },
     "dependencies": {
         "@expo/config-plugins": "~10.0.3",

@@ -55,12 +55,23 @@
             }
         },
         "production": {
-            "channel": "main",
             "extends": "base",
-            "autoIncrement": true
+            "autoIncrement": true,
+            "channel": "main",
+            "android": {
+                "buildType": "app-bundle"
+            },
+            "env": {
+                "EXPO_PUBLIC_APP_ENV": "production"
+            }
         }
     },
     "submit": {
-        "production": {}
+        "production": {
+            "android": {
+                "serviceAccountKeyPath": "./google-services.json",
+                "track": "internal"
+            }
+        }
     }
 }
