@@ -129,6 +129,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const userInfo = await GoogleSignin.signIn();
       LogUtil.log('userInfo: ' + JSON.stringify(userInfo), { level: 'info' });
       if (!userInfo?.data?.idToken) {
+        LogUtil.log('signInWithIdToken error: no ID token present!', {
+          level: 'error',
+          notify: true,
+        });
         throw new Error('no ID token present!');
       }
       const { data, error } = await supabase.auth.signInWithIdToken({
@@ -137,14 +141,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       if (error) {
-        LogUtil.log('signInWithIdToken error: ' + JSON.stringify(error), { level: 'error' });
+        LogUtil.log('signInWithIdToken error: ' + JSON.stringify(error), {
+          level: 'error',
+          notify: true,
+        });
         throw error;
       }
       LogUtil.log('signInWithIdToken data: ' + JSON.stringify(data), { level: 'info' });
       router.navigate('/(home)');
     } catch (error: unknown) {
       if (error instanceof Error) {
-        LogUtil.log(JSON.stringify(error), { level: 'error' });
+        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
       }
       if (typeof error === 'object' && error !== null && 'code' in error) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
