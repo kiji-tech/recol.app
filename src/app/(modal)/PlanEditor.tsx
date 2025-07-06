@@ -4,11 +4,11 @@ import { BackgroundView } from '@/src/components';
 import { borderColor } from '@/src/themes/ColorUtil';
 import { useRouter } from 'expo-router';
 import { View, Text, TextInput, Alert } from 'react-native';
-import * as Location from 'expo-location';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { Tables } from '@/src/libs/database.types';
 import { updatePlan } from '@/src/libs/ApiService';
+import { Plan } from '@/src/entities/Plan';
+import * as Location from 'expo-location';
 
 export default function PlanEditor() {
   // === Member ===
@@ -62,11 +62,7 @@ export default function PlanEditor() {
           className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
                 ${borderColor} text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background
                 `}
-          onChangeText={(text) =>
-            setPlan({ ...plan, title: text } as Tables<'plan'> & {
-              schedule: Tables<'schedule'>[];
-            })
-          }
+          onChangeText={(text) => setPlan({ ...plan, title: text } as Plan)}
         />
       </View>
       <View className="w-full flex flex-col justify-start items-start">
@@ -78,11 +74,7 @@ export default function PlanEditor() {
           placeholderTextColor="gray"
           className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
                         border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
-          onChangeText={(text) =>
-            setPlan({ ...plan, memo: text } as Tables<'plan'> & {
-              schedule: Tables<'schedule'>[];
-            })
-          }
+          onChangeText={(text) => setPlan({ ...plan, memo: text } as Plan)}
         />
       </View>
       <View>

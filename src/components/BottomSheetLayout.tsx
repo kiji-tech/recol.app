@@ -22,7 +22,7 @@ const BottomSheetLayout = forwardRef(({ children }: Props, ref) => {
   return (
     <BottomSheet
       ref={bottomSheetRef}
-      snapPoints={['20%', '40%', '85%']}
+      snapPoints={['20%', '40%', '75%']}
       enableOverDrag={false}
       enableDynamicSizing={false}
       handleStyle={{

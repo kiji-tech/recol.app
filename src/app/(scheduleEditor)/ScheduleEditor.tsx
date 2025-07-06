@@ -40,7 +40,7 @@ export default function ScheduleEditor() {
           profile?.enabled_schedule_notification ?? false
         );
 
-        // プランの撮り直し
+        // プランの再取得
         await fetchPlan();
         router.back();
       })

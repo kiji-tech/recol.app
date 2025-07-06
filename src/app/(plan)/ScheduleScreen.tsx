@@ -91,7 +91,7 @@ export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
   const { plan, planLoading } = usePlan();
   const { session } = useAuth();
-  const [viewPlan, setViewPlan] = useState<Plan | null>(null);
+  const [viewPlan, setViewPlan] = useState<Plan | null>(plan || null);
 
   // === Method ===
   const initView = () => {
@@ -117,11 +117,11 @@ export default function ScheduleScreen(): ReactNode {
         setViewPlan({ ...data } as Plan);
       })
       .catch((e) => {
-        LogUtil.log(JSON.stringify(e), { level: 'warn', notify: true });
-        if (e.message.includes('Aborted')) {
-          LogUtil.log('Aborted', { level: 'warn' });
+        if (e && e.message.includes('Aborted')) {
+          LogUtil.log('Aborted', { level: 'info' });
           return;
         }
+        LogUtil.log(JSON.stringify({ fetchPlan: e }), { level: 'error', notify: true });
         if (e && e.message) {
           Toast.warn('プランの情報が取得に失敗しました');
         }

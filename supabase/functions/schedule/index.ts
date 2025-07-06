@@ -90,7 +90,9 @@ const list = async (c: Hono.Context) => {
     .from('schedule')
     .select('*')
     .eq('plan_id', planId)
-    .eq('delete_flag', false);
+    .eq('delete_flag', false)
+    .order('created_at', { ascending: false })
+    .order('from', { ascending: true });
 
   if (error) {
     return c.json({ message: getMessage('C005', ['スケジュール']), code: 'C005' }, 400);

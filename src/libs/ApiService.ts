@@ -56,35 +56,17 @@ async function apiRequest<T, B = Record<string, unknown>>(
 // ============ Plan ============
 /**
  * プラン情報の取得
- *
- * @param planId {string}
- * @param session  {Session | null}
- * @param ctrl {AbortController}
- * @returns Tables<'plan'>
  */
 async function fetchPlan(planId: string, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Tables<'plan'> & { schedule: Tables<'schedule'>[] }>(
-    `/plan/${planId}`,
-    { method: 'GET', session, ctrl }
-  );
+  const response = await apiRequest<Plan>(`/plan/${planId}`, { method: 'GET', session, ctrl });
   return response.data!;
 }
 
 /**
  * プラン一覧の取得
- *
- * @param session {Session | null}
- * @param ctrl {AbortController}
- * @returns Tables<'plan'> & { schedule: Tables<'schedule'>[] }[]
  */
-async function fetchPlanList(
-  session: Session | null,
-  ctrl?: AbortController
-): Promise<(Tables<'plan'> & { schedule: Tables<'schedule'>[] })[]> {
-  const response = await apiRequest<(Tables<'plan'> & { schedule: Tables<'schedule'>[] })[]>(
-    '/plan/list',
-    { method: 'POST', session, ctrl }
-  );
+async function fetchPlanList(session: Session | null, ctrl?: AbortController): Promise<Plan[]> {
+  const response = await apiRequest<Plan[]>('/plan/list', { method: 'POST', session, ctrl });
   return response.data!;
 }
 
@@ -112,10 +94,6 @@ async function updatePlan(plan: Plan, session: Session | null, ctrl?: AbortContr
 
 /**
  * プランの削除
- *
- * @param planId {string}
- * @param session {Session | null}
- * @param ctrl {AbortController}
  */
 async function deletePlan(planId: string, session: Session | null, ctrl?: AbortController) {
   await apiRequest<void>('/plan/delete', {
@@ -129,31 +107,18 @@ async function deletePlan(planId: string, session: Session | null, ctrl?: AbortC
 // ============ Schedule ============
 /**
  * スケジュール情報の取得
- *
- * @param scheduleId {string}
- * @param session {Session | null}
- * @param ctrl {AbortController}
- * @returns Tables<'schedule'>
  */
 async function fetchSchedule(scheduleId: string, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Tables<'schedule'> & { place_list: Place[] }>(
-    `/schedule/${scheduleId}`,
-    {
-      method: 'GET',
-      session,
-      ctrl,
-    }
-  );
+  const response = await apiRequest<Schedule>(`/schedule/${scheduleId}`, {
+    method: 'GET',
+    session,
+    ctrl,
+  });
   return response.data!;
 }
 
 /**
  * スケジュール一覧の取得
- *
- * @param planId {string}
- * @param session {Session | null}
- * @param ctrl {AbortController}
- * @returns Tables<'schedule'>[]
  */
 async function fetchScheduleList(planId: string, session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<Schedule[]>(`/schedule/list`, {
@@ -165,6 +130,9 @@ async function fetchScheduleList(planId: string, session: Session | null, ctrl?:
   return response.data!;
 }
 
+/**
+ * 通知を追加するスケジュール一覧の取得
+ */
 async function fetchScheduleListForNotification(session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<Schedule[]>(`/schedule/list/notification`, {
     method: 'POST',
@@ -176,10 +144,6 @@ async function fetchScheduleListForNotification(session: Session | null, ctrl?: 
 
 /**
  * スケジュールの削除
- *
- * @param uid {string}
- * @param session {Session | null}
- * @param ctrl {AbortController}
  */
 async function deleteSchedule(uid: string, session: Session | null, ctrl?: AbortController) {
   await apiRequest<void>('/schedule/delete', {
@@ -192,21 +156,12 @@ async function deleteSchedule(uid: string, session: Session | null, ctrl?: Abort
 
 /**
  * スケジュールの作成・更新
- *
- * @param schedule {Tables<'schedule'>}
- * @param session {Session | null}
- * @param ctrl {AbortController}
- * @returns Tables<'schedule'>
  */
-async function upsertSchedule(
-  schedule: Tables<'schedule'>,
-  session: Session | null,
-  ctrl?: AbortController
-) {
-  const response = await apiRequest<Tables<'schedule'>[]>('/schedule', {
+async function upsertSchedule(schedule: Schedule, session: Session | null, ctrl?: AbortController) {
+  const response = await apiRequest<Schedule>('/schedule', {
     method: 'POST',
     session,
-    body: { schedule } as { schedule: Schedule },
+    body: { schedule },
     ctrl,
   });
   return response.data!;
@@ -215,11 +170,6 @@ async function upsertSchedule(
 // ============ Media ============
 /**
  * プランのメディア一覧を取得
- *
- * @param planId {string} プランID
- * @param session {Session | null} Supabaseのセッション情報
- * @param ctrl {AbortController}
- * @returns Tables<'media'>[]
  */
 async function fetchPlanMediaList(
   planId: string,
@@ -237,12 +187,6 @@ async function fetchPlanMediaList(
 
 /**
  * プランのメディアをアップロード
- *
- * @param planId {string} プランID
- * @param images {string[]} Base64形式の画像データ
- * @param session {Session | null} Supabaseのセッション情報
- * @param ctrl {AbortController}
- * @returns
  */
 async function uploadPlanMedias(
   planId: string,
@@ -259,6 +203,9 @@ async function uploadPlanMedias(
   return response.data!;
 }
 
+/**
+ * プランのメディアを削除
+ */
 async function deletePlanMedias(
   planId: string,
   mediaIdList: string[],
@@ -274,6 +221,9 @@ async function deletePlanMedias(
 }
 
 // ============ Profile ============
+/**
+ * プロフィールの取得
+ */
 async function getProfile(session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<Tables<'profile'> & { subscription: Tables<'subscription'>[] }>(
     '/profile',
@@ -286,6 +236,9 @@ async function getProfile(session: Session | null, ctrl?: AbortController) {
   return response.data!;
 }
 
+/**
+ * プロフィールの作成
+ */
 async function createProfile(session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<Tables<'profile'> & { subscription: Tables<'subscription'>[] }>(
     '/profile',
@@ -298,6 +251,9 @@ async function createProfile(session: Session | null, ctrl?: AbortController) {
   return response.data!;
 }
 
+/**
+ * プロフィールの更新
+ */
 async function updateProfile(profile: Profile, session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<Profile>('/profile', {
     method: 'PUT',
@@ -312,6 +268,9 @@ async function updateProfile(profile: Profile, session: Session | null, ctrl?: A
 }
 
 // ============ Cache ============
+/**
+ * GoogleMap Place情報の取得
+ */
 async function fetchCachePlace(
   placeIdList: string[],
   session: Session | null,
@@ -327,6 +286,10 @@ async function fetchCachePlace(
 }
 
 // ============ Stripe ============
+
+/**
+ * 支払いシートの作成
+ */
 async function createPaymentSheet(
   redirectURL: string,
   session: Session | null,
@@ -345,6 +308,9 @@ async function createPaymentSheet(
   return response.data!;
 }
 
+/**
+ * Stripe顧客の作成
+ */
 async function createStripeCustomer(session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<Stripe.Customer>('/stripe/customer', {
     method: 'POST',
@@ -354,6 +320,9 @@ async function createStripeCustomer(session: Session | null, ctrl?: AbortControl
   return response.data!;
 }
 
+/**
+ * Stripeサブスクリプションの作成
+ */
 async function createStripeSubscription(
   priceId: string,
   session: Session | null,
@@ -368,6 +337,9 @@ async function createStripeSubscription(
   return response.data!;
 }
 
+/**
+ * Stripeサブスクリプションの更新
+ */
 async function updateStripeSubscription(
   subscriptionId: string,
   priceId: string,
@@ -383,6 +355,9 @@ async function updateStripeSubscription(
   return response.data!;
 }
 
+/**
+ * Stripeサブスクリプションのキャンセル
+ */
 async function cancelStripeSubscription(
   subscriptionId: string,
   session: Session | null,
@@ -397,6 +372,9 @@ async function cancelStripeSubscription(
   return response.data!;
 }
 // ============ MicroCMS ============
+/**
+ * ブログの取得
+ */
 async function fetchBlog(id: string, ctrl?: AbortController) {
   const url = process.env.EXPO_PUBLIC_MICROCMS_URI! + '/blogs/' + id;
   console.log({ url });
@@ -409,6 +387,9 @@ async function fetchBlog(id: string, ctrl?: AbortController) {
   return response.json();
 }
 
+/**
+ * ブログ一覧の取得
+ */
 async function fetchBlogList() {
   const response = await fetch(process.env.EXPO_PUBLIC_MICROCMS_URI! + '/blogs', {
     method: 'GET',

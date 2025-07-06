@@ -15,6 +15,7 @@ import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
 import ResearchButton from './ResearchButton';
 import { LATITUDE_OFFSET, SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
+import { Schedule } from '@/src/entities/Plan';
 
 type Props = {
   isOpen: boolean;
@@ -53,8 +54,8 @@ export default function MapModal({ isOpen, onClose }: Props) {
     if (selectedCategory === 'selected') return;
     setIsLoading(true);
     try {
-      const response = await searchNearby(session, latitude, longitude, selectedCategory, radius);
-      settingPlaces(response);
+      const placeList = await searchNearby(session, latitude, longitude, selectedCategory, radius);
+      settingPlaces(placeList);
     } finally {
       setIsLoading(false);
     }
@@ -112,12 +113,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
 
   /** エリアで再検索 */
   const handleResearch = async () => {
-    setIsLoading(true);
-    try {
-      await fetchLocation(region?.latitude || 0, region?.longitude || 0);
-    } finally {
-      setIsLoading(false);
-    }
+    await fetchLocation(region?.latitude || 0, region?.longitude || 0);
   };
 
   /** スケジュールに対する場所の追加 */
@@ -135,7 +131,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
       place_list: (editSchedule?.place_list || []).filter(
         (p: unknown) => (p as Place).id !== place.id
       ),
-    } as unknown as Tables<'schedule'> & { place_list: Place[] });
+    } as unknown as Schedule);
   };
 
   /** モーダルを閉じる */
