@@ -18,7 +18,7 @@ import MaskLoading from '@/src/components/MaskLoading';
 import ToastManager, { Toast } from 'toastify-react-native';
 import { LogUtil } from '@/src/libs/LogUtil';
 
-const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null) => {
+const ScheduleMenu = ({ plan }: { plan: Plan }) => {
   const router = useRouter();
   const { isDarkMode } = useTheme();
   const { setEditSchedule } = usePlan();
@@ -64,6 +64,7 @@ const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }
             optionText: {
               paddingVertical: 12,
               paddingHorizontal: 8,
+              color: 'black',
             },
           }}
           onSelect={handleEditPress}
@@ -74,6 +75,7 @@ const ScheduleMenu = (plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }
             optionText: {
               paddingVertical: 12,
               paddingHorizontal: 8,
+              color: 'black',
             },
           }}
           onSelect={() => {
@@ -89,9 +91,7 @@ export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
   const { plan, planLoading } = usePlan();
   const { session } = useAuth();
-  const [viewPlan, setViewPlan] = useState<
-    (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null
-  >(null);
+  const [viewPlan, setViewPlan] = useState<Plan | null>(null);
 
   // === Method ===
   const initView = () => {
@@ -157,7 +157,7 @@ export default function ScheduleScreen(): ReactNode {
       <Header
         title={`${viewPlan?.title || plan?.title || 'スケジュール'}の予定`}
         onBack={() => router.back()}
-        rightComponent={viewPlan ? <ScheduleMenu {...viewPlan} /> : undefined}
+        rightComponent={viewPlan ? <ScheduleMenu plan={viewPlan} /> : undefined}
       />
       {/* Plan Information */}
       {viewPlan && (

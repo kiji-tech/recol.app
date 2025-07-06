@@ -46,7 +46,7 @@ const ScheduleInfoCard = ({
                 borderTopLeftRadius: 4,
                 borderTopRightRadius: 4,
               }}
-              source={`https://places.googleapis.com/v1/${place.photos[0].name}/media?key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&maxWidthPx=1980`}
+              source={`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(place.photos[0].name || '')}`}
             />
           )}
           <View className="px-4 py-2 flex flex-col gap-2">
