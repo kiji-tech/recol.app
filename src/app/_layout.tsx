@@ -4,7 +4,7 @@ import { router, Stack } from 'expo-router';
 import { supabase } from '../libs/supabase';
 import { PlanProvider } from '../contexts/PlanContext';
 import { AuthProvider } from '../contexts/AuthContext';
-import { Linking, View } from 'react-native';
+import { Linking, StatusBar, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import {
@@ -21,6 +21,7 @@ import * as Font from 'expo-font';
 import { LocationProvider } from '../contexts/LocationContext';
 import { StripeProvider, useStripe } from '@stripe/stripe-react-native';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
+import { useTheme } from '@/src/contexts/ThemeContext';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -38,6 +39,7 @@ SplashScreen.setOptions({
 
 const Layout = () => {
   const [ready, setReady] = useState(false);
+  const { isDarkMode } = useTheme();
   useEffect(() => {
     (async () => {
       // ここでフォントや API をプリロード
@@ -93,6 +95,10 @@ const Layout = () => {
 
   return (
     <View onLayout={onLayout} style={{ flex: 1 }}>
+      <StatusBar
+        backgroundColor={isDarkMode ? 'black' : 'white'}
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+      />
       <Stack>
         <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
         <Stack.Screen name="(blog)" options={{ title: 'ブログ', headerShown: false }} />
