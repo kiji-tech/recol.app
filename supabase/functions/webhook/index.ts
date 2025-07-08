@@ -137,7 +137,7 @@ const updateSubscription = async (
       message: 'サブスクリプション更新',
       subscription,
     },
-    { level: 'info', notify: true }
+    { level: 'info' }
   );
 
   return;

@@ -316,7 +316,7 @@ export default function PaymentPlan() {
 
     Alert.alert(
       'プレミアムプランを解約しますか？',
-      `${dayjs(profile!.subscription[0].current_period_end).format('YYYY-MM-DD')}までは`,
+      `${dayjs(profile!.subscription[0].current_period_end).format('YYYY-MM-DD')}までは、プレミアムプランの機能を使うことができます。`,
       [
         { text: 'キャンセル', style: 'cancel' },
         {
