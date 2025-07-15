@@ -2,7 +2,7 @@ export default {
   scheme: 'recol',
   name: 'Re:CoL',
   slug: 'yuru-tabi',
-  version: '1.0.3',
+  version: '1.0.4',
   icon: './assets/images/icon.png',
   owner: 'shinji5761',
   orientation: 'portrait',
@@ -19,6 +19,8 @@ export default {
       NSLocationAlwaysUsageDescription: '位置情報をアップロードします',
       NSLocationUsageDescription: '位置情報をアップロードします',
       NSLocationWhenInUseUsageDescription: '位置情報をアップロードします',
+      NSUserTrackingUsageDescription:
+        '広告表示の最適化のため、他社アプリとの横断的な計測を許可するか確認します',
       ITSAppUsesNonExemptEncryption: false,
     },
     userInterfaceStyle: 'automatic',
