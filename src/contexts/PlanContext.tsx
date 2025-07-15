@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { createContext, useContext, useState } from 'react';
 import { fetchPlanList } from '../libs/ApiService';
 import { useAuth } from './AuthContext';
@@ -46,29 +46,32 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const fetchPlan = async (ctrl?: AbortController) => {
-    setPlanLoading(true);
-    fetchPlanList(session, ctrl)
-      .then(async (response) => {
-        setPlanList(response);
-        await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(response));
-        if (plan) {
-          const updatePlan = response.find((p) => p.uid === plan.uid);
-          if (updatePlan) setPlan(updatePlan);
-        }
-      })
-      .catch((e) => {
-        if (e && e.message.includes('Aborted')) {
-          LogUtil.log('Aborted', { level: 'info' });
-          return;
-        }
-        LogUtil.log(JSON.stringify({ fetchPlanList: e }), { level: 'error', notify: true });
-        throw e;
-      })
-      .finally(() => {
-        setPlanLoading(false);
-      });
-  };
+  const fetchPlan = useCallback(
+    async (ctrl?: AbortController) => {
+      setPlanLoading(true);
+      fetchPlanList(session, ctrl)
+        .then(async (response) => {
+          setPlanList(response);
+          await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(response));
+          if (plan) {
+            const updatePlan = response.find((p) => p.uid === plan.uid);
+            if (updatePlan) setPlan(updatePlan);
+          }
+        })
+        .catch((e) => {
+          if (e && e.message.includes('Aborted')) {
+            LogUtil.log('Aborted', { level: 'info' });
+            return;
+          }
+          LogUtil.log(JSON.stringify({ fetchPlanList: e }), { level: 'error', notify: true });
+          throw e;
+        })
+        .finally(() => {
+          setPlanLoading(false);
+        });
+    },
+    [session]
+  );
 
   const clearStoragePlan = async () => {
     await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, '[]');

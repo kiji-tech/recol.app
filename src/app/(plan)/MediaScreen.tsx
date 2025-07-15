@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, View, Text, Alert, Dimensions } from 'react-native';
+import { TouchableOpacity, View, Text, Alert, Dimensions, Modal } from 'react-native';
 import { Image } from 'expo-image';
 import { IconButton } from '@/src/components';
 import { useFocusEffect } from 'expo-router';
@@ -12,8 +12,10 @@ import { Tables } from '@/src/libs/database.types';
 import { LogUtil } from '@/src/libs/LogUtil';
 import BackgroundView from '@/src/components/BackgroundView';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import ImageViewer from 'react-native-image-zoom-viewer';
 import * as ImagePicker from 'expo-image-picker';
 import * as Progress from 'react-native-progress';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MediaScreen() {
   // === Member ===
@@ -171,29 +173,17 @@ export default function MediaScreen() {
   /**  画像が選択された場合 */
   if (visibleImage) {
     return (
-      <View className="w-screen h-screen absolute top-0 left-0 bg-light-background dark:bg-dark-background">
-        <View className="absolute top-24 left-4 z-50">
-          <IconButton
-            icon={<AntDesign name="close" size={14} color={isDarkMode ? 'white' : 'black'} />}
-            onPress={handleCloseImageView}
+      <Modal visible={visibleImage != null} transparent={true}>
+        <SafeAreaView className="mt-16 flex-1">
+          <ImageViewer
+            imageUrls={images.map((item) => ({
+              url: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${item.url}`,
+            }))}
+            index={images.findIndex((item) => item.uid === visibleImage.uid)}
+            onClick={handleCloseImageView}
           />
-        </View>
-        <View className="flex justify-center items-center w-screen h-screen">
-          <Image
-            style={{
-              width: '100%',
-              height: 'auto',
-              aspectRatio: 1,
-              resizeMode: 'contain',
-              maxWidth: '100%',
-              maxHeight: '100%',
-            }}
-            source={{
-              uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${visibleImage.url}`,
-            }}
-          />
-        </View>
-      </View>
+        </SafeAreaView>
+      </Modal>
     );
   }
   return (

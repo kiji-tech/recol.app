@@ -62,6 +62,10 @@ export class LogUtil {
       process.env.EXPO_PUBLIC_ENABLE_SLACK_NOTIFICATION == 'ON' &&
       (level === 'error' || notify)
     ) {
+      const m = typeof message == 'string' ? message : JSON.stringify(message);
+      if (m.includes('Aborted') || m.includes('JWT')) {
+        return;
+      }
       await fetch(process.env.EXPO_PUBLIC_SLACK_WEBHOOK_URL || '', {
         method: 'POST',
         headers: {
