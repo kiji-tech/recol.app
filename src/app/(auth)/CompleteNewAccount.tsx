@@ -75,12 +75,10 @@ export default function CompleteNewAccount() {
   // === Effect ===
 
   useEffect(() => {
-    LogUtil.log('CompleteNewAccount', { level: 'info', notify: true });
-    LogUtil.log({ session }, { level: 'info', notify: true });
+    LogUtil.log('CompleteNewAccount', { level: 'info' });
     if (session) {
       createProfile(session)
         .then((profile: Profile) => {
-          LogUtil.log(profile, { level: 'info', notify: true });
           setProfile(profile);
         })
         .catch((e: unknown) => {

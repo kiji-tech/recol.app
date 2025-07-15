@@ -195,7 +195,7 @@ async function searchPlaceByText(
     );
     return cachePlaces;
   });
-  LogUtil.log(JSON.stringify({ response }), { level: 'info', notify: true });
+  LogUtil.log(JSON.stringify({ response }), { level: 'info' });
   return response as unknown as Place[];
 }
 export { searchNearby, searchPlaceByText };

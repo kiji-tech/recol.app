@@ -321,6 +321,12 @@ export default function Settings() {
             isDarkMode={isDarkMode}
             onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/policy`)}
           />
+          <SettingItem
+            icon="mail-outline"
+            title="お問い合わせはこちら"
+            isDarkMode={isDarkMode}
+            onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_CONTACT_PAGE_URL}`)}
+          />
         </View>
 
         {/* サインアウト */}
