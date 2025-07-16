@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, View, Text, Alert, Dimensions, Modal } from 'react-native';
+import { TouchableOpacity, View, Text, Alert, Dimensions, Modal, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { IconButton } from '@/src/components';
 import { useFocusEffect } from 'expo-router';
@@ -15,7 +15,6 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import * as ImagePicker from 'expo-image-picker';
 import * as Progress from 'react-native-progress';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MediaScreen() {
   // === Member ===
@@ -174,15 +173,21 @@ export default function MediaScreen() {
   if (visibleImage) {
     return (
       <Modal visible={visibleImage != null} transparent={true}>
-        <SafeAreaView className="mt-16 flex-1">
+        <View className={`absolute ${Platform.OS === 'ios' ? 'top-28' : 'top-8'} left-4 z-50`}>
+          <IconButton
+            theme="background"
+            icon={<AntDesign name="close" size={24} color={isDarkMode ? 'white' : 'black'} />}
+            onPress={handleCloseImageView}
+          />
+        </View>
+        <View className={`flex-1 ${Platform.OS === 'ios' ? 'pt-16' : ''}`}>
           <ImageViewer
             imageUrls={images.map((item) => ({
               url: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${item.url}`,
             }))}
             index={images.findIndex((item) => item.uid === visibleImage.uid)}
-            onClick={handleCloseImageView}
           />
-        </SafeAreaView>
+        </View>
       </Modal>
     );
   }
@@ -245,7 +250,7 @@ export default function MediaScreen() {
           );
         }}
       />
-      <View className="absolute bottom-16 right-4">
+      <View className={`absolute ${Platform.OS === 'ios' ? 'bottom-16' : 'bottom-8'} right-4`}>
         {mode === 'select' && (
           <IconButton
             icon={<AntDesign name="delete" size={24} color={'white'} />}
