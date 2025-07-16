@@ -2,7 +2,7 @@ export default {
   scheme: 'recol',
   name: 'Re:CoL',
   slug: 'yuru-tabi',
-  version: '1.0.4',
+  version: '1.0.5',
   icon: './assets/images/icon.png',
   owner: 'shinji5761',
   orientation: 'portrait',
