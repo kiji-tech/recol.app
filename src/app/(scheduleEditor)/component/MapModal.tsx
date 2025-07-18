@@ -10,12 +10,12 @@ import { MapCategory } from '@/src/entities/MapCategory';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
-import MapSearchBar from '@/src/components/GoogleMaps/MapSearchBar';
 import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
 import ResearchButton from './ResearchButton';
 import { LATITUDE_OFFSET, SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
 import { Schedule } from '@/src/entities/Plan';
+import Header from '@/src/components/Header/Header';
 
 type Props = {
   isOpen: boolean;
@@ -194,50 +194,50 @@ export default function MapModal({ isOpen, onClose }: Props) {
   // === Render ===
   if (!isOpen || !currentRegion) return null;
   return (
-    <>
-      <View className=" w-screen h-screen absolute top-0 left-0">
-        {/* 検索バー */}
-        <MapSearchBar onSearch={handleTextSearch} onBack={handleClose} />
+    <View className=" w-screen h-screen absolute top-0 left-0">
+      {/* 検索ヘッダー */}
+      <View className="w-full h-12 absolute top-20 z-50 px-2 ">
+        <Header onBack={handleClose} onSearch={handleTextSearch} />
+      </View>
 
-        {/* 再検索 */}
-        <ResearchButton
-          centerRegion={region || currentRegion}
-          currentRegion={currentRegion}
+      {/* 再検索 */}
+      <ResearchButton
+        centerRegion={region || currentRegion}
+        currentRegion={currentRegion}
+        radius={radius}
+        onPress={handleResearch}
+      />
+
+      {/* マップ */}
+      <View className="w-screen h-screen absolute top-0 left-0">
+        <Map
           radius={radius}
-          onPress={handleResearch}
-        />
-
-        {/* マップ */}
-        <View className="w-screen h-screen absolute top-0 left-0">
-          <Map
-            radius={radius}
-            region={region || currentRegion}
-            placeList={searchPlaceList}
-            selectedPlaceList={selectedPlaceList || []}
-            isMarker={true}
-            isCallout={true}
-            isCenterCircle={true}
-            onRegionChange={setRegion}
-            onSelectedPlace={handleSelectedPlace}
-          />
-        </View>
-
-        {/* マップボトムシート */}
-        <MapBottomSheet
+          region={region || currentRegion}
           placeList={searchPlaceList}
-          selectedPlace={selectedPlace}
           selectedPlaceList={selectedPlaceList || []}
-          selectedCategory={selectedCategory}
-          isSelected={selectedCategory === 'selected'}
-          isLoading={isLoading}
-          onAdd={handleAdd}
-          onRemove={handleRemove}
+          isMarker={true}
+          isCallout={true}
+          isCenterCircle={true}
+          onRegionChange={setRegion}
           onSelectedPlace={handleSelectedPlace}
-          onSelectedCategory={handleSelectedCategory}
-          bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
-          scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
         />
       </View>
-    </>
+
+      {/* マップボトムシート */}
+      <MapBottomSheet
+        placeList={searchPlaceList}
+        selectedPlace={selectedPlace}
+        selectedPlaceList={selectedPlaceList || []}
+        selectedCategory={selectedCategory}
+        isSelected={selectedCategory === 'selected'}
+        isLoading={isLoading}
+        onAdd={handleAdd}
+        onRemove={handleRemove}
+        onSelectedPlace={handleSelectedPlace}
+        onSelectedCategory={handleSelectedCategory}
+        bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
+        scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
+      />
+    </View>
   );
 }
