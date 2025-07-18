@@ -59,6 +59,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
           };
 
           if (label == 'サンプル' && process.env.EXPO_PUBLIC_APP_ENV != 'development') return;
+          if (label.toString().indexOf('Component') >= 0) return;
 
           return (
             <TouchableOpacity
