@@ -25,7 +25,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
 
   // === Render ===
   return (
-    <View className={`flex-co ${isIOS && 'bottom-8'} z-10`}>
+    <View className={`flex-col ${isIOS && 'mb-8'} z-10`}>
       {profile && !SubscriptionUtil.isPremiumUser(profile!) && <MyBannerAd />}
       <View className="flex-row w-full border-[1px] border-light-border dark:border-dark-border mx-auto">
         {state.routes.map((route, index) => {
@@ -59,7 +59,11 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
           };
 
           if (label == 'サンプル' && process.env.EXPO_PUBLIC_APP_ENV != 'development') return;
-          if (label.toString().indexOf('Component') >= 0) return;
+          if (
+            label.toString().indexOf('Components') >= 0 ||
+            label.toString().indexOf('components') >= 0
+          )
+            return;
 
           return (
             <TouchableOpacity
