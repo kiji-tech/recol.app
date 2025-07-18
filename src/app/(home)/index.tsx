@@ -7,9 +7,6 @@ import { useFocusEffect } from 'expo-router';
 import { Article } from '@/src/entities/Article';
 import { ArticleCard } from './components/(Home)/ArticleCard';
 
-// アイテム型定義
-// ストレージのキー
-
 export default function Home() {
   const { session } = useAuth();
   const [blogs, setBlogs] = useState<Article[]>([]);
@@ -27,15 +24,13 @@ export default function Home() {
       <Header title="Re:CoL" />
       {/* TODO: タブバー */}
       {/* 新着・おすすめ・旅行先・グッズ */}
-      <>
-        <Text className="text-light-text dark:text-dark-text text-lg font-bold">新着記事</Text>
-        {/* 新着記事 */}
-        <FlatList
-          data={blogs}
-          keyExtractor={(item: Article) => item.id}
-          renderItem={({ item }) => <ArticleCard item={item} />}
-        />
-      </>
+      <Text className="text-light-text dark:text-dark-text text-lg font-bold">新着記事</Text>
+      {/* 新着記事 */}
+      <FlatList
+        data={blogs}
+        keyExtractor={(item: Article) => item.id}
+        renderItem={({ item }) => <ArticleCard item={item} />}
+      />
     </BackgroundView>
   );
 }
