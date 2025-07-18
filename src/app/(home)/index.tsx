@@ -5,7 +5,7 @@ import { fetchBlogList } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useFocusEffect } from 'expo-router';
 import { Article } from '@/src/entities/Article';
-import { ArticleCard } from './components/(Home)/ArticleCard';
+import { ArticleCard } from './components/ArticleCard';
 
 export default function Home() {
   const { session } = useAuth();
