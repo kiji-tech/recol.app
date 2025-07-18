@@ -14,6 +14,7 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { LogUtil } from '@/src/libs/LogUtil';
 import ToastManager, { Toast } from 'toastify-react-native';
 import { Plan, Schedule } from '@/src/entities/Plan';
+import NotfoundPlanScreen from './components/(PlanListScreen)/NotfoudPlanScreen';
 
 function PlanCard({ plan }: { plan: Plan }) {
   // === Member ===
@@ -156,18 +157,7 @@ export default function PlanListScreen() {
     <BackgroundView>
       <Header title="計画一覧" rightComponent={addButton()} />
       {/* プランがない場合 */}
-      {!planLoading && planList.length === 0 && (
-        <View className="flex flex-col justify-center items-center h-full">
-          <Text className="text-light-text dark:text-dark-text text-lg font-bold">
-            プランがありません
-          </Text>
-          <Button
-            text={'プランを追加する'}
-            theme={'info'}
-            onPress={() => router.push('/(modal)/PlanCreator')}
-          />
-        </View>
-      )}
+      {!planLoading && planList.length === 0 && <NotfoundPlanScreen />}
       {/* プラン一覧 */}
       <View className="flex flex-col justify-start items-start gap-4">
         {planList && planList.map((plan: Plan) => <PlanCard key={plan.uid} plan={plan} />)}
