@@ -75,7 +75,7 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
             }))}
         />
       )}
-      <View className="flex flex-col justify-start items-start p-4 gap-6  pb-40">
+      <View className="flex flex-col justify-start items-start p-4 gap-6">
         {/* ロケーション名 */}
         <Header
           title={place.displayName.text}

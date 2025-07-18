@@ -13,15 +13,5 @@ export default function MapSearchBar({
   const platform = Platform.OS;
   // === Member ===
 
-  return (
-    <View className={`w-full h-12 absolute ${platform === 'ios' ? 'top-16' : 'top-0'} pl-4 z-50`}>
-      {/* 検索ヘッダー */}
-      <Header
-        onBack={onBack}
-        onSearch={(text: string) => {
-          onSearch(text);
-        }}
-      />
-    </View>
-  );
+  return <></>;
 }
