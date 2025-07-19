@@ -11,56 +11,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '@/src/libs/ConstValue';
 import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts/PlanContext';
-import dayjs from 'dayjs';
-import { SubscriptionUtil } from '@/src/libs/SubscriptionUtil';
-import { Tables } from '@/src/libs/database.types';
 import { fetchScheduleListForNotification, updateProfile } from '@/src/libs/ApiService';
 import * as Notifications from 'expo-notifications';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { Profile } from '@/src/entities/Profile';
-
-const PlanComponent = ({
-  profile,
-}: {
-  profile: (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null;
-}) => {
-  // === Member ===
-  const { isDarkMode } = useTheme();
-
-  // === Method ===
-  if (SubscriptionUtil.isAdmin(profile!) || SubscriptionUtil.isSuperUser(profile!)) {
-    return (
-      <View>
-        <Text className="text-light-text dark:text-dark-text">スーパーユーザーです</Text>
-      </View>
-    );
-  }
-
-  return (
-    <TouchableOpacity
-      className="flex flex-row items-start justify-between"
-      onPress={() => router.push('/(payment)/PaymentPlan')}
-    >
-      {profile && profile!.subscription && profile!.subscription.length === 0 && (
-        <View className="flex flex-row items-start justify-between ">
-          <Text className="text-light-text dark:text-dark-text">無料プラン</Text>
-        </View>
-      )}
-
-      {profile && profile!.subscription && profile!.subscription.length > 0 && (
-        <View className="flex-col items-start justify-between">
-          <Text className="text-light-text dark:text-dark-text mb-2 text-lg">プレミアムプラン</Text>
-          {/* プランの有効期限 */}
-          <Text className="text-light-text dark:text-dark-text mb-2 text-sm">
-            有効期限: {dayjs(profile?.subscription[0].current_period_end).format('YYYY-MM-DD')}
-          </Text>
-        </View>
-      )}
-      <Ionicons name="chevron-forward" size={20} color={isDarkMode ? 'white' : 'black'} />
-    </TouchableOpacity>
-  );
-};
+import PlanComponent from './components/PlanComponent';
 
 interface SettingItemProps {
   icon: keyof typeof Ionicons.glyphMap;
