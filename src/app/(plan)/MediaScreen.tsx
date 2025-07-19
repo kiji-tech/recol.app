@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, View, Text, Alert, Dimensions, Modal, Platform } from 'react-native';
+import { TouchableOpacity, View, Text, Alert, Dimensions, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { IconButton } from '@/src/components';
 import { useFocusEffect } from 'expo-router';
@@ -12,9 +12,9 @@ import { Tables } from '@/src/libs/database.types';
 import { LogUtil } from '@/src/libs/LogUtil';
 import BackgroundView from '@/src/components/BackgroundView';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import ImageViewer from 'react-native-image-zoom-viewer';
 import * as ImagePicker from 'expo-image-picker';
 import * as Progress from 'react-native-progress';
+import MediaDetailModal from '@/src/components/Modal/MediaDetailModal';
 
 export default function MediaScreen() {
   // === Member ===
@@ -170,29 +170,23 @@ export default function MediaScreen() {
 
   // === Render ===
   /**  画像が選択された場合 */
-  if (visibleImage) {
-    return (
-      <Modal visible={visibleImage != null} transparent={true}>
-        <View className={`absolute ${Platform.OS === 'ios' ? 'top-28' : 'top-8'} left-4 z-50`}>
-          <IconButton
-            theme="background"
-            icon={<AntDesign name="close" size={24} color={isDarkMode ? 'white' : 'black'} />}
-            onPress={handleCloseImageView}
-          />
-        </View>
-        <View className={`flex-1 ${Platform.OS === 'ios' ? 'pt-16' : ''}`}>
-          <ImageViewer
-            imageUrls={images.map((item) => ({
-              url: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${item.url}`,
-            }))}
-            index={images.findIndex((item) => item.uid === visibleImage.uid)}
-          />
-        </View>
-      </Modal>
-    );
-  }
   return (
     <BackgroundView>
+      {/* 画像が選択されていれば､モーダルが表示される */}
+      <MediaDetailModal
+        imageList={
+          images.map(
+            (item) =>
+              `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${item.url}`
+          ) || []
+        }
+        selectedImage={
+          visibleImage
+            ? `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${visibleImage.url}`
+            : null
+        }
+        onClose={handleCloseImageView}
+      />
       {images.length === 0 && (
         <View className="flex justify-center items-center h-full">
           <Text className="text-light-text dark:text-dark-text text-xl">

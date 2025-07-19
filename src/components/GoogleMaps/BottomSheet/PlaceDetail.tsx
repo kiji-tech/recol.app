@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Place } from '@/src/entities/Place';
 import { Text, View, Linking } from 'react-native';
@@ -10,6 +10,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import IconButton from '../../Common/IconButton';
 import ImageScrollView from '../../Common/ImageScrollView';
+import MediaDetailModal from '@/src/components/Modal/MediaDetailModal';
 
 type Props = {
   place: Place;
@@ -21,6 +22,7 @@ type Props = {
 export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose }: Props) {
   // === Member ===
   const { isDarkMode } = useTheme();
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   //   const [isAiNavigation, setIsAiNavigation] = useState(false);
   //   const [isAiLoading, setIsAiLoading] = useState(false);
   //   const [aiText, setAiText] = useState('');
@@ -63,6 +65,17 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
   return (
     <BottomSheetScrollView className="bg-light-background dark:bg-dark-background">
       {/* TODO: 画像を選択､拡大表示*/}
+      <MediaDetailModal
+        imageList={place.photos
+          .filter((photo) => photo.name)
+          .slice(0, 5)
+          .map(
+            (photo) =>
+              `${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(photo.name)}`
+          )}
+        selectedImage={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
       {/* 写真一覧 */}
       {place.photos && (
         <ImageScrollView
@@ -73,6 +86,7 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
               src: `${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(photo.name)}`,
               alt: place.displayName.text,
             }))}
+          onPress={(photo) => setSelectedImage(photo.src)}
         />
       )}
       <View className="flex flex-col justify-start items-start p-4 gap-6">
