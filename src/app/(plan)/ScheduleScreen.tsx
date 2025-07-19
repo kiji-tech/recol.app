@@ -155,7 +155,6 @@ export default function ScheduleScreen(): ReactNode {
     <BackgroundView>
       {/* ヘッダー */}
       <Header
-        title={`${viewPlan?.title || plan?.title || 'スケジュール'}の予定`}
         onBack={() => router.back()}
         rightComponent={viewPlan ? <ScheduleMenu plan={viewPlan} /> : undefined}
       />

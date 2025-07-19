@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { BackgroundView, Button, Header } from '@/src/components';
+import { BackgroundView, Header } from '@/src/components';
 import IconButton from '@/src/components/Common/IconButton';
 import { Tables } from '@/src/libs/database.types';
 import dayjs from 'dayjs';
@@ -14,6 +14,7 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { LogUtil } from '@/src/libs/LogUtil';
 import ToastManager, { Toast } from 'toastify-react-native';
 import { Plan, Schedule } from '@/src/entities/Plan';
+import NotFoundPlanView from './components/NotFoundPlanView';
 
 function PlanCard({ plan }: { plan: Plan }) {
   // === Member ===
@@ -156,18 +157,7 @@ export default function PlanListScreen() {
     <BackgroundView>
       <Header title="計画一覧" rightComponent={addButton()} />
       {/* プランがない場合 */}
-      {!planLoading && planList.length === 0 && (
-        <View className="flex flex-col justify-center items-center h-full">
-          <Text className="text-light-text dark:text-dark-text text-lg font-bold">
-            プランがありません
-          </Text>
-          <Button
-            text={'プランを追加する'}
-            theme={'info'}
-            onPress={() => router.push('/(modal)/PlanCreator')}
-          />
-        </View>
-      )}
+      {!planLoading && planList.length === 0 && <NotFoundPlanView />}
       {/* プラン一覧 */}
       <View className="flex flex-col justify-start items-start gap-4">
         {planList && planList.map((plan: Plan) => <PlanCard key={plan.uid} plan={plan} />)}

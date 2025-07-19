@@ -41,7 +41,7 @@ const BottomSheetLayout = forwardRef(({ children }: Props, ref) => {
     >
       {children}
       {/* ISOのほうがアクションバーでより隠れるため高くする */}
-      <View className={isIOS ? 'h-[92px]' : 'h-[102px]'}></View>
+      <View className={isIOS ? 'h-10' : 'h-12'}></View>
       {/* {isIOS && <View className="h-[92px]"></View>} */}
     </BottomSheet>
   );
