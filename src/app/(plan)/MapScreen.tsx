@@ -35,13 +35,13 @@ const ScheduleInfoCard = ({
       {placeList.map((place) => (
         <TouchableOpacity
           key={place.id}
-          className="flex flex-col gap-2 rounded-md mr-4 bg-light-background dark:bg-dark-background border border-light-border dark:border-dark-border"
+          className="flex flex-col gap-2 rounded-md mr-4 bg-light-background dark:bg-dark-background border border-light-border dark:border-dark-border w-80"
           onPress={() => onPress(place)}
         >
           {place.photos && place.photos.length > 0 && (
             <Image
               style={{
-                width: 256,
+                width: '100%',
                 height: 128,
                 borderTopLeftRadius: 4,
                 borderTopRightRadius: 4,
@@ -148,7 +148,7 @@ export default function MapScreen() {
 
   /** スクロールする際のX軸の計算 */
   const calcScrollWidth = (place: Place) => {
-    const CARD_WIDTH = 256 + 18;
+    const CARD_WIDTH = 300;
     const index = placeList.findIndex((p) => p.id === place.id);
     return index * CARD_WIDTH;
   };
