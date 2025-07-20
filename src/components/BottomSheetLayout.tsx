@@ -1,9 +1,6 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
 import BottomSheet from '@gorhom/bottom-sheet';
-import { View } from 'react-native';
-import { Platform } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
-const isIOS = Platform.OS === 'ios';
 
 type Props = {
   children: React.ReactNode;
@@ -40,9 +37,6 @@ const BottomSheetLayout = forwardRef(({ children }: Props, ref) => {
       }}
     >
       {children}
-      {/* ISOのほうがアクションバーでより隠れるため高くする */}
-      <View className={isIOS ? 'h-10' : 'h-12'}></View>
-      {/* {isIOS && <View className="h-[92px]"></View>} */}
     </BottomSheet>
   );
 });
