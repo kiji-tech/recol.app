@@ -3,118 +3,28 @@ import { BackgroundView, Button } from '@/src/components';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { router, useFocusEffect } from 'expo-router';
-import { Text, View, Switch, ScrollView, TouchableOpacity } from 'react-native';
-import { Image } from 'expo-image';
-import { Ionicons } from '@expo/vector-icons';
-import Constants from 'expo-constants';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Text, View, ScrollView } from 'react-native';
 import { STORAGE_KEYS } from '@/src/libs/ConstValue';
 import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { fetchScheduleListForNotification, updateProfile } from '@/src/libs/ApiService';
-import * as Notifications from 'expo-notifications';
-import { NotificationUtil } from '@/src/libs/NotificationUtil';
-import { LogUtil } from '@/src/libs/LogUtil';
-import { Profile } from '@/src/entities/Profile';
+import Constants from 'expo-constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import SettingItem from './components/SettingItem';
 import PlanComponent from './components/PlanComponent';
-
-interface SettingItemProps {
-  icon: keyof typeof Ionicons.glyphMap;
-  title: string;
-  value?: string;
-  onPress?: () => void;
-  showArrow?: boolean;
-  isDarkMode: boolean;
-}
-
-const SettingItem: React.FC<SettingItemProps> = ({
-  icon,
-  title,
-  value,
-  onPress,
-  showArrow = true,
-  isDarkMode,
-}) => (
-  <TouchableOpacity
-    onPress={onPress}
-    className="flex-row items-center justify-between p-4 border-b border-light-border dark:border-dark-border"
-  >
-    <View className="flex-row items-center">
-      <Ionicons name={icon} size={24} color={isDarkMode ? 'white' : 'black'} />
-      <Text className="ml-3 text-light-text dark:text-dark-text">{title}</Text>
-    </View>
-    <View className="flex-row items-center">
-      {value && <Text className="mr-2 text-light-text dark:text-dark-text">{value}</Text>}
-      {showArrow && (
-        <Ionicons name="chevron-forward" size={20} color={isDarkMode ? 'white' : 'black'} />
-      )}
-    </View>
-  </TouchableOpacity>
-);
+import SettingDarkMode from './components/SettingDarkMode';
+import ScheduleNotification from './components/ScheduleNotification';
+import ProfileAvatar from './components/ProfileAvatar';
 
 // TODO: 将来的にはDB化
 const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
 
 export default function Settings() {
-  const { session, user, getProfileInfo, logout, setProfile, fetchProfile } = useAuth();
+  const { session, getProfileInfo, logout, fetchProfile } = useAuth();
   const { clearStoragePlan } = usePlan();
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const [chatNotification, setChatNotification] = useState(false);
-  const version = Constants.expoConfig?.version || '1.0.0';
   const isDarkMode = theme === 'dark';
-
-  // テーマ切り替え処理
-  const handleThemeChange = (value: boolean) => {
-    setTheme(value ? 'dark' : 'light');
-  };
-
-  // スケジュール通知設定の変更
-  const handleScheduleNotificationChange = async (value: boolean) => {
-    if (!getProfileInfo()) return;
-    setProfile({ ...getProfileInfo(), enabled_schedule_notification: value } as Profile);
-    let token = getProfileInfo()?.notification_token;
-
-    // スケジュール通知を無効にした場合は､既存のスケジュールを全削除
-    if (!value) {
-      LogUtil.log('removeAllScheduleNotification', { level: 'info' });
-      await NotificationUtil.removeAllScheduleNotification();
-    }
-
-    if (value) {
-      LogUtil.log('Permission check', { level: 'info' });
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      if (existingStatus !== 'granted') {
-        LogUtil.log('Permission Request', { level: 'info' });
-        const { status } = await Notifications.requestPermissionsAsync();
-        if (status !== 'granted') {
-          setProfile({ ...getProfileInfo(), enabled_schedule_notification: false } as Profile);
-          return;
-        }
-      }
-    }
-    if (!token) {
-      LogUtil.log('トークンを取得する', { level: 'info' });
-      const expoToken = await Notifications.getExpoPushTokenAsync({
-        projectId: Constants?.expoConfig?.extra?.eas?.projectId,
-      });
-      token = expoToken.data;
-    }
-
-    await updateProfile(
-      {
-        ...getProfileInfo(),
-        enabled_schedule_notification: value,
-        notification_token: token,
-      } as Profile,
-      session
-    );
-
-    // ONになった場合は､今あるスケジュールに対してすべての通知を設定する
-    const scheduleList = await fetchScheduleListForNotification(session);
-    for (const schedule of scheduleList) {
-      await NotificationUtil.upsertUserSchedule(schedule, value);
-    }
-  };
+  const version = Constants.expoConfig?.version || '1.0.0';
 
   // チャット通知設定の変更
   const handleChatNotificationChange = async (value: boolean) => {
@@ -154,29 +64,7 @@ export default function Settings() {
     <BackgroundView>
       <ScrollView className="gap-8 flex flex-col" showsVerticalScrollIndicator={false}>
         {/* プロフィールセクション */}
-        <View className="items-center p-6 border-b border-light-border dark:border-dark-border">
-          <View className="w-24 h-24 rounded-full overflow-hidden border-2 border-light-border dark:border-dark-border">
-            {getProfileInfo()?.avatar_url ? (
-              <Image
-                source={{
-                  uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${getProfileInfo()?.avatar_url}`,
-                }}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                }}
-              />
-            ) : (
-              <View className="w-full h-full bg-light-shadow dark:bg-dark-shadow items-center justify-center">
-                <Ionicons name="person" size={40} color="gray" />
-              </View>
-            )}
-          </View>
-          <Text className="text-xl font-bold text-light-text dark:text-dark-text">
-            {getProfileInfo()?.display_name || 'ユーザー名未設定'}
-          </Text>
-          <Text className="text-light-text dark:text-dark-text">{user?.email}</Text>
-        </View>
+        <ProfileAvatar />
 
         {/* アカウント設定 */}
         <View className="mb-4">
@@ -192,9 +80,7 @@ export default function Settings() {
         </View>
         <View className="pb-4 border-b border-light-border dark:border-dark-border">
           <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">プラン</Text>
-          <View className="px-4 py-2 text-md text-light-text dark:text-dark-text">
-            <PlanComponent profile={getProfileInfo()} />
-          </View>
+          <PlanComponent profile={getProfileInfo()} />
         </View>
 
         {/* アプリ設定 */}
@@ -202,36 +88,10 @@ export default function Settings() {
           <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">アプリ設定</Text>
 
           {/* ダークモード設定 */}
-          <View className="flex-row items-center justify-between p-4 border-b border-light-border dark:border-dark-border">
-            <View className="flex-row items-center">
-              <Ionicons name="moon-outline" size={24} color={isDarkMode ? 'white' : 'black'} />
-              <Text className="ml-3 text-light-text dark:text-dark-text">ダークモード</Text>
-            </View>
-            <Switch value={isDarkMode} onValueChange={handleThemeChange} />
-          </View>
+          <SettingDarkMode />
 
           {/* スケジュール通知設定 */}
-          <View className="flex-row items-center relative p-4 border-b border-light-border dark:border-dark-border">
-            <View className="flex-1 pr-16">
-              <View className="flex-row items-center">
-                <Ionicons
-                  name="calendar-outline"
-                  size={24}
-                  color={isDarkMode ? 'white' : 'black'}
-                />
-                <Text className="ml-3 text-light-text dark:text-dark-text">スケジュールの通知</Text>
-              </View>
-              <Text className="text-sm text-light-text dark:text-dark-text ml-9 mt-1">
-                スケジュールの開始時刻に通知を受け取ります
-              </Text>
-            </View>
-            <View className="absolute right-4">
-              <Switch
-                value={getProfileInfo()?.enabled_schedule_notification ?? false}
-                onValueChange={handleScheduleNotificationChange}
-              />
-            </View>
-          </View>
+          <ScheduleNotification />
 
           {/* TODO: チャット通知設定 */}
           {/* <View className="flex-row items-center relative p-4 border-b border-light-border dark:border-dark-border">

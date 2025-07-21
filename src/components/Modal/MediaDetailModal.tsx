@@ -4,6 +4,7 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import IconButton from '../Common/IconButton';
+import { Image } from 'expo-image';
 
 type MediaDetailModalProps = {
   imageList: string[];
@@ -32,7 +33,12 @@ export default function MediaDetailModal({
           imageUrls={imageList.map((item) => ({
             url: item,
           }))}
+          saveToLocalByLongPress={false}
           index={imageList.findIndex((item) => item === selectedImage)}
+          renderImage={(props) => <Image {...props} />}
+          enableSwipeDown={true}
+          enablePreload={true}
+          onCancel={onClose}
         />
       </View>
     </Modal>

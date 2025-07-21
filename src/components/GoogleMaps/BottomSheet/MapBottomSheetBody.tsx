@@ -6,6 +6,7 @@ import { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bot
 import { ScrollResponderMixin } from 'react-native';
 import { MapCategory } from '@/src/entities/MapCategory';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import { Platform } from 'react-native';
 
 type Props = {
   placeList: Place[];
@@ -71,6 +72,8 @@ const MapBottomSheetBody = forwardRef(
                 onSelect={onSelect}
               />
             ))}
+          {/* ISOのほうがアクションバーでより隠れるため高くする */}
+          <View className={Platform.OS === 'ios' ? 'h-[92px]' : 'h-[100px]'}></View>
         </BottomSheetScrollView>
       </>
     );
