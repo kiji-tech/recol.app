@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useRef } from 'react';
 import Map from '@/src/components/GoogleMaps/Map';
 import { Place } from '@/src/entities/Place';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { Region } from 'react-native-maps';
 import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
 import MapBottomSheet from '@/src/components/GoogleMaps/BottomSheet/MapBottomSheet';
@@ -36,6 +36,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
   const [selectedCategory, setSelectedCategory] = useState<MapCategory>('selected');
   const [region, setRegion] = useState<Region | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const isIOS = Platform.OS === 'ios';
 
   // === Method ===
   /** ロケーション情報設定処理 */
@@ -196,7 +197,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
   return (
     <View className=" w-screen h-screen absolute top-0 left-0">
       {/* 検索ヘッダー */}
-      <View className="w-full h-12 absolute top-20 z-50 px-2 ">
+      <View className={`w-full h-12 absolute z-50 px-2 ${isIOS ? 'top-20' : 'top-4'}`}>
         <Header onBack={handleClose} onSearch={handleTextSearch} />
       </View>
 
