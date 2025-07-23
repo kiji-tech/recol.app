@@ -72,7 +72,7 @@ const MapBottomSheetBody = forwardRef(
                 onSelect={onSelect}
               />
             ))}
-          {/* ISOのほうがアクションバーでより隠れるため高くする */}
+          {/* アクションバーで隠れるため高くする */}
           <View className={Platform.OS === 'ios' ? 'h-[92px]' : 'h-[100px]'}></View>
         </BottomSheetScrollView>
       </>

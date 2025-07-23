@@ -9,8 +9,5 @@ export const STORAGE_KEYS = {
 export const SCROLL_EVENT_TIMEOUT = 600;
 /** ===================== Google Maps ===================== */
 
-/** 緯度のオフセット */
-export const LATITUDE_OFFSET = 0.004;
-
 /** デフォルトの半径 */
 export const DEFAULT_RADIUS = 4200;

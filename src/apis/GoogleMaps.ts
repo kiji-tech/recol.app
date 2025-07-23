@@ -3,7 +3,6 @@ import { MapCategory } from '../entities/MapCategory';
 import { fetchCachePlace } from '../libs/ApiService';
 import { Place } from '../entities/Place';
 import { LogUtil } from '../libs/LogUtil';
-import { LATITUDE_OFFSET } from '../libs/ConstValue';
 
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
 
@@ -48,7 +47,7 @@ const INCLUDED_TYPES: Record<MapCategory, string[]> = {
     'camping_cabin',
     'cottage',
     'extended_stay_hotel',
-    'farmstay',
+    '~~~~',
     'hotel',
     'inn',
     'japanese_inn',
@@ -139,7 +138,7 @@ async function searchNearby(
       locationRestriction: {
         circle: {
           center: {
-            latitude: latitude + LATITUDE_OFFSET,
+            latitude: latitude,
             longitude,
           },
           radius: radius,
@@ -179,7 +178,7 @@ async function searchPlaceByText(
       locationBias: {
         circle: {
           center: {
-            latitude: latitude + LATITUDE_OFFSET,
+            latitude: latitude,
             longitude,
           },
           radius,

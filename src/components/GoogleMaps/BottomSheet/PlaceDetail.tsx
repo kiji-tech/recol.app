@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Place } from '@/src/entities/Place';
-import { Text, View, Linking } from 'react-native';
+import { Text, View, Linking, Platform } from 'react-native';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import Header from '../../Header/Header';
 import RateViewer from './RateViewer';
@@ -179,6 +179,8 @@ export default function PlaceDetail({ place, selected, onAdd, onRemove, onClose 
           ))}
         {/* 予約 */}
       </View>
+      {/* アクションバーで隠れるため高くする */}
+      <View className={Platform.OS === 'ios' ? 'h-[92px]' : 'h-[100px]'}></View>
     </BottomSheetScrollView>
   );
 }

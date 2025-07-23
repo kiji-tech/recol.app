@@ -13,7 +13,7 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
 import ResearchButton from './ResearchButton';
-import { LATITUDE_OFFSET, SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
+import { SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
 import { Schedule } from '@/src/entities/Plan';
 import Header from '@/src/components/Header/Header';
 
@@ -87,7 +87,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
       return {
         ...(prev || {}),
         ...place.location,
-        latitude: place.location.latitude - LATITUDE_OFFSET,
+        latitude: place.location.latitude,
       } as Region;
     });
     setSelectedPlace(place);
