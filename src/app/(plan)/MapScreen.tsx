@@ -6,7 +6,7 @@ import { Region } from 'react-native-maps';
 import { useLocation } from '@/src/contexts/LocationContext';
 import { Place } from '@/src/entities/Place';
 import { ScrollView } from 'react-native-gesture-handler';
-import { DEFAULT_RADIUS, LATITUDE_OFFSET } from '@/src/libs/ConstValue';
+import { DEFAULT_RADIUS } from '@/src/libs/ConstValue';
 import Map from '@/src/components/GoogleMaps/Map';
 import ScheduleInfoCard from './components/(MapScreen)/ScheduleInfoCard';
 
@@ -56,7 +56,7 @@ export default function MapScreen() {
       return {
         ...(prev || {}),
         ...place.location,
-        latitude: place.location.latitude - LATITUDE_OFFSET,
+        latitude: place.location.latitude,
       } as Region;
     });
     setSelectedPlace(place);

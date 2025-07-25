@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import MapView, { Callout, Circle, Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import { Place } from '@/src/entities/Place';
-import { LATITUDE_OFFSET } from '@/src/libs/ConstValue';
 
 /** センターサークル */
 const CenterCircle = ({
@@ -19,7 +18,7 @@ const CenterCircle = ({
   return (
     <Circle
       center={{
-        latitude: region.latitude + LATITUDE_OFFSET,
+        latitude: region.latitude,
         longitude: region.longitude,
       }}
       radius={radius}
@@ -129,7 +128,7 @@ export default function Map({
         {/* センターサークル */}
         {isCenterCircle && (
           <CenterCircle
-            region={{ ...region, latitude: region.latitude + LATITUDE_OFFSET }}
+            region={{ ...region, latitude: region.latitude }}
             radius={radius}
             fillColor="rgba(30,150,200,0.2)"
             strokeColor="#C1EBEE"

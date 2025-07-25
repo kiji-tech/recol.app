@@ -41,18 +41,23 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
   const fetchStoragePlan = async () => {
     const list = JSON.parse((await AsyncStorage.getItem(PLAN_LIST_STORAGE_KEY)) || '[]');
     if (list && list.length > 0) {
-      LogUtil.log(`set storage plan list ${list.length}`, { level: 'info' });
-      setPlanList(JSON.parse(list));
+      LogUtil.log('Hit! plan storage.', { level: 'info' });
+      setPlanList(list);
     }
+  };
+
+  const setStoragePlan = async (planList: Plan[]) => {
+    await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(planList));
   };
 
   const fetchPlan = useCallback(
     async (ctrl?: AbortController) => {
+      if (!session) return;
       setPlanLoading(true);
       fetchPlanList(session, ctrl)
         .then(async (response) => {
           setPlanList(response);
-          await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(response));
+          await setStoragePlan(response);
           if (plan) {
             const updatePlan = response.find((p) => p.uid === plan.uid);
             if (updatePlan) setPlan(updatePlan);
