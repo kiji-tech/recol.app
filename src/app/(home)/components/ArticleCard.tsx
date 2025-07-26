@@ -4,10 +4,11 @@ import { Image } from 'expo-image';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Article } from '@/src/entities/Article';
 import { CommonUtil } from '@/src/libs/CommonUtil';
+import { Badge } from '@/src/components';
 
 // 定数
-const IMAGE_WIDTH = 176;
-const IMAGE_HEIGHT = 128;
+const IMAGE_WIDTH = '100%';
+const IMAGE_HEIGHT = 256;
 const IMAGE_RADIUS = 8;
 const MAP_MARKER_COLOR = '#f87171';
 
@@ -29,7 +30,7 @@ const hasLocation = (location: string) => {
 export const ArticleCard: React.FC<{ item: Article }> = ({ item }) => {
   return (
     <TouchableOpacity
-      className="flex flex-row border-light-border dark:border-dark-border border rounded-md mb-4"
+      className="flex flex-col border-light-border dark:border-dark-border border rounded-md mb-4"
       onPress={() =>
         CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/articles/${item.id}`)
       }
@@ -43,23 +44,19 @@ export const ArticleCard: React.FC<{ item: Article }> = ({ item }) => {
           style={{
             width: IMAGE_WIDTH,
             height: IMAGE_HEIGHT,
+            resizeMode: 'cover',
+            borderTopRightRadius: IMAGE_RADIUS,
             borderTopLeftRadius: IMAGE_RADIUS,
-            borderBottomLeftRadius: IMAGE_RADIUS,
           }}
         />
       )}
-      {/* 右側 */}
-      <View className="flex-1 gap-2 p-4 flex flex-col items-start justify-between">
+      <View className="gap-2 p-4 flex flex-col items-start justify-start">
         {/* 上段 */}
         <View className="flex-1 gap-2 flex flex-col items-start justify-start">
           {/* カテゴリバッジ */}
-          <View className="flex-row items-center justify-start gap-2 bg-light-theme dark:bg-dark-theme rounded-full px-2 py-1">
-            <Text className="text-xs color-light-text dark:color-dark-text">
-              {item.category?.name}
-            </Text>
-          </View>
+          <Badge text={item.category?.name || ''} />
           {/* タイトル */}
-          <Text className="text-sm color-light-text dark:color-dark-text line-clamp-2">
+          <Text className="text-md color-light-text dark:color-dark-text line-clamp-2">
             {item.title}
           </Text>
         </View>
@@ -71,14 +68,14 @@ export const ArticleCard: React.FC<{ item: Article }> = ({ item }) => {
           </Text>
           {/* 場所（旅行系の場合） */}
           {hasLocation(item.location) && (
-            <View className="flex-row items-start justify-start">
+            <View className="flex-row items-center justify-start">
               <FontAwesome5
                 name="map-marker-alt"
                 size={14}
                 color={MAP_MARKER_COLOR}
                 style={{ marginRight: 4 }}
               />
-              <Text className="text-xs color-light-text dark:color-dark-text">{item.location}</Text>
+              <Text className="text-sm color-light-text dark:color-dark-text">{item.location}</Text>
             </View>
           )}
         </View>
