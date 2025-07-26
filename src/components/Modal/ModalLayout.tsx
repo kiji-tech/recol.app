@@ -1,27 +1,29 @@
 import React from 'react';
 import { ReactNode } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Modal, Text, TouchableOpacity } from 'react-native';
+import BackgroundView from '../BackgroundView';
 
 type Props = {
   children: ReactNode;
   size: 'full' | 'half' | string;
+  visible: boolean;
   onClose: () => void;
 };
-export default function ModalLayout({ children, size, onClose }: Props): ReactNode {
+export default function ModalLayout({ children, visible = true, size, onClose }: Props): ReactNode {
   return (
-    <View
+    <Modal
+      visible={visible}
+      animationType="slide"
       style={{ height: size == 'full' ? '92%' : size == 'half' ? '50%' : Number(size) }}
-      className={`p-4 w-screen flex flex-col justify-start items-start gap-8
-        shadow-lg
-        bottom-0 absolute
+      className={`w-screen flex flex-col justify-start items-start gap-8
     bg-light-background dark:bg-dark-border`}
     >
-      <View className="w-full flex flex-row justify-end">
+      <BackgroundView>
         <TouchableOpacity onPress={onClose}>
           <Text className="text-xl text-light-text dark:text-dark-text">Close</Text>
         </TouchableOpacity>
-      </View>
-      {children}
-    </View>
+        {children}
+      </BackgroundView>
+    </Modal>
   );
 }
