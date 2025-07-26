@@ -45,7 +45,7 @@ export default function PlanEditor() {
   return (
     <BackgroundView>
       <Header
-        title="新しい計画を作成する"
+        title={`${plan?.title || '新しい計画'}を編集する`}
         onBack={() => {
           router.back();
         }}

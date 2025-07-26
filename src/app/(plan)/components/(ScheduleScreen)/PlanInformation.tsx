@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tables } from '@/src/libs/database.types';
 import { View, Text } from 'react-native';
+import Title from '@/src/components/Common/Title';
 // import { useTheme } from '@/src/contexts/ThemeContext';
 
 type Props = {
@@ -24,7 +25,7 @@ export default function PlanInformation({ plan }: Props) {
 
   return (
     <View className="flex flex-col gap-2">
-      <Text className="text-2xl font-bold text-light-text dark:text-dark-text">{plan.title}</Text>
+      <Title text={plan.title || ''} />
       {/* 計画メモ */}
       <View className="px-2 py-4">
         <Text className="text-sm text-light-text dark:text-dark-text">
