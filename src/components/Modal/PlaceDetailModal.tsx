@@ -71,7 +71,7 @@ export default function PlaceDetailModal({
                   <IconButton
                     icon={
                       <MaterialCommunityIcons
-                        name="web"
+                        name={place.websiteUri.includes('instagram') ? 'instagram' : 'web'}
                         size={18}
                         className={`text-light-text dark:text-dark-text`}
                       />
@@ -84,7 +84,7 @@ export default function PlaceDetailModal({
                   <IconButton
                     icon={
                       <FontAwesome5
-                        name="map-marked-alt"
+                        name="map-marker-alt"
                         size={18}
                         className={`text-light-text dark:text-dark-text`}
                       />
