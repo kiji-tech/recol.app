@@ -35,7 +35,7 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
 
   return (
     <TouchableOpacity onPress={() => onPress(item)} onLongPress={() => onLongPress(item)}>
-      <View className="flex flex-col gap-2 bg-light-background dark:bg-dark-background">
+      <View className="flex flex-col gap-2 px-2 pt-4 bg-light-background dark:bg-dark-background">
         {/* 開始時刻 */}
         <View className="flex flex-row gap-2 items-center">
           <View
