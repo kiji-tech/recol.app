@@ -65,17 +65,16 @@ export default function PlanCard({ plan }: { plan: Plan }) {
   return (
     <TouchableOpacity
       key={plan.uid}
-      className={`py-4 w-full h-16 border-light-border dark:border-dark-border`}
       onPress={() => handleSelectPlan(plan)}
       onLongPress={() => handleDeletePlan(plan)}
     >
-      <View className="flex flex-row gap-2 justify-between items-start">
+      <View className="flex flex-row justify-between items-start py-4 h-24 w-full border-light-border dark:border-dark-border bg-light-background dark:bg-dark-background">
         <View className="flex flex-row gap-4 justify-start items-start">
           {/*  TODO: メンバー */}
           <View className="w-10 h-10 bg-light-info rounded-full"></View>
           <View className="flex flex-col gap-2 justify-start items-start">
             {/* タイトル */}
-            <Text className={`font-bold text-md text-light-text dark:text-dark-text`}>
+            <Text className={`font-bold text-lg text-light-text dark:text-dark-text`}>
               {plan.title}
             </Text>
             {/* メモ */}

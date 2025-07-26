@@ -24,42 +24,38 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
 
   return (
     <TouchableOpacity onPress={handleSelect}>
-      <View
-        className={`w-full bg-light-background dark:bg-dark-background border-b border-light-border dark:border-dark-border`}
-      >
-        <View className="flex flex-row justify-start items-start gap-4 h-40">
-          {/* イメージ画像 */}
-          {place.photos && place.photos.length > 0 ? (
-            <Image
-              cachePolicy="memory-disk"
-              source={source}
-              style={{
-                width: 128,
-                height: 140,
-              }}
-            />
-          ) : (
-            // TODO: No Imageに差し替え
-            <View className="h-32 w-32 bg-light-shadow"></View>
-          )}
-          <View className="flex-1 flex flex-col gap-2">
-            <View className="flex flex-row justify-between items-center pr-4">
-              {/* /title */}
-              <Text
-                className={`text-lg ${selected ? 'font-bold text-light-danger dark:text-dark-danger' : 'text-light-text dark:text-dark-text font-semibold'}`}
-              >
-                {place.displayName.text}
-              </Text>
-              <View className="flex-1 flex-row justify-end items-center"></View>
-            </View>
-            {/* 評価 */}
-            <RateViewer rating={place.rating} />
-            {/* description */}
-            <View>
-              <Text className="line-clamp-1 text-light-text dark:text-dark-text">
-                {place.editorialSummary?.text || ''}
-              </Text>
-            </View>
+      <View className="flex flex-row justify-start items-start gap-4 h-40 bg-light-background dark:bg-dark-background border-b border-light-border dark:border-dark-border">
+        {/* イメージ画像 */}
+        {place.photos && place.photos.length > 0 ? (
+          <Image
+            cachePolicy="memory-disk"
+            source={source}
+            style={{
+              width: 128,
+              height: 140,
+            }}
+          />
+        ) : (
+          // TODO: No Imageに差し替え
+          <View className="h-32 w-32 bg-light-shadow"></View>
+        )}
+        <View className="flex-1 flex flex-col gap-2">
+          <View className="flex flex-row justify-between items-center pr-4">
+            {/* /title */}
+            <Text
+              className={`text-lg ${selected ? 'font-bold text-light-danger dark:text-dark-danger' : 'text-light-text dark:text-dark-text font-semibold'}`}
+            >
+              {place.displayName.text}
+            </Text>
+            <View className="flex-1 flex-row justify-end items-center"></View>
+          </View>
+          {/* 評価 */}
+          <RateViewer rating={place.rating} />
+          {/* description */}
+          <View>
+            <Text className="line-clamp-1 text-light-text dark:text-dark-text">
+              {place.editorialSummary?.text || ''}
+            </Text>
           </View>
         </View>
       </View>
