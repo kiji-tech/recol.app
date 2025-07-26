@@ -1,7 +1,8 @@
 import React from 'react';
 import { Tables } from '@/src/libs/database.types';
 import { ReactNode, useEffect, useState } from 'react';
-import { Text, ScrollView, View, Alert } from 'react-native';
+import { Text, View, Alert } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import ScheduleItem from './ScheduleItem';
 import dayjs from 'dayjs';
 import { fetchScheduleList } from '@/src/libs/ApiService';
@@ -131,7 +132,7 @@ export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode
           <View key={schedule.uid} className="relative">
             {isDateView && (
               <Text
-                className={`font-bold text-xl text-center ${index != 0 && 'mt-4'} text-light-text dark:text-dark-text sticky top-0`}
+                className={`font-bold text-xl text-center ${index != 0 && 'mt-4'} text-light-text dark:text-dark-text sticky top-0 mb-2`}
               >
                 {date}
               </Text>
@@ -145,7 +146,9 @@ export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode
           </View>
         );
       })}
-      <Button text="スケジュールを追加" onPress={() => handleAddSchedule()} />
+      <View className="mt-8">
+        <Button text="スケジュールを追加" onPress={() => handleAddSchedule()} />
+      </View>
     </ScrollView>
   );
 }

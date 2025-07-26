@@ -63,7 +63,7 @@ export default function PlanListScreen() {
       {/* プランがない場合 */}
       {!planLoading && planList.length === 0 && <NotFoundPlanView />}
       {/* プラン一覧 */}
-      <View className="flex flex-col justify-start items-start gap-6">
+      <View className="flex flex-col justify-start items-start">
         {planList && planList.map((plan: Plan) => <PlanCard key={plan.uid} plan={plan} />)}
       </View>
       <ToastManager />

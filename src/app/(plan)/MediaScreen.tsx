@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, View, Text, Alert, Dimensions, Platform } from 'react-native';
+import { TouchableOpacity, View, Text, Alert, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { IconButton } from '@/src/components';
 import { useFocusEffect } from 'expo-router';
@@ -174,6 +174,7 @@ export default function MediaScreen() {
     <BackgroundView>
       {/* 画像が選択されていれば､モーダルが表示される */}
       <MediaDetailModal
+        visible={visibleImage !== null}
         imageList={
           images.map(
             (item) =>
@@ -244,7 +245,7 @@ export default function MediaScreen() {
           );
         }}
       />
-      <View className={`absolute ${Platform.OS === 'ios' ? 'bottom-16' : 'bottom-8'} right-4`}>
+      <View className={`absolute bottom-8 right-4`}>
         {mode === 'select' && (
           <IconButton
             icon={<AntDesign name="delete" size={24} color={'white'} />}
