@@ -4,8 +4,8 @@ import MapBottomSheetHeader from './MapBottomSheetHeader';
 import MapBottomSheetBody from './MapBottomSheetBody';
 import { Place } from '@/src/entities/Place';
 import { MapCategory } from '@/src/entities/MapCategory';
-import PlaceDetail from './PlaceDetail';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
+import PlaceDetailModal from '../../Modal/PlaceDetailModal';
 
 type Props = {
   placeList: Place[];
@@ -53,31 +53,31 @@ export default function MapBottomSheet({
 
   // ==== Render ====
   return (
-    <BottomSheetLayout ref={bottomSheetRef}>
-      {isDetailPlace && detailPlace ? (
-        <PlaceDetail
+    <>
+      <BottomSheetLayout ref={bottomSheetRef}>
+        <MapBottomSheetHeader
+          selectedCategory={selectedCategory}
+          onSelectedCategory={onSelectedCategory}
+        />
+        <MapBottomSheetBody
+          placeList={isSelected ? selectedPlaceList : placeList}
+          selectedPlace={selectedPlace}
+          selectedCategory={selectedCategory}
+          isLoading={isLoading}
+          onSelect={handleSelect}
+          ref={scrollRef}
+        />
+      </BottomSheetLayout>
+      {isDetailPlace && detailPlace && (
+        <PlaceDetailModal
           place={detailPlace}
+          isEdit={true}
           selected={selectedPlaceList.findIndex((place) => place.id === detailPlace.id) >= 0}
           onAdd={onAdd}
           onRemove={onRemove}
           onClose={() => setIsDetailPlace(false)}
         />
-      ) : (
-        <>
-          <MapBottomSheetHeader
-            selectedCategory={selectedCategory}
-            onSelectedCategory={onSelectedCategory}
-          />
-          <MapBottomSheetBody
-            placeList={isSelected ? selectedPlaceList : placeList}
-            selectedPlace={selectedPlace}
-            selectedCategory={selectedCategory}
-            isLoading={isLoading}
-            onSelect={handleSelect}
-            ref={scrollRef}
-          />
-        </>
       )}
-    </BottomSheetLayout>
+    </>
   );
 }

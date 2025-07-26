@@ -10,8 +10,8 @@ type Props = {
 
 export default function ImageScrollView({ images, onPress }: Props) {
   return (
-    <View className="w-screen overflow-x-auto scrollbar-hide scroll-smooth my-4 px-4">
-      <ScrollView horizontal={true}>
+    <View className="w-screen overflow-x-auto scrollbar-hide scroll-smooth my-4 pr-4">
+      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         {images.map((image, index) => (
           <TouchableOpacity
             key={index}

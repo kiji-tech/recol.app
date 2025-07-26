@@ -24,7 +24,7 @@ const BottomSheetLayout = forwardRef(({ children }: Props, ref) => {
       enableDynamicSizing={false}
       handleStyle={{
         backgroundColor: isDarkMode ? '#1a1a1a' : 'white',
-        borderRadius: 100,
+        borderRadius: 10,
       }}
       backgroundStyle={{
         backgroundColor: isDarkMode ? '#1a1a1a' : 'white',
@@ -32,7 +32,7 @@ const BottomSheetLayout = forwardRef(({ children }: Props, ref) => {
       handleIndicatorStyle={{
         backgroundColor: isDarkMode ? 'white' : '#1a1a1a',
         borderRadius: 10,
-        width: 64,
+        width: 80,
         height: 4,
       }}
     >

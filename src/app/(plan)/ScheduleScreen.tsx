@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback, useState } from 'react';
-import ScheduleComponents from '@/src/components/Schedule';
+import ScheduleComponents from './components/(ScheduleScreen)/(Schedule)';
 import { BackgroundView, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useRouter } from 'expo-router';
@@ -11,7 +11,7 @@ import { Plan } from '@/src/entities/Plan';
 import { LogUtil } from '@/src/libs/LogUtil';
 import MaskLoading from '@/src/components/MaskLoading';
 import ToastManager, { Toast } from 'toastify-react-native';
-import PlanInformation from '@/src/components/PlanInformation';
+import PlanInformation from './components/(ScheduleScreen)/PlanInformation';
 import ScheduleMenu from './components/(ScheduleScreen)/ScheduleMenu';
 
 export default function ScheduleScreen(): ReactNode {

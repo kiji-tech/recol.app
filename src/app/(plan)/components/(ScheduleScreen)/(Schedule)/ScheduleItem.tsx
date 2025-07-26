@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { Tables } from '@/src/libs/database.types';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { useTheme } from '@/src/contexts/ThemeContext';
 import { Place } from '@/src/entities/Place';
 import { Schedule } from '@/src/entities/Plan';
 
@@ -14,8 +13,6 @@ type Props = {
   onLongPress: (schedule: Tables<'schedule'> & { place_list: Place[] }) => void;
 };
 export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress }: Props) {
-  const { isDarkMode } = useTheme();
-
   /**
    * 指定された時間が現在時刻から見て過去かどうかを判定する
    * @param from 開始時刻
@@ -67,11 +64,7 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
 
             {item.place_list && item.place_list?.length > 0 && (
               <View className="flex flex-row gap-2 items-center">
-                <FontAwesome5
-                  name="map-marked-alt"
-                  size={18}
-                  color={isDarkMode ? 'white' : 'black'}
-                />
+                <FontAwesome5 name="map-marker-alt" size={18} color="#f87171" />
                 <Text className="text-lg text-light-text dark:text-dark-text">
                   {item.place_list?.length || 0}件
                 </Text>

@@ -13,6 +13,7 @@ import { Place } from '@/src/entities/Place';
 import { Schedule } from '@/src/entities/Plan';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { LogUtil } from '@/src/libs/LogUtil';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function ScheduleEditor() {
   // === Member ===
@@ -130,9 +131,12 @@ export default function ScheduleEditor() {
           <Button theme={'info'} onPress={handleMapModal} text={'マップから確認・追加'} />
 
           {/* 候補数 */}
-          <Text className="text-light-text dark:text-dark-text">
-            {(editSchedule.place_list && editSchedule.place_list!.length) || 0}件候補があります｡
-          </Text>
+          <View className="flex flex-row gap-2 items-center">
+            <FontAwesome5 name="map-marker-alt" size={18} color="#f87171" />
+            <Text className="text-light-text dark:text-dark-text">
+              {(editSchedule.place_list && editSchedule.place_list!.length) || 0}件候補があります｡
+            </Text>
+          </View>
         </View>
 
         {/* メモ */}

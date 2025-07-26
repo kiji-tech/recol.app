@@ -1,11 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import { BackgroundView, Header } from '@/src/components';
-import { Text, FlatList } from 'react-native';
+import { FlatList } from 'react-native';
 import { fetchBlogList } from '@/src/libs/ApiService';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useFocusEffect } from 'expo-router';
 import { Article } from '@/src/entities/Article';
 import { ArticleCard } from './components/ArticleCard';
+import Title from '@/src/components/Common/Title';
 
 export default function Home() {
   const { session } = useAuth();
@@ -24,7 +25,7 @@ export default function Home() {
       <Header title="Re:CoL" />
       {/* TODO: タブバー */}
       {/* 新着・おすすめ・旅行先・グッズ */}
-      <Text className="text-light-text dark:text-dark-text text-lg font-bold">新着記事</Text>
+      <Title text="新着記事" />
       {/* 新着記事 */}
       <FlatList
         data={blogs}

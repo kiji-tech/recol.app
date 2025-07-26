@@ -1,12 +1,9 @@
 import React, { useMemo } from 'react';
 import { Place } from '@/src/entities/Place';
 import { Tables } from '@/src/libs/database.types';
-import { useTheme } from '@/src/contexts/ThemeContext';
-import { View, Text, TouchableOpacity, Linking } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
-import { IconButton, RateViewer } from '@/src/components';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { RateViewer } from '@/src/components';
 
 type ScheduleInfoCardProps = {
   schedule: Tables<'schedule'>;
@@ -14,7 +11,6 @@ type ScheduleInfoCardProps = {
 };
 
 export default function ScheduleInfoCard({ schedule, onPress }: ScheduleInfoCardProps) {
-  const { isDarkMode } = useTheme();
   const placeList = useMemo(() => {
     return (schedule.place_list as unknown as Place[]) || [];
   }, [schedule]);
@@ -46,38 +42,7 @@ export default function ScheduleInfoCard({ schedule, onPress }: ScheduleInfoCard
               {place.displayName.text}
             </Text>
             {/* 評価 */}
-            <RateViewer rating={place.rating} />
-            {/* ボタングループ */}
-            <View className="flex flex-row justify-start items-center gap-4">
-              {place.websiteUri && (
-                <IconButton
-                  icon={
-                    <MaterialCommunityIcons
-                      name="web"
-                      size={18}
-                      color={isDarkMode ? 'white' : 'black'}
-                      className={`text-light-text dark:text-dark-text`}
-                    />
-                  }
-                  theme="theme"
-                  onPress={() => Linking.openURL(place.websiteUri)}
-                />
-              )}
-              {place.googleMapsUri && (
-                <IconButton
-                  icon={
-                    <FontAwesome5
-                      name="map-marked-alt"
-                      size={18}
-                      color={isDarkMode ? 'white' : 'black'}
-                      className={`text-light-text dark:text-dark-text`}
-                    />
-                  }
-                  theme="theme"
-                  onPress={() => Linking.openURL(place.googleMapsUri)}
-                />
-              )}
-            </View>
+            <RateViewer rating={place.rating || 0} />
           </View>
         </TouchableOpacity>
       ))}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { BackgroundView, Header } from '../../components';
 import { useRouter } from 'expo-router';
-import { StyleSheet, View, Text, Pressable } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
@@ -28,9 +28,9 @@ export default function NotFound() {
           </Animated.Text>
 
           <Animated.View entering={FadeInDown.duration(1000).delay(1200)}>
-            <Pressable style={styles.button} onPress={() => router.replace('/')}>
+            <TouchableOpacity style={styles.button} onPress={() => router.replace('/')}>
               <Text style={styles.buttonText}>ホームに戻る</Text>
-            </Pressable>
+            </TouchableOpacity>
           </Animated.View>
         </Animated.View>
       </View>

@@ -9,6 +9,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { DEFAULT_RADIUS } from '@/src/libs/ConstValue';
 import Map from '@/src/components/GoogleMaps/Map';
 import ScheduleInfoCard from './components/(MapScreen)/ScheduleInfoCard';
+import PlaceDetailModal from '@/src/components/Modal/PlaceDetailModal';
 
 /**
  * 初期表示
@@ -17,6 +18,7 @@ export default function MapScreen() {
   // === Member ===
   const scrollRef = useRef<ScrollView>(null);
   const platform = Platform.OS;
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { plan } = usePlan();
   const { currentRegion } = useLocation();
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(
@@ -60,6 +62,7 @@ export default function MapScreen() {
       } as Region;
     });
     setSelectedPlace(place);
+    setIsModalOpen(true);
   };
 
   /** スクロールする際のX軸の計算 */
@@ -86,39 +89,49 @@ export default function MapScreen() {
 
   // === Render ===
   return (
-    <View className="w-screen h-screen absolute top-0 left-0">
-      <View className="w-screen h-40 flex-1">
-        <Map
-          radius={radius}
-          region={region || currentRegion}
-          placeList={placeList}
-          selectedPlaceList={placeList.filter((place) => place.id === selectedPlace?.id)}
-          isMarker={true}
-          isCallout={true}
-          isCenterCircle={false}
-          onRegionChange={handleRegionChange}
-          onSelectedPlace={handleSelectedPlace}
-        />
-      </View>
-      <View
-        className={`absolute ${platform === 'ios' ? 'bottom-20' : 'bottom-40'} w-screen px-4 pt-2 pb-8`}
-      >
-        <ScrollView
-          ref={scrollRef}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          alwaysBounceHorizontal={false}
-          snapToAlignment={'end'}
+    <>
+      <View className="w-screen h-screen absolute top-0 left-0">
+        <View className="w-screen h-40 flex-1">
+          <Map
+            radius={radius}
+            region={region || currentRegion}
+            placeList={placeList}
+            selectedPlaceList={placeList.filter((place) => place.id === selectedPlace?.id)}
+            isMarker={true}
+            isCallout={true}
+            isCenterCircle={false}
+            onRegionChange={handleRegionChange}
+            onSelectedPlace={handleSelectedPlace}
+          />
+        </View>
+        <View
+          className={`absolute ${platform === 'ios' ? 'bottom-20' : 'bottom-40'} w-screen px-4 pt-2 pb-8`}
         >
-          {plan?.schedule.map((schedule) => (
-            <ScheduleInfoCard
-              key={schedule.uid}
-              schedule={schedule}
-              onPress={handleSelectedPlace}
-            />
-          ))}
-        </ScrollView>
+          <ScrollView
+            ref={scrollRef}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            alwaysBounceHorizontal={false}
+            snapToAlignment={'end'}
+          >
+            {plan?.schedule.map((schedule) => (
+              <ScheduleInfoCard
+                key={schedule.uid}
+                schedule={schedule}
+                onPress={handleSelectedPlace}
+              />
+            ))}
+          </ScrollView>
+        </View>
       </View>
-    </View>
+      {isModalOpen && (
+        <PlaceDetailModal
+          place={selectedPlace!}
+          isEdit={false}
+          selected={false}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
+    </>
   );
 }
