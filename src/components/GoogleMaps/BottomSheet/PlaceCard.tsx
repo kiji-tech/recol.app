@@ -31,7 +31,7 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
             cachePolicy="memory-disk"
             source={source}
             style={{
-              width: 128,
+              width: 140,
               height: 140,
             }}
           />
@@ -53,7 +53,7 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
           <RateViewer rating={place.rating} />
           {/* description */}
           <View>
-            <Text className="line-clamp-1 text-light-text dark:text-dark-text">
+            <Text className="line-clamp-1 text-light-text dark:text-dark-text text-sm">
               {place.editorialSummary?.text || ''}
             </Text>
           </View>

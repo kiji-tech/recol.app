@@ -47,35 +47,31 @@ const MapBottomSheetBody = forwardRef(
 
     // ==== Render ====
     return (
-      <>
-        <BottomSheetScrollView className="w-full flex-1" ref={scrollRef}>
-          {isLoading && (
-            <View className="w-full p-8">
-              <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />
-            </View>
-          )}
-          {!isLoading && placeList && placeList.length == 0 && (
-            <View className="w-full p-8">
-              <Text className="text-center text-light-text dark:text-dark-text">
-                {selectedCategory == 'selected'
-                  ? '候補が選択されていません'
-                  : '検索結果がありません'}
-              </Text>
-            </View>
-          )}
-          {placeList &&
-            placeList.map((place: Place) => (
-              <PlaceCard
-                key={place.id}
-                place={place}
-                selected={selectedPlace ? selectedPlace.id === place.id : false}
-                onSelect={onSelect}
-              />
-            ))}
-          {/* アクションバーで隠れるため高くする */}
-          <View className={Platform.OS === 'ios' ? 'h-[32px]' : 'h-[100px]'}></View>
-        </BottomSheetScrollView>
-      </>
+      <BottomSheetScrollView className="w-full flex-1" ref={scrollRef}>
+        {isLoading && (
+          <View className="w-full p-8">
+            <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />
+          </View>
+        )}
+        {!isLoading && placeList && placeList.length == 0 && (
+          <View className="w-full p-8">
+            <Text className="text-center text-light-text dark:text-dark-text">
+              {selectedCategory == 'selected' ? '候補が選択されていません' : '検索結果がありません'}
+            </Text>
+          </View>
+        )}
+        {placeList &&
+          placeList.map((place: Place) => (
+            <PlaceCard
+              key={place.id}
+              place={place}
+              selected={selectedPlace ? selectedPlace.id === place.id : false}
+              onSelect={onSelect}
+            />
+          ))}
+        {/* アクションバーで隠れるため高くする */}
+        <View className={Platform.OS === 'ios' ? 'h-[32px]' : 'h-[100px]'}></View>
+      </BottomSheetScrollView>
     );
   }
 );
