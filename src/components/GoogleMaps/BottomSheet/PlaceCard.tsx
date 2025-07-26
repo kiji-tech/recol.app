@@ -27,7 +27,7 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
       <View
         className={`w-full bg-light-background dark:bg-dark-background border-b border-light-border dark:border-dark-border`}
       >
-        <View className="flex flex-row justify-start items-start gap-4 h-32">
+        <View className="flex flex-row justify-start items-start gap-4 h-40">
           {/* イメージ画像 */}
           {place.photos && place.photos.length > 0 ? (
             <Image
@@ -35,7 +35,7 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
               source={source}
               style={{
                 width: 128,
-                height: 112,
+                height: 140,
               }}
             />
           ) : (
@@ -45,22 +45,21 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
           <View className="flex-1 flex flex-col gap-2">
             <View className="flex flex-row justify-between items-center pr-4">
               {/* /title */}
-              <View className="w-3/5">
-                <Text
-                  className={`text-lg ${selected ? 'font-bold text-light-danger dark:text-dark-danger' : 'text-light-text dark:text-dark-text font-semibold'}`}
-                >
-                  {place.displayName.text}
-                </Text>
-              </View>
-              <View className="flex-1 flex-row justify-end items-center">
-                {/* 評価 */}
-                <RateViewer rating={place.rating} />
-              </View>
+              <Text
+                className={`text-lg ${selected ? 'font-bold text-light-danger dark:text-dark-danger' : 'text-light-text dark:text-dark-text font-semibold'}`}
+              >
+                {place.displayName.text}
+              </Text>
+              <View className="flex-1 flex-row justify-end items-center"></View>
             </View>
+            {/* 評価 */}
+            <RateViewer rating={place.rating} />
             {/* description */}
-            <Text className="text-ellipsis line-clamp-2 text-light-text dark:text-dark-text">
-              {place.editorialSummary?.text || ''}
-            </Text>
+            <View>
+              <Text className="line-clamp-1 text-light-text dark:text-dark-text">
+                {place.editorialSummary?.text || ''}
+              </Text>
+            </View>
           </View>
         </View>
       </View>
