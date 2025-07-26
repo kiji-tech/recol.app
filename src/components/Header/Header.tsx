@@ -23,7 +23,7 @@ export default function Header({
   return (
     <View className="w-full flex flex-row items-center justify-center gap-4 px-2">
       {/* 戻るボタン */}
-      {onBack && <BackButton onPress={() => onBack()} />}
+      {onBack ? <BackButton onPress={() => onBack()} /> : <View className="w-12 h-12" />}
       {/* タイトル */}
       {!onSearch && (
         <Text className="flex-1 text-center text-light-text dark:text-dark-text font-bold text-xl">
@@ -54,7 +54,7 @@ export default function Header({
           />
         </View>
       )}
-      <View>{rightComponent}</View>
+      <View>{rightComponent ? rightComponent : <View className="w-12 h-12" />}</View>
     </View>
   );
 }

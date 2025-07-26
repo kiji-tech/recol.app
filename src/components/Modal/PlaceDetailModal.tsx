@@ -8,8 +8,9 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import ImageScrollView from '../Common/ImageScrollView';
 import IconButton from '../Common/IconButton';
 import { FontAwesome5, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
-import { ScrollView } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import RateViewer from '../GoogleMaps/BottomSheet/RateViewer';
+import Title from '../Common/Title';
 
 type Props = {
   place: Place;
@@ -43,14 +44,29 @@ export default function PlaceDetailModal({
     <>
       {/* ロケーション名 */}
       <ModalLayout size="full" visible={!imageModalVisible} onClose={onClose}>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View className="flex flex-col justify-start items-start gap-4">
+            <View className="flex flex-row justify-between items-start gap-4">
+              <Title text={place.displayName.text} />
+            </View>
+            {/* 写真一覧 */}
+            {place.photos && (
+              <ImageScrollView
+                images={place.photos
+                  .filter((photo) => photo.name)
+                  .slice(0, 5)
+                  .map((photo) => ({
+                    src: `${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(photo.name)}`,
+                    alt: place.displayName.text,
+                  }))}
+                onPress={(photo) => handleSelectedImage(photo.src)}
+              />
+            )}
             <View className="flex flex-row justify-between items-center gap-4">
-              <Text className="text-xl flex-1 font-semibold text-light-text dark:text-dark-text">
-                {place.displayName.text}
-              </Text>
+              {/* 評価 */}
+              <RateViewer rating={place.rating} />
               {/* ボタングループ */}
-              <View className="flex flex-row justify-start items-center gap-4">
+              <View className="flex-1 flex flex-row justify-end items-center gap-4">
                 {place.websiteUri && (
                   <IconButton
                     icon={
@@ -97,25 +113,12 @@ export default function PlaceDetailModal({
                 )}
               </View>
             </View>
-            {/* 写真一覧 */}
-            {place.photos && (
-              <ImageScrollView
-                images={place.photos
-                  .filter((photo) => photo.name)
-                  .slice(0, 5)
-                  .map((photo) => ({
-                    src: `${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(photo.name)}`,
-                    alt: place.displayName.text,
-                  }))}
-                onPress={(photo) => handleSelectedImage(photo.src)}
-              />
-            )}
-            {/* 評価 */}
-            <RateViewer rating={place.rating} />
+
             {/* 詳細 */}
-            <Text className="text-ellipsis text-light-text dark:text-dark-text">
+            <Text className="text-ellipsis text-light-text dark:text-dark-text text-lg">
               {place.editorialSummary?.text || ''}
             </Text>
+
             {/* 営業時間 */}
             {place.currentOpeningHours && (
               <Text className="text-xl font-semibold text-light-text dark:text-dark-text">
@@ -132,6 +135,7 @@ export default function PlaceDetailModal({
           </View>
         </ScrollView>
       </ModalLayout>
+      {/* 写真拡大モーダル */}
       <MediaDetailModal
         imageList={place.photos
           .filter((photo) => photo.name)
