@@ -50,7 +50,7 @@ export default function MediaDetailModal({
           renderIndicator={(currentIndex, allSize) => (
             <RenderIndicator currentIndex={currentIndex} allSize={allSize} />
           )}
-          backgroundColor={isDarkMode ? 'black' : 'white'}
+          backgroundColor={isDarkMode ? '#1a1a1a' : 'white'}
         />
       </View>
     </ModalLayout>
