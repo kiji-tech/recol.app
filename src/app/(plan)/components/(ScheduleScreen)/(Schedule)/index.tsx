@@ -8,7 +8,7 @@ import { fetchScheduleList } from '@/src/libs/ApiService';
 import { useRouter } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useAuth } from '@/src/contexts/AuthContext';
-import Button from '../Common/Button';
+import Button from '@/src/components/Common/Button';
 import { Place } from '@/src/entities/Place';
 import { Schedule } from '@/src/entities/Plan';
 import { Toast } from 'toastify-react-native';
