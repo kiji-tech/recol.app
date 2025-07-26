@@ -30,7 +30,7 @@ const hasLocation = (location: string) => {
 export const ArticleCard: React.FC<{ item: Article }> = ({ item }) => {
   return (
     <TouchableOpacity
-      className="flex flex-col border-light-border dark:border-dark-border border rounded-md mb-4"
+      className="flex flex-col bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border border rounded-md mb-4"
       onPress={() =>
         CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/articles/${item.id}`)
       }

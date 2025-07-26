@@ -113,39 +113,41 @@ export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode
   // === Render ===
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      {scheduleList.map((schedule, index) => {
-        const date = dayjs(schedule.from).format(DATE_FORMAT);
-        let isDateView = true;
-        let isEndDateView = true;
+      <View className="bg-light-background dark:bg-dark-background rounded-xl">
+        {scheduleList.map((schedule, index) => {
+          const date = dayjs(schedule.from).format(DATE_FORMAT);
+          let isDateView = true;
+          let isEndDateView = true;
 
-        if (index > 0 && date == dayjs(scheduleList[index - 1].from).format(DATE_FORMAT)) {
-          isDateView = false;
-        }
+          if (index > 0 && date == dayjs(scheduleList[index - 1].from).format(DATE_FORMAT)) {
+            isDateView = false;
+          }
 
-        if (
-          index + 1 < scheduleList.length &&
-          dayjs(schedule.to).isSame(dayjs(scheduleList[index + 1].from))
-        ) {
-          isEndDateView = false;
-        }
-        return (
-          <View key={schedule.uid} className="relative">
-            {isDateView && (
-              <Text
-                className={`font-bold text-xl text-center ${index != 0 && 'mt-4'} text-light-text dark:text-dark-text sticky top-0 mb-2`}
-              >
-                {date}
-              </Text>
-            )}
-            <ScheduleItem
-              item={schedule}
-              isEndDateView={isEndDateView}
-              onPress={handleSchedulePress}
-              onLongPress={handleScheduleLongPress}
-            />
-          </View>
-        );
-      })}
+          if (
+            index + 1 < scheduleList.length &&
+            dayjs(schedule.to).isSame(dayjs(scheduleList[index + 1].from))
+          ) {
+            isEndDateView = false;
+          }
+          return (
+            <View key={schedule.uid} className="relative">
+              {isDateView && (
+                <Text
+                  className={`font-bold text-xl text-center text-light-text dark:text-dark-text sticky top-0 pt-4`}
+                >
+                  {date}
+                </Text>
+              )}
+              <ScheduleItem
+                item={schedule}
+                isEndDateView={isEndDateView}
+                onPress={handleSchedulePress}
+                onLongPress={handleScheduleLongPress}
+              />
+            </View>
+          );
+        })}
+      </View>
       <View className="mt-8">
         <Button text="スケジュールを追加" onPress={() => handleAddSchedule()} />
       </View>
