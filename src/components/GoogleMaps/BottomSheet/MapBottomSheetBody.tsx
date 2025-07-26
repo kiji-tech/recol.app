@@ -73,7 +73,7 @@ const MapBottomSheetBody = forwardRef(
               />
             ))}
           {/* アクションバーで隠れるため高くする */}
-          <View className={Platform.OS === 'ios' ? 'h-[90px]' : 'h-[80px]'}></View>
+          <View className={Platform.OS === 'ios' ? 'h-[32px]' : 'h-[100px]'}></View>
         </BottomSheetScrollView>
       </>
     );
