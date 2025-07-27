@@ -27,9 +27,11 @@ export default function PaymentPlan() {
   const [profile, setProfile] = useState<(Profile & { subscription: Subscription[] }) | null>(null);
 
   // === Method ===
+  // TODO: setupSubscriptionとupdateSubscriptionはViewには関係ないので分離したい
   /** Stripeの支払いシートをセットアップ */
   const setupSubscription = async (type: 'm' | 'y') => {
     LogUtil.log('setup subscription.');
+    setIsLoading(true);
     const priceId =
       type == 'm'
         ? process.env.EXPO_PUBLIC_STRIPE_MONTHLY_PLAN
@@ -57,14 +59,15 @@ export default function PaymentPlan() {
       paymentIntentClientSecret: clientSecret,
       allowsDelayedPaymentMethods: true,
     });
+    setIsLoading(false);
   };
 
   const setupUpdateSubscription = async (type: 'm' | 'y') => {
-    setIsLoading(true);
     const priceId =
       type == 'm'
         ? process.env.EXPO_PUBLIC_STRIPE_MONTHLY_PLAN
         : process.env.EXPO_PUBLIC_STRIPE_YEARLY_PLAN;
+    setIsLoading(true);
 
     updateStripeSubscription(profile!.subscription[0].uid, priceId || '', session)
       .then(() => {
@@ -119,6 +122,7 @@ export default function PaymentPlan() {
 
   /** プレミアムプランの解約 */
   const handleCancel = async () => {
+    setIsLoading(true);
     LogUtil.log('handle cancel.');
 
     if (!profile!.subscription || profile!.subscription.length == 0) {
