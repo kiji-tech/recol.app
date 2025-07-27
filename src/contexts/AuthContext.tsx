@@ -2,21 +2,20 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../libs/supabase';
 import { getProfile } from '../libs/ApiService';
-import { Tables } from '../libs/database.types';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { LogUtil } from '../libs/LogUtil';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
-import { Profile } from '../entities/Profile';
+import { Profile, Subscription } from '../entities';
 
 // 型定義
 export type AuthContextType = {
   user: User | null;
   session: Session | null;
-  profile: Profile;
-  getProfileInfo: () => Profile;
+  profile: (Profile & { subscription: Subscription[] }) | null;
+  getProfileInfo: () => (Profile & { subscription: Subscription[] }) | null;
   fetchProfile: () => Promise<void>;
-  setProfile: (profile: Profile) => void;
+  setProfile: (profile: (Profile & { subscription: Subscription[] }) | null) => void;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -32,9 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<
-    (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null
-  >(null);
+  const [profile, setProfile] = useState<(Profile & { subscription: Subscription[] }) | null>(null);
   const [loading, setLoading] = useState(true);
 
   const getProfileInfo = useCallback(() => {
@@ -50,8 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(data.session?.user ?? null);
     if (data.session) {
       try {
-        const profileData = await getProfile(data.session);
-        setProfile(profileData);
+        await fetchProfile();
       } catch {
         setProfile(null);
       }
@@ -76,8 +72,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(data.session?.user ?? null);
     if (data.session) {
       try {
-        const profileData = await getProfile(data.session);
-        setProfile(profileData);
+        await fetchProfile();
       } catch {
         setProfile(null);
       }
@@ -171,8 +166,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const fetchProfile = async () => {
     if (!session) return;
     getProfile(session)
-      .then(async (data) => {
-        setProfile(data);
+      .then(async (profileData) => {
+        const p = new Profile(profileData);
+        setProfile(p);
       })
       .catch((e) => {
         if (e && e.message) {
@@ -209,8 +205,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(session?.user ?? null);
       if (session) {
         try {
-          const profileData = await getProfile(session);
-          setProfile(profileData);
+          await fetchProfile();
         } catch {
           setProfile(null);
         }
@@ -235,10 +230,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user,
         session,
         profile,
+        loading,
         getProfileInfo,
         fetchProfile,
         setProfile,
-        loading,
         login,
         logout,
         signup,

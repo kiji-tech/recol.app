@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
@@ -7,26 +7,16 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useTheme } from '../contexts/ThemeContext';
 import { MyBannerAd } from './Ad/BannerAd';
 import { useAuth } from '../contexts/AuthContext';
-import { SubscriptionUtil } from '../libs/SubscriptionUtil';
-import { Profile } from '../entities/Profile';
-import { useFocusEffect } from 'expo-router';
+
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { isDarkMode } = useTheme();
-  const [profile, setProfile] = useState<Profile>(null);
-  const { session, getProfileInfo } = useAuth();
+  const { profile } = useAuth();
   const isIOS = Platform.OS === 'ios';
-
-  // === Effect ===
-  useFocusEffect(
-    useCallback(() => {
-      setProfile(getProfileInfo());
-    }, [session])
-  );
 
   // === Render ===
   return (
     <View className={`flex-col ${isIOS && 'mb-8'} z-10`}>
-      {profile && !SubscriptionUtil.isPremiumUser(profile!) && <MyBannerAd />}
+      <MyBannerAd profile={profile} />
       <View className="flex-row w-full border-[1px] border-light-border dark:border-dark-border mx-auto">
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
