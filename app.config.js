@@ -12,6 +12,7 @@ export default {
   ios: {
     icon: './assets/images/icon.png',
     supportsTablet: true,
+    usesAppleSignIn: true,
     bundleIdentifier: 'com.libetech.recol',
     infoPlist: {
       NSCameraUsageDescription: 'カメラを使ってプロフィール画像を設定します',
@@ -165,6 +166,7 @@ export default {
         merchantIdentifier: 'merchant.com.libetech.recol',
       },
     ],
+    'expo-apple-authentication',
   ],
   experiments: {
     typedRoutes: true,

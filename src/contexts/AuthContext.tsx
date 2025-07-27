@@ -6,6 +6,7 @@ import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { LogUtil } from '../libs/LogUtil';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { Profile, Subscription } from '../entities';
 
 // 型定義
@@ -23,6 +24,7 @@ export type AuthContextType = {
   resetPassword: (email: string) => Promise<void>;
   updateUserPassword: (password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  signInWithApple: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -162,6 +164,53 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // Appleサインイン関数
+  const signInWithApple = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [AppleAuthentication.AppleAuthenticationScope.EMAIL],
+      });
+
+      if (credential.identityToken) {
+        const { data, error } = await supabase.auth.signInWithIdToken({
+          provider: 'apple',
+          token: credential.identityToken,
+        });
+
+        if (error) {
+          LogUtil.log('signInWithApple error: ' + JSON.stringify(error), {
+            level: 'error',
+            notify: true,
+          });
+          throw error;
+        }
+        LogUtil.log('signInWithApple data: ' + JSON.stringify(data), { level: 'info' });
+        router.navigate('/(home)');
+      } else {
+        LogUtil.log('signInWithApple error: no identity token present!', {
+          level: 'error',
+          notify: true,
+        });
+        throw new Error('no identity token present!');
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+      }
+      if (typeof error === 'object' && error !== null && 'code' in error) {
+        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+          // user cancelled the login flow
+        } else if (error.code === statusCodes.IN_PROGRESS) {
+          // operation (e.g. sign in) is in progress already
+        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          // play services not available or outdated
+        }
+      } else {
+        // some other error happened
+      }
+    }
+  };
+
   /** プロフィール取得 */
   const fetchProfile = async () => {
     if (!session) return;
@@ -240,6 +289,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         resetPassword,
         updateUserPassword,
         signInWithGoogle,
+        signInWithApple,
       }}
     >
       {children}
