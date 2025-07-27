@@ -24,7 +24,8 @@
         "build:production:android": "eas build --profile production --platform android",
         "build:production:ios": "eas build --profile production --platform ios",
         "submit:android": "eas submit --profile production --platform android",
-        "submit:ios": "eas submit --profile production --platform ios"
+        "submit:ios": "eas submit --profile production --platform ios",
+        "open:ios": "npx uri-scheme open $link --ios"
     },
     "dependencies": {
         "@expo/config-plugins": "~10.0.3",

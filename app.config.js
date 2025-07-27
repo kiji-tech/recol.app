@@ -3,6 +3,7 @@ export default {
   name: 'Re:CoL',
   slug: 'yuru-tabi',
   version: '1.0.5',
+  deepLinking: true,
   icon: './assets/images/icon.png',
   owner: 'shinji5761',
   orientation: 'portrait',

@@ -8,6 +8,7 @@ import { LogUtil } from '../libs/LogUtil';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { Profile, Subscription } from '../entities';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // 型定義
 export type AuthContextType = {
@@ -88,6 +89,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const resetPassword = async (email: string) => {
     setLoading(true);
     const resetPasswordURL = Linking.createURL('/(auth)/ResetPassword');
+    LogUtil.log('resetPasswordURL: ' + resetPasswordURL, { level: 'info' });
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: resetPasswordURL,
     });
@@ -232,6 +234,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(true);
       const { data } = await supabase.auth.getSession();
       if (data.session) {
+        // AsyncStorageでリカバリーセッションかどうかチェックする
+        const recoverySession = await AsyncStorage.getItem('sessionType');
+        if (recoverySession == 'recovery') {
+          await supabase.auth.signOut();
+          return;
+        }
+
         setSession(data.session);
         setUser(data.session.user);
       } else {

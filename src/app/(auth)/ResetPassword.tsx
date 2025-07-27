@@ -5,11 +5,36 @@ import { Alert, TextInput, View, Text } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { supabase } from '@/src/libs/supabase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// エラー型の定義
+interface PasswordResetError {
+  code?: string;
+  message?: string;
+}
+
+// エラーハンドリング関数
+const handlePasswordResetError = (error: unknown): void => {
+  LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+
+  const passwordError = error as PasswordResetError;
+
+  if (passwordError?.code === 'same_password') {
+    Alert.alert('新しいパスワードと同じパスワードは使用できません。');
+  } else {
+    Alert.alert('パスワードを変更できませんでした。');
+  }
+};
 
 export default function ResetPassword() {
   const router = useRouter();
   const { updateUserPassword } = useAuth();
-  const { token } = useLocalSearchParams<{ token: string }>();
+  const { access_token, refresh_token } = useLocalSearchParams<{
+    access_token: string;
+    refresh_token: string;
+    expires_in: string;
+    type: string;
+  }>();
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [isValidToken, setIsValidToken] = useState(false);
@@ -17,28 +42,37 @@ export default function ResetPassword() {
 
   useEffect(() => {
     // トークンの有効性をチェック
-    if (token) {
+    if (access_token && refresh_token) {
       checkTokenValidity();
     } else {
       setIsLoading(false);
     }
-  }, [token]);
+  }, [access_token, refresh_token]);
 
   const checkTokenValidity = async () => {
     try {
-      // Supabaseのパスワードリセットトークンの有効性をチェック
-      const { error } = await supabase.auth.verifyOtp({
-        token_hash: token,
-        type: 'recovery',
+      // リカバリーセッション状態の登録
+      await AsyncStorage.setItem('sessionType', 'recovery');
+      // 一時的なセッションを設定
+      const { data, error } = await supabase.auth.setSession({
+        access_token: access_token,
+        refresh_token: refresh_token,
       });
 
       if (error) {
+        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
         Alert.alert('無効なリンクです', 'パスワードリセットリンクが無効または期限切れです。');
         router.replace('/(auth)/SignIn');
         return;
       }
 
-      setIsValidToken(true);
+      // セッションが正常に設定された場合のみ有効とする
+      if (data.session) {
+        setIsValidToken(true);
+      } else {
+        Alert.alert('無効なリンクです', 'パスワードリセットリンクが無効または期限切れです。');
+        router.replace('/(auth)/SignIn');
+      }
     } catch (error) {
       LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
       Alert.alert(
@@ -65,11 +99,17 @@ export default function ResetPassword() {
     try {
       // パスワードを更新
       await updateUserPassword(password);
+
+      // パスワードリセット処理後にセッション情報をクリア
+      await supabase.auth.signOut();
+
+      // ローカルストレージからセッション情報を削除
+      await AsyncStorage.removeItem('sessionType');
+
       Alert.alert('パスワードを変更しました');
       router.navigate('/(auth)/SignIn');
     } catch (error) {
-      LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-      Alert.alert('パスワードを変更できませんでした。');
+      handlePasswordResetError(error);
     }
   };
 

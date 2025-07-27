@@ -121,15 +121,22 @@ const RouteLayout = () => {
           // This was a Stripe URL - you can return or add extra handling here as you see fit
         }
         const urlObj = new URL(url);
-        const token = urlObj.searchParams.get('token');
-        if (url.includes('reset-password')) {
-          if (token) {
-            // パスワードリセット画面に遷移
-            router.push({
-              pathname: '/(auth)/ResetPassword',
-              params: { token },
-            });
-          }
+        if (url.includes('ResetPassword')) {
+          const params = new URLSearchParams(urlObj.hash.replace(/^#/, ''));
+          const tokens = {
+            access_token: params.get('access_token') ?? undefined,
+            refresh_token: params.get('refresh_token') ?? undefined,
+            expires_in: params.get('expires_in') ?? undefined,
+            type: params.get('type') ?? undefined,
+          };
+          // パスワードリセット画面に遷移
+          router.push({
+            pathname: '/(auth)/ResetPassword',
+            params: {
+              access_token: tokens.access_token ?? undefined,
+              refresh_token: tokens.refresh_token ?? undefined,
+            },
+          } as const);
         }
       }
     },
