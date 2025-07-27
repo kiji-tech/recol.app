@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BackgroundView, Button } from '@/src/components';
-import { Alert, Text, TextInput, View } from 'react-native';
+import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Image } from 'expo-image';
 import { Link, router } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
@@ -124,9 +124,14 @@ export default function SignInScreen() {
             <View className="w-1/3 h-px bg-light-border dark:bg-dark-border"></View>
           </View>
 
-          <View className="flex flex-row justify-center items-center gap-2">
+          <View className="flex flex-row justify-center items-center gap-2 mb-4">
             {/* Googleでサインイン */}
             <GoogleSignInButton disabled={isLoading} />
+          </View>
+          <View className="flex flex-row justify-center items-center gap-2">
+            <TouchableOpacity onPress={() => router.navigate('/(home)')}>
+              <Text className="text-sm text-light-text dark:text-dark-text">ホームに戻る</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

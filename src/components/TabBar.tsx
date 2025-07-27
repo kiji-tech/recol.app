@@ -7,6 +7,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useTheme } from '../contexts/ThemeContext';
 import { MyBannerAd } from './Ad/BannerAd';
 import { useAuth } from '../contexts/AuthContext';
+import { router } from 'expo-router';
 
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { isDarkMode } = useTheme();
@@ -29,7 +30,12 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
 
           const isFocused = state.index === index;
 
+          // === Method ===
           const onPress = () => {
+            if (!profile) {
+              router.push('/(auth)/SignIn');
+              return;
+            }
             const event = navigation.emit({
               type: 'tabPress',
               target: route.key,
@@ -41,14 +47,9 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
             }
           };
 
-          const onLongPress = () => {
-            navigation.emit({
-              type: 'tabLongPress',
-              target: route.key,
-            });
-          };
-
+          // === Render ===
           if (label == 'サンプル' && process.env.EXPO_PUBLIC_APP_ENV != 'development') return;
+          // サンプルコンポーネントは非表示
           if (
             label.toString().indexOf('Components') >= 0 ||
             label.toString().indexOf('components') >= 0
@@ -65,7 +66,6 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
               accessibilityState={isFocused ? { selected: true } : {}}
               accessibilityLabel={options.tabBarAccessibilityLabel}
               onPress={onPress}
-              onLongPress={onLongPress}
             >
               {label == 'ホーム' && (
                 <Entypo name="home" size={20} color={isDarkMode ? 'white' : 'black'} />

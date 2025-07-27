@@ -1,7 +1,6 @@
 import '@/global.css';
 import React, { useCallback, useEffect, useState } from 'react';
 import { router, Stack } from 'expo-router';
-import { supabase } from '../libs/supabase';
 import { PlanProvider } from '../contexts/PlanContext';
 import { AuthProvider } from '../contexts/AuthContext';
 import { Linking, StatusBar, View } from 'react-native';
@@ -79,14 +78,6 @@ const Layout = () => {
   }, []);
 
   const initializeApp = async () => {
-    // セッションチェック
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session) {
-      router.replace('/(auth)/SignIn');
-    }
-
     // 広告初期化
     initAd();
   };
