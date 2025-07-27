@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-
 import { BackgroundView, Button } from '@/src/components';
 import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { LogUtil } from '@/src/libs/LogUtil';
-import GoogleSignInButton from '@/src/components/Common/GoogleSignInButton';
+import ExternalSignInButton from './components/ExternalSignInButton';
+import BackHomeLink from './components/BackHomeLink';
+import ReCoLTop from './components/ReCoLTop';
+import Bar from './components/Bar';
 
 export default function SignUpScreen() {
   // ==== Member ===
@@ -74,19 +75,7 @@ export default function SignUpScreen() {
   return (
     <BackgroundView>
       <View className="flex flex-col items-center w-full gap-8 ">
-        <Text className="text-4xl font-bold text-light-text dark:text-dark-text">
-          Welcome to the Re:CoL
-        </Text>
-        <Image
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
-          source={require('../../../assets/images/icon.png')}
-          style={{
-            width: 208,
-            height: 208,
-            borderRadius: 100,
-            marginBottom: 16,
-          }}
-        />
+        <ReCoLTop />
         {/* form */}
         <View className="w-full flex flex-col gap-4">
           <TextInput
@@ -137,15 +126,10 @@ export default function SignUpScreen() {
               ログイン画面に戻る
             </Text>
           </TouchableOpacity>
-          <View className="flex flex-row justify-center items-center gap-4 mt-4">
-            <View className="w-1/3 h-px bg-light-border dark:bg-dark-border"></View>
-            <Text className="text-sm text-light-text dark:text-dark-text">または</Text>
-            <View className="w-1/3 h-px bg-light-border dark:bg-dark-border"></View>
-          </View>
-          <View className="flex flex-row justify-center items-center gap-2">
-            {/* Googleでサインイン */}
-            <GoogleSignInButton disabled={isLoading} />
-          </View>
+
+                  <Bar text="または" />
+          <ExternalSignInButton isLoading={isLoading} />
+          <BackHomeLink />
         </View>
       </View>
     </BackgroundView>

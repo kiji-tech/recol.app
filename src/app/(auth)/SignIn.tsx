@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { BackgroundView, Button } from '@/src/components';
-import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { Image } from 'expo-image';
+import { Alert, ScrollView, TextInput, View } from 'react-native';
 import { Link, router } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { LogUtil } from '@/src/libs/LogUtil';
-import GoogleSignInButton from '@/src/components/Common/GoogleSignInButton';
-import AppleSignInButton from '@/src/components/Common/AppleSignInButton';
+import ExternalSignInButton from './components/ExternalSignInButton';
+import BackHomeLink from './components/BackHomeLink';
+import ReCoLTop from './components/ReCoLTop';
+import Bar from './components/Bar';
+
 export default function SignInScreen() {
   // ==== Member ===
   const { login } = useAuth();
@@ -54,20 +56,8 @@ export default function SignInScreen() {
     <BackgroundView>
       <ScrollView>
         <View className="flex flex-col items-center w-full gap-8">
-          <Text className="text-4xl font-bold text-light-text dark:text-dark-text">
-            Welcome to the Re:CoL
-          </Text>
-          {/* 画像 */}
-          <Image
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
-            source={require('../../../assets/images/icon.png')}
-            style={{
-              width: 208,
-              height: 208,
-              borderRadius: 100,
-              marginBottom: 16,
-            }}
-          />
+          <ReCoLTop />
+
           {/* form */}
           <View className="w-full flex flex-col gap-4">
             <TextInput
@@ -120,23 +110,10 @@ export default function SignInScreen() {
               パスワードを忘れた方はこちら
             </Link>
 
-            <View className="flex flex-row justify-center items-center gap-4 mt-4">
-              <View className="w-1/3 h-px bg-light-border dark:bg-dark-border"></View>
-              <Text className="text-sm text-light-text dark:text-dark-text">または</Text>
-              <View className="w-1/3 h-px bg-light-border dark:bg-dark-border"></View>
-            </View>
+            <Bar text="または" />
 
-            <View className="flex flex-row justify-center items-center gap-2 mb-4">
-              {/* Googleでサインイン */}
-              <GoogleSignInButton disabled={isLoading} />
-              {/* Appleでサインイン */}
-              <AppleSignInButton disabled={isLoading} />
-            </View>
-            <View className="flex flex-row justify-center items-center gap-2">
-              <TouchableOpacity onPress={() => router.navigate('/(home)')}>
-                <Text className="text-sm text-light-text dark:text-dark-text">ホームに戻る</Text>
-              </TouchableOpacity>
-            </View>
+            <ExternalSignInButton isLoading={isLoading} />
+            <BackHomeLink />
           </View>
         </View>
       </ScrollView>
