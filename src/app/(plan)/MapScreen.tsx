@@ -62,12 +62,25 @@ export default function MapScreen() {
       } as Region;
     });
     setSelectedPlace(place);
-    setIsModalOpen(true);
+  };
+
+  const handleSelectedInfoCard = (place: Place) => {
+    setRegion((prev) => {
+      return {
+        ...(prev || {}),
+        ...place.location,
+        latitude: place.location.latitude,
+      } as Region;
+    });
+    setSelectedPlace(place);
+    if (selectedPlace == place) {
+      setIsModalOpen(true);
+    }
   };
 
   /** スクロールする際のX軸の計算 */
   const calcScrollWidth = (place: Place) => {
-    const CARD_WIDTH = 300;
+    const CARD_WIDTH = 360;
     const index = placeList.findIndex((p) => p.id === place.id);
     return index * CARD_WIDTH;
   };
@@ -118,7 +131,7 @@ export default function MapScreen() {
               <ScheduleInfoCard
                 key={schedule.uid}
                 schedule={schedule}
-                onPress={handleSelectedPlace}
+                onPress={handleSelectedInfoCard}
               />
             ))}
           </ScrollView>
