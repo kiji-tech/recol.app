@@ -44,6 +44,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // ログイン関数
   const login = async (email: string, password: string) => {
     setLoading(true);
+    await AsyncStorage.removeItem('sessionType');
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
     setSession(data.session);
@@ -240,7 +241,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           await supabase.auth.signOut();
           return;
         }
-
         setSession(data.session);
         setUser(data.session.user);
       } else {
