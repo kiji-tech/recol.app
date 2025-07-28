@@ -101,6 +101,7 @@ export default function ResetPassword() {
       await updateUserPassword(password);
 
       // パスワードリセット処理後にセッション情報をクリア
+      await AsyncStorage.removeItem('sessionType');
       await supabase.auth.signOut();
 
       // ローカルストレージからセッション情報を削除

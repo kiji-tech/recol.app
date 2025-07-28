@@ -92,7 +92,6 @@ const Layout = () => {
       />
       <Stack>
         <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
-        <Stack.Screen name="(blog)" options={{ title: 'ブログ', headerShown: false }} />
         <Stack.Screen name="(plan)" options={{ title: '計画表示', headerShown: false }} />
         <Stack.Screen name="(chat)" options={{ title: 'チャット', headerShown: false }} />
         <Stack.Screen name="(settings)" options={{ title: '設定', headerShown: false }} />

@@ -22,7 +22,7 @@ export default function ScheduleInfoCard({ schedule, onPress }: ScheduleInfoCard
       {placeList.map((place) => (
         <TouchableOpacity
           key={place.id}
-          className="flex flex-col gap-2 rounded-md mr-4 bg-light-background dark:bg-dark-background border border-light-border dark:border-dark-border w-80"
+          className="flex flex-col gap-2 rounded-md mr-4 bg-light-background dark:bg-dark-background border border-light-border dark:border-dark-border w-[360px]"
           onPress={() => onPress(place)}
         >
           {place.photos && place.photos.length > 0 && (
