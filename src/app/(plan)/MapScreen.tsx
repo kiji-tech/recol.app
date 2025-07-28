@@ -9,7 +9,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { DEFAULT_RADIUS } from '@/src/libs/ConstValue';
 import Map from '@/src/components/GoogleMaps/Map';
 import ScheduleInfoCard from './components/(MapScreen)/ScheduleInfoCard';
-import PlaceDetailModal from '@/src/components/Modal/PlaceDetailModal';
 
 /**
  * 初期表示
@@ -18,7 +17,6 @@ export default function MapScreen() {
   // === Member ===
   const scrollRef = useRef<ScrollView>(null);
   const platform = Platform.OS;
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { plan } = usePlan();
   const { currentRegion } = useLocation();
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(
@@ -73,14 +71,11 @@ export default function MapScreen() {
       } as Region;
     });
     setSelectedPlace(place);
-    if (selectedPlace == place) {
-      setIsModalOpen(true);
-    }
   };
 
   /** スクロールする際のX軸の計算 */
   const calcScrollWidth = (place: Place) => {
-    const CARD_WIDTH = 360;
+    const CARD_WIDTH = 380;
     const index = placeList.findIndex((p) => p.id === place.id);
     return index * CARD_WIDTH;
   };
@@ -137,14 +132,6 @@ export default function MapScreen() {
           </ScrollView>
         </View>
       </View>
-      {isModalOpen && (
-        <PlaceDetailModal
-          place={selectedPlace!}
-          isEdit={false}
-          selected={false}
-          onClose={() => setIsModalOpen(false)}
-        />
-      )}
     </>
   );
 }
