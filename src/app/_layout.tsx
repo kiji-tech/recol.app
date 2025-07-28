@@ -1,7 +1,6 @@
 import '@/global.css';
 import React, { useCallback, useEffect, useState } from 'react';
 import { router, Stack } from 'expo-router';
-import { supabase } from '../libs/supabase';
 import { PlanProvider } from '../contexts/PlanContext';
 import { AuthProvider } from '../contexts/AuthContext';
 import { Linking, StatusBar, View } from 'react-native';
@@ -79,14 +78,6 @@ const Layout = () => {
   }, []);
 
   const initializeApp = async () => {
-    // セッションチェック
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session) {
-      router.replace('/(auth)/SignIn');
-    }
-
     // 広告初期化
     initAd();
   };
@@ -101,7 +92,6 @@ const Layout = () => {
       />
       <Stack>
         <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
-        <Stack.Screen name="(blog)" options={{ title: 'ブログ', headerShown: false }} />
         <Stack.Screen name="(plan)" options={{ title: '計画表示', headerShown: false }} />
         <Stack.Screen name="(chat)" options={{ title: 'チャット', headerShown: false }} />
         <Stack.Screen name="(settings)" options={{ title: '設定', headerShown: false }} />
@@ -130,15 +120,22 @@ const RouteLayout = () => {
           // This was a Stripe URL - you can return or add extra handling here as you see fit
         }
         const urlObj = new URL(url);
-        const token = urlObj.searchParams.get('token');
-        if (url.includes('reset-password')) {
-          if (token) {
-            // パスワードリセット画面に遷移
-            router.push({
-              pathname: '/(auth)/ResetPassword',
-              params: { token },
-            });
-          }
+        if (url.includes('ResetPassword')) {
+          const params = new URLSearchParams(urlObj.hash.replace(/^#/, ''));
+          const tokens = {
+            access_token: params.get('access_token') ?? undefined,
+            refresh_token: params.get('refresh_token') ?? undefined,
+            expires_in: params.get('expires_in') ?? undefined,
+            type: params.get('type') ?? undefined,
+          };
+          // パスワードリセット画面に遷移
+          router.push({
+            pathname: '/(auth)/ResetPassword',
+            params: {
+              access_token: tokens.access_token ?? undefined,
+              refresh_token: tokens.refresh_token ?? undefined,
+            },
+          } as const);
         }
       }
     },

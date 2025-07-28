@@ -4,7 +4,7 @@ import { LogUtil } from './LogUtil';
 import Stripe from 'stripe';
 import { Place } from '../entities/Place';
 import { Plan, Schedule } from '@/src/entities/Plan';
-import { Profile } from '../entities/Profile';
+import { Profile, Subscription } from '../entities';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL;
 
@@ -240,14 +240,11 @@ async function getProfile(session: Session | null, ctrl?: AbortController) {
  * プロフィールの作成
  */
 async function createProfile(session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Tables<'profile'> & { subscription: Tables<'subscription'>[] }>(
-    '/profile',
-    {
-      method: 'POST',
-      session,
-      ctrl,
-    }
-  );
+  const response = await apiRequest<Profile & { subscription: Subscription[] }>('/profile', {
+    method: 'POST',
+    session,
+    ctrl,
+  });
   return response.data!;
 }
 

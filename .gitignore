@@ -93,3 +93,4 @@ expo-env.d.ts
 google-services.*
 google-services-web.json
 service-account-key.json
+jwtEncode.js

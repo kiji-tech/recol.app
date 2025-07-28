@@ -1,11 +1,10 @@
 import React from 'react';
-import { Tables } from '@/src/libs/database.types';
 import { View, Text } from 'react-native';
-import { SubscriptionUtil } from '@/src/libs/SubscriptionUtil';
 import dayjs from 'dayjs';
+import { Profile, Subscription } from '@/src/entities';
 
 type CurrentPlanBadgeProps = {
-  profile: (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null;
+  profile: (Profile & { subscription: Subscription[] }) | null;
 };
 
 export default function CurrentPlanBadge({ profile }: CurrentPlanBadgeProps) {
@@ -22,7 +21,7 @@ export default function CurrentPlanBadge({ profile }: CurrentPlanBadgeProps) {
     );
   }
 
-  const isMonthly = SubscriptionUtil.isMonthly(profile);
+  const isMonthly = profile && profile.subscription[0].isMonthly();
   const endDate = dayjs(profile.subscription[0].current_period_end).format('YYYY年MM月DD日');
 
   return (

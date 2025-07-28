@@ -3,6 +3,7 @@ export default {
   name: 'Re:CoL',
   slug: 'yuru-tabi',
   version: '1.0.5',
+  deepLinking: true,
   icon: './assets/images/icon.png',
   owner: 'shinji5761',
   orientation: 'portrait',
@@ -12,6 +13,7 @@ export default {
   ios: {
     icon: './assets/images/icon.png',
     supportsTablet: true,
+    usesAppleSignIn: true,
     bundleIdentifier: 'com.libetech.recol',
     infoPlist: {
       NSCameraUsageDescription: 'カメラを使ってプロフィール画像を設定します',
@@ -165,6 +167,7 @@ export default {
         merchantIdentifier: 'merchant.com.libetech.recol',
       },
     ],
+    'expo-apple-authentication',
   ],
   experiments: {
     typedRoutes: true,

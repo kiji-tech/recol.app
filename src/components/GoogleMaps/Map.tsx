@@ -88,7 +88,6 @@ export default function Map({
   }, [placeList, selectedPlaceList]);
 
   // === Method ===
-
   /** マップ移動 */
   const handleChangeRegion = (region: Region, isGesture: boolean) => {
     if (isGesture) onRegionChange(region);
@@ -99,44 +98,42 @@ export default function Map({
   // === Render ===
   if (!region) return null;
   return (
-    <>
-      <MapView
-        style={{
-          height: '100%',
-          width: '100%',
-          flex: 1,
-        }}
-        provider={PROVIDER_GOOGLE}
-        initialRegion={region}
-        region={region}
-        onRegionChangeComplete={(r, { isGesture }) => {
-          handleChangeRegion(r, isGesture || false);
-        }}
-      >
-        {/** 選択中の場所マーカー */}
-        {isMarker && (
-          <>
-            {selectedPlaceList.map((place) => (
-              <SelectedMarker key={place.id} place={place} onPress={() => onSelectedPlace(place)} />
-            ))}
-            {filterPlaceList.map((place) => (
-              <DefaultMarker key={place.id} place={place} onPress={() => onSelectedPlace(place)} />
-            ))}
-          </>
-        )}
+    <MapView
+      style={{
+        height: '100%',
+        width: '100%',
+        flex: 1,
+      }}
+      provider={PROVIDER_GOOGLE}
+      initialRegion={region}
+      region={region}
+      onRegionChangeComplete={(r, { isGesture }) => {
+        handleChangeRegion(r, isGesture || false);
+      }}
+    >
+      {/** 選択中の場所マーカー */}
+      {isMarker && (
+        <>
+          {selectedPlaceList.map((place) => (
+            <SelectedMarker key={place.id} place={place} onPress={() => onSelectedPlace(place)} />
+          ))}
+          {filterPlaceList.map((place) => (
+            <DefaultMarker key={place.id} place={place} onPress={() => onSelectedPlace(place)} />
+          ))}
+        </>
+      )}
 
-        {/* センターサークル */}
-        {isCenterCircle && (
-          <CenterCircle
-            region={{ ...region, latitude: region.latitude }}
-            radius={radius}
-            fillColor="rgba(30,150,200,0.2)"
-            strokeColor="#C1EBEE"
-          />
-        )}
-        {/* ツールチップ */}
-        {isCallout && <Callout tooltip={true} />}
-      </MapView>
-    </>
+      {/* センターサークル */}
+      {isCenterCircle && (
+        <CenterCircle
+          region={{ ...region, latitude: region.latitude }}
+          radius={radius}
+          fillColor="rgba(30,150,200,0.2)"
+          strokeColor="#C1EBEE"
+        />
+      )}
+      {/* ツールチップ */}
+      {isCallout && <Callout tooltip={true} />}
+    </MapView>
   );
 }

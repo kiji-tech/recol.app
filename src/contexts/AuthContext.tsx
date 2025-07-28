@@ -2,21 +2,22 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../libs/supabase';
 import { getProfile } from '../libs/ApiService';
-import { Tables } from '../libs/database.types';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { LogUtil } from '../libs/LogUtil';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
-import { Profile } from '../entities/Profile';
+import * as AppleAuthentication from 'expo-apple-authentication';
+import { Profile, Subscription } from '../entities';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // 型定義
 export type AuthContextType = {
   user: User | null;
   session: Session | null;
-  profile: Profile;
-  getProfileInfo: () => Profile;
+  profile: (Profile & { subscription: Subscription[] }) | null;
+  getProfileInfo: () => (Profile & { subscription: Subscription[] }) | null;
   fetchProfile: () => Promise<void>;
-  setProfile: (profile: Profile) => void;
+  setProfile: (profile: (Profile & { subscription: Subscription[] }) | null) => void;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -24,6 +25,7 @@ export type AuthContextType = {
   resetPassword: (email: string) => Promise<void>;
   updateUserPassword: (password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  signInWithApple: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,9 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<
-    (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null
-  >(null);
+  const [profile, setProfile] = useState<(Profile & { subscription: Subscription[] }) | null>(null);
   const [loading, setLoading] = useState(true);
 
   const getProfileInfo = useCallback(() => {
@@ -44,14 +44,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // ログイン関数
   const login = async (email: string, password: string) => {
     setLoading(true);
+    await AsyncStorage.removeItem('sessionType');
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
     setSession(data.session);
     setUser(data.session?.user ?? null);
     if (data.session) {
       try {
-        const profileData = await getProfile(data.session);
-        setProfile(profileData);
+        await fetchProfile();
       } catch {
         setProfile(null);
       }
@@ -76,8 +76,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(data.session?.user ?? null);
     if (data.session) {
       try {
-        const profileData = await getProfile(data.session);
-        setProfile(profileData);
+        await fetchProfile();
       } catch {
         setProfile(null);
       }
@@ -91,6 +90,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const resetPassword = async (email: string) => {
     setLoading(true);
     const resetPasswordURL = Linking.createURL('/(auth)/ResetPassword');
+    LogUtil.log('resetPasswordURL: ' + resetPasswordURL, { level: 'info' });
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: resetPasswordURL,
     });
@@ -167,12 +167,60 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // Appleサインイン関数
+  const signInWithApple = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [AppleAuthentication.AppleAuthenticationScope.EMAIL],
+      });
+
+      if (credential.identityToken) {
+        const { data, error } = await supabase.auth.signInWithIdToken({
+          provider: 'apple',
+          token: credential.identityToken,
+        });
+
+        if (error) {
+          LogUtil.log('signInWithApple error: ' + JSON.stringify(error), {
+            level: 'error',
+            notify: true,
+          });
+          throw error;
+        }
+        LogUtil.log('signInWithApple data: ' + JSON.stringify(data), { level: 'info' });
+        router.navigate('/(home)');
+      } else {
+        LogUtil.log('signInWithApple error: no identity token present!', {
+          level: 'error',
+          notify: true,
+        });
+        throw new Error('no identity token present!');
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+      }
+      if (typeof error === 'object' && error !== null && 'code' in error) {
+        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+          // user cancelled the login flow
+        } else if (error.code === statusCodes.IN_PROGRESS) {
+          // operation (e.g. sign in) is in progress already
+        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          // play services not available or outdated
+        }
+      } else {
+        // some other error happened
+      }
+    }
+  };
+
   /** プロフィール取得 */
   const fetchProfile = async () => {
     if (!session) return;
     getProfile(session)
-      .then(async (data) => {
-        setProfile(data);
+      .then(async (profileData) => {
+        const p = new Profile(profileData);
+        setProfile(p);
       })
       .catch((e) => {
         if (e && e.message) {
@@ -187,6 +235,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(true);
       const { data } = await supabase.auth.getSession();
       if (data.session) {
+        // AsyncStorageでリカバリーセッションかどうかチェックする
+        const recoverySession = await AsyncStorage.getItem('sessionType');
+        if (recoverySession == 'recovery') {
+          await supabase.auth.signOut();
+          return;
+        }
         setSession(data.session);
         setUser(data.session.user);
       } else {
@@ -209,8 +263,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(session?.user ?? null);
       if (session) {
         try {
-          const profileData = await getProfile(session);
-          setProfile(profileData);
+          await fetchProfile();
         } catch {
           setProfile(null);
         }
@@ -235,16 +288,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user,
         session,
         profile,
+        loading,
         getProfileInfo,
         fetchProfile,
         setProfile,
-        loading,
         login,
         logout,
         signup,
         resetPassword,
         updateUserPassword,
         signInWithGoogle,
+        signInWithApple,
       }}
     >
       {children}

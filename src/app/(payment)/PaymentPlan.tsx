@@ -10,12 +10,12 @@ import {
   updateStripeSubscription,
 } from '@/src/libs/ApiService';
 import { LogUtil } from '@/src/libs/LogUtil';
-import { SubscriptionUtil } from '@/src/libs/SubscriptionUtil';
-import { Tables } from '@/src/libs/database.types';
 import CurrentPlanBadge from './components/(PaymentPlan)/CurrentPlanBadge';
 import dayjs from 'dayjs';
 import PlanTable from './components/(PaymentPlan)/PlanTable';
 import PlanCard from './components/(PaymentPlan)/PlanCard';
+import { Profile } from '@/src/entities/Profile';
+import { Subscription } from '@/src/entities/Subscription';
 
 export default function PaymentPlan() {
   // === Member ===
@@ -24,14 +24,14 @@ export default function PaymentPlan() {
   const [isLoading, setIsLoading] = useState(false);
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const { session, getProfileInfo } = useAuth();
-  const [profile, setProfile] = useState<
-    (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null
-  >(null);
+  const [profile, setProfile] = useState<(Profile & { subscription: Subscription[] }) | null>(null);
 
   // === Method ===
+  // TODO: setupSubscriptionとupdateSubscriptionはViewには関係ないので分離したい
   /** Stripeの支払いシートをセットアップ */
   const setupSubscription = async (type: 'm' | 'y') => {
     LogUtil.log('setup subscription.');
+    setIsLoading(true);
     const priceId =
       type == 'm'
         ? process.env.EXPO_PUBLIC_STRIPE_MONTHLY_PLAN
@@ -59,14 +59,15 @@ export default function PaymentPlan() {
       paymentIntentClientSecret: clientSecret,
       allowsDelayedPaymentMethods: true,
     });
+    setIsLoading(false);
   };
 
   const setupUpdateSubscription = async (type: 'm' | 'y') => {
-    setIsLoading(true);
     const priceId =
       type == 'm'
         ? process.env.EXPO_PUBLIC_STRIPE_MONTHLY_PLAN
         : process.env.EXPO_PUBLIC_STRIPE_YEARLY_PLAN;
+    setIsLoading(true);
 
     updateStripeSubscription(profile!.subscription[0].uid, priceId || '', session)
       .then(() => {
@@ -121,6 +122,7 @@ export default function PaymentPlan() {
 
   /** プレミアムプランの解約 */
   const handleCancel = async () => {
+    setIsLoading(true);
     LogUtil.log('handle cancel.');
 
     if (!profile!.subscription || profile!.subscription.length == 0) {
@@ -194,8 +196,15 @@ export default function PaymentPlan() {
                 price="500円"
                 period="月額"
                 onPress={() => handlePayment('m')}
-                disabled={isLoading || SubscriptionUtil.isMonthly(profile!)}
-                isCurrentPlan={SubscriptionUtil.isMonthly(profile!)}
+                disabled={
+                  isLoading ||
+                  (profile &&
+                    profile.subscription.length > 0 &&
+                    profile.subscription[0].isMonthly())
+                }
+                isCurrentPlan={
+                  profile && profile.subscription.length > 0 && profile.subscription[0].isMonthly()
+                }
               />
               <PlanCard
                 price="5,000円"
@@ -204,8 +213,13 @@ export default function PaymentPlan() {
                 discount="17%OFF"
                 isPopular={true}
                 onPress={() => handlePayment('y')}
-                disabled={isLoading || SubscriptionUtil.isYearly(profile!)}
-                isCurrentPlan={SubscriptionUtil.isYearly(profile!)}
+                disabled={
+                  isLoading ||
+                  (profile && profile.subscription.length > 0 && profile.subscription[0].isYearly())
+                }
+                isCurrentPlan={
+                  profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()
+                }
               />
             </View>
           </View>
