@@ -31,14 +31,14 @@ backend --> db
 
 ### 使用技術
 
-| カテゴリ       | 仕様技術                                                                       |
-| -------------- | ------------------------------------------------------------------------------ |
-| Frontend       | TypeScript, node.js, Expo, React ReactNative, Expo, TailwindCSS(NativewindCSS) |
-| Backend        | TypeScript, Supabase Edge Functions, Deno, Hono                                |
-| DB             | SupabaseDB(PostgreSQL)                                                         |
-| Storage        | Supabase Storage                                                               |
-| Infra          | Supabase, EAS                                                                  |
-| その他サービス | Google Maps sApi, Stripe, microCMS, SupabaseAuthenticate                       |
+| カテゴリ       | 仕様技術                                                        |
+| -------------- | --------------------------------------------------------------- |
+| Frontend       | TypeScript, Expo, React ReactNative, TailwindCSS(NativewindCSS) |
+| Backend        | TypeScript, Supabase Edge Functions, Deno, Hono                 |
+| DB             | SupabaseDB(PostgreSQL)                                          |
+| Storage        | Supabase Storage                                                |
+| Infra          | Supabase, EAS                                                   |
+| その他サービス | Google Maps sApi, Stripe, microCMS, SupabaseAuthenticate        |
 
 ### 画面構成
 
