@@ -2,7 +2,6 @@ import React from 'react';
 import { Tables } from '@/src/libs/database.types';
 import { ReactNode, useEffect, useState } from 'react';
 import { Text, View, Alert } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 import ScheduleItem from './ScheduleItem';
 import dayjs from 'dayjs';
 import { fetchScheduleList } from '@/src/libs/ApiService';
@@ -112,7 +111,7 @@ export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode
 
   // === Render ===
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <>
       <View className="bg-light-background dark:bg-dark-background rounded-xl">
         {scheduleList.map((schedule, index) => {
           const date = dayjs(schedule.from).format(DATE_FORMAT);
@@ -151,6 +150,6 @@ export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode
       <View className="mt-8">
         <Button text="スケジュールを追加" onPress={() => handleAddSchedule()} />
       </View>
-    </ScrollView>
+    </>
   );
 }

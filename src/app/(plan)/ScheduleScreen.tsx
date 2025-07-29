@@ -13,6 +13,7 @@ import MaskLoading from '@/src/components/MaskLoading';
 import ToastManager, { Toast } from 'toastify-react-native';
 import PlanInformation from './components/(ScheduleScreen)/PlanInformation';
 import ScheduleMenu from './components/(ScheduleScreen)/ScheduleMenu';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
@@ -86,14 +87,16 @@ export default function ScheduleScreen(): ReactNode {
         rightComponent={viewPlan ? <ScheduleMenu plan={viewPlan} /> : undefined}
       />
       {/* Plan Information */}
-      {viewPlan && (
-        <>
-          <PlanInformation plan={viewPlan} />
-          {/* Schedule */}
-          <ScheduleComponents plan={viewPlan} onDelete={handleDeleteSchedule} />
-        </>
-      )}
-      {planLoading && <MaskLoading />}
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {viewPlan && (
+          <>
+            <PlanInformation plan={viewPlan} />
+            {/* Schedule */}
+            <ScheduleComponents plan={viewPlan} onDelete={handleDeleteSchedule} />
+          </>
+        )}
+        {planLoading && <MaskLoading />}
+      </ScrollView>
       <ToastManager />
     </BackgroundView>
   );
