@@ -1,3 +1,61 @@
+## このサービスについて
+
+### 開発ツール
+
+```mermaid
+---
+title: 開発構成図
+---
+flowchart LR
+
+app[Expo]
+blog[microCMS]
+subgraph supabase
+    backend[Edge Functions]
+    auth[Authenticate]
+    storage[Storage]
+    db@{ shape: cyl, label: "DataBase" }
+end
+
+map[Google Maps API]
+
+app -- email, Google, Apple --> auth
+app --> map
+app --> blog
+
+storage --> app
+backend --> storage
+app -- REST API --> backend
+backend --> db
+```
+
+### 使用技術
+
+| カテゴリ       | 仕様技術                                                                       |
+| -------------- | ------------------------------------------------------------------------------ |
+| Frontend       | TypeScript, node.js, Expo, React ReactNative, Expo, TailwindCSS(NativewindCSS) |
+| Backend        | TypeScript, Supabase Edge Functions, Deno, Hono                                |
+| DB             | SupabaseDB(PostgreSQL)                                                         |
+| Storage        | Supabase Storage                                                               |
+| Infra          | Supabase, EAS                                                                  |
+| その他サービス | Google Maps sApi, Stripe, microCMS, SupabaseAuthenticate                       |
+
+### 画面構成
+
+| スクリーン                 | 説明                                                                                | 画像                                                          |
+| -------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| ホームスクリーン           | microCMSで取得した記事を表示する｡                                                   | <img width="120" src="./images/home-screen.png" />            |
+| 計画一覧スクリーン         | 作成した計画を一覧表示する｡                                                         | <img width="120" src="./images/plan-list-screen.png" />       |
+| 設定スクリーン             | Re:CoLのアプリ設定､画面｡<br />通知､ダークモード､プラン変更など｡                     | <img width="120" src="./images/settings-screen.png" />        |
+| 計画作成・編集スクリーン   | 計画を作成､編集するための画面｡                                                      | <img width="120" src="./images/plan-editor.png" />            |
+| スケジュールスクリーン     | 作成した計画の詳細を表示する｡<br/>計画にはスケジュールと画像を登録することができる｡ | <img width="120" src="./images/schedule-screen.png" />        |
+| スケジュール作成スクリーン | 計画にスケジュールを登録するための画面｡                                             | <img width="120" src="./images/schedule-editor-screen.png" /> |
+| メディアスクリーン         | 計画事に登録されている画像の表示､登録､削除をすることができる｡                       | <img width="120" src="./images/media-screen.png" />           |
+| マップスクリーン           | スケジュールに登録されているマップ（プレイス情報）をまとめて表示する｡               | <img width="120" src="./images/map-screen.png" />             |
+| ログイン                   | ログイン画面<br />iOS→AppleSignin<br />Android →Google                              | <img width="120" src="./images/signin-screen.png" />          |
+| 新規登録                   |                                                                                     | <img width="120" src="./images/signup-screen.png" />          |
+| パスワードリセット         | パスワードを忘れた場合にリセットリクエストを送信する｡                               | <img width="120" src="./images/forget-password.png" />        |
+
 ## 作業コマンド
 
 ### ios androidプロジェクトのbuild packageのupdate
@@ -8,7 +66,7 @@ $ npm run prebuild --clean
 
 ### 起動
 
-`シミュレータ` 
+`シミュレータ`
 
 ```bash
 # ios
@@ -18,14 +76,14 @@ $ npm run ios
 $ npm run android
 ```
 
-`Supabase Edge Function` 
+`Supabase Edge Function`
 
 ```bash
 # ローカルサーバーでfunction起動
 $ npm run functions:dev
 ```
 
-`Supabase DB Types Generation` 
+`Supabase DB Types Generation`
 
 ```bash
 # DB - Table情報の更新
