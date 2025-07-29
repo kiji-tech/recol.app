@@ -77,42 +77,45 @@ backend --> db
 ### ios androidプロジェクトのbuild packageのupdate
 
 ```bash
-$ npm run prebuild --clean
+# iOS､Android用のプロジェクト作成
+$ pnpm prebuild --clean
+
+# iOS
+$ cd ios
+$ pod repo update
+$ pod install --repo-update
+
+# android
+$ cd android
+$ ### 調べ中 ###
 ```
 
-### 起動
-
-`シミュレータ`
+### ローカル環境の起動
 
 ```bash
-# ios
-$ npm run ios
+# モバイルアプリの起動
+# あらかじめシミュレータが起動できるようになっていること
+$ pnpm ios
+$ pnpm android
 
-# android ※広告を入れてからうごいいていない（25/3/21）
-$ npm run android
+### Supabase ###
+# Supabase CLIがインストールされていること
+# supabase linkで該当のSupabaseが紐づいていること
+# Dockerがインストールされていること
+$ supabase start
+$ pnpm functions:dev
+
+### Stripe ###
+# Stripe CLIがインストールされていること
+$ pnpm stripe:dev
+
 ```
 
-`Supabase Edge Function`
-
-```bash
-# ローカルサーバーでfunction起動
-$ npm run functions:dev
-```
-
-`Supabase DB Types Generation`
+### Supabase DB Types Generation
 
 ```bash
 # DB - Table情報の更新
 $ npm run generate:types:local
-```
-
-`AI Agent (OpenHands)`
-
-```bash
-$ npm run agent
-
-# CUIで実行にする場合は､agentのコマンドに以下を追加する
-$ npm run agent python -m openhands.core.cli
 ```
 
 ### テスト
@@ -121,20 +124,24 @@ $ npm run agent python -m openhands.core.cli
 $ npm run test
 ```
 
-### デプロイコマンド
+## ビルド・デプロイコマンド
 
-`アプリケーション`
+### アプリケーション
 
 ```bash
-# ローカルにビルドファイルを作成
-$ eas build --local --platform android
-
+### ビルド
 # profileは､eas.jsonに定義しているものに依存する
-$ eas build --profile preview --platform android ･･･ プレビュー環境にデプロイ
-$ eas build --profile production --platform all ･･･ Storeアプリにビルド
+$ pnpm build:production:android
+$ pnpm build:production:ios
+# 指定がない場合は､両方ビルドする
+$ pnpm build:production
+
+### Storeへリリース ###
+$ pnpm submit:ios
+$ pnpm submit:android
 ```
 
-`supabase edge function`
+### supabase edge function
 
 ```bash
 # 全functionsをデプロイ
@@ -145,7 +152,7 @@ $ npm run functions:deploy [functions名]
 
 ```
 
-`migration関係`
+### migration関係
 
 ```bash
 # ローカルとリモートの差分を確認する
@@ -160,8 +167,6 @@ $ supabase migration list
 # migrationファイルを反映させる
 $ supabase db push
 ```
-
----
 
 ## ドキュメント
 
