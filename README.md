@@ -1,4 +1,4 @@
-## このサービスについて
+## Re:CoL
 
 ### 開発ツール
 
@@ -71,6 +71,29 @@ backend --> db
 | ------------------------------------------------------ | --- |
 | <img width="120" src="./images/forget-password.png" /> |     |
 | パスワードを忘れた場合にリセットリクエストを送信する｡  |     |
+
+## ディレクトリ構成
+
+```
+
+src/ ･･･ Expoアプリケーション
+├ app/ ･･･ スクリーン（ページ）関係
+├ components/ ･･･ 共通コンポーネント
+├ contexts/ ･･･ プロバイダー
+├ entities/ ･･･ モデル
+├ features/ ･･･ 機能ごとロジックまとめ
+│   ├ (機能名)/apis/ ･･･ API
+│   ├ (機能名)/hooks/ ･･･ useHooks（controller部分）
+│   ├ (機能名)/libs/ ･･･ 機能特有のロジック
+├ theme/ ･･･ 配色などのテーマ関係
+├ supabase/ ･･･ Supabase関係
+│   ├ functions/ ･･･ EdgeFunctions
+│   ├ migrations/ ･･･ データベースマイグレーションファイル（手動変更禁止）
+│   ├ config.toml ･･･ ローカルSupabaseの設定ファイル
+│   ├ seed.sql ･･･ DB構築時の初回SQL実行ファイル
+├ test/ ･･･ テストコード
+├ assets/ ･･･ アイコンなどの画像ファイル
+```
 
 ## 作業コマンド
 
