@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Article } from '@/src/entities/Article';
-import { fetchArticleList } from '../apis/articleApiService';
+import { fetchArticleList } from '../apis/fetchArticleList';
 import { LogUtil } from '@/src/libs/LogUtil';
 export const useArticles = () => {
   const [articles, setArticles] = useState<Article[]>([]);
