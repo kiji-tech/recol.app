@@ -74,11 +74,21 @@ backend --> db
 
 ## 作業コマンド
 
-### ios androidプロジェクトのbuild packageのupdate
+### Expoパッケージの確認
+
+```bash
+### ライブラリの依存関係確認
+$ npx expo-doctor
+
+# 必要であれば以下でライブラリのバージョンを更新
+$ npx expo install --check
+```
+
+### iOS Androidプロジェクトのbuild packageのupdate
 
 ```bash
 # iOS､Android用のプロジェクト作成
-$ pnpm prebuild --clean
+$ pnpm prebuild
 
 # iOS
 $ cd ios
