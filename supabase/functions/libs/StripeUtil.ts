@@ -77,7 +77,6 @@ export class StripeUtil {
 
   /** サブスクリプションのキャンセル */
   public static async cancelSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
-    const subscription = await stripe.subscriptions.cancel(subscriptionId);
-    return subscription;
+    return await stripe.subscriptions.cancel(subscriptionId);
   }
 }

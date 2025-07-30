@@ -1,36 +1,29 @@
-import { Tables, Enums } from '../libs/database.types';
-import { Subscription } from './Subscription';
+import { Tables, Enums } from '../../../libs/database.types';
+import { Subscription } from '../../payment/types/Subscription';
 
-type ProfileType = Tables<'profile'>;
-type PaymentPlan = Enums<'PaymentPlan'>;
-type Role = Enums<'Role'>;
+export type ProfileType = Tables<'profile'>;
+export type PaymentPlan = Enums<'PaymentPlan'>;
+export type Role = Enums<'Role'>;
 
 export class Profile {
   public static IS_PREMIUM_USER = true;
 
-  avatar_url: string | null;
-  created_at: string;
-  display_name: string | null;
-  enabled_schedule_notification: boolean | null;
-  notification_token: string | null;
-  payment_plan: PaymentPlan | null;
-  role: Role | null;
-  stripe_customer_id: string | null;
-  uid: string;
-  updated_at: string | null;
+  avatar_url: string | null = null;
+  created_at: string = '';
+  display_name: string | null = null;
+  enabled_schedule_notification: boolean | null = null;
+  notification_token: string | null = null;
+  payment_plan: PaymentPlan | null = null;
+  role: Role | null = null;
+  stripe_customer_id: string | null = null;
+  uid: string = '';
+  updated_at: string | null = null;
   subscription: Subscription[];
 
   constructor(data: ProfileType & { subscription: Tables<'subscription'>[] }) {
-    this.avatar_url = data.avatar_url;
-    this.created_at = data.created_at;
-    this.display_name = data.display_name;
-    this.enabled_schedule_notification = data.enabled_schedule_notification;
-    this.notification_token = data.notification_token;
-    this.payment_plan = data.payment_plan;
-    this.role = data.role;
-    this.stripe_customer_id = data.stripe_customer_id;
-    this.uid = data.uid;
-    this.updated_at = data.updated_at;
+    for (const key in data) {
+      this[key as keyof Profile] = data[key as keyof ProfileType] as never;
+    }
     this.subscription = data.subscription.map((subscription) => new Subscription(subscription));
   }
 

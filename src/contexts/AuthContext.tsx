@@ -1,13 +1,14 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../libs/supabase';
-import { getProfile } from '../libs/ApiService';
+import { getProfile } from '../features/profile';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { LogUtil } from '../libs/LogUtil';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import { Profile, Subscription } from '../entities';
+import { Profile } from '../features/profile';
+import { Subscription } from '../features/payment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // 型定義
@@ -218,9 +219,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const fetchProfile = async () => {
     if (!session) return;
     getProfile(session)
-      .then(async (profileData) => {
-        const p = new Profile(profileData);
-        setProfile(p);
+      .then((profile) => {
+        setProfile(profile);
       })
       .catch((e) => {
         if (e && e.message) {

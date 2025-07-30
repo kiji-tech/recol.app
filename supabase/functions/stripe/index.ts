@@ -55,9 +55,7 @@ const postPaymentSheet = async (c: Hono.Context) => {
     ephemeralKey: ephemeralKey.secret,
     customerId,
     returnURL: redirectURL,
-    publishableKey:
-      Deno.env.get('STRIPE_PUBLIC_KEY') ||
-      'pk_test_51KcTMRCrMIHt8njNuAM1VKZKNxbopIHU8WrJzt42Etnt9qBijGIIBFSY3ubKHCOBEAdxPVl0CUHgI8soIQ2FnZPD00SafQjvFR',
+    publishableKey: Deno.env.get('STRIPE_PUBLIC_KEY') || '',
   });
 };
 
@@ -88,6 +86,7 @@ const updateSubscription = async (c: Hono.Context) => {
   }
   const { subscriptionId, priceId } = await c.req.json();
   const subscription = await StripeUtil.updateSubscription(subscriptionId, priceId);
+  console.log(subscription);
   return c.json(subscription);
 };
 
@@ -98,7 +97,8 @@ const cancelSubscription = async (c: Hono.Context) => {
   if (!user) {
     return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
-  const { subscriptionId } = c.req.json();
+  const { subscriptionId } = await c.req.json();
+  console.log('cancelSubscription', subscriptionId);
   const subscription = await StripeUtil.cancelSubscription(subscriptionId);
   return c.json(subscription);
 };

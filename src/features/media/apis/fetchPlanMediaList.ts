@@ -1,6 +1,6 @@
 import { apiRequest } from '../../commons/apiService';
 import { Session } from '@supabase/supabase-js';
-import { Media } from '../types/Media';
+import { Media, MediaType } from '../types/Media';
 
 /**
  * プランのメディア一覧を取得
@@ -10,13 +10,12 @@ export async function fetchPlanMediaList(
   session: Session | null,
   ctrl?: AbortController
 ): Promise<Media[]> {
-  const response = await apiRequest<Media[]>('/media/list', {
+  const response = await apiRequest<MediaType[]>('/media/list', {
     method: 'POST',
     session,
     body: { planId },
     ctrl,
   });
-    
-    
+
   return response.data?.map((data) => new Media(data)) || [];
 }

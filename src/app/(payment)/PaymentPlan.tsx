@@ -5,84 +5,28 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { PaymentSheetError, useStripe } from '@stripe/stripe-react-native';
 import {
+  Subscription,
   cancelStripeSubscription,
-  createStripeSubscription,
-  updateStripeSubscription,
-} from '@/src/libs/ApiService';
+  setupUpdateSubscription,
+  setupCreateSubscription,
+} from '@/src/features/payment';
 import { LogUtil } from '@/src/libs/LogUtil';
+import { Profile } from '@/src/features/profile';
 import CurrentPlanBadge from './components/(PaymentPlan)/CurrentPlanBadge';
 import dayjs from 'dayjs';
 import PlanTable from './components/(PaymentPlan)/PlanTable';
 import PlanCard from './components/(PaymentPlan)/PlanCard';
-import { Profile } from '@/src/entities/Profile';
-import { Subscription } from '@/src/entities/Subscription';
 
 export default function PaymentPlan() {
   // === Member ===
   const router = useRouter();
-  const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const { presentPaymentSheet } = useStripe();
   const { session, getProfileInfo } = useAuth();
   const [profile, setProfile] = useState<(Profile & { subscription: Subscription[] }) | null>(null);
 
   // === Method ===
   // TODO: setupSubscriptionとupdateSubscriptionはViewには関係ないので分離したい
-  /** Stripeの支払いシートをセットアップ */
-  const setupSubscription = async (type: 'm' | 'y') => {
-    LogUtil.log('setup subscription.');
-    setIsLoading(true);
-    const priceId =
-      type == 'm'
-        ? process.env.EXPO_PUBLIC_STRIPE_MONTHLY_PLAN
-        : process.env.EXPO_PUBLIC_STRIPE_YEARLY_PLAN;
-    if (!priceId) {
-      LogUtil.log({ type, priceId }, { level: 'error' });
-      throw new Error('Price ID is not set');
-    }
-
-    const subscription = await createStripeSubscription(priceId, session);
-    setSubscriptionId(subscription.id);
-
-    // TypeScriptエラーを修正
-    const clientSecret =
-      typeof subscription.latest_invoice === 'string'
-        ? undefined
-        : subscription.latest_invoice?.confirmation_secret?.client_secret;
-
-    if (!clientSecret) {
-      throw new Error('Client secret is not available');
-    }
-
-    await initPaymentSheet({
-      merchantDisplayName: `Re:CoL プレミアムプラン ${type === 'm' ? '月額' : '年額'}`,
-      paymentIntentClientSecret: clientSecret,
-      allowsDelayedPaymentMethods: true,
-    });
-    setIsLoading(false);
-  };
-
-  const setupUpdateSubscription = async (type: 'm' | 'y') => {
-    const priceId =
-      type == 'm'
-        ? process.env.EXPO_PUBLIC_STRIPE_MONTHLY_PLAN
-        : process.env.EXPO_PUBLIC_STRIPE_YEARLY_PLAN;
-    setIsLoading(true);
-
-    updateStripeSubscription(profile!.subscription[0].uid, priceId || '', session)
-      .then(() => {
-        // 支払い完了画面へ遷移
-        router.push('/(payment)/SubscriptionComplete');
-      })
-      .catch((e) => {
-        Alert.alert('プランの更新に失敗しました。');
-        LogUtil.log({ e }, { level: 'error', notify: true });
-        return;
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
 
   /** プレミアムプランの支払い */
   const handlePayment = async (type: 'm' | 'y') => {
@@ -94,14 +38,32 @@ export default function PaymentPlan() {
         'プラン変更時は、未使用期間の料金を差し引いて計算します。',
         [
           { text: 'キャンセル', style: 'cancel' },
-          { text: '更新する', style: 'destructive', onPress: () => setupUpdateSubscription(type) },
+          {
+            text: '更新する',
+            style: 'destructive',
+            onPress: async () => {
+              setIsLoading(true);
+              setupUpdateSubscription(profile!.subscription[0], type, session)
+                .then(() => {
+                  // 支払い完了画面へ遷移
+                  router.push('/(payment)/SubscriptionComplete');
+                })
+                .catch((e) => {
+                  Alert.alert('プランの更新に失敗しました。');
+                  LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+                  return;
+                })
+                .finally(() => {
+                  setIsLoading(false);
+                });
+            },
+          },
         ]
       );
       return;
     }
     // Subscriptionの作成
-    await setupSubscription(type);
-
+    const subscription = await setupCreateSubscription(type, session);
     // PaymentSheetの表示
     const { error } = await presentPaymentSheet();
     if (
@@ -109,9 +71,9 @@ export default function PaymentPlan() {
       (error.code === PaymentSheetError.Failed || error.code === PaymentSheetError.Canceled)
     ) {
       LogUtil.log({ error }, { level: 'error', notify: true });
-      if (subscriptionId) {
-        Alert.alert(`支払い${subscriptionId}に失敗しました.`, JSON.stringify(error));
-        await cancelStripeSubscription(subscriptionId, session);
+      if (subscription.id) {
+        Alert.alert(`支払い${subscription.id}に失敗しました.`, JSON.stringify(error));
+        await cancelStripeSubscription(subscription.id!, session);
       }
     } else {
       // Payment succeeded
@@ -122,9 +84,7 @@ export default function PaymentPlan() {
 
   /** プレミアムプランの解約 */
   const handleCancel = async () => {
-    setIsLoading(true);
     LogUtil.log('handle cancel.');
-
     if (!profile!.subscription || profile!.subscription.length == 0) {
       Alert.alert('プレミアムプランには契約していません。');
       return;
@@ -140,8 +100,19 @@ export default function PaymentPlan() {
           style: 'destructive',
           onPress: async () => {
             setIsLoading(true);
-            await cancelStripeSubscription(profile!.subscription[0].uid, session);
-            setIsLoading(false);
+            cancelStripeSubscription(profile!.subscription[0].uid!, session)
+              .then(() => {
+                Alert.alert('プランを解約しました。\n有効期限終了後にフリープランに戻ります。');
+                router.navigate('/');
+              })
+              .catch((e) => {
+                Alert.alert('プランの解約に失敗しました。');
+                LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+                return;
+              })
+              .finally(() => {
+                setIsLoading(false);
+              });
           },
         },
       ]

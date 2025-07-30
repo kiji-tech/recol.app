@@ -1,2 +1,2 @@
-export * from './Profile';
-export * from './Subscription';
+export * from '../features/profile/types/Profile';
+export * from '../features/payment/types/Subscription';
