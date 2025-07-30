@@ -368,38 +368,6 @@ async function cancelStripeSubscription(
   });
   return response.data!;
 }
-// ============ MicroCMS ============
-/**
- * ブログの取得
- */
-async function fetchBlog(id: string, ctrl?: AbortController) {
-  const url = process.env.EXPO_PUBLIC_MICROCMS_URI! + '/blogs/' + id;
-  console.log({ url });
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: { 'X-MICROCMS-API-KEY': process.env.EXPO_PUBLIC_MICROCMS_API_KEY! },
-    signal: ctrl?.signal,
-  });
-  if (!response.ok) throw new Error('Failed to fetch blog');
-  return response.json();
-}
-
-/**
- * ブログ一覧の取得
- */
-async function fetchBlogList() {
-  const response = await fetch(process.env.EXPO_PUBLIC_MICROCMS_URI! + '/blogs', {
-    method: 'GET',
-    headers: { 'X-MICROCMS-API-KEY': process.env.EXPO_PUBLIC_MICROCMS_API_KEY! },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch blog list');
-  }
-
-  const data = await response.json();
-  return data.contents;
-}
 
 export {
   fetchPlan,
@@ -418,8 +386,6 @@ export {
   getProfile,
   createProfile,
   updateProfile,
-  fetchBlog,
-  fetchBlogList,
   fetchCachePlace,
   createPaymentSheet,
   createStripeCustomer,
