@@ -2,9 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { Article } from '@/src/entities/Article';
+import { Article, openBrowser } from '@/src/features/article';
 import { Badge } from '@/src/components';
-import { openBrowser } from '@/src/features/article/libs';
 
 // 定数
 const IMAGE_WIDTH = '100%';

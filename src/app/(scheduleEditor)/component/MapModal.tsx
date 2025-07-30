@@ -14,8 +14,8 @@ import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/contexts/AuthContext';
 import ResearchButton from './ResearchButton';
 import { SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
-import { Schedule } from '@/src/entities/Plan';
 import Header from '@/src/components/Header/Header';
+import { Schedule } from '@/src/features/schedule';
 
 type Props = {
   isOpen: boolean;

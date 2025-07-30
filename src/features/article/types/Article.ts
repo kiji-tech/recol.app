@@ -1,4 +1,4 @@
-import { MetaData } from './MetaData';
+import { MetaData } from '@/src/entities/MetaData';
 
 export type LocationContentsType = {
   fieldId: string;
@@ -137,14 +137,10 @@ export class Article {
   };
 
   constructor(data: ArticleType) {
-    this.id = data.id;
-    this.createdAt = data.createdAt;
-    this.updatedAt = data.updatedAt;
-    this.publishedAt = data.publishedAt;
-    this.revisedAt = data.revisedAt;
-    this.title = data.title;
-    this.content = data.content;
-    this.location = data.location;
+    for (const key in data) {
+      this[key as keyof Article] = data[key as keyof ArticleType] as never;
+    }
+
     this.locationContentsList =
       data.locationContentsList &&
       data.locationContentsList.map((locationContents) => new LocationContents(locationContents));

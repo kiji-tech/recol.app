@@ -1,7 +1,7 @@
 import React from 'react';
 import { BackgroundView, Header } from '@/src/components';
 import { FlatList } from 'react-native';
-import { Article } from '@/src/entities/Article';
+import { Article } from '@/src/features/article';
 import { ArticleCard } from './components/ArticleCard';
 import Title from '@/src/components/Common/Title';
 import { useArticles } from '@/src/features/article/hooks/useArticles';

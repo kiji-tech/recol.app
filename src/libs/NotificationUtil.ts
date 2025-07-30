@@ -1,5 +1,5 @@
 import * as Notifications from 'expo-notifications';
-import { Schedule } from '../entities/Plan';
+import { Schedule } from '../features/plan/types/Plan';
 import dayjs from '@/src/libs/dayjs';
 import { LogUtil } from './LogUtil';
 

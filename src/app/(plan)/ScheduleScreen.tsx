@@ -3,11 +3,11 @@ import ScheduleComponents from './components/(ScheduleScreen)/(Schedule)';
 import { BackgroundView, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useRouter } from 'expo-router';
-import { deleteSchedule, fetchPlan } from '@/src/libs/ApiService';
+import { Plan, fetchPlan } from '@/src/features/plan';
 import { useFocusEffect } from '@react-navigation/native';
-import { Tables } from '@/src/libs/database.types';
+import { deleteSchedule, Schedule } from '@/src/features/schedule';
+
 import { useAuth } from '@/src/contexts/AuthContext';
-import { Plan } from '@/src/entities/Plan';
 import { LogUtil } from '@/src/libs/LogUtil';
 import MaskLoading from '@/src/components/MaskLoading';
 import ToastManager, { Toast } from 'toastify-react-native';
@@ -61,8 +61,8 @@ export default function ScheduleScreen(): ReactNode {
   };
 
   /** 予定の削除 */
-  const handleDeleteSchedule = async (schedule: Tables<'schedule'>) => {
-    deleteSchedule(schedule.uid, session)
+  const handleDeleteSchedule = async (schedule: Schedule) => {
+    deleteSchedule(schedule, session)
       .then(() => {
         Toast.success(`${schedule.title} を削除しました`);
         initView();

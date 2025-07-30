@@ -1,13 +1,13 @@
 import React from 'react';
-import { Schedule } from '@/src/entities/Plan';
-import { Plan } from '@/src/entities/Plan';
+import { Plan } from '@/src/features/plan';
+import { Schedule } from '@/src/features/schedule';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
-import { deletePlan } from '@/src/libs/ApiService';
+import { deletePlan } from '@/src/features/plan';
 
 export default function PlanCard({ plan }: { plan: Plan }) {
   // === Member ===

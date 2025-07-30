@@ -4,7 +4,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { Tables } from '@/src/libs/database.types';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Place } from '@/src/entities/Place';
-import { Schedule } from '@/src/entities/Plan';
+import { Schedule } from '@/src/features/schedule';
 
 type Props = {
   item: Schedule;

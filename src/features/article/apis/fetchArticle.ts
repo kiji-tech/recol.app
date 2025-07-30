@@ -1,4 +1,4 @@
-import { Article, ArticleType } from '@/src/entities/Article';
+import { Article, ArticleType } from '@/src/features/article/types/Article';
 
 // ============ MicroCMS ============
 /**

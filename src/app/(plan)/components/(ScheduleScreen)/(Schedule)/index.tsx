@@ -2,21 +2,22 @@ import React from 'react';
 import { Tables } from '@/src/libs/database.types';
 import { ReactNode, useEffect, useState } from 'react';
 import { Text, View, Alert } from 'react-native';
-import ScheduleItem from './ScheduleItem';
-import dayjs from 'dayjs';
-import { fetchScheduleList } from '@/src/libs/ApiService';
+import { fetchScheduleList } from '@/src/features/schedule';
 import { useRouter } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useAuth } from '@/src/contexts/AuthContext';
-import Button from '@/src/components/Common/Button';
+import { Plan } from '@/src/features/plan';
 import { Place } from '@/src/entities/Place';
-import { Schedule } from '@/src/entities/Plan';
+import { Schedule } from '@/src/features/schedule';
 import { Toast } from 'toastify-react-native';
 import { LogUtil } from '@/src/libs/LogUtil';
+import ScheduleItem from './ScheduleItem';
+import dayjs from 'dayjs';
+import Button from '@/src/components/Common/Button';
 
 type Props = {
-  plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
-  onDelete?: (schedule: Tables<'schedule'>) => void;
+  plan: Plan | null;
+  onDelete?: (schedule: Schedule) => void;
 };
 
 export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode {

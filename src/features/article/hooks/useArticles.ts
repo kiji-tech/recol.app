@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Article } from '@/src/entities/Article';
+import { Article } from '@/src/features/article/types/Article';
 import { fetchArticleList } from '../apis/fetchArticleList';
 import { LogUtil } from '@/src/libs/LogUtil';
 export const useArticles = () => {

@@ -1,5 +1,5 @@
 import { Linking } from 'react-native';
-import { Article } from '@/src/entities/Article';
+import { Article } from '@/src/features/article/types/Article';
 
 /**
  * ReLCoLの記事に該当するURLをブラウザで開く

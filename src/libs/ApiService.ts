@@ -3,12 +3,11 @@ import { Tables } from './database.types';
 import { LogUtil } from './LogUtil';
 import Stripe from 'stripe';
 import { Place } from '../entities/Place';
-import { Plan, Schedule } from '@/src/entities/Plan';
 import { Profile, Subscription } from '../entities';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL;
 
-export type ApiErrorResponse = {
+type ApiErrorResponse = {
   message: string;
   code: string;
 };
@@ -54,171 +53,10 @@ async function apiRequest<T, B = Record<string, unknown>>(
 }
 
 // ============ Plan ============
-/**
- * プラン情報の取得
- */
-async function fetchPlan(planId: string, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Plan>(`/plan/${planId}`, { method: 'GET', session, ctrl });
-  return response.data!;
-}
-
-/**
- * プラン一覧の取得
- */
-async function fetchPlanList(session: Session | null, ctrl?: AbortController): Promise<Plan[]> {
-  const response = await apiRequest<Plan[]>('/plan/list', { method: 'POST', session, ctrl });
-  return response.data!;
-}
-
-async function createPlan(plan: Plan, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Plan>('/plan', {
-    method: 'POST',
-    session,
-    body: plan as Plan,
-    ctrl,
-  });
-  return response.data!;
-}
-/**
- * プランの更新
- */
-async function updatePlan(plan: Plan, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Plan>('/plan', {
-    method: 'PUT',
-    session,
-    body: plan as Plan,
-    ctrl,
-  });
-  return response.data!;
-}
-
-/**
- * プランの削除
- */
-async function deletePlan(planId: string, session: Session | null, ctrl?: AbortController) {
-  await apiRequest<void>('/plan/delete', {
-    method: 'POST',
-    session,
-    body: { planId },
-    ctrl,
-  });
-}
 
 // ============ Schedule ============
-/**
- * スケジュール情報の取得
- */
-async function fetchSchedule(scheduleId: string, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Schedule>(`/schedule/${scheduleId}`, {
-    method: 'GET',
-    session,
-    ctrl,
-  });
-  return response.data!;
-}
-
-/**
- * スケジュール一覧の取得
- */
-async function fetchScheduleList(planId: string, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Schedule[]>(`/schedule/list`, {
-    method: 'POST',
-    session,
-    body: { planId },
-    ctrl,
-  });
-  return response.data!;
-}
-
-/**
- * 通知を追加するスケジュール一覧の取得
- */
-async function fetchScheduleListForNotification(session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Schedule[]>(`/schedule/list/notification`, {
-    method: 'POST',
-    session,
-    ctrl,
-  });
-  return response.data!;
-}
-
-/**
- * スケジュールの削除
- */
-async function deleteSchedule(uid: string, session: Session | null, ctrl?: AbortController) {
-  await apiRequest<void>('/schedule/delete', {
-    method: 'POST',
-    session,
-    body: { uid },
-    ctrl,
-  });
-}
-
-/**
- * スケジュールの作成・更新
- */
-async function upsertSchedule(schedule: Schedule, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Schedule>('/schedule', {
-    method: 'POST',
-    session,
-    body: { schedule },
-    ctrl,
-  });
-  return response.data!;
-}
 
 // ============ Media ============
-/**
- * プランのメディア一覧を取得
- */
-async function fetchPlanMediaList(
-  planId: string,
-  session: Session | null,
-  ctrl?: AbortController
-): Promise<Tables<'media'>[]> {
-  const response = await apiRequest<Tables<'media'>[]>('/media/list', {
-    method: 'POST',
-    session,
-    body: { planId },
-    ctrl,
-  });
-  return response.data! as Tables<'media'>[];
-}
-
-/**
- * プランのメディアをアップロード
- */
-async function uploadPlanMedias(
-  planId: string,
-  images: string[],
-  session: Session | null,
-  ctrl?: AbortController
-) {
-  const response = await apiRequest<void>('/media', {
-    method: 'POST',
-    session,
-    body: { planId, images },
-    ctrl,
-  });
-  return response.data!;
-}
-
-/**
- * プランのメディアを削除
- */
-async function deletePlanMedias(
-  planId: string,
-  mediaIdList: string[],
-  session: Session | null,
-  ctrl?: AbortController
-) {
-  await apiRequest<void>('/media/delete', {
-    method: 'POST',
-    session,
-    body: { planId, mediaIdList },
-    ctrl,
-  });
-}
 
 // ============ Profile ============
 /**
@@ -370,19 +208,6 @@ async function cancelStripeSubscription(
 }
 
 export {
-  fetchPlan,
-  fetchPlanList,
-  createPlan,
-  updatePlan,
-  deletePlan,
-  fetchSchedule,
-  fetchScheduleList,
-  fetchScheduleListForNotification,
-  deleteSchedule,
-  upsertSchedule,
-  fetchPlanMediaList,
-  uploadPlanMedias,
-  deletePlanMedias,
   getProfile,
   createProfile,
   updateProfile,
