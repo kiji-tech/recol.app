@@ -11,7 +11,7 @@ import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet'
 import { useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Tables } from '@/src/libs/database.types';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import ResearchButton from './ResearchButton';
 import { SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
 import Header from '@/src/components/Header/Header';

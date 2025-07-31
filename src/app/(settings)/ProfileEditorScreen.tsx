@@ -5,7 +5,7 @@ import { View, Text, TextInput, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import { updateProfile } from '@/src/libs/ApiService';
 import { LogUtil } from '@/src/libs/LogUtil';
 import * as ImagePicker from 'expo-image-picker';

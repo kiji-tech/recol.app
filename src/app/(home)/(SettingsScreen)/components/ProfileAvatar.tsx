@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import { View, Text, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 

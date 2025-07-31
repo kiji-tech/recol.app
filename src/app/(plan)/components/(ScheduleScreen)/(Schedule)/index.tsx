@@ -5,7 +5,7 @@ import { Text, View, Alert } from 'react-native';
 import { fetchScheduleList } from '@/src/features/schedule';
 import { useRouter } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import { Plan } from '@/src/features/plan';
 import { Place } from '@/src/entities/Place';
 import { Schedule } from '@/src/features/schedule';

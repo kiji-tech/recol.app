@@ -1,5 +1,5 @@
 import { BackgroundView, Button, Header } from '@/src/components';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import React, { useState } from 'react';
 import { Alert, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 

@@ -6,7 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useTheme } from '../contexts/ThemeContext';
 import { MyBannerAd } from './Ad/BannerAd';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../features/auth';
 import { router } from 'expo-router';
 
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {

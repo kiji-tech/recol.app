@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BackgroundView, Button, Header } from '@/src/components';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import { Alert, TextInput, View, Text } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { LogUtil } from '@/src/libs/LogUtil';

@@ -7,7 +7,7 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { FlatList } from 'react-native-gesture-handler';
 import { deletePlanMediaList, fetchPlanMediaList, uploadPlanMediaList } from '@/src/features/media';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { Media } from '@/src/features/media';
 import MediaDetailModal from '@/src/components/Modal/MediaDetailModal';

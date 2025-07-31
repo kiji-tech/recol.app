@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BackgroundView, Button } from '@/src/components';
 import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
 import ExternalSignInButton from './components/ExternalSignInButton';
 import BackHomeLink from './components/BackHomeLink';

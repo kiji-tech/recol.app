@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
 import { BackgroundView, Button, Header } from '@/src/components';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { PaymentSheetError, useStripe } from '@stripe/stripe-react-native';
 import {

@@ -2,7 +2,7 @@ import '@/global.css';
 import React, { useCallback, useEffect, useState } from 'react';
 import { router, Stack } from 'expo-router';
 import { PlanProvider } from '../contexts/PlanContext';
-import { AuthProvider } from '../contexts/AuthContext';
+import { AuthProvider } from '../features/auth';
 import { Linking, StatusBar, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider } from '../contexts/ThemeContext';

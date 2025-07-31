@@ -8,7 +8,7 @@ import DatePicker from '../../components/Common/DatePicker';
 import dayjs from '@/src/libs/dayjs';
 import MapModal from './component/MapModal';
 import { upsertSchedule } from '@/src/features/schedule';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import { Place } from '@/src/entities/Place';
 import { Schedule } from '@/src/features/schedule';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';

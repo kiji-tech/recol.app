@@ -2,7 +2,7 @@ import React from 'react';
 import { Plan } from '@/src/features/plan';
 import { Schedule } from '@/src/features/schedule';
 import { useRouter } from 'expo-router';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useMemo } from 'react';
 import dayjs from 'dayjs';

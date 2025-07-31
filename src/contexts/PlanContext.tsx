@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { createContext, useContext, useState } from 'react';
 import { fetchPlanList } from '../features/plan';
-import { useAuth } from './AuthContext';
+import { useAuth } from '../features/auth';
 import { LogUtil } from '../libs/LogUtil';
 import { Plan } from '../features/plan';
 import { Schedule } from '../features/schedule';

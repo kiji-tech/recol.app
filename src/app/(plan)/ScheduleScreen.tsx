@@ -7,7 +7,7 @@ import { Plan, fetchPlan } from '@/src/features/plan';
 import { useFocusEffect } from '@react-navigation/native';
 import { deleteSchedule, Schedule } from '@/src/features/schedule';
 
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
 import MaskLoading from '@/src/components/MaskLoading';
 import ToastManager, { Toast } from 'toastify-react-native';
