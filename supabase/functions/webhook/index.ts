@@ -153,7 +153,8 @@ const stripeWebhook = async (c: Hono.Context) => {
 
   const event = await c.req.json();
   switch (event.type) {
-case 'customer.subscription.updated':
+    case 'customer.subscription.updated':
+    case 'customer.subscription.deleted':
       await updateSubscription(c, event.data.object);
       break;
   }

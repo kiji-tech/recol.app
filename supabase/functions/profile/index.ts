@@ -3,6 +3,8 @@ import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { StripeUtil } from '../libs/StripeUtil.ts';
+import dayjs from 'dayjs';
+
 const app = new Hono().basePath('/profile');
 
 const createProfile = async (c: Hono.Context) => {
@@ -48,8 +50,6 @@ const get = async (c: Hono.Context) => {
     .from('profile')
     .select('*, subscription(*)')
     .eq('uid', user.id)
-    .eq('subscription.user_id', user.id)
-    .eq('subscription.status', 'active')
     .maybeSingle();
 
   if (!data) {
@@ -62,6 +62,21 @@ const get = async (c: Hono.Context) => {
   if (error) {
     return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
   }
+
+  // 期限内のsubscriptionを取得
+  const { data: subscriptionData, error: subscriptionError } = await supabase
+    .from('subscription')
+    .select('*')
+    .eq('user_id', user.id)
+    .in('status', ['active', 'trying', 'canceled'])
+    .gte('current_period_end', dayjs().format('YYYY-MM-DD HH:mm:ss'));
+
+  if (subscriptionError) {
+    LogUtil.log(JSON.stringify(subscriptionError), { level: 'error', notify: true });
+    return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
+  }
+
+  data.subscription = subscriptionData || [];
 
   return c.json(data);
 };
