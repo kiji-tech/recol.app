@@ -74,7 +74,7 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
         </View>
         {/* 終了時刻 */}
         {isEndDateView && (
-          <View className="flex flex-row gap-2 items-center mb-8">
+          <View className="flex flex-row gap-2 items-center mb-4">
             <View
               className={`w-6 h-6 flex justify-center items-center rounded-full
                         ${isTargetTime(item.from!, item.to!) === -1 && 'bg-light-border dark:bg-dark-border'}
