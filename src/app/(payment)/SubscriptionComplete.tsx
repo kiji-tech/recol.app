@@ -6,12 +6,12 @@ import { useAuth } from '@/src/contexts/AuthContext';
 
 export default function SubscriptionComplete() {
   const router = useRouter();
-  const { fetchProfile } = useAuth();
+  const { getProfile } = useAuth();
 
   // === Effect ===
   useFocusEffect(
     useCallback(() => {
-      fetchProfile();
+      getProfile();
     }, [])
   );
 

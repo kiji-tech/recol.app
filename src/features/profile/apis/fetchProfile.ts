@@ -6,7 +6,7 @@ import { SubscriptionType } from '@/src/features/payment';
 /**
  * プロフィールの取得
  */
-export async function getProfile(session: Session | null, ctrl?: AbortController) {
+export async function fetchProfile(session: Session | null, ctrl?: AbortController) {
   const response = await apiRequest<ProfileType & { subscription: SubscriptionType[] }>(
     '/profile',
     {

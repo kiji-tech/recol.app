@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../libs/supabase';
-import { getProfile } from '../features/profile';
+import { fetchProfile } from '../features/profile';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { LogUtil } from '../libs/LogUtil';
@@ -17,7 +17,7 @@ export type AuthContextType = {
   session: Session | null;
   profile: (Profile & { subscription: Subscription[] }) | null;
   getProfileInfo: () => (Profile & { subscription: Subscription[] }) | null;
-  fetchProfile: () => Promise<void>;
+  getProfile: () => Promise<void>;
   setProfile: (profile: (Profile & { subscription: Subscription[] }) | null) => void;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(data.session?.user ?? null);
     if (data.session) {
       try {
-        await fetchProfile();
+        await getProfile();
       } catch {
         setProfile(null);
       }
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(data.session?.user ?? null);
     if (data.session) {
       try {
-        await fetchProfile();
+        await getProfile();
       } catch {
         setProfile(null);
       }
@@ -216,9 +216,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   /** プロフィール取得 */
-  const fetchProfile = async () => {
+  const getProfile = async () => {
     if (!session) return;
-    getProfile(session)
+    fetchProfile(session)
       .then((profile) => {
         setProfile(profile);
       })
@@ -263,7 +263,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(session?.user ?? null);
       if (session) {
         try {
-          await fetchProfile();
+          await getProfile();
         } catch {
           setProfile(null);
         }
@@ -279,7 +279,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // プロフィール再取得
     if (!session) return;
-    fetchProfile();
+    getProfile();
   }, [session, user]);
 
   return (
@@ -290,7 +290,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         profile,
         loading,
         getProfileInfo,
-        fetchProfile,
+        getProfile,
         setProfile,
         login,
         logout,
