@@ -3,8 +3,8 @@ import { BackgroundView, Header } from '@/src/components';
 import { FlatList } from 'react-native';
 import { Article } from '@/src/features/article';
 import { ArticleCard } from './components/ArticleCard';
-import Title from '@/src/components/Common/Title';
 import { useArticles } from '@/src/features/article/hooks/useArticles';
+import Title from '@/src/components/Common/Title';
 import MaskLoading from '@/src/components/MaskLoading';
 
 export default function Home() {
