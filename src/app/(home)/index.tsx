@@ -1,24 +1,18 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import { BackgroundView, Header } from '@/src/components';
 import { FlatList } from 'react-native';
-import { fetchBlogList } from '@/src/libs/ApiService';
-import { useAuth } from '@/src/contexts/AuthContext';
-import { useFocusEffect } from 'expo-router';
-import { Article } from '@/src/entities/Article';
+import { Article } from '@/src/features/article';
 import { ArticleCard } from './components/ArticleCard';
+import { useArticles } from '@/src/features/article/hooks/useArticles';
 import Title from '@/src/components/Common/Title';
+import MaskLoading from '@/src/components/MaskLoading';
 
 export default function Home() {
-  const { session } = useAuth();
-  const [blogs, setBlogs] = useState<Article[]>([]);
+  const { articles, loading } = useArticles();
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchBlogList().then((blogs) => {
-        setBlogs(blogs);
-      });
-    }, [session])
-  );
+  if (loading) {
+    return <MaskLoading />;
+  }
 
   return (
     <BackgroundView>
@@ -28,7 +22,7 @@ export default function Home() {
       <Title text="新着記事" />
       {/* 新着記事 */}
       <FlatList
-        data={blogs}
+        data={articles}
         keyExtractor={(item: Article) => item.id}
         renderItem={({ item }) => <ArticleCard item={item} />}
       />

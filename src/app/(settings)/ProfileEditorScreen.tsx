@@ -5,12 +5,11 @@ import { View, Text, TextInput, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import { updateProfile } from '@/src/libs/ApiService';
-import { Tables } from '@/src/libs/database.types';
 import { LogUtil } from '@/src/libs/LogUtil';
-import { Profile } from '@/src/entities/Profile';
 import * as ImagePicker from 'expo-image-picker';
+import { Profile, Subscription } from '@/src/entities';
 
 export default function ProfileEditorScreen() {
   // === Member ===
@@ -70,7 +69,7 @@ export default function ProfileEditorScreen() {
         } as Profile,
         session
       )
-        .then((profile: Tables<'profile'> & { subscription: Tables<'subscription'>[] }) => {
+        .then((profile: Profile & { subscription: Subscription[] }) => {
           LogUtil.log(profile, { level: 'info' });
           setProfile(profile);
           router.back();

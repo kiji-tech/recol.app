@@ -4,10 +4,10 @@ import { useRouter } from 'expo-router';
 import { BackgroundView } from '@/src/components';
 import { Image } from 'expo-image';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { useAuth } from '@/src/contexts/AuthContext';
-import { createProfile } from '@/src/libs/ApiService';
+import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
-import { Profile } from '@/src/entities/Profile';
+import { Profile } from '@/src/features/profile';
+import { createProfile } from '@/src/features/profile/apis/createProfile';
 
 // パーティクルコンポーネント
 const Particle = ({ delay, position }: { delay: number; position: { x: number; y: number } }) => {

@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useAuth } from '../AuthContext';
+import { useAuth } from '../../features/auth';
 import { Enums } from '@/src/libs/database.types';
 import { useEffect } from 'react';
 

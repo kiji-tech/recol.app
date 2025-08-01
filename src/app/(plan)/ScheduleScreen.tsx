@@ -3,16 +3,17 @@ import ScheduleComponents from './components/(ScheduleScreen)/(Schedule)';
 import { BackgroundView, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useRouter } from 'expo-router';
-import { deleteSchedule, fetchPlan } from '@/src/libs/ApiService';
+import { Plan, fetchPlan } from '@/src/features/plan';
 import { useFocusEffect } from '@react-navigation/native';
-import { Tables } from '@/src/libs/database.types';
-import { useAuth } from '@/src/contexts/AuthContext';
-import { Plan } from '@/src/entities/Plan';
+import { deleteSchedule, Schedule } from '@/src/features/schedule';
+
+import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
 import MaskLoading from '@/src/components/MaskLoading';
 import ToastManager, { Toast } from 'toastify-react-native';
 import PlanInformation from './components/(ScheduleScreen)/PlanInformation';
 import ScheduleMenu from './components/(ScheduleScreen)/ScheduleMenu';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
@@ -60,8 +61,8 @@ export default function ScheduleScreen(): ReactNode {
   };
 
   /** 予定の削除 */
-  const handleDeleteSchedule = async (schedule: Tables<'schedule'>) => {
-    deleteSchedule(schedule.uid, session)
+  const handleDeleteSchedule = async (schedule: Schedule) => {
+    deleteSchedule(schedule, session)
       .then(() => {
         Toast.success(`${schedule.title} を削除しました`);
         initView();
@@ -86,14 +87,16 @@ export default function ScheduleScreen(): ReactNode {
         rightComponent={viewPlan ? <ScheduleMenu plan={viewPlan} /> : undefined}
       />
       {/* Plan Information */}
-      {viewPlan && (
-        <>
-          <PlanInformation plan={viewPlan} />
-          {/* Schedule */}
-          <ScheduleComponents plan={viewPlan} onDelete={handleDeleteSchedule} />
-        </>
-      )}
-      {planLoading && <MaskLoading />}
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {viewPlan && (
+          <>
+            <PlanInformation plan={viewPlan} />
+            {/* Schedule */}
+            <ScheduleComponents plan={viewPlan} onDelete={handleDeleteSchedule} />
+          </>
+        )}
+        {planLoading && <MaskLoading />}
+      </ScrollView>
       <ToastManager />
     </BackgroundView>
   );

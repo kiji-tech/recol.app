@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { BackgroundView, Button } from '@/src/components';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { router, useFocusEffect } from 'expo-router';
 import { Text, View, ScrollView } from 'react-native';
@@ -19,7 +19,7 @@ import ProfileAvatar from './components/ProfileAvatar';
 const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
 
 export default function Settings() {
-  const { session, getProfileInfo, logout, fetchProfile } = useAuth();
+  const { session, getProfileInfo, logout, getProfile } = useAuth();
   const { clearStoragePlan } = usePlan();
   const { theme } = useTheme();
   const [chatNotification, setChatNotification] = useState(false);
@@ -55,7 +55,7 @@ export default function Settings() {
   // === プロフィールの読み込み ===
   useFocusEffect(
     useCallback(() => {
-      fetchProfile();
+      getProfile();
     }, [session])
   );
 

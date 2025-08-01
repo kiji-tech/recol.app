@@ -1,11 +1,10 @@
 import React from 'react';
-import { Tables } from '@/src/libs/database.types';
 import { View, Text } from 'react-native';
 import Title from '@/src/components/Common/Title';
-// import { useTheme } from '@/src/contexts/ThemeContext';
+import { Plan } from '@/src/features/plan';
 
 type Props = {
-  plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
+  plan: Plan | null;
 };
 
 /**
@@ -16,9 +15,6 @@ type Props = {
  */
 export default function PlanInformation({ plan }: Props) {
   // === Member ===
-  //   const { isDarkMode } = useTheme();
-
-  // === Method ===
 
   // === Render ===
   if (!plan) return <></>;

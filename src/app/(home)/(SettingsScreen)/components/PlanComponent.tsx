@@ -1,14 +1,13 @@
 import React from 'react';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { Tables } from '@/src/libs/database.types';
-import { SubscriptionUtil } from '@/src/libs/SubscriptionUtil';
 import { router } from 'expo-router';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
+import { Profile, Subscription } from '@/src/entities';
 
 type PlanComponentProps = {
-  profile: (Tables<'profile'> & { subscription: Tables<'subscription'>[] }) | null;
+  profile: (Profile & { subscription: Subscription[] }) | null;
 };
 
 export default function PlanComponent({ profile }: PlanComponentProps) {
@@ -16,7 +15,7 @@ export default function PlanComponent({ profile }: PlanComponentProps) {
   const { isDarkMode } = useTheme();
 
   // === Method ===
-  if (SubscriptionUtil.isAdmin(profile!) || SubscriptionUtil.isSuperUser(profile!)) {
+  if (profile && (profile.isAdmin() || profile.isSuperUser())) {
     return (
       <View>
         <Text className="text-light-text dark:text-dark-text">スーパーユーザーです</Text>

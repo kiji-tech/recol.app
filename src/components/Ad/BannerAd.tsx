@@ -1,3 +1,4 @@
+import { Profile } from '@/src/entities';
 import React, { useRef } from 'react';
 import { Platform } from 'react-native';
 import { BannerAd, BannerAdSize, TestIds, useForeground } from 'react-native-google-mobile-ads';
@@ -9,7 +10,7 @@ const adUnitId =
       ? process.env.EXPO_PUBLIC_ADMOB_IOS_UNIT_ID
       : process.env.EXPO_PUBLIC_ADMOB_ANDROID_UNIT_ID;
 
-export const MyBannerAd = () => {
+export const MyBannerAd = ({ profile }: { profile: Profile | null }) => {
   const bannerRef = useRef<BannerAd | null>(null);
 
   // (iOS) WKWebView can terminate if app is in a "suspended state", resulting in an empty banner when app returns to foreground.
@@ -22,7 +23,7 @@ export const MyBannerAd = () => {
     }
   });
 
-  if (!adUnitId) return;
+  if (!adUnitId || (profile && profile.isPremiumUser())) return null;
 
   return (
     <BannerAd ref={bannerRef} unitId={adUnitId} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />

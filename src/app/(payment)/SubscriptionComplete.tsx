@@ -2,16 +2,16 @@ import React, { useCallback } from 'react';
 import { View, Text } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { BackgroundView } from '@/src/components';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 
 export default function SubscriptionComplete() {
   const router = useRouter();
-  const { fetchProfile } = useAuth();
+  const { getProfile } = useAuth();
 
   // === Effect ===
   useFocusEffect(
     useCallback(() => {
-      fetchProfile();
+      getProfile();
     }, [])
   );
 

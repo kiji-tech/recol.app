@@ -2,22 +2,22 @@ import React from 'react';
 import { Tables } from '@/src/libs/database.types';
 import { ReactNode, useEffect, useState } from 'react';
 import { Text, View, Alert } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import ScheduleItem from './ScheduleItem';
-import dayjs from 'dayjs';
-import { fetchScheduleList } from '@/src/libs/ApiService';
+import { fetchScheduleList } from '@/src/features/schedule';
 import { useRouter } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { useAuth } from '@/src/contexts/AuthContext';
-import Button from '@/src/components/Common/Button';
+import { useAuth } from '@/src/features/auth';
+import { Plan } from '@/src/features/plan';
 import { Place } from '@/src/entities/Place';
-import { Schedule } from '@/src/entities/Plan';
+import { Schedule } from '@/src/features/schedule';
 import { Toast } from 'toastify-react-native';
 import { LogUtil } from '@/src/libs/LogUtil';
+import ScheduleItem from './ScheduleItem';
+import dayjs from 'dayjs';
+import Button from '@/src/components/Common/Button';
 
 type Props = {
-  plan: (Tables<'plan'> & { schedule: Tables<'schedule'>[] }) | null;
-  onDelete?: (schedule: Tables<'schedule'>) => void;
+  plan: Plan | null;
+  onDelete?: (schedule: Schedule) => void;
 };
 
 export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode {
@@ -112,7 +112,7 @@ export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode
 
   // === Render ===
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <>
       <View className="bg-light-background dark:bg-dark-background rounded-xl">
         {scheduleList.map((schedule, index) => {
           const date = dayjs(schedule.from).format(DATE_FORMAT);
@@ -151,6 +151,6 @@ export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode
       <View className="mt-8">
         <Button text="スケジュールを追加" onPress={() => handleAddSchedule()} />
       </View>
-    </ScrollView>
+    </>
   );
 }

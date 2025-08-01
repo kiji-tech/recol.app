@@ -4,10 +4,10 @@ import { BackgroundView } from '@/src/components';
 import { borderColor } from '@/src/themes/ColorUtil';
 import { useRouter } from 'expo-router';
 import { View, Text, TextInput, Alert } from 'react-native';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { updatePlan } from '@/src/libs/ApiService';
-import { Plan } from '@/src/entities/Plan';
+import { Plan } from '@/src/features/plan/types/Plan';
 import * as Location from 'expo-location';
 
 export default function PlanEditor() {

@@ -9,7 +9,7 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { LogUtil } from '@/src/libs/LogUtil';
 import ToastManager, { Toast } from 'toastify-react-native';
-import { Plan } from '@/src/entities/Plan';
+import { Plan } from '@/src/features/plan/types/Plan';
 import NotFoundPlanView from './components/NotFoundPlanView';
 import PlanCard from './components/PlanCard';
 

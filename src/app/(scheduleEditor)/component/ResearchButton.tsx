@@ -57,7 +57,7 @@ export default function ResearchButton({ centerRegion, currentRegion, radius, on
   return (
     <View className={`w-full absolute ${platform === 'ios' ? 'top-36' : 'top-20'} z-50`}>
       <TouchableOpacity
-        className="w-1/2 py-2 px-4 mt-2 mx-auto rounded-xl  bg-light-background dark:bg-dark-background"
+        className="w-fit py-2 px-6 mt-2 mx-auto rounded-xl bg-light-background dark:bg-dark-background"
         onPress={handlePress}
       >
         <Text className="text-center text-md text-light-text dark:text-dark-text">

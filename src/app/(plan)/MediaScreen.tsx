@@ -6,22 +6,22 @@ import { useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { FlatList } from 'react-native-gesture-handler';
-import { deletePlanMedias, fetchPlanMediaList, uploadPlanMedias } from '@/src/libs/ApiService';
-import { useAuth } from '@/src/contexts/AuthContext';
-import { Tables } from '@/src/libs/database.types';
+import { deletePlanMediaList, fetchPlanMediaList, uploadPlanMediaList } from '@/src/features/media';
+import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
+import { Media } from '@/src/features/media';
+import MediaDetailModal from '@/src/components/Modal/MediaDetailModal';
 import BackgroundView from '@/src/components/BackgroundView';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import * as ImagePicker from 'expo-image-picker';
 import * as Progress from 'react-native-progress';
-import MediaDetailModal from '@/src/components/Modal/MediaDetailModal';
 
 export default function MediaScreen() {
   // === Member ===
-  const [images, setImages] = useState<Tables<'media'>[]>([]);
-  const [selectedImages, setSelectedImages] = useState<Tables<'media'>[]>([]);
+  const [images, setImages] = useState<Media[]>([]);
+  const [selectedImages, setSelectedImages] = useState<Media[]>([]);
   const [mode, setMode] = useState<'normal' | 'select'>('normal');
-  const [visibleImage, setVisibleImage] = useState<Tables<'media'> | null>(null);
+  const [visibleImage, setVisibleImage] = useState<Media | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [uploadedImage, setUploadedImage] = useState<string[]>([]);
   const [addImage, setAddImage] = useState<string[]>([]);
@@ -48,7 +48,7 @@ export default function MediaScreen() {
     setVisibleImage(null);
   };
 
-  const handlePressImage = (item: Tables<'media'>) => {
+  const handlePressImage = (item: Media) => {
     if (mode === 'normal') {
       // ポップアップ（全画面表示）
       setVisibleImage(item);
@@ -72,7 +72,7 @@ export default function MediaScreen() {
   /**
    * 画像を長押しした場合 選択モードに切り替える
    */
-  const handleLongPressImage = (item: Tables<'media'>) => {
+  const handleLongPressImage = (item: Media) => {
     // 選択モード → 削除
     if (mode == 'normal') {
       setMode('select');
@@ -122,7 +122,7 @@ export default function MediaScreen() {
         : null;
       if (base64Image) {
         // データのアップロード
-        await uploadPlanMedias(plan!.uid!, [base64Image], session)
+        await uploadPlanMediaList(plan!.uid!, [base64Image], session)
           .then(() => {
             // 画像一覧を更新
             fetchImages();
@@ -141,7 +141,7 @@ export default function MediaScreen() {
   };
 
   const handleDeleteImages = () => {
-    deletePlanMedias(
+    deletePlanMediaList(
       plan!.uid!,
       selectedImages.map((item) => item.uid!),
       session

@@ -1,5 +1,4 @@
 import { Tables } from '@/src/libs/database.types';
-import { Place } from './Place';
+import { Schedule } from '@/src/features/schedule/types/Schedule';
 
-export type Schedule = Tables<'schedule'> & { place_list: Place[] };
 export type Plan = Tables<'plan'> & { schedule: Schedule[] };

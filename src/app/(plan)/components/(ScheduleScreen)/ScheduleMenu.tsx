@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { Plan, Schedule } from '@/src/entities/Plan';
+import { Plan } from '@/src/features/plan';
+import { Schedule } from '@/src/features/schedule';
 import { useRouter } from 'expo-router';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import { View } from 'react-native';

@@ -2,8 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { Article } from '@/src/entities/Article';
-import { CommonUtil } from '@/src/libs/CommonUtil';
+import { Article, openBrowser } from '@/src/features/article';
 import { Badge } from '@/src/components';
 
 // 定数
@@ -31,9 +30,7 @@ export const ArticleCard: React.FC<{ item: Article }> = ({ item }) => {
   return (
     <TouchableOpacity
       className="flex flex-col bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border border rounded-md mb-4"
-      onPress={() =>
-        CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/articles/${item.id}`)
-      }
+      onPress={() => openBrowser(item)}
       accessibilityLabel={`記事: ${item.title}`}
     >
       {/* アイキャッチ画像 */}

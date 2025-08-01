@@ -1,5 +1,5 @@
 import { BackgroundView, Button, Header } from '@/src/components';
-import { useAuth } from '@/src/contexts/AuthContext';
+import { useAuth } from '@/src/features/auth';
 import React, { useState } from 'react';
 import { Alert, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -36,7 +36,7 @@ export default function ForgetPassword() {
           onChangeText={(text) => setEmail(text)}
           autoCapitalize="none"
         />
-        <Button text="パスワードをリセット" onPress={handleResetPassword} />
+        <Button theme="theme" text="パスワードをリセットする" onPress={handleResetPassword} />
       </View>
     </BackgroundView>
   );

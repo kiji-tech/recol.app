@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect } from 'react';
 import { createContext, useContext, useState } from 'react';
-import { fetchPlanList } from '../libs/ApiService';
-import { useAuth } from './AuthContext';
+import { fetchPlanList } from '../features/plan';
+import { useAuth } from '../features/auth';
 import { LogUtil } from '../libs/LogUtil';
+import { Plan } from '../features/plan';
+import { Schedule } from '../features/schedule';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Plan, Schedule } from '../entities/Plan';
 
 const PLAN_LIST_STORAGE_KEY = '@plan_list';
 
