@@ -6,16 +6,14 @@ import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useAuth } from '@/src/features/auth';
-import { updateProfile } from '@/src/libs/ApiService';
-import { LogUtil } from '@/src/libs/LogUtil';
+import { updateProfile } from '@/src/features/profile';
 import * as ImagePicker from 'expo-image-picker';
-import { Profile, Subscription } from '@/src/entities';
+import { Profile } from '@/src/entities';
 
 export default function ProfileEditorScreen() {
   // === Member ===
-  const { session, user, getProfileInfo, setProfile } = useAuth();
+  const { session, user, profile, setProfile } = useAuth();
   const router = useRouter();
-  const profile = getProfileInfo();
   const [avatar, setAvatar] = useState<string | null>(
     profile?.avatar_url
       ? `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`
@@ -43,6 +41,7 @@ export default function ProfileEditorScreen() {
    * プロフィールを保存する
    */
   const handleSave = async () => {
+    if (!profile) return;
     setIsLoading(true);
     try {
       const base64Image = avatar
@@ -60,18 +59,13 @@ export default function ProfileEditorScreen() {
               return null;
             })
         : null;
+      profile.display_name = displayName;
+      profile.avatar_url = base64Image || null;
+      setProfile(new Profile(profile));
 
-      updateProfile(
-        {
-          ...profile,
-          display_name: displayName,
-          avatar_url: base64Image || null,
-        } as Profile,
-        session
-      )
-        .then((profile: Profile & { subscription: Subscription[] }) => {
-          LogUtil.log(profile, { level: 'info' });
-          setProfile(profile);
+      updateProfile(profile, session)
+        .then((p: Profile) => {
+          setProfile(new Profile(p));
           router.back();
         })
         .catch((e) => {

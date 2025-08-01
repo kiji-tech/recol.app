@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../../../libs/supabase';
 import { useRouter } from 'expo-router';
@@ -22,10 +22,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<(Profile & { subscription: Subscription[] }) | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const getProfileInfo = useCallback(() => {
-    return profile;
-  }, [profile]);
 
   // ログイン関数
   const loginHandler = async (email: string, password: string) => {
@@ -231,7 +227,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         session,
         profile,
         loading,
-        getProfileInfo,
         getProfile: getProfileHandler,
         setProfile,
         login: loginHandler,

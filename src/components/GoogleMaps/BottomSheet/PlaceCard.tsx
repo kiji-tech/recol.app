@@ -28,7 +28,7 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
         {/* イメージ画像 */}
         {place.photos && place.photos.length > 0 ? (
           <Image
-            cachePolicy="memory-disk"
+            // cachePolicy="memory-disk"
             source={source}
             style={{
               width: 140,

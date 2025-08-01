@@ -22,4 +22,4 @@ export { signInWithGoogle, signInWithApple } from './libs/socialAuth';
 export { getProfile, getSession, isRecoverySession } from './libs/session';
 
 // フック
-export { AuthProvider, useAuth } from './hooks';
+export { AuthProvider, useAuth } from './hooks/useAuth';

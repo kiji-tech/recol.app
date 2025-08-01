@@ -5,7 +5,11 @@ import { Profile } from '../types/Profile';
 /**
  * プロフィールの更新
  */
-export async function updateProfile(profile: Profile, session: Session | null, ctrl?: AbortController) {
+export async function updateProfile(
+  profile: Profile,
+  session: Session | null,
+  ctrl?: AbortController
+) {
   const response = await apiRequest<Profile>('/profile', {
     method: 'PUT',
     session,
@@ -15,5 +19,5 @@ export async function updateProfile(profile: Profile, session: Session | null, c
     },
     ctrl,
   });
-  return response.data!;
+  return new Profile(response.data!);
 }

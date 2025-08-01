@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ReactNode } from 'react';
 import { Modal, Text, TouchableOpacity } from 'react-native';
 import BackgroundView from '../BackgroundView';
+import { BackHandler } from 'react-native';
 
 type Props = {
   children: ReactNode;
@@ -10,6 +11,14 @@ type Props = {
   onClose: () => void;
 };
 export default function ModalLayout({ children, visible = true, size, onClose }: Props): ReactNode {
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      onClose();
+      return true;
+    });
+    return () => backHandler.remove();
+  }, []);
+
   return (
     <Modal
       visible={visible}

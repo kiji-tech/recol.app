@@ -6,7 +6,6 @@ export type AuthContextType = {
   user: User | null;
   session: Session | null;
   profile: (Profile & { subscription: Subscription[] }) | null;
-  getProfileInfo: () => (Profile & { subscription: Subscription[] }) | null;
   getProfile: () => Promise<void>;
   setProfile: (profile: (Profile & { subscription: Subscription[] }) | null) => void;
   loading: boolean;

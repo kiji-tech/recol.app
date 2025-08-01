@@ -1,17 +1,15 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { useAuth } from '@/src/features/auth';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { PaymentSheetError, useStripe } from '@stripe/stripe-react-native';
 import {
-  Subscription,
   cancelStripeSubscription,
   setupUpdateSubscription,
   setupCreateSubscription,
 } from '@/src/features/payment';
 import { LogUtil } from '@/src/libs/LogUtil';
-import { Profile } from '@/src/features/profile';
 import CurrentPlanBadge from './components/(PaymentPlan)/CurrentPlanBadge';
 import dayjs from 'dayjs';
 import PlanTable from './components/(PaymentPlan)/PlanTable';
@@ -22,8 +20,7 @@ export default function PaymentPlan() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { presentPaymentSheet } = useStripe();
-  const { session, getProfileInfo } = useAuth();
-  const [profile, setProfile] = useState<(Profile & { subscription: Subscription[] }) | null>(null);
+  const { session, profile } = useAuth();
 
   // === Method ===
   // TODO: setupSubscriptionとupdateSubscriptionはViewには関係ないので分離したい
@@ -119,13 +116,6 @@ export default function PaymentPlan() {
     );
   };
 
-  // === Effect ===
-  useFocusEffect(
-    useCallback(() => {
-      setProfile(getProfileInfo());
-    }, [session])
-  );
-
   // === Render ===
   if (!profile) return;
   return (
@@ -157,58 +147,82 @@ export default function PaymentPlan() {
             <PlanTable />
           </View>
 
-          {/* プラン選択 */}
-          <View>
-            <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-3">
-              プランを選択
-            </Text>
-            <View className="flex flex-row gap-3">
-              <PlanCard
-                price="500円"
-                period="月額"
-                onPress={() => handlePayment('m')}
-                disabled={
-                  isLoading ||
-                  (profile &&
-                    profile.subscription.length > 0 &&
-                    profile.subscription[0].isMonthly())
-                }
-                isCurrentPlan={
-                  profile && profile.subscription.length > 0 && profile.subscription[0].isMonthly()
-                }
-              />
-              <PlanCard
-                price="5,000円"
-                period="年額"
-                originalPrice="6,000円"
-                discount="17%OFF"
-                isPopular={true}
-                onPress={() => handlePayment('y')}
-                disabled={
-                  isLoading ||
-                  (profile && profile.subscription.length > 0 && profile.subscription[0].isYearly())
-                }
-                isCurrentPlan={
-                  profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()
-                }
-              />
-            </View>
-          </View>
-
-          {/* 解約ボタン */}
-          {profile!.subscription && profile!.subscription.length > 0 && (
-            <View className="items-center">
-              <Button
-                text="プレミアムプランを解約"
-                onPress={handleCancel}
-                disabled={isLoading}
-                loading={isLoading}
-                theme="danger"
-              />
-              <Text className="text-gray-500 dark:text-gray-400 text-sm mt-2 text-center">
+          {profile.subscription.length > 0 && profile.subscription[0].isCanceled() && (
+            <View className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+              <View className="flex-row items-center justify-center mb-2">
+                <View className="bg-gray-500 dark:bg-gray-400 rounded-full px-3 py-1">
+                  <Text className="text-white text-sm font-bold">解約予定</Text>
+                </View>
+              </View>
+              <Text className="text-center text-gray-600 dark:text-gray-300 font-medium">
+                解約のリクエストを受け付けました
+              </Text>
+              <Text className="text-center text-gray-500 dark:text-gray-400 text-sm mt-1">
                 有効期限終了後にフリープランに戻ります
               </Text>
             </View>
+          )}
+
+          {profile.subscription.length > 0 && !profile.subscription[0].isCanceled() && (
+            <>
+              {/* プラン選択 */}
+              <View>
+                <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-3">
+                  プランを選択
+                </Text>
+                <View className="flex flex-row gap-3">
+                  <PlanCard
+                    price="500円"
+                    period="月額"
+                    onPress={() => handlePayment('m')}
+                    disabled={
+                      isLoading ||
+                      (profile &&
+                        profile.subscription.length > 0 &&
+                        profile.subscription[0].isMonthly())
+                    }
+                    isCurrentPlan={
+                      profile &&
+                      profile.subscription.length > 0 &&
+                      profile.subscription[0].isMonthly()
+                    }
+                  />
+                  <PlanCard
+                    price="5,000円"
+                    period="年額"
+                    originalPrice="6,000円"
+                    discount="17%OFF"
+                    isPopular={true}
+                    onPress={() => handlePayment('y')}
+                    disabled={
+                      isLoading ||
+                      (profile &&
+                        profile.subscription.length > 0 &&
+                        profile.subscription[0].isYearly())
+                    }
+                    isCurrentPlan={
+                      profile &&
+                      profile.subscription.length > 0 &&
+                      profile.subscription[0].isYearly()
+                    }
+                  />
+                </View>
+              </View>
+
+              {/* 解約ボタン */}
+              <View className="items-center">
+                <Button
+                  text="プレミアムプランを解約"
+                  onPress={handleCancel}
+                  disabled={isLoading}
+                  loading={isLoading}
+                  theme="danger"
+                />
+                <Text className="text-gray-500 dark:text-gray-400 text-sm mt-2 text-center">
+                  有効期限終了後にフリープランに戻ります
+                </Text>
+              </View>
+            </>
           )}
         </View>
       </ScrollView>

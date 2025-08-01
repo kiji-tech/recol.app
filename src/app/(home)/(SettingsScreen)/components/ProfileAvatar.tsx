@@ -4,15 +4,15 @@ import { View, Text, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function ProfileAvatar() {
-  const { getProfileInfo, user } = useAuth();
+  const { profile, user } = useAuth();
 
   return (
     <View className="items-center p-6 border-b border-light-border dark:border-dark-border">
       <View className="w-24 h-24 rounded-full overflow-hidden border-2 border-light-border dark:border-dark-border">
-        {getProfileInfo()?.avatar_url ? (
+        {profile?.avatar_url ? (
           <Image
             source={{
-              uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${getProfileInfo()?.avatar_url}`,
+              uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`,
             }}
             style={{
               width: '100%',
@@ -26,7 +26,7 @@ export default function ProfileAvatar() {
         )}
       </View>
       <Text className="text-xl font-bold text-light-text dark:text-dark-text">
-        {getProfileInfo()?.display_name || 'ユーザー名未設定'}
+        {profile?.display_name || 'ユーザー名未設定'}
       </Text>
       <Text className="text-light-text dark:text-dark-text">{user?.email}</Text>
     </View>

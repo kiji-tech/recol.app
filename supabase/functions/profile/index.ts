@@ -48,7 +48,7 @@ const get = async (c: Hono.Context) => {
   }
   const { data, error } = await supabase
     .from('profile')
-    .select('*, subscription(*)')
+    .select('*')
     .eq('uid', user.id)
     .maybeSingle();
 
@@ -163,15 +163,28 @@ const update = async (c: Hono.Context) => {
       },
       { onConflict: 'uid' }
     )
-    .select('*, subscription(*)')
-    .eq('subscription.user_id', user.id)
-    .eq('subscription.status', 'active')
+    .select('*')
     .maybeSingle();
 
   if (error) {
     console.error(error);
     return c.json({ message: getMessage('C007', ['プロフィール']), code: 'C007' }, 400);
   }
+
+  // 期限内のsubscriptionを取得
+  const { data: subscriptionData, error: subscriptionError } = await supabase
+    .from('subscription')
+    .select('*')
+    .eq('user_id', user.id)
+    .in('status', ['active', 'trying', 'canceled'])
+    .gte('current_period_end', dayjs().format('YYYY-MM-DD HH:mm:ss'));
+
+  if (subscriptionError) {
+    LogUtil.log(JSON.stringify(subscriptionError), { level: 'error', notify: true });
+    return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
+  }
+
+  data.subscription = subscriptionData || [];
 
   return c.json(data);
 };
