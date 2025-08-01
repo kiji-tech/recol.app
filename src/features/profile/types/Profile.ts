@@ -1,5 +1,5 @@
 import { Tables, Enums } from '../../../libs/database.types';
-import { Subscription } from '../../payment/types/Subscription';
+import { Subscription, SubscriptionType } from '../../payment/types/Subscription';
 
 export type ProfileType = Tables<'profile'>;
 export type PaymentPlan = Enums<'PaymentPlan'>;
@@ -20,7 +20,7 @@ export class Profile {
   updated_at: string | null = null;
   subscription: Subscription[];
 
-  constructor(data: ProfileType & { subscription: Tables<'subscription'>[] }) {
+  constructor(data: (ProfileType & { subscription: SubscriptionType[] }) | Profile) {
     for (const key in data) {
       this[key as keyof Profile] = data[key as keyof ProfileType] as never;
     }

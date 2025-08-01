@@ -19,7 +19,7 @@ import ProfileAvatar from './components/ProfileAvatar';
 const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
 
 export default function Settings() {
-  const { session, getProfileInfo, logout, getProfile } = useAuth();
+  const { logout } = useAuth();
   const { clearStoragePlan } = usePlan();
   const { theme } = useTheme();
   const [chatNotification, setChatNotification] = useState(false);
@@ -52,13 +52,6 @@ export default function Settings() {
     }, [])
   );
 
-  // === プロフィールの読み込み ===
-  useFocusEffect(
-    useCallback(() => {
-      getProfile();
-    }, [session])
-  );
-
   // === Render ===
   return (
     <BackgroundView>
@@ -80,7 +73,7 @@ export default function Settings() {
         </View>
         <View className="pb-4 border-b border-light-border dark:border-dark-border">
           <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">プラン</Text>
-          <PlanComponent profile={getProfileInfo()} />
+          <PlanComponent />
         </View>
 
         {/* アプリ設定 */}

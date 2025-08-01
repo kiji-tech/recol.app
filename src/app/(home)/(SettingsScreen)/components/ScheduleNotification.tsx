@@ -6,21 +6,22 @@ import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { Profile } from '@/src/features/profile/types/Profile';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
-import { updateProfile } from '@/src/libs/ApiService';
-import { fetchScheduleListForNotification } from '@/src/libs/ApiService';
-import Constants from 'expo-constants';
+import { updateProfile } from '@/src/features/profile';
+import { fetchScheduleListForNotification } from '@/src/features/schedule';
 import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 export default function ScheduleNotification() {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
-  const { getProfileInfo, setProfile, session } = useAuth();
+  const { profile, setProfile, session } = useAuth();
 
   // スケジュール通知設定の変更
   const handleScheduleNotificationChange = async (value: boolean) => {
-    if (!getProfileInfo()) return;
-    setProfile({ ...getProfileInfo(), enabled_schedule_notification: value } as Profile);
-    let token = getProfileInfo()?.notification_token;
+    if (!profile) return;
+    profile.enabled_schedule_notification = value;
+    setProfile(new Profile(profile));
+    let token = profile.notification_token;
 
     // スケジュール通知を無効にした場合は､既存のスケジュールを全削除
     if (!value) {
@@ -28,6 +29,7 @@ export default function ScheduleNotification() {
       await NotificationUtil.removeAllScheduleNotification();
     }
 
+    // 有効にした場合
     if (value) {
       LogUtil.log('Permission check', { level: 'info' });
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -35,7 +37,8 @@ export default function ScheduleNotification() {
         LogUtil.log('Permission Request', { level: 'info' });
         const { status } = await Notifications.requestPermissionsAsync();
         if (status !== 'granted') {
-          setProfile({ ...getProfileInfo(), enabled_schedule_notification: false } as Profile);
+          profile.enabled_schedule_notification = false;
+          setProfile(new Profile(profile));
           return;
         }
       }
@@ -48,14 +51,10 @@ export default function ScheduleNotification() {
       token = expoToken.data;
     }
 
-    await updateProfile(
-      {
-        ...getProfileInfo(),
-        enabled_schedule_notification: value,
-        notification_token: token,
-      } as Profile,
-      session
-    );
+    profile.enabled_schedule_notification = value;
+    profile.notification_token = token;
+    setProfile(new Profile(profile));
+    await updateProfile(profile, session);
 
     // ONになった場合は､今あるスケジュールに対してすべての通知を設定する
     const scheduleList = await fetchScheduleListForNotification(session);
@@ -77,7 +76,7 @@ export default function ScheduleNotification() {
       </View>
       <View className="absolute right-4">
         <Switch
-          value={getProfileInfo()?.enabled_schedule_notification ?? false}
+          value={profile?.enabled_schedule_notification ?? false}
           onValueChange={handleScheduleNotificationChange}
         />
       </View>

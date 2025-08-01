@@ -4,15 +4,12 @@ import { router } from 'expo-router';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
-import { Profile, Subscription } from '@/src/entities';
+import { useAuth } from '@/src/features/auth';
 
-type PlanComponentProps = {
-  profile: (Profile & { subscription: Subscription[] }) | null;
-};
-
-export default function PlanComponent({ profile }: PlanComponentProps) {
+export default function PlanComponent() {
   // === Member ===
-  const { isDarkMode } = useTheme();
+    const { isDarkMode } = useTheme();
+    const { profile } = useAuth();
 
   // === Method ===
   if (profile && (profile.isAdmin() || profile.isSuperUser())) {
