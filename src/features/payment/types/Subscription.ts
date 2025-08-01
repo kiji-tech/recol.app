@@ -3,6 +3,10 @@ import { Tables } from '../../../libs/database.types';
 export type SubscriptionType = Tables<'subscription'>;
 
 export class Subscription {
+  static STATUS_ACTIVE = 'active';
+  static STATUS_TRYING = 'trying';
+  static STATUS_CANCELED = 'canceled';
+
   // 明示的なプロパティ定義
   public canceled_at: string | null = null;
   public created_at: string = '';
@@ -20,7 +24,7 @@ export class Subscription {
   public updated_at: string | null = null;
   public user_id: string | null = null;
 
-  constructor(data: SubscriptionType) {
+  constructor(data: SubscriptionType | Subscription) {
     // すべてのプロパティを自動的にコピー
     for (const key in data) {
       this[key as keyof Subscription] = data[key as keyof SubscriptionType] as never;
@@ -43,5 +47,12 @@ export class Subscription {
    */
   public isYearly(): boolean {
     return this.price_id === `${process.env.EXPO_PUBLIC_STRIPE_YEARLY_PLAN}`;
+  }
+
+  /**
+   * キャセル済みの契約か確認する
+   */
+  public isCanceled(): boolean {
+    return this.status === Subscription.STATUS_CANCELED;
   }
 }
