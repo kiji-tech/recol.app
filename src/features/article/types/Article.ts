@@ -121,7 +121,7 @@ export class Article {
   content: string = '';
   location: string = '';
   locationContentsList: LocationContents[] = [];
-  productContentList?: ProductContents[];
+  productContentList: ProductContents[] = [];
   category?: {
     id: string;
     createdAt: string;
