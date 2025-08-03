@@ -23,6 +23,7 @@ export default function ModalLayout({ children, visible = true, size, onClose }:
     <Modal
       visible={visible}
       animationType="slide"
+      onRequestClose={onClose}
       style={{ height: size == 'full' ? '92%' : size == 'half' ? '50%' : Number(size) }}
       className={`w-screen flex flex-col justify-start items-start gap-8
     bg-light-background dark:bg-dark-border`}

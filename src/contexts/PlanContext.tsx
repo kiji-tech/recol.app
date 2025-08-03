@@ -1,13 +1,9 @@
-import React, { useCallback, useEffect } from 'react';
-import { createContext, useContext, useState } from 'react';
-import { fetchPlanList } from '../features/plan';
-import { useAuth } from '../features/auth';
-import { LogUtil } from '../libs/LogUtil';
+import React from 'react';
+import { createContext, useContext } from 'react';
 import { Plan } from '../features/plan';
 import { Schedule } from '../features/schedule';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const PLAN_LIST_STORAGE_KEY = '@plan_list';
+import { usePlanList } from '../features/plan/hooks/usePlanList';
+import { usePlan as usePlanHook } from '../features/plan/hooks/usePlan';
 
 type PlanContextType = {
   planList: Plan[];
@@ -24,64 +20,12 @@ type PlanContextType = {
 const PlanContext = createContext<PlanContextType | null>(null);
 
 const PlanProvider = ({ children }: { children: React.ReactNode }) => {
-  const [planList, setPlanList] = useState<Plan[]>([]);
-  const [plan, setPlan] = useState<Plan | null>(null);
-  const [planLoading, setPlanLoading] = useState(false);
-  const { session } = useAuth();
-  const [editSchedule, setEditSchedule] = useState<Schedule | null>(null);
+  const { plan, setPlan, editSchedule, setEditSchedule } = usePlanHook();
 
-  useEffect(() => {
-    const ctrl = new AbortController();
-    fetchStoragePlan();
-    fetchPlan(ctrl);
-    return () => {
-      ctrl.abort();
-    };
-  }, [session]);
-
-  const fetchStoragePlan = async () => {
-    const list = JSON.parse((await AsyncStorage.getItem(PLAN_LIST_STORAGE_KEY)) || '[]');
-    if (list && list.length > 0) {
-      LogUtil.log('Hit! plan storage.', { level: 'info' });
-      setPlanList(list);
-    }
-  };
-
-  const setStoragePlan = async (planList: Plan[]) => {
-    await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(planList));
-  };
-
-  const fetchPlan = useCallback(
-    async (ctrl?: AbortController) => {
-      if (!session) return;
-      setPlanLoading(true);
-      fetchPlanList(session, ctrl)
-        .then(async (response) => {
-          setPlanList(response);
-          await setStoragePlan(response);
-          if (plan) {
-            const updatePlan = response.find((p) => p.uid === plan.uid);
-            if (updatePlan) setPlan(updatePlan);
-          }
-        })
-        .catch((e) => {
-          if (e && e.message.includes('Aborted')) {
-            LogUtil.log('Aborted', { level: 'info' });
-            return;
-          }
-          LogUtil.log(JSON.stringify({ fetchPlanList: e }), { level: 'error', notify: true });
-          throw e;
-        })
-        .finally(() => {
-          setPlanLoading(false);
-        });
-    },
-    [session]
+  const { planList, setPlanList, planLoading, fetchPlan, clearStoragePlan } = usePlanList(
+    plan,
+    setPlan
   );
-
-  const clearStoragePlan = async () => {
-    await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, '[]');
-  };
 
   return (
     <PlanContext.Provider

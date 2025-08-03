@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, View, Text, Alert, Dimensions } from 'react-native';
+import { TouchableOpacity, View, Text, Alert, Dimensions, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { IconButton } from '@/src/components';
 import { useFocusEffect } from 'expo-router';
@@ -197,7 +197,7 @@ export default function MediaScreen() {
       )}
       {/* アニメーションバー  */}
       {addImage.length > 0 && (
-        <View className="absolute top-20 w-full z-50">
+        <View className={`absolute w-full z-50 ${Platform.OS === 'ios' ? 'top-20' : 'top-0'}`}>
           <Progress.Bar
             progress={uploadedImage.length / addImage.length}
             width={Dimensions.get('window').width}

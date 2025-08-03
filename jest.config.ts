@@ -3,8 +3,8 @@ import type { Config } from 'jest';
 const config: Config = {
   preset: 'jest-expo',
   verbose: true,
-  testMatch: ['<rootDir>/test/**/*.spec.ts'],
-  setupFiles: ['./node_modules/react-native-google-mobile-ads/jest.setup.ts'],
+  testMatch: ['<rootDir>/test/**/*.spec.ts', '<rootDir>/test/**/*.spec.tsx'],
+  setupFiles: ['./node_modules/react-native-google-mobile-ads/jest.setup.ts', './test/mockSetup.ts'],
 };
 
 export default config;
