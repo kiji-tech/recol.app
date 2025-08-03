@@ -265,7 +265,7 @@ importers:
         specifier: ^3.6.2
         version: 3.6.2
       react-test-renderer:
-        specifier: 19.1.0
+        specifier: ^19.0.0
         version: 19.1.0(react@19.0.0)
       supabase:
         specifier: ^2.30.4
