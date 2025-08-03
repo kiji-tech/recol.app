@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Region } from 'react-native-maps';
@@ -16,7 +16,6 @@ import ScheduleInfoCard from './components/(MapScreen)/ScheduleInfoCard';
 export default function MapScreen() {
   // === Member ===
   const scrollRef = useRef<ScrollView>(null);
-  const platform = Platform.OS;
   const { plan } = usePlan();
   const { currentRegion } = useLocation();
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(
@@ -112,25 +111,23 @@ export default function MapScreen() {
             onSelectedPlace={handleSelectedPlace}
           />
         </View>
-        <View
-          className={`absolute ${platform === 'ios' ? 'bottom-20' : 'bottom-40'} w-screen px-4 pt-2 pb-8`}
+      </View>
+      <View className={`absolute bottom-0 w-screen px-4 pt-2 pb-8 z-50`}>
+        <ScrollView
+          ref={scrollRef}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          alwaysBounceHorizontal={false}
+          snapToAlignment={'end'}
         >
-          <ScrollView
-            ref={scrollRef}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            alwaysBounceHorizontal={false}
-            snapToAlignment={'end'}
-          >
-            {plan?.schedule.map((schedule) => (
-              <ScheduleInfoCard
-                key={schedule.uid}
-                schedule={schedule}
-                onPress={handleSelectedInfoCard}
-              />
-            ))}
-          </ScrollView>
-        </View>
+          {plan?.schedule.map((schedule) => (
+            <ScheduleInfoCard
+              key={schedule.uid}
+              schedule={schedule}
+              onPress={handleSelectedInfoCard}
+            />
+          ))}
+        </ScrollView>
       </View>
     </>
   );

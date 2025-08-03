@@ -36,7 +36,7 @@ export default function ScheduleInfoCard({ schedule, onPress }: ScheduleInfoCard
               <Image
                 style={{
                   width: '100%',
-                  height: 128,
+                  height: 156,
                   borderTopLeftRadius: 4,
                   borderTopRightRadius: 4,
                 }}
