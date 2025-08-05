@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+
+
+defaults:
+  - template: "bug_report.yml"
+    name: "🐛 Bug"
+    about: "Report a bug"
+  - template: "feature_request.yml"
+    name: "💡 Feature Request"
+    about: "Suggest a new feature"
+
