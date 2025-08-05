@@ -8,20 +8,20 @@ import { useAuth } from '@/src/features/auth';
 
 export default function PlanComponent() {
   // === Member ===
-    const { isDarkMode } = useTheme();
-    const { profile } = useAuth();
+  const { isDarkMode } = useTheme();
+  const { profile } = useAuth();
 
   // === Method ===
   if (profile && (profile.isAdmin() || profile.isSuperUser())) {
     return (
-      <View>
-        <Text className="text-light-text dark:text-dark-text">スーパーユーザーです</Text>
+      <View className="px-4 py-2 text-md">
+        <Text className="text-light-text dark:text-dark-text">スーパーユーザー</Text>
       </View>
     );
   }
 
   return (
-    <View className="px-4 py-2 text-md text-light-text dark:text-dark-text">
+    <View className="px-4 py-2 text-md">
       <TouchableOpacity
         className="flex flex-row items-start justify-between"
         onPress={() => router.push('/(payment)/PaymentPlan')}
