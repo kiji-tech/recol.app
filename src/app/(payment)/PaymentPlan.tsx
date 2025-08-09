@@ -163,52 +163,53 @@ export default function PaymentPlan() {
             </View>
           )}
 
-          {profile.subscription.length > 0 && !profile.subscription[0].isCanceled() && (
-            <>
-              {/* プラン選択 */}
-              <View>
-                <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-3">
-                  プランを選択
-                </Text>
-                <View className="flex flex-row gap-3">
-                  <PlanCard
-                    price="500円"
-                    period="月額"
-                    onPress={() => handlePayment('m')}
-                    disabled={
-                      isLoading ||
-                      (profile &&
-                        profile.subscription.length > 0 &&
-                        profile.subscription[0].isMonthly())
-                    }
-                    isCurrentPlan={
-                      profile &&
+          {/* プラン選択 */}
+          {profile.subscription.length == 0 || !profile.subscription[0].isCanceled() ? (
+            <View>
+              <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-3">
+                プランを選択
+              </Text>
+              <View className="flex flex-row gap-3">
+                <PlanCard
+                  price="500円"
+                  period="月額"
+                  onPress={() => handlePayment('m')}
+                  disabled={
+                    isLoading ||
+                    (profile &&
                       profile.subscription.length > 0 &&
-                      profile.subscription[0].isMonthly()
-                    }
-                  />
-                  <PlanCard
-                    price="5,000円"
-                    period="年額"
-                    originalPrice="6,000円"
-                    discount="17%OFF"
-                    isPopular={true}
-                    onPress={() => handlePayment('y')}
-                    disabled={
-                      isLoading ||
-                      (profile &&
-                        profile.subscription.length > 0 &&
-                        profile.subscription[0].isYearly())
-                    }
-                    isCurrentPlan={
-                      profile &&
+                      profile.subscription[0].isMonthly())
+                  }
+                  isCurrentPlan={
+                    profile &&
+                    profile.subscription.length > 0 &&
+                    profile.subscription[0].isMonthly()
+                  }
+                />
+                <PlanCard
+                  price="5,000円"
+                  period="年額"
+                  originalPrice="6,000円"
+                  discount="17%OFF"
+                  isPopular={true}
+                  onPress={() => handlePayment('y')}
+                  disabled={
+                    isLoading ||
+                    (profile &&
                       profile.subscription.length > 0 &&
-                      profile.subscription[0].isYearly()
-                    }
-                  />
-                </View>
+                      profile.subscription[0].isYearly())
+                  }
+                  isCurrentPlan={
+                    profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()
+                  }
+                />
               </View>
-
+            </View>
+          ) : (
+            <></>
+          )}
+          {profile.subscription.length > 0 && (
+            <>
               {/* 解約ボタン */}
               <View className="items-center">
                 <Button
