@@ -28,15 +28,16 @@ const createProfile = async (c: Hono.Context) => {
   const { data: newData, error: newError } = await supabase
     .from('profile')
     .insert({ uid: user.id, stripe_customer_id: customer.id })
-    .select('*, subscription(*)')
-    .eq('subscription.user_id', user.id)
-    .eq('subscription.status', 'active')
+    .select('*')
     .maybeSingle();
   if (newError) {
     LogUtil.log(newError, { level: 'error', notify: true });
     throw newError;
   }
-  return newData;
+  // 作成時はsubscriptionは空で返却する
+  newData.subscription = [];
+
+  return c.json(newData);
 };
 
 const get = async (c: Hono.Context) => {
