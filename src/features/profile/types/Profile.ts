@@ -18,6 +18,7 @@ export class Profile {
   stripe_customer_id: string | null = null;
   uid: string = '';
   updated_at: string | null = null;
+  delete_flag: boolean = false;
   subscription: Subscription[];
 
   constructor(data: (ProfileType & { subscription: SubscriptionType[] }) | Profile) {
