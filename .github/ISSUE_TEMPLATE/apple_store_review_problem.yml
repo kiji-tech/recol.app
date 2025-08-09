@@ -1,6 +1,6 @@
 name: 💡 AppleStore レビュー結果
 description: AppleStoreから指摘された場合に立てる課題
-labels: ['bug']
+labels: ['Bug']
 body:
   - type: markdown
     attributes:

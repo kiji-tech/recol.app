@@ -1,6 +1,6 @@
 name: 💡 機能リクエスト
 description: 新機能のアイデアを提案する
-labels: ["feature"]
+labels: ['Task']
 body:
   - type: markdown
     attributes:
