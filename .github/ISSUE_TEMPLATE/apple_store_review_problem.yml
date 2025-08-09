@@ -1,0 +1,17 @@
+name: 💡 AppleStore レビュー結果
+description: AppleStoreから指摘された場合に立てる課題
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        AppleStoreから指摘された場合に立てる課題
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 指摘内容
+      description: 指摘内容を詳しく説明してください
+      placeholder: できるだけ具体的に記述してください
+    validations:
+      required: true
