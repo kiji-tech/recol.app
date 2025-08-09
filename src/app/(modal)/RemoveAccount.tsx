@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { deleteAccount } from '@/src/features/auth';
 import { useAuth } from '@/src/features/auth';
+import { useSlackNotification } from '@/src/features/slack/hooks/useSlackNotification';
 
 interface ConsentItem {
   id: string;
@@ -15,6 +16,7 @@ interface ConsentItem {
 
 export default function RemoveAccount() {
   const router = useRouter();
+  const { sendNotification } = useSlackNotification();
   const { theme } = useTheme();
   const { logout, session } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -67,6 +69,10 @@ export default function RemoveAccount() {
                 {
                   text: 'OK',
                   onPress: async () => {
+                    await sendNotification({
+                      message: `アカウント削除完了: ${session?.user.email}`,
+                      type: 'delete-account',
+                    });
                     await logout();
                     router.replace('/(auth)/SignIn');
                   },
