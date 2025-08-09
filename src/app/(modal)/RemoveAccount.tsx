@@ -26,7 +26,7 @@ export default function RemoveAccount() {
     },
     {
       id: 'premium_refund',
-      text: 'プレミアム会員の場合でも返金することはできません。',
+      text: 'プレミアムプランの期間が残っていた場合でも返金することはできません。',
       checked: false,
     },
     {
