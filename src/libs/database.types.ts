@@ -116,6 +116,7 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          delete_flag: boolean | null
           display_name: string | null
           enabled_schedule_notification: boolean | null
           notification_token: string | null
@@ -128,6 +129,7 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          delete_flag?: boolean | null
           display_name?: string | null
           enabled_schedule_notification?: boolean | null
           notification_token?: string | null
@@ -140,6 +142,7 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           created_at?: string
+          delete_flag?: boolean | null
           display_name?: string | null
           enabled_schedule_notification?: boolean | null
           notification_token?: string | null

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
+import { Alert } from 'react-native';
 import { supabase } from '../../../libs/supabase';
 import { useRouter } from 'expo-router';
 import { LogUtil } from '../../../libs/LogUtil';
@@ -13,6 +14,7 @@ import { logout } from '../libs/logout';
 import { signInWithGoogle, signInWithApple } from '../libs/socialAuth';
 import { getProfile, getSession, isRecoverySession } from '../libs/session';
 import { AuthContextType } from '../types/Auth';
+import { CommonUtil } from '../../../libs/CommonUtil';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -22,6 +24,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<(Profile & { subscription: Subscription[] }) | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // delete_flagチェック関数
+  const checkDeleteFlag = async () => {
+    if (profile && profile.delete_flag) {
+      LogUtil.log('User account has delete_flag set to true, forcing logout', { level: 'info' });
+      try {
+        await logout();
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+        Alert.alert(
+          'アカウントは無効化されています',
+          '同じメールアドレスをご利用したい場合は、お問い合わせからご連絡ください。',
+          [
+            {
+              text: 'お問い合わせ',
+              onPress: () => {
+                const contactUrl = process.env.EXPO_PUBLIC_CONTACT_PAGE_URL;
+                if (contactUrl) {
+                  CommonUtil.openBrowser(contactUrl).catch((error) => {
+                    LogUtil.log(`Error opening contact page: ${JSON.stringify(error)}`, {
+                      level: 'error',
+                    });
+                  });
+                }
+              },
+            },
+            { text: 'OK', style: 'cancel' },
+          ]
+        );
+      } catch (error) {
+        LogUtil.log(`Error during forced logout: ${JSON.stringify(error)}`, { level: 'error' });
+      }
+    }
+  };
 
   // ログイン関数
   const loginHandler = async (email: string, password: string) => {
@@ -219,6 +256,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!session) return;
     getProfileHandler();
   }, [session, user]);
+
+  // profileのdelete_flagをチェック
+  useEffect(() => {
+    checkDeleteFlag();
+  }, [profile]);
 
   return (
     <AuthContext.Provider

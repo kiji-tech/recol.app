@@ -67,7 +67,6 @@ export default function Settings() {
           <SettingItem
             icon="person-outline"
             title="プロフィール編集"
-            isDarkMode={isDarkMode}
             onPress={() => router.push('/(settings)/ProfileEditorScreen')}
           />
         </View>
@@ -111,7 +110,6 @@ export default function Settings() {
             title="アプリバージョン"
             value={version}
             showArrow={false}
-            isDarkMode={isDarkMode}
           />
         </View>
 
@@ -121,20 +119,24 @@ export default function Settings() {
           <SettingItem
             icon="document-text-outline"
             title="利用規約"
-            isDarkMode={isDarkMode}
             onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/terms`)}
           />
           <SettingItem
             icon="shield-outline"
             title="プライバシーポリシー"
-            isDarkMode={isDarkMode}
             onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/policy`)}
           />
           <SettingItem
             icon="mail-outline"
             title="お問い合わせはこちら"
-            isDarkMode={isDarkMode}
             onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_CONTACT_PAGE_URL}`)}
+          />
+          <SettingItem
+            icon="trash-outline"
+            title="アカウント削除する"
+            isDanger={true}
+            showArrow={false}
+            onPress={() => router.push('/(modal)/RemoveAccount')}
           />
         </View>
 

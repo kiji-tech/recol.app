@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@/src/contexts/ThemeContext';
 
 interface SettingItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -8,7 +9,7 @@ interface SettingItemProps {
   value?: string;
   onPress?: () => void;
   showArrow?: boolean;
-  isDarkMode: boolean;
+  isDanger?: boolean;
 }
 
 export default function SettingItem({
@@ -17,16 +18,21 @@ export default function SettingItem({
   value,
   onPress,
   showArrow = true,
-  isDarkMode,
+  isDanger = false,
 }: SettingItemProps) {
+  const { isDarkMode } = useTheme();
   return (
     <TouchableOpacity
       onPress={onPress}
       className="flex-row items-center justify-between p-4 border-b border-light-border dark:border-dark-border"
     >
       <View className="flex-row items-center">
-        <Ionicons name={icon} size={24} color={isDarkMode ? 'white' : 'black'} />
-        <Text className="ml-3 text-light-text dark:text-dark-text">{title}</Text>
+        <Ionicons name={icon} size={24} color={isDanger ? 'red' : isDarkMode ? 'white' : 'black'} />
+        <Text
+          className={`ml-3 ${isDanger ? 'text-red-500' : 'text-light-text dark:text-dark-text'}`}
+        >
+          {title}
+        </Text>
       </View>
       <View className="flex-row items-center">
         {value && <Text className="mr-2 text-light-text dark:text-dark-text">{value}</Text>}

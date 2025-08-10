@@ -4,6 +4,7 @@ import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { StripeUtil } from '../libs/StripeUtil.ts';
 import dayjs from 'dayjs';
+import { sendSlackNotification } from '../libs/SlackUtil.js';
 
 const app = new Hono().basePath('/profile');
 
@@ -28,15 +29,16 @@ const createProfile = async (c: Hono.Context) => {
   const { data: newData, error: newError } = await supabase
     .from('profile')
     .insert({ uid: user.id, stripe_customer_id: customer.id })
-    .select('*, subscription(*)')
-    .eq('subscription.user_id', user.id)
-    .eq('subscription.status', 'active')
+    .select('*')
     .maybeSingle();
   if (newError) {
     LogUtil.log(newError, { level: 'error', notify: true });
     throw newError;
   }
-  return newData;
+  // 作成時はsubscriptionは空で返却する
+  newData.subscription = [];
+
+  return c.json(newData);
 };
 
 const get = async (c: Hono.Context) => {
@@ -56,6 +58,12 @@ const get = async (c: Hono.Context) => {
     const newData = await createProfile(c).catch(() => {
       return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
     });
+    // Slackに通知
+    await sendSlackNotification({
+      message: `[${user.id}]が新規登録されました`,
+      webhookUrl: Deno.env.get('NEW_ACCOUNT_SLACK_WEBHOOK_URL') || '',
+    });
+
     return c.json(newData);
   }
 

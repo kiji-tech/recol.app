@@ -71,9 +71,18 @@ const maximumVerifyChecker = async (supabase: SupabaseClient, user: User) => {
   const from = dayjs().add(-1, 'year').format('YYYY-MM-DD HH:mm');
   const { data: profile } = await supabase
     .from('profile')
-    .select('role, subscription(*)')
+    .select('role')
     .eq('uid', user.id)
     .maybeSingle();
+
+  const { data: subscription } = await supabase
+    .from('subscription')
+    .select('*')
+    .eq('user_id', user.id)
+    .in('status', ['active', 'trying', 'canceled'])
+    .gte('current_period_end', dayjs().format('YYYY-MM-DD HH:mm:ss'));
+
+  profile.subscription = subscription;
 
   const { count } = await supabase
     .from('plan')
