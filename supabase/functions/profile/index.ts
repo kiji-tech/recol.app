@@ -4,6 +4,7 @@ import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { StripeUtil } from '../libs/StripeUtil.ts';
 import dayjs from 'dayjs';
+import { sendSlackNotification } from '../libs/SlackUtil.js';
 
 const app = new Hono().basePath('/profile');
 
@@ -57,6 +58,12 @@ const get = async (c: Hono.Context) => {
     const newData = await createProfile(c).catch(() => {
       return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
     });
+    // Slackに通知
+    await sendSlackNotification({
+      message: `[${user.id}]が新規登録されました`,
+      webhookUrl: Deno.env.get('NEW_ACCOUNT_SLACK_WEBHOOK_URL') || '',
+    });
+
     return c.json(newData);
   }
 

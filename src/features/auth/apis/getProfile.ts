@@ -9,12 +9,5 @@ import { Subscription } from '../../payment/types/Subscription';
 export const getProfile = async (
   session: Session
 ): Promise<(Profile & { subscription: Subscription[] }) | null> => {
-  try {
-    return await fetchProfile(session);
-  } catch (e) {
-    if (e && typeof e === 'object' && 'message' in e) {
-      return null;
-    }
-    throw e;
-  }
+  return await fetchProfile(session);
 };
