@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<(Profile & { subscription: Subscription[] }) | null>(null);
   const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
 
   // delete_flagチェック関数
   const checkDeleteFlag = async () => {
@@ -222,6 +223,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setProfile(null);
       } finally {
         setLoading(false);
+        setInitialized(true);
       }
     };
     getSessionAndProfile();
@@ -269,6 +271,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         session,
         profile,
         loading,
+        initialized,
         getProfile: getProfileHandler,
         setProfile,
         login: loginHandler,
