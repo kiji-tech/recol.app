@@ -2,7 +2,6 @@ import '@/global.css';
 import React, { useCallback, useEffect, useState } from 'react';
 import { router, Stack } from 'expo-router';
 import { PlanProvider } from '../contexts/PlanContext';
-import { AuthProvider } from '../features/auth';
 import { Linking, StatusBar, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider } from '../contexts/ThemeContext';
@@ -21,6 +20,7 @@ import { LocationProvider } from '../contexts/LocationContext';
 import { StripeProvider, useStripe } from '@stripe/stripe-react-native';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import { useAuth, AuthProvider } from '@/src/features/auth';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -39,6 +39,7 @@ SplashScreen.setOptions({
 const Layout = () => {
   const [ready, setReady] = useState(false);
   const { isDarkMode } = useTheme();
+  const { initialized } = useAuth();
   useEffect(() => {
     (async () => {
       // ここでフォントや API をプリロード
@@ -50,11 +51,11 @@ const Layout = () => {
   }, []);
 
   const onLayout = useCallback(async () => {
-    if (ready) {
+    if (ready && initialized) {
       // レイアウトが終わってから隠すと白画面を防げる
       await SplashScreen.hideAsync();
     }
-  }, [ready]);
+  }, [ready, initialized]);
 
   const initAd = useCallback(async () => {
     try {
@@ -82,7 +83,7 @@ const Layout = () => {
     initAd();
   };
 
-  if (!ready) return null;
+  if (!ready || !initialized) return null;
 
   return (
     <View onLayout={onLayout} style={{ flex: 1 }}>

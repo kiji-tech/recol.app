@@ -9,6 +9,7 @@ export type AuthContextType = {
   getProfile: () => Promise<void>;
   setProfile: (profile: (Profile & { subscription: Subscription[] }) | null) => void;
   loading: boolean;
+  initialized: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;

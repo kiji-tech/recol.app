@@ -4,7 +4,7 @@ import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { StripeUtil } from '../libs/StripeUtil.ts';
 import dayjs from 'dayjs';
-import { sendSlackNotification } from '../libs/SlackUtil.js';
+import { sendSlackNotification } from '../libs/SlackUtil.ts';
 
 const app = new Hono().basePath('/profile');
 
