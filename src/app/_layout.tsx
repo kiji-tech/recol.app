@@ -32,7 +32,7 @@ LogBox.ignoreLogs([
 // === SplashScreen ===
 SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({
-  duration: 1000,
+  duration: 3000,
   fade: true,
 });
 
