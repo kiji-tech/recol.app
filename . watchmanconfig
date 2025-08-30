@@ -1,0 +1,16 @@
+{
+    "ignore_dirs": [
+        "node_modules",
+        "coverage",
+        "dist",
+        "android/build",
+        "android/app/build",
+        "ios/build",
+        "ios/Pods",
+        ".git",
+        "test",
+        "docs",
+        "images",
+        "assets/images/mapicons"
+    ]
+}
