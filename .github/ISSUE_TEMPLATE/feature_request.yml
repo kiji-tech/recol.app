@@ -6,36 +6,36 @@ body:
     attributes:
       value: |
         機能の提案ありがとうございます。以下の情報を記入してください。
-
+  - type: dropdown
+    id: screen
+    attributes:
+      label: 機能の場所
+      description: この機能を実装するスクリーンを教えて下さい
+      options:
+        - ホーム
+        - 計画一覧
+        - 計画作成
+        - 計画編集
+        - 計画詳細
+        - 設定
+        - スケジュール一覧
+        - スケジュール作成
+        - スケジュール編集
+        - マップ
+        - メディア
+    validations:
+      required: true
   - type: textarea
     id: problem
     attributes:
-      label: 関連する問題
-      description: この機能リクエストに関連する問題を説明してください
-      placeholder: 例）〜の操作が面倒です
+      label: 機能内容
+      description: この機能の内容を説明してください
     validations:
       required: true
-
   - type: textarea
-    id: solution
+    id: reason
     attributes:
-      label: 提案する解決策
-      description: 考えられる解決策を説明してください
+      label: 理由
+      description: この機能を追加する理由を説明してください
     validations:
       required: true
-
-  - type: textarea
-    id: alternatives
-    attributes:
-      label: 代替案
-      description: 検討した他の解決策があれば記述してください
-    validations:
-      required: false
-
-  - type: textarea
-    id: additional
-    attributes:
-      label: その他の情報
-      description: スクリーンショットや参考資料などがあれば追加してください
-    validations:
-      required: false
