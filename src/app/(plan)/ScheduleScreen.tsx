@@ -95,9 +95,9 @@ export default function ScheduleScreen(): ReactNode {
             <ScheduleComponents plan={viewPlan} onDelete={handleDeleteSchedule} />
           </>
         )}
-        {planLoading && <MaskLoading />}
       </ScrollView>
       <ToastManager />
+      {planLoading && <MaskLoading />}
     </BackgroundView>
   );
 }
