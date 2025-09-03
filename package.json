@@ -28,9 +28,7 @@
         "open:ios": "npx uri-scheme open $link --ios"
     },
     "dependencies": {
-        "@expo/config-plugins": "~10.1.2",
         "@expo/metro-runtime": "~5.0.4",
-        "@expo/prebuild-config": "~9.0.9",
         "@gorhom/bottom-sheet": "^5.1.6",
         "@react-native-async-storage/async-storage": "2.1.2",
         "@react-native-community/cli-server-api": "^18.0.0",
@@ -49,7 +47,6 @@
         "chalk": "^5.4.1",
         "dayjs": "^1.11.13",
         "dom-to-image": "^2.6.0",
-        "eas-cli": "^16.13.3",
         "expo": "~53.0.20",
         "expo-apple-authentication": "^7.2.4",
         "expo-auth-session": "~6.2.1",
@@ -64,7 +61,7 @@
         "expo-location": "~18.1.6",
         "expo-media-library": "~17.1.7",
         "expo-notifications": "^0.31.4",
-        "expo-router": "5.1.4",
+        "expo-router": "5.1.5",
         "expo-splash-screen": "~0.30.10",
         "expo-status-bar": "~2.2.3",
         "expo-system-ui": "~5.0.11",
