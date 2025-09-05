@@ -14,7 +14,10 @@ export default function generateShareMessage(plan: Plan) {
 ${plan.memo || ''}
 
 ■■■予定■■■
-${scheduleList.map((schedule) => generateScheduleMessage(schedule)).join('\n')}
+${scheduleList
+  .sort((a, b) => dayjs(a.from).diff(dayjs(b.from)))
+  .map((schedule) => generateScheduleMessage(schedule))
+  .join('\n')}
 ---------------------------------------------
 `;
   return message;
