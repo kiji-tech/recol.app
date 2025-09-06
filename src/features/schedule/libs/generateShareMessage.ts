@@ -1,3 +1,4 @@
+import { Place } from '@/src/entities/Place';
 import { Plan } from '../../plan';
 import { Schedule } from '../types/Schedule';
 import dayjs from 'dayjs';
@@ -34,5 +35,6 @@ const generateScheduleMessage = (schedule: Schedule) => {
 - ${dayjs(schedule.from).format('YYYY/M/D H:mm')} 〜 ${dayjs(schedule.to).format('H:mm')}
 - ${schedule.title || '(タイトル未設定)'}
 - ${schedule.description || ''}
+${schedule.place_list?.map((place: Place) => `●${place.displayName.text}\n${place.googleMapsUri}`).join('\n') || ''}
 `;
 };
