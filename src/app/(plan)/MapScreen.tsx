@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { View } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { BackHandler, View } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Region } from 'react-native-maps';
 import { useLocation } from '@/src/contexts/LocationContext';
@@ -88,6 +88,14 @@ export default function MapScreen() {
       scrollRef.current?.scrollTo({ x: calcScrollWidth(selectedPlace), animated: true });
     }, [selectedPlace])
   );
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      router.back();
+      return true;
+    });
+    return () => backHandler.remove();
+  }, []);
 
   // === Memo ===
   const placeList = useMemo(() => {

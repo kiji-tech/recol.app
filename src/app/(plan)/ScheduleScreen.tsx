@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import ScheduleComponents from './components/(ScheduleScreen)/(Schedule)';
 import { BackgroundView, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
@@ -14,6 +14,7 @@ import ToastManager, { Toast } from 'toastify-react-native';
 import PlanInformation from './components/(ScheduleScreen)/PlanInformation';
 import ScheduleMenu from './components/(ScheduleScreen)/ScheduleMenu';
 import { ScrollView } from 'react-native-gesture-handler';
+import { BackHandler } from 'react-native';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
@@ -77,6 +78,13 @@ export default function ScheduleScreen(): ReactNode {
 
   // === Effect ===
   useFocusEffect(useCallback(initView, [plan, session]));
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      router.back();
+      return true;
+    });
+    return () => backHandler.remove();
+  }, []);
 
   // === Render ===
   return (
