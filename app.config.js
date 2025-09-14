@@ -18,6 +18,7 @@ export default {
     infoPlist: {
       NSCameraUsageDescription: 'カメラを使ってプロフィール画像を設定します',
       NSPhotoLibraryUsageDescription: 'アカウントのアイコン､計画事に画像の登録します',
+      NSUserNotificationsUsageDescription: 'スケジュールの開始時間に通知を受け取る',
       NSLocationWhenInUseUsageDescription:
         '地図を表示する際の初期表示位置を設定するために使用します',
       NSUserTrackingUsageDescription:
@@ -164,6 +165,7 @@ export default {
       '@stripe/stripe-react-native',
       {
         merchantIdentifier: 'merchant.com.libetech.recol',
+        enableGooglePay: true,
       },
     ],
     'expo-apple-authentication',

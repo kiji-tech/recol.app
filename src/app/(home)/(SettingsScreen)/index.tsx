@@ -19,19 +19,21 @@ import ProfileAvatar from './components/ProfileAvatar';
 const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
 
 export default function Settings() {
+  // === Member ===
   const { logout } = useAuth();
   const { clearStoragePlan } = usePlan();
-  const { theme } = useTheme();
-  const [chatNotification, setChatNotification] = useState(false);
-  const isDarkMode = theme === 'dark';
   const version = Constants.expoConfig?.version || '1.0.0';
 
+  // === チャット関係 ===
   // チャット通知設定の変更
-  const handleChatNotificationChange = async (value: boolean) => {
-    await AsyncStorage.setItem(CHAT_NOTIFICATION_KEY, String(value));
-    setChatNotification(value);
-  };
+  //   const { isDarkMode } = useTheme();
+  //   const [chatNotification, setChatNotification] = useState(false);
+  //   const handleChatNotificationChange = async (value: boolean) => {
+  //     await AsyncStorage.setItem(CHAT_NOTIFICATION_KEY, String(value));
+  //     setChatNotification(value);
+  //   };
 
+  // === Method ===
   // サインアウト処理
   const handleSignOut = async () => {
     router.replace('/(auth)/SignIn');
@@ -44,9 +46,8 @@ export default function Settings() {
   useFocusEffect(
     useCallback(() => {
       const loadSettings = async () => {
-        const [chatEnabled] = await Promise.all([AsyncStorage.getItem(CHAT_NOTIFICATION_KEY)]);
-
-        setChatNotification(chatEnabled !== 'false');
+        // const [chatEnabled] = await Promise.all([AsyncStorage.getItem(CHAT_NOTIFICATION_KEY)]);
+        // setChatNotification(chatEnabled !== 'false');
       };
       loadSettings();
     }, [])
