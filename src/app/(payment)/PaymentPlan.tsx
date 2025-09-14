@@ -14,6 +14,7 @@ import CurrentPlanBadge from './components/(PaymentPlan)/CurrentPlanBadge';
 import dayjs from 'dayjs';
 import PlanTable from './components/(PaymentPlan)/PlanTable';
 import PlanCard from './components/(PaymentPlan)/PlanCard';
+import { Payment } from '@/src/features/payment/types/Payment';
 
 export default function PaymentPlan() {
   // === Member ===
@@ -67,9 +68,12 @@ export default function PaymentPlan() {
       error &&
       (error.code === PaymentSheetError.Failed || error.code === PaymentSheetError.Canceled)
     ) {
-      LogUtil.log({ error }, { level: 'error', notify: true });
+      LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
       if (subscription.id) {
-        Alert.alert(`支払い${subscription.id}に失敗しました.`, JSON.stringify(error));
+        LogUtil.log(`支払い${subscription.id}に失敗しました.`, {
+          level: 'warn',
+          notify: true,
+        });
         await cancelStripeSubscription(subscription.id!, session);
       }
     } else {
@@ -115,6 +119,31 @@ export default function PaymentPlan() {
       ]
     );
   };
+
+  // ===Memo ===
+  /** プランリスト */
+  const paymentPlanList = [
+    new Payment(
+      500,
+      '月額',
+      isLoading ||
+        (profile && profile.subscription.length > 0 && profile.subscription[0].isMonthly()) ||
+        false,
+      (profile && profile.subscription.length > 0 && profile.subscription[0].isMonthly()) || false,
+      () => handlePayment('m')
+    ),
+
+    new Payment(
+      5000,
+      '年額',
+      isLoading ||
+        (profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()) ||
+        false,
+      (profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()) || false,
+      () => handlePayment('y'),
+      6000
+    ),
+  ];
 
   // === Render ===
   if (!profile) return;
@@ -170,39 +199,27 @@ export default function PaymentPlan() {
                 プランを選択
               </Text>
               <View className="flex flex-row gap-3">
-                <PlanCard
-                  price="500円"
-                  period="月額"
-                  onPress={() => handlePayment('m')}
-                  disabled={
-                    isLoading ||
-                    (profile &&
-                      profile.subscription.length > 0 &&
-                      profile.subscription[0].isMonthly())
-                  }
-                  isCurrentPlan={
-                    profile &&
-                    profile.subscription.length > 0 &&
-                    profile.subscription[0].isMonthly()
-                  }
-                />
-                <PlanCard
-                  price="5,000円"
-                  period="年額"
-                  originalPrice="6,000円"
-                  discount="17%OFF"
-                  isPopular={true}
-                  onPress={() => handlePayment('y')}
-                  disabled={
-                    isLoading ||
-                    (profile &&
-                      profile.subscription.length > 0 &&
-                      profile.subscription[0].isYearly())
-                  }
-                  isCurrentPlan={
-                    profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()
-                  }
-                />
+                {paymentPlanList.map((payment) => (
+                  <PlanCard
+                    key={payment.period}
+                    price={`${payment.price.toLocaleString()}円`}
+                    discount={
+                      payment.originalPrice
+                        ? `${(((payment.originalPrice - payment.price) / payment.originalPrice) * 100).toFixed(0)}%OFF`
+                        : undefined
+                    }
+                    isPopular={payment.originalPrice ? true : false}
+                    period={payment.period}
+                    originalPrice={
+                      payment.originalPrice
+                        ? `${payment.originalPrice.toLocaleString()}円`
+                        : undefined
+                    }
+                    onPress={payment.onPress}
+                    disabled={payment.disabled}
+                    isCurrentPlan={payment.isCurrentPlan}
+                  />
+                ))}
               </View>
             </View>
           ) : (
