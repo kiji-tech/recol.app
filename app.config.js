@@ -19,7 +19,7 @@ export default {
       NSCameraUsageDescription: 'カメラを使ってプロフィール画像を設定します',
       NSPhotoLibraryUsageDescription: 'アカウントのアイコン､計画事に画像の登録します',
       NSLocationWhenInUseUsageDescription:
-        '地図を表示する際の初期表示位置を設定するために位置情報を使用します',
+        '地図を表示する際の初期表示位置を設定するために使用します',
       NSUserTrackingUsageDescription:
         '広告表示の最適化のため、他社アプリとの横断的な計測を許可するか確認します',
       ITSAppUsesNonExemptEncryption: false,
