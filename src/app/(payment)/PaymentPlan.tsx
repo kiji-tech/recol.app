@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { Alert, ScrollView, Text, View } from 'react-native';
+import { Alert, Platform, ScrollView, Text, View } from 'react-native';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { useAuth } from '@/src/features/auth';
 import { useRouter } from 'expo-router';
-import { PaymentSheetError, useStripe } from '@stripe/stripe-react-native';
+import {
+  PaymentSheetError,
+  useStripe,
+  confirmPlatformPayPayment,
+  PlatformPay,
+} from '@stripe/stripe-react-native';
 import {
   cancelStripeSubscription,
   setupUpdateSubscription,
@@ -26,8 +31,165 @@ export default function PaymentPlan() {
   // === Method ===
   // TODO: setupSubscriptionとupdateSubscriptionはViewには関係ないので分離したい
 
+  const handleApplyPay = async (payment: Payment) => {
+    try {
+      setIsLoading(true);
+
+      if (profile!.subscription && profile!.subscription.length > 0) {
+        Alert.alert(
+          'プランを更新しますか？',
+          'プラン変更時は、未使用期間の料金を差し引いて計算します。',
+          [
+            { text: 'キャンセル', style: 'cancel' },
+            {
+              text: '更新する',
+              style: 'destructive',
+              onPress: async () => {
+                setIsLoading(true);
+                setupUpdateSubscription(profile!.subscription[0], payment, session)
+                  .then(() => {
+                    // 支払い完了画面へ遷移
+                    router.push('/(payment)/SubscriptionComplete');
+                  })
+                  .catch((e) => {
+                    Alert.alert('プランの更新に失敗しました。');
+                    LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+                    return;
+                  })
+                  .finally(() => {
+                    setIsLoading(false);
+                  });
+              },
+            },
+          ]
+        );
+        return;
+      }
+
+      // Apple Pay用のSubscriptionを作成
+      const subscription = await setupCreateSubscription(
+        payment.period === '月額' ? 'm' : 'y',
+        session
+      );
+
+      // PaymentIntentのclient_secretを取得
+      const clientSecret =
+        typeof subscription.latest_invoice === 'string'
+          ? undefined
+          : subscription.latest_invoice?.confirmation_secret?.client_secret;
+
+      if (!clientSecret) {
+        throw new Error('Client secret is not available for Apple Pay');
+      }
+
+      LogUtil.log(`Apple Pay用のclient_secretを取得: ${clientSecret.substring(0, 20)}...`, {
+        level: 'info',
+        notify: true,
+      });
+
+      const { error } = await confirmPlatformPayPayment(clientSecret, {
+        applePay: {
+          cartItems: [
+            {
+              paymentType: PlatformPay.PaymentType.Recurring,
+              intervalUnit:
+                payment.period === '月額'
+                  ? PlatformPay.IntervalUnit.Month
+                  : PlatformPay.IntervalUnit.Year,
+              intervalCount: 1,
+              label: `Re:CoL プレミアムプラン`,
+              amount: payment.price.toString(),
+            },
+          ],
+          merchantCountryCode: 'JP',
+          currencyCode: 'JPY',
+          requiredShippingAddressFields: [PlatformPay.ContactField.PostalAddress],
+          requiredBillingContactFields: [PlatformPay.ContactField.PhoneNumber],
+        },
+      });
+
+      if (error) {
+        LogUtil.log(`Apple Pay支払いに失敗しました: ${error.message}`, {
+          level: 'warn',
+          notify: true,
+        });
+        if (subscription.id) {
+          await cancelStripeSubscription(subscription.id, session);
+        }
+      } else {
+        LogUtil.log(`Apple Pay支払いが成功しました`, {
+          level: 'info',
+          notify: true,
+        });
+        router.push('/(payment)/SubscriptionComplete');
+      }
+    } catch (error) {
+      LogUtil.log(`Apple Pay支払いの処理中にエラーが発生しました: ${JSON.stringify(error)}`, {
+        level: 'error',
+        notify: true,
+      });
+      Alert.alert('Apple Pay支払いに失敗しました。');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /** 通常の支払い処理（Apple Pay失敗時のフォールバック） */
+  const handleRegularPayment = async (payment: Payment) => {
+    try {
+      setIsLoading(true);
+
+      // Subscriptionの作成
+      const subscription = await setupCreateSubscription(
+        payment.period === '月額' ? 'm' : 'y',
+        session
+      );
+
+      // PaymentSheetの表示
+      const { error } = await presentPaymentSheet();
+      if (
+        error &&
+        (error.code === PaymentSheetError.Failed || error.code === PaymentSheetError.Canceled)
+      ) {
+        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+        if (subscription.id) {
+          LogUtil.log(`支払い${subscription.id}に失敗しました.`, {
+            level: 'warn',
+            notify: true,
+          });
+          await cancelStripeSubscription(subscription.id!, session);
+        }
+      } else {
+        // Payment succeeded
+        // 支払い完了画面へ遷移
+        router.push('/(payment)/SubscriptionComplete');
+      }
+    } catch (error) {
+      LogUtil.log(`通常支払いの処理中にエラーが発生しました: ${JSON.stringify(error)}`, {
+        level: 'error',
+        notify: true,
+      });
+      Alert.alert('支払いの処理に失敗しました。');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   /** プレミアムプランの支払い */
-  const handlePayment = async (type: 'm' | 'y') => {
+  const handlePayment = async (payment: Payment) => {
+    if (Platform.OS === 'ios') {
+      try {
+        await handleApplyPay(payment);
+      } catch (error) {
+        LogUtil.log(`Apple Pay支払いに失敗しました: ${JSON.stringify(error)}`, {
+          level: 'error',
+          notify: true,
+        });
+        Alert.alert('Apple Pay支払いに失敗しました。お問い合わせからご連絡ください。');
+      }
+      return;
+    }
+
     // すでにプレミアムプランに関する情報がある場合はプラン変更
     if (profile!.subscription && profile!.subscription.length > 0) {
       // Alert
@@ -41,7 +203,7 @@ export default function PaymentPlan() {
             style: 'destructive',
             onPress: async () => {
               setIsLoading(true);
-              setupUpdateSubscription(profile!.subscription[0], type, session)
+              setupUpdateSubscription(profile!.subscription[0], payment, session)
                 .then(() => {
                   // 支払い完了画面へ遷移
                   router.push('/(payment)/SubscriptionComplete');
@@ -60,27 +222,9 @@ export default function PaymentPlan() {
       );
       return;
     }
-    // Subscriptionの作成
-    const subscription = await setupCreateSubscription(type, session);
-    // PaymentSheetの表示
-    const { error } = await presentPaymentSheet();
-    if (
-      error &&
-      (error.code === PaymentSheetError.Failed || error.code === PaymentSheetError.Canceled)
-    ) {
-      LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-      if (subscription.id) {
-        LogUtil.log(`支払い${subscription.id}に失敗しました.`, {
-          level: 'warn',
-          notify: true,
-        });
-        await cancelStripeSubscription(subscription.id!, session);
-      }
-    } else {
-      // Payment succeeded
-      // 支払い完了画面へ遷移
-      router.push('/(payment)/SubscriptionComplete');
-    }
+
+    // 通常の支払い処理を実行
+    await handleRegularPayment(payment);
   };
 
   /** プレミアムプランの解約 */
@@ -130,7 +274,7 @@ export default function PaymentPlan() {
         (profile && profile.subscription.length > 0 && profile.subscription[0].isMonthly()) ||
         false,
       (profile && profile.subscription.length > 0 && profile.subscription[0].isMonthly()) || false,
-      () => handlePayment('m')
+      process.env.EXPO_PUBLIC_STRIPE_MONTHLY_PLAN || ''
     ),
 
     new Payment(
@@ -140,7 +284,7 @@ export default function PaymentPlan() {
         (profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()) ||
         false,
       (profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()) || false,
-      () => handlePayment('y'),
+      process.env.EXPO_PUBLIC_STRIPE_YEARLY_PLAN || '',
       6000
     ),
   ];
@@ -215,7 +359,7 @@ export default function PaymentPlan() {
                         ? `${payment.originalPrice.toLocaleString()}円`
                         : undefined
                     }
-                    onPress={payment.onPress}
+                    onPress={() => handlePayment(payment)}
                     disabled={payment.disabled}
                     isCurrentPlan={payment.isCurrentPlan}
                   />

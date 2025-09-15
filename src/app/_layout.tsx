@@ -165,7 +165,10 @@ const RouteLayout = () => {
 
   return (
     <AuthProvider>
-      <StripeProvider publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}>
+      <StripeProvider
+        publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}
+        merchantIdentifier={process.env.EXPO_PUBLIC_STRIPE_MERCHANT || ''}
+      >
         <MenuProvider>
           <PlanProvider>
             <LocationProvider>

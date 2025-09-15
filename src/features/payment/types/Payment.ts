@@ -4,21 +4,21 @@ export class Payment {
   readonly period: string = '';
   readonly disabled: boolean = false;
   readonly isCurrentPlan: boolean = false;
-  readonly onPress: () => void = () => {};
+  readonly priceId: string = '';
 
   constructor(
     price: number,
     period: string,
     disabled: boolean,
     isCurrentPlan: boolean,
-    onPress: () => void,
-    originalPrice?: number
+    priceId: string,
+    originalPrice?: number,
   ) {
     this.price = price;
     this.period = period;
     this.disabled = disabled;
     this.isCurrentPlan = isCurrentPlan;
-    this.onPress = onPress;
+    this.priceId = priceId;
     this.originalPrice = originalPrice;
   }
 }
