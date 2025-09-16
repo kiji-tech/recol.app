@@ -267,26 +267,30 @@ export default function PaymentPlan() {
   // ===Memo ===
   /** プランリスト */
   const paymentPlanList = [
-    new Payment(
-      500,
-      '月額',
-      isLoading ||
+    new Payment({
+      price: 500,
+      period: '月額',
+      disabled:
+        isLoading ||
         (profile && profile.subscription.length > 0 && profile.subscription[0].isMonthly()) ||
         false,
-      (profile && profile.subscription.length > 0 && profile.subscription[0].isMonthly()) || false,
-      process.env.EXPO_PUBLIC_STRIPE_MONTHLY_PLAN || ''
-    ),
-
-    new Payment(
-      5000,
-      '年額',
-      isLoading ||
+      isCurrentPlan:
+        (profile && profile.subscription.length > 0 && profile.subscription[0].isMonthly()) ||
+        false,
+      priceId: process.env.EXPO_PUBLIC_STRIPE_MONTHLY_PLAN || '',
+    }),
+    new Payment({
+      price: 5000,
+      period: '年額',
+      disabled:
+        isLoading ||
         (profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()) ||
         false,
-      (profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()) || false,
-      process.env.EXPO_PUBLIC_STRIPE_YEARLY_PLAN || '',
-      6000
-    ),
+      isCurrentPlan:
+        (profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()) || false,
+      priceId: process.env.EXPO_PUBLIC_STRIPE_YEARLY_PLAN || '',
+      originalPrice: 6000,
+    }),
   ];
 
   // === Render ===
