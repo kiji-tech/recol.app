@@ -80,9 +80,7 @@ const postSubscription = async (c: Hono.Context) => {
     return c.json({ message: getMessage('C009', ['priceId']), code: 'C009' }, 400);
   }
   const customerId = await getCustomerId(c);
-  console.log({ priceId, customerId });
   const subscription = await StripeUtil.createSubscription(customerId, priceId);
-  console.log({ subscription });
   return c.json(subscription);
 };
 

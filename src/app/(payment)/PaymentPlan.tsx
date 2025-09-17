@@ -8,6 +8,7 @@ import {
   useStripe,
   confirmPlatformPayPayment,
   PlatformPay,
+  initPaymentSheet,
 } from '@stripe/stripe-react-native';
 import {
   cancelStripeSubscription,
@@ -31,46 +32,12 @@ export default function PaymentPlan() {
   // === Method ===
   // TODO: setupSubscriptionとupdateSubscriptionはViewには関係ないので分離したい
 
+  /** Apple Pay用の支払い処理 */
   const handleApplyPay = async (payment: Payment) => {
     try {
       setIsLoading(true);
-
-      if (profile!.subscription && profile!.subscription.length > 0) {
-        Alert.alert(
-          'プランを更新しますか？',
-          'プラン変更時は、未使用期間の料金を差し引いて計算します。',
-          [
-            { text: 'キャンセル', style: 'cancel' },
-            {
-              text: '更新する',
-              style: 'destructive',
-              onPress: async () => {
-                setIsLoading(true);
-                setupUpdateSubscription(profile!.subscription[0], payment, session)
-                  .then(() => {
-                    // 支払い完了画面へ遷移
-                    router.push('/(payment)/SubscriptionComplete');
-                  })
-                  .catch((e) => {
-                    Alert.alert('プランの更新に失敗しました。');
-                    LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
-                    return;
-                  })
-                  .finally(() => {
-                    setIsLoading(false);
-                  });
-              },
-            },
-          ]
-        );
-        return;
-      }
-
       // Apple Pay用のSubscriptionを作成
-      const subscription = await setupCreateSubscription(
-        payment.period === '月額' ? 'm' : 'y',
-        session
-      );
+      const subscription = await setupCreateSubscription(payment, session);
 
       // PaymentIntentのclient_secretを取得
       const clientSecret =
@@ -85,6 +52,12 @@ export default function PaymentPlan() {
       LogUtil.log(`Apple Pay用のclient_secretを取得: ${clientSecret.substring(0, 20)}...`, {
         level: 'info',
         notify: true,
+      });
+
+      await initPaymentSheet({
+        merchantDisplayName: `Re:CoL プレミアムプラン ${payment.period}`,
+        paymentIntentClientSecret: clientSecret,
+        allowsDelayedPaymentMethods: true,
       });
 
       const { error } = await confirmPlatformPayPayment(clientSecret, {
@@ -134,16 +107,27 @@ export default function PaymentPlan() {
     }
   };
 
-  /** 通常の支払い処理（Apple Pay失敗時のフォールバック） */
   const handleRegularPayment = async (payment: Payment) => {
     try {
       setIsLoading(true);
 
       // Subscriptionの作成
-      const subscription = await setupCreateSubscription(
-        payment.period === '月額' ? 'm' : 'y',
-        session
-      );
+      const subscription = await setupCreateSubscription(payment, session);
+      // PaymentIntentのclient_secretを取得
+      const clientSecret =
+        typeof subscription.latest_invoice === 'string'
+          ? undefined
+          : subscription.latest_invoice?.confirmation_secret?.client_secret;
+
+      if (!clientSecret) {
+        throw new Error('Client secret is not available for Regular Payment');
+      }
+
+      await initPaymentSheet({
+        merchantDisplayName: `Re:CoL プレミアムプラン ${payment.period === '月額' ? '月額' : '年額'}`,
+        paymentIntentClientSecret: clientSecret,
+        allowsDelayedPaymentMethods: true,
+      });
 
       // PaymentSheetの表示
       const { error } = await presentPaymentSheet();
@@ -177,22 +161,8 @@ export default function PaymentPlan() {
 
   /** プレミアムプランの支払い */
   const handlePayment = async (payment: Payment) => {
-    if (Platform.OS === 'ios') {
-      try {
-        await handleApplyPay(payment);
-      } catch (error) {
-        LogUtil.log(`Apple Pay支払いに失敗しました: ${JSON.stringify(error)}`, {
-          level: 'error',
-          notify: true,
-        });
-        Alert.alert('Apple Pay支払いに失敗しました。お問い合わせからご連絡ください。');
-      }
-      return;
-    }
-
     // すでにプレミアムプランに関する情報がある場合はプラン変更
     if (profile!.subscription && profile!.subscription.length > 0) {
-      // Alert
       Alert.alert(
         'プランを更新しますか？',
         'プラン変更時は、未使用期間の料金を差し引いて計算します。',
@@ -220,6 +190,19 @@ export default function PaymentPlan() {
           },
         ]
       );
+      return;
+    }
+
+    if (Platform.OS === 'ios') {
+      try {
+        await handleApplyPay(payment);
+      } catch (error) {
+        LogUtil.log(`Apple Pay支払いに失敗しました: ${JSON.stringify(error)}`, {
+          level: 'error',
+          notify: true,
+        });
+        Alert.alert('Apple Pay支払いに失敗しました。お問い合わせからご連絡ください。');
+      }
       return;
     }
 
