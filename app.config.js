@@ -57,18 +57,22 @@ export default {
       'expo-build-properties',
       {
         android: {
+          // React Native プレコンパイル使用の有効･無効 ビルド時間がたんしゅくされるが ,
+          buildReactNativeFromSource: false,
           compileSdkVersion: 35,
           targetSdkVersion: 35,
           buildToolsVersion: '35.0.0',
         },
         ios: {
           useFrameworks: 'static',
+          // React Native プレコンパイル使用の有効･無効
+          buildReactNativeFromSource: false,
           deploymentTarget: '15.1',
         },
       },
     ],
     'expo-router',
-    [
+    [   
       'expo-location',
       {
         locationAlwaysAndWhenInUsePermission: 'Allow $(PRODUCT_NAME) to use your location.',
