@@ -20,7 +20,9 @@ import CurrentPlanBadge from './components/(PaymentPlan)/CurrentPlanBadge';
 import dayjs from 'dayjs';
 import PlanTable from './components/(PaymentPlan)/PlanTable';
 import PlanCard from './components/(PaymentPlan)/PlanCard';
-import { Payment } from '@/src/features/payment/types/Payment';
+import { monthlyPayment, Payment, yearlyPayment } from '@/src/features/payment/types/Payment';
+import { subscriptionPlatformMap } from '@/src/features/payment/libs/subscriptionPlatformMap';
+import { ISubscriptionPay } from '@/src/features/payment/libs/iSubscriptionPay';
 
 export default function PaymentPlan() {
   // === Member ===
@@ -66,7 +68,7 @@ export default function PaymentPlan() {
             {
               paymentType: PlatformPay.PaymentType.Recurring,
               intervalUnit:
-                payment.period === '月額'
+                payment.period === 'monthly'
                   ? PlatformPay.IntervalUnit.Month
                   : PlatformPay.IntervalUnit.Year,
               intervalCount: 1,
@@ -124,7 +126,7 @@ export default function PaymentPlan() {
       }
 
       await initPaymentSheet({
-        merchantDisplayName: `Re:CoL プレミアムプラン ${payment.period === '月額' ? '月額' : '年額'}`,
+        merchantDisplayName: `Re:CoL プレミアムプラン ${payment.period === 'monthly' ? '月額' : '年額'}`,
         paymentIntentClientSecret: clientSecret,
         allowsDelayedPaymentMethods: true,
       });
@@ -159,39 +161,56 @@ export default function PaymentPlan() {
     }
   };
 
+  const handleUpdatePayment = async (payment: Payment) => {
+    Alert.alert(
+      'プランを更新しますか？',
+      'プラン変更時は、未使用期間の料金を差し引いて計算します。',
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        {
+          text: '更新する',
+          style: 'destructive',
+          onPress: async () => {
+            setIsLoading(true);
+            await setupUpdateSubscription(profile!.subscription[0], payment, session)
+              .then(() => {
+                // 支払い完了画面へ遷移
+                router.push('/(payment)/SubscriptionComplete');
+              })
+              .catch((e) => {
+                Alert.alert('プランの更新に失敗しました。');
+                LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+                return;
+              })
+              .finally(() => {
+                setIsLoading(false);
+              });
+          },
+        },
+      ]
+    );
+  };
+
   /** プレミアムプランの支払い */
   const handlePayment = async (payment: Payment) => {
-    // すでにプレミアムプランに関する情報がある場合はプラン変更
-    if (profile!.subscription && profile!.subscription.length > 0) {
-      Alert.alert(
-        'プランを更新しますか？',
-        'プラン変更時は、未使用期間の料金を差し引いて計算します。',
-        [
-          { text: 'キャンセル', style: 'cancel' },
-          {
-            text: '更新する',
-            style: 'destructive',
-            onPress: async () => {
-              setIsLoading(true);
-              setupUpdateSubscription(profile!.subscription[0], payment, session)
-                .then(() => {
-                  // 支払い完了画面へ遷移
-                  router.push('/(payment)/SubscriptionComplete');
-                })
-                .catch((e) => {
-                  Alert.alert('プランの更新に失敗しました。');
-                  LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
-                  return;
-                })
-                .finally(() => {
-                  setIsLoading(false);
-                });
-            },
-          },
-        ]
-      );
+    if (!session) {
+      Alert.alert('セッション情報がありません。');
       return;
     }
+    // すでにプレミアムプランに関する情報がある場合はプラン変更
+    if (profile!.subscription && profile!.subscription.length > 0) {
+      await handleUpdatePayment(payment);
+      return;
+    }
+
+    const subscriptionPlatform: ISubscriptionPay = subscriptionPlatformMap
+      .get(Platform.OS)
+      ?.get(payment.period) as ISubscriptionPay;
+    if (!subscriptionPlatform) {
+      Alert.alert('支払いプラットフォームが見つかりません。');
+      return;
+    }
+    const sp = await subscriptionPlatform.generateSubscription(session);
 
     if (Platform.OS === 'ios') {
       try {
@@ -203,6 +222,16 @@ export default function PaymentPlan() {
         });
         Alert.alert('Apple Pay支払いに失敗しました。お問い合わせからご連絡ください。');
       }
+      return;
+    } else if (Platform.OS === 'android') {
+      await sp.confirmPayment(session).catch((e) => {
+        LogUtil.log(`Google Pay支払いに失敗しました: ${JSON.stringify(e)}`, {
+          level: 'error',
+          notify: true,
+        });
+        Alert.alert('Google Pay支払いに失敗しました。お問い合わせからご連絡ください。');
+      });
+      router.push('/(payment)/SubscriptionComplete');
       return;
     }
 
@@ -246,35 +275,6 @@ export default function PaymentPlan() {
       ]
     );
   };
-
-  // ===Memo ===
-  /** プランリスト */
-  const paymentPlanList = [
-    new Payment({
-      price: 500,
-      period: '月額',
-      disabled:
-        isLoading ||
-        (profile && profile.subscription.length > 0 && profile.subscription[0].isMonthly()) ||
-        false,
-      isCurrentPlan:
-        (profile && profile.subscription.length > 0 && profile.subscription[0].isMonthly()) ||
-        false,
-      priceId: process.env.EXPO_PUBLIC_STRIPE_MONTHLY_PLAN || '',
-    }),
-    new Payment({
-      price: 5000,
-      period: '年額',
-      disabled:
-        isLoading ||
-        (profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()) ||
-        false,
-      isCurrentPlan:
-        (profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()) || false,
-      priceId: process.env.EXPO_PUBLIC_STRIPE_YEARLY_PLAN || '',
-      originalPrice: 6000,
-    }),
-  ];
 
   // === Render ===
   if (!profile) return;
@@ -324,54 +324,57 @@ export default function PaymentPlan() {
           )}
 
           {/* プラン選択 */}
-          {profile.subscription.length == 0 || !profile.subscription[0].isCanceled() ? (
+          {(profile.subscription.length == 0 || !profile.subscription[0].isCanceled()) && (
             <View>
               <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-3">
                 プランを選択
               </Text>
               <View className="flex flex-row gap-3">
-                {paymentPlanList.map((payment) => (
-                  <PlanCard
-                    key={payment.period}
-                    price={`${payment.price.toLocaleString()}円`}
-                    discount={
-                      payment.originalPrice
-                        ? `${(((payment.originalPrice - payment.price) / payment.originalPrice) * 100).toFixed(0)}%OFF`
-                        : undefined
-                    }
-                    isPopular={payment.originalPrice ? true : false}
-                    period={payment.period}
-                    originalPrice={
-                      payment.originalPrice
-                        ? `${payment.originalPrice.toLocaleString()}円`
-                        : undefined
-                    }
-                    onPress={() => handlePayment(payment)}
-                    disabled={payment.disabled}
-                    isCurrentPlan={payment.isCurrentPlan}
-                  />
-                ))}
+                <PlanCard
+                  payment={monthlyPayment}
+                  onPress={() => handlePayment(monthlyPayment)}
+                  disabled={
+                    isLoading ||
+                    (profile &&
+                      profile.subscription.length > 0 &&
+                      profile.subscription[0].isMonthly())
+                  }
+                  isCurrentPlan={
+                    profile &&
+                    profile.subscription.length > 0 &&
+                    profile.subscription[0].isMonthly()
+                  }
+                />
+                <PlanCard
+                  payment={yearlyPayment}
+                  onPress={() => handlePayment(yearlyPayment)}
+                  disabled={
+                    isLoading ||
+                    (profile &&
+                      profile.subscription.length > 0 &&
+                      profile.subscription[0].isYearly())
+                  }
+                  isCurrentPlan={
+                    profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()
+                  }
+                />
               </View>
             </View>
-          ) : (
-            <></>
           )}
+          {/* 解約ボタン */}
           {profile.subscription.length > 0 && (
-            <>
-              {/* 解約ボタン */}
-              <View className="items-center">
-                <Button
-                  text="プレミアムプランを解約"
-                  onPress={handleCancel}
-                  disabled={isLoading}
-                  loading={isLoading}
-                  theme="danger"
-                />
-                <Text className="text-gray-500 dark:text-gray-400 text-sm mt-2 text-center">
-                  有効期限終了後にフリープランに戻ります
-                </Text>
-              </View>
-            </>
+            <View className="items-center">
+              <Button
+                text="プレミアムプランを解約"
+                onPress={handleCancel}
+                disabled={isLoading}
+                loading={isLoading}
+                theme="danger"
+              />
+              <Text className="text-gray-500 dark:text-gray-400 text-sm mt-2 text-center">
+                有効期限終了後にフリープランに戻ります
+              </Text>
+            </View>
           )}
         </View>
       </ScrollView>

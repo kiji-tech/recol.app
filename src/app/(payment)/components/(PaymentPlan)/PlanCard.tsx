@@ -1,25 +1,23 @@
+import { Payment } from '@/src/features/payment/types/Payment';
 import React from 'react';
 import { TouchableOpacity, View, Text } from 'react-native';
 
 export default function PlanCard({
-  price,
-  period,
-  originalPrice,
-  discount,
-  isPopular = false,
+  payment,
   onPress,
   disabled = false,
   isCurrentPlan = false,
 }: {
-  price: string;
-  period: string;
-  originalPrice?: string;
-  discount?: string;
-  isPopular?: boolean;
+  payment: Payment;
   onPress: () => void;
   disabled?: boolean;
   isCurrentPlan?: boolean;
 }) {
+  const isPopular = payment.originalPrice ? true : false;
+  const discount = payment.originalPrice
+    ? `${(((payment.originalPrice - payment.price) / payment.originalPrice) * 100).toFixed(0)}%OFF`
+    : undefined;
+
   return (
     <TouchableOpacity
       className={`relative flex-1 rounded-xl p-4 ${
@@ -55,9 +53,9 @@ export default function PlanCard({
       )}
 
       <View className="flex-1 items-center justify-center">
-        {originalPrice && !isCurrentPlan && (
+        {payment.originalPrice && !isCurrentPlan && (
           <Text className={`text-sm line-through ${isPopular ? 'text-white/70' : 'text-gray-500'}`}>
-            {originalPrice}
+            {payment.originalPrice}
           </Text>
         )}
         <Text
@@ -69,7 +67,7 @@ export default function PlanCard({
                 : 'text-light-text dark:text-dark-text'
           }`}
         >
-          {price}
+          {payment.price}
         </Text>
         <Text
           className={`text-sm ${
@@ -80,7 +78,7 @@ export default function PlanCard({
                 : 'text-gray-600 dark:text-gray-400'
           }`}
         >
-          / {period}
+          / {payment.period === 'monthly' ? '月額' : '年額'}
         </Text>
         {discount && !isCurrentPlan && (
           <View className="mt-2 bg-light-danger dark:bg-dark-danger px-2 py-1 rounded-full">
