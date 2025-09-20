@@ -35,78 +35,64 @@ export default function PaymentPlan() {
   // TODO: setupSubscriptionとupdateSubscriptionはViewには関係ないので分離したい
 
   /** Apple Pay用の支払い処理 */
-  const handleApplyPay = async (payment: Payment) => {
-    try {
-      setIsLoading(true);
-      // Apple Pay用のSubscriptionを作成
-      const subscription = await setupCreateSubscription(payment, session);
+  const handleApplyPay = async (payment: Payment): Promise<boolean> => {
+    // Apple Pay用のSubscriptionを作成
+    const subscription = await setupCreateSubscription(payment, session);
 
-      // PaymentIntentのclient_secretを取得
-      const clientSecret =
-        typeof subscription.latest_invoice === 'string'
-          ? undefined
-          : subscription.latest_invoice?.confirmation_secret?.client_secret;
+    // PaymentIntentのclient_secretを取得
+    const clientSecret =
+      typeof subscription.latest_invoice === 'string'
+        ? undefined
+        : subscription.latest_invoice?.confirmation_secret?.client_secret;
 
-      if (!clientSecret) {
-        throw new Error('Client secret is not available for Apple Pay');
+    if (!clientSecret) {
+      throw new Error('Client secret is not available for Apple Pay');
+    }
+
+    LogUtil.log(`Apple Pay用のclient_secretを取得: ${clientSecret.substring(0, 20)}...`, {
+      level: 'info',
+      notify: true,
+    });
+
+    await initPaymentSheet({
+      merchantDisplayName: `Re:CoL プレミアムプラン ${payment.period}`,
+      paymentIntentClientSecret: clientSecret,
+      allowsDelayedPaymentMethods: true,
+    });
+
+    const { error } = await confirmPlatformPayPayment(clientSecret, {
+      applePay: {
+        cartItems: [
+          {
+            paymentType: PlatformPay.PaymentType.Recurring,
+            intervalUnit:
+              payment.period === 'monthly'
+                ? PlatformPay.IntervalUnit.Month
+                : PlatformPay.IntervalUnit.Year,
+            intervalCount: 1,
+            label: `Re:CoL プレミアムプラン`,
+            amount: payment.price.toString(),
+          },
+        ],
+        merchantCountryCode: 'JP',
+        currencyCode: 'JPY',
+        requiredShippingAddressFields: [PlatformPay.ContactField.PostalAddress],
+        requiredBillingContactFields: [PlatformPay.ContactField.PhoneNumber],
+      },
+    });
+
+    if (error) {
+      if (subscription.id) {
+        await cancelStripeSubscription(subscription.id, session);
       }
-
-      LogUtil.log(`Apple Pay用のclient_secretを取得: ${clientSecret.substring(0, 20)}...`, {
+      throw error;
+    } else {
+      LogUtil.log(`Apple Pay支払いが成功しました`, {
         level: 'info',
         notify: true,
       });
-
-      await initPaymentSheet({
-        merchantDisplayName: `Re:CoL プレミアムプラン ${payment.period}`,
-        paymentIntentClientSecret: clientSecret,
-        allowsDelayedPaymentMethods: true,
-      });
-
-      const { error } = await confirmPlatformPayPayment(clientSecret, {
-        applePay: {
-          cartItems: [
-            {
-              paymentType: PlatformPay.PaymentType.Recurring,
-              intervalUnit:
-                payment.period === 'monthly'
-                  ? PlatformPay.IntervalUnit.Month
-                  : PlatformPay.IntervalUnit.Year,
-              intervalCount: 1,
-              label: `Re:CoL プレミアムプラン`,
-              amount: payment.price.toString(),
-            },
-          ],
-          merchantCountryCode: 'JP',
-          currencyCode: 'JPY',
-          requiredShippingAddressFields: [PlatformPay.ContactField.PostalAddress],
-          requiredBillingContactFields: [PlatformPay.ContactField.PhoneNumber],
-        },
-      });
-
-      if (error) {
-        LogUtil.log(`Apple Pay支払いに失敗しました: ${error.message}`, {
-          level: 'warn',
-          notify: true,
-        });
-        if (subscription.id) {
-          await cancelStripeSubscription(subscription.id, session);
-        }
-      } else {
-        LogUtil.log(`Apple Pay支払いが成功しました`, {
-          level: 'info',
-          notify: true,
-        });
-        router.push('/(payment)/SubscriptionComplete');
-      }
-    } catch (error) {
-      LogUtil.log(`Apple Pay支払いの処理中にエラーが発生しました: ${JSON.stringify(error)}`, {
-        level: 'error',
-        notify: true,
-      });
-      Alert.alert('Apple Pay支払いに失敗しました。');
-    } finally {
-      setIsLoading(false);
     }
+    return true;
   };
 
   const handleRegularPayment = async (payment: Payment) => {
@@ -210,40 +196,32 @@ export default function PaymentPlan() {
       Alert.alert('支払いプラットフォームが見つかりません。');
       return;
     }
-    const sp = await subscriptionPlatform.generateSubscription(session);
 
-    if (Platform.OS === 'ios') {
-      try {
-        await handleApplyPay(payment);
-      } catch (error) {
-        LogUtil.log(`Apple Pay支払いに失敗しました: ${JSON.stringify(error)}`, {
-          level: 'error',
-          notify: true,
-        });
-        Alert.alert('Apple Pay支払いに失敗しました。お問い合わせからご連絡ください。');
+    setIsLoading(true);
+    try {
+      const sp = await subscriptionPlatform.generateSubscription(session);
+      let paymentResult = false;
+      // TODO : iosのプラットフォームもリファクタリングする
+      if (Platform.OS === 'ios') {
+        paymentResult = await handleApplyPay(payment);
+      } else if (Platform.OS === 'android') {
+        paymentResult = await sp.confirmPayment(session);
+      } else {
+        // 通常の支払い処理を実行
+        await handleRegularPayment(payment);
       }
-      return;
-    } else if (Platform.OS === 'android') {
-      setIsLoading(true);
-      try {
-        const paymentResult = await sp.confirmPayment(session);
-        if (paymentResult) {
-          router.push('/(payment)/SubscriptionComplete');
-        }
-      } catch (e) {
-        LogUtil.log(`Google Pay支払いに失敗しました: ${JSON.stringify(e)}`, {
-          level: 'error',
-          notify: true,
-        });
-        Alert.alert('Google Pay支払いに失敗しました。お問い合わせからご連絡ください。');
-      } finally {
-        setIsLoading(false);
+      if (paymentResult) {
+        router.push('/(payment)/SubscriptionComplete');
       }
-      return;
+    } catch (e) {
+      LogUtil.log(`支払いに失敗しました: ${JSON.stringify(e)}`, {
+        level: 'error',
+        notify: true,
+      });
+      Alert.alert('支払いに失敗しました。お問い合わせからご連絡ください。');
+    } finally {
+      setIsLoading(false);
     }
-
-    // 通常の支払い処理を実行
-    await handleRegularPayment(payment);
   };
 
   /** プレミアムプランの解約 */
