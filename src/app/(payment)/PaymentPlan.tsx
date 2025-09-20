@@ -95,56 +95,40 @@ export default function PaymentPlan() {
     return true;
   };
 
-  const handleRegularPayment = async (payment: Payment) => {
-    try {
-      setIsLoading(true);
+  const handleRegularPayment = async (payment: Payment): Promise<boolean> => {
+    // Subscriptionの作成
+    const subscription = await setupCreateSubscription(payment, session);
+    // PaymentIntentのclient_secretを取得
+    const clientSecret =
+      typeof subscription.latest_invoice === 'string'
+        ? undefined
+        : subscription.latest_invoice?.confirmation_secret?.client_secret;
 
-      // Subscriptionの作成
-      const subscription = await setupCreateSubscription(payment, session);
-      // PaymentIntentのclient_secretを取得
-      const clientSecret =
-        typeof subscription.latest_invoice === 'string'
-          ? undefined
-          : subscription.latest_invoice?.confirmation_secret?.client_secret;
-
-      if (!clientSecret) {
-        throw new Error('Client secret is not available for Regular Payment');
-      }
-
-      await initPaymentSheet({
-        merchantDisplayName: `Re:CoL プレミアムプラン ${payment.period === 'monthly' ? '月額' : '年額'}`,
-        paymentIntentClientSecret: clientSecret,
-        allowsDelayedPaymentMethods: true,
-      });
-
-      // PaymentSheetの表示
-      const { error } = await presentPaymentSheet();
-      if (
-        error &&
-        (error.code === PaymentSheetError.Failed || error.code === PaymentSheetError.Canceled)
-      ) {
-        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-        if (subscription.id) {
-          LogUtil.log(`支払い${subscription.id}に失敗しました.`, {
-            level: 'warn',
-            notify: true,
-          });
-          await cancelStripeSubscription(subscription.id!, session);
-        }
-      } else {
-        // Payment succeeded
-        // 支払い完了画面へ遷移
-        router.push('/(payment)/SubscriptionComplete');
-      }
-    } catch (error) {
-      LogUtil.log(`通常支払いの処理中にエラーが発生しました: ${JSON.stringify(error)}`, {
-        level: 'error',
-        notify: true,
-      });
-      Alert.alert('支払いの処理に失敗しました。');
-    } finally {
-      setIsLoading(false);
+    if (!clientSecret) {
+      throw new Error('Client secret is not available for Regular Payment');
     }
+
+    await initPaymentSheet({
+      merchantDisplayName: `Re:CoL プレミアムプラン ${payment.period === 'monthly' ? '月額' : '年額'}`,
+      paymentIntentClientSecret: clientSecret,
+      allowsDelayedPaymentMethods: true,
+    });
+
+    // PaymentSheetの表示
+    const { error } = await presentPaymentSheet();
+    if (error) {
+      if (error.code === PaymentSheetError.Canceled) return false;
+      LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+      if (subscription.id) {
+        LogUtil.log(`支払い${subscription.id}に失敗しました.`, {
+          level: 'warn',
+          notify: true,
+        });
+        await cancelStripeSubscription(subscription.id!, session);
+      }
+      return false;
+    }
+    return true;
   };
 
   const handleUpdatePayment = async (payment: Payment) => {
@@ -199,13 +183,14 @@ export default function PaymentPlan() {
 
     setIsLoading(true);
     try {
-      const sp = await subscriptionPlatform.generateSubscription(session);
       let paymentResult = false;
       // TODO : iosのプラットフォームもリファクタリングする
       if (Platform.OS === 'ios') {
         paymentResult = await handleApplyPay(payment);
       } else if (Platform.OS === 'android') {
-        paymentResult = await sp.confirmPayment(session);
+        //   const sp = await subscriptionPlatform.generateSubscription(session);
+        // paymentResult = await sp.confirmPayment(session);
+        paymentResult = await handleRegularPayment(payment);
       } else {
         // 通常の支払い処理を実行
         await handleRegularPayment(payment);
