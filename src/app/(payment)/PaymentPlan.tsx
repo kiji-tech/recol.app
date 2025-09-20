@@ -224,14 +224,21 @@ export default function PaymentPlan() {
       }
       return;
     } else if (Platform.OS === 'android') {
-      await sp.confirmPayment(session).catch((e) => {
+      setIsLoading(true);
+      try {
+        const paymentResult = await sp.confirmPayment(session);
+        if (paymentResult) {
+          router.push('/(payment)/SubscriptionComplete');
+        }
+      } catch (e) {
         LogUtil.log(`Google Pay支払いに失敗しました: ${JSON.stringify(e)}`, {
           level: 'error',
           notify: true,
         });
         Alert.alert('Google Pay支払いに失敗しました。お問い合わせからご連絡ください。');
-      });
-      router.push('/(payment)/SubscriptionComplete');
+      } finally {
+        setIsLoading(false);
+      }
       return;
     }
 

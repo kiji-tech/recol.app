@@ -8,12 +8,12 @@ import { STORAGE_KEYS } from '@/src/libs/ConstValue';
 import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts/PlanContext';
 import Constants from 'expo-constants';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import SettingItem from './components/SettingItem';
 import PlanComponent from './components/PlanComponent';
 import SettingDarkMode from './components/SettingDarkMode';
 import ScheduleNotification from './components/ScheduleNotification';
 import ProfileAvatar from './components/ProfileAvatar';
+import DevelopmentBar from './components/DevelopmentBar';
 
 // TODO: 将来的にはDB化
 const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
@@ -56,6 +56,7 @@ export default function Settings() {
   // === Render ===
   return (
     <BackgroundView>
+      <DevelopmentBar />
       <ScrollView className="gap-8 flex flex-col" showsVerticalScrollIndicator={false}>
         {/* プロフィールセクション */}
         <ProfileAvatar />
