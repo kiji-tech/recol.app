@@ -2,7 +2,7 @@ import '@/global.css';
 import React, { useCallback, useEffect, useState } from 'react';
 import { router, Stack } from 'expo-router';
 import { PlanProvider } from '../contexts/PlanContext';
-import { Linking, Platform, StatusBar, View } from 'react-native';
+import { Linking, StatusBar, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import {
@@ -20,10 +20,8 @@ import { useStripe } from '@stripe/stripe-react-native';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { useAuth, AuthProvider } from '@/src/features/auth';
-import Purchases, { LOG_LEVEL } from 'react-native-purchases';
 import * as Font from 'expo-font';
-import { LogUtil } from '@/src/libs/LogUtil';
-import { PremiumPlanProvider, usePremiumPlan } from '../features/auth/hooks/usePremiumPlan';
+import { PremiumPlanProvider } from '../features/auth/hooks/usePremiumPlan';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -163,9 +161,6 @@ const RouteLayout = () => {
   // === Notifications 初期化 ===
   useEffect(() => {
     const initializeServices = async () => {
-      // RevenueCat初期化
-      await initRevenueCat();
-
       // 通知初期化
       NotificationUtil.initializeNotifications();
     };

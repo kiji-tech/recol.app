@@ -3,7 +3,6 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { Platform } from 'react-native';
 import Purchases, {
   CustomerInfo,
-  LOG_LEVEL,
   PurchasesOffering,
   PurchasesOfferings,
   PurchasesPackage,
@@ -12,7 +11,7 @@ import Purchases, {
 type PremiumPlanContextType = {
   isPremium: boolean;
   onSubmit: (purchasesPackage: PurchasesPackage) => Promise<void>;
-  onPressRestore: () => Promise<void>;
+  onRestore: () => Promise<void>;
   premiumPlanList: PurchasesOffering | null;
   setPremiumPlanList: (premiumPlanList: PurchasesOffering | null) => void;
 };
@@ -36,7 +35,7 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
   const initRevenueCat = async () => {
     try {
       // react-native-purchases初期化
-      Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+      //   Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
 
       let apiKey = '';
       if (Platform.OS === 'ios') {
@@ -85,7 +84,7 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
   }, []);
 
   // Restoreの実装をしています
-  const onPressRestore = useCallback(async () => {
+  const onRestore = useCallback(async () => {
     const restore = await Purchases.restorePurchases();
     if (checkPremium(restore)) {
       setIsPremium(true);
@@ -102,7 +101,7 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
 
   return (
     <PremiumPlanContext.Provider
-      value={{ isPremium, onSubmit, onPressRestore, premiumPlanList, setPremiumPlanList }}
+      value={{ isPremium, onSubmit, onRestore, premiumPlanList, setPremiumPlanList }}
     >
       {children}
     </PremiumPlanContext.Provider>

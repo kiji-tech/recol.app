@@ -1,10 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { BackgroundView, Button } from '@/src/components';
 import { useAuth } from '@/src/features/auth';
-import { useTheme } from '@/src/contexts/ThemeContext';
 import { router, useFocusEffect } from 'expo-router';
 import { Text, View, ScrollView } from 'react-native';
-import { STORAGE_KEYS } from '@/src/libs/ConstValue';
 import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts/PlanContext';
 import Constants from 'expo-constants';
@@ -14,9 +12,10 @@ import SettingDarkMode from './components/SettingDarkMode';
 import ScheduleNotification from './components/ScheduleNotification';
 import ProfileAvatar from './components/ProfileAvatar';
 import DevelopmentBar from './components/DevelopmentBar';
+// import { STORAGE_KEYS } from '@/src/libs/ConstValue';
 
 // TODO: 将来的にはDB化
-const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
+// const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
 
 export default function Settings() {
   // === Member ===

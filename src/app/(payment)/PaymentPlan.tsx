@@ -1,204 +1,39 @@
 import React, { useState } from 'react';
-import { Alert, Platform, ScrollView, Text, View } from 'react-native';
+import { Alert, ScrollView, Text, View } from 'react-native';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { useAuth } from '@/src/features/auth';
 import { useRouter } from 'expo-router';
-import {
-  PaymentSheetError,
-  useStripe,
-  confirmPlatformPayPayment,
-  PlatformPay,
-  initPaymentSheet,
-} from '@stripe/stripe-react-native';
-import {
-  cancelStripeSubscription,
-  setupUpdateSubscription,
-  setupCreateSubscription,
-} from '@/src/features/payment';
 import { LogUtil } from '@/src/libs/LogUtil';
 import CurrentPlanBadge from './components/(PaymentPlan)/CurrentPlanBadge';
 import dayjs from 'dayjs';
 import PlanTable from './components/(PaymentPlan)/PlanTable';
 import PlanCard from './components/(PaymentPlan)/PlanCard';
-import { monthlyPayment, Payment, yearlyPayment } from '@/src/features/payment/types/Payment';
-import { subscriptionPlatformMap } from '@/src/features/payment/libs/subscriptionPlatformMap';
-import { ISubscriptionPay } from '@/src/features/payment/libs/iSubscriptionPay';
+import { usePremiumPlan } from '@/src/features/auth/hooks/usePremiumPlan';
+import { PurchasesPackage } from 'react-native-purchases';
 
 export default function PaymentPlan() {
   // === Member ===
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { presentPaymentSheet } = useStripe();
   const { session, profile } = useAuth();
+  const { isPremium, onSubmit, onRestore, premiumPlanList } = usePremiumPlan();
 
   // === Method ===
   // TODO: setupSubscriptionとupdateSubscriptionはViewには関係ないので分離したい
 
-  /** Apple Pay用の支払い処理 */
-  const handleApplyPay = async (payment: Payment): Promise<boolean> => {
-    // Apple Pay用のSubscriptionを作成
-    const subscription = await setupCreateSubscription(payment, session);
-
-    // PaymentIntentのclient_secretを取得
-    const clientSecret =
-      typeof subscription.latest_invoice === 'string'
-        ? undefined
-        : subscription.latest_invoice?.confirmation_secret?.client_secret;
-
-    if (!clientSecret) {
-      throw new Error('Client secret is not available for Apple Pay');
-    }
-
-    LogUtil.log(`Apple Pay用のclient_secretを取得: ${clientSecret.substring(0, 20)}...`, {
-      level: 'info',
-      notify: true,
-    });
-
-    await initPaymentSheet({
-      merchantDisplayName: `Re:CoL プレミアムプラン ${payment.period}`,
-      paymentIntentClientSecret: clientSecret,
-      allowsDelayedPaymentMethods: true,
-    });
-
-    const { error } = await confirmPlatformPayPayment(clientSecret, {
-      applePay: {
-        cartItems: [
-          {
-            paymentType: PlatformPay.PaymentType.Recurring,
-            intervalUnit:
-              payment.period === 'monthly'
-                ? PlatformPay.IntervalUnit.Month
-                : PlatformPay.IntervalUnit.Year,
-            intervalCount: 1,
-            label: `Re:CoL プレミアムプラン`,
-            amount: payment.price.toString(),
-          },
-        ],
-        merchantCountryCode: 'JP',
-        currencyCode: 'JPY',
-        requiredShippingAddressFields: [PlatformPay.ContactField.PostalAddress],
-        requiredBillingContactFields: [PlatformPay.ContactField.PhoneNumber],
-      },
-    });
-
-    if (error) {
-      if (subscription.id) {
-        await cancelStripeSubscription(subscription.id, session);
-      }
-      throw error;
-    } else {
-      LogUtil.log(`Apple Pay支払いが成功しました`, {
-        level: 'info',
-        notify: true,
-      });
-    }
-    return true;
-  };
-
-  const handleRegularPayment = async (payment: Payment): Promise<boolean> => {
-    // Subscriptionの作成
-    const subscription = await setupCreateSubscription(payment, session);
-    // PaymentIntentのclient_secretを取得
-    const clientSecret =
-      typeof subscription.latest_invoice === 'string'
-        ? undefined
-        : subscription.latest_invoice?.confirmation_secret?.client_secret;
-
-    if (!clientSecret) {
-      throw new Error('Client secret is not available for Regular Payment');
-    }
-
-    await initPaymentSheet({
-      merchantDisplayName: `Re:CoL プレミアムプラン ${payment.period === 'monthly' ? '月額' : '年額'}`,
-      paymentIntentClientSecret: clientSecret,
-      allowsDelayedPaymentMethods: true,
-    });
-
-    // PaymentSheetの表示
-    const { error } = await presentPaymentSheet();
-    if (error) {
-      if (error.code === PaymentSheetError.Canceled) return false;
-      LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-      if (subscription.id) {
-        LogUtil.log(`支払い${subscription.id}に失敗しました.`, {
-          level: 'warn',
-          notify: true,
-        });
-        await cancelStripeSubscription(subscription.id!, session);
-      }
-      return false;
-    }
-    return true;
-  };
-
-  const handleUpdatePayment = async (payment: Payment) => {
-    Alert.alert(
-      'プランを更新しますか？',
-      'プラン変更時は、未使用期間の料金を差し引いて計算します。',
-      [
-        { text: 'キャンセル', style: 'cancel' },
-        {
-          text: '更新する',
-          style: 'destructive',
-          onPress: async () => {
-            setIsLoading(true);
-            await setupUpdateSubscription(profile!.subscription[0], payment, session)
-              .then(() => {
-                // 支払い完了画面へ遷移
-                router.push('/(payment)/SubscriptionComplete');
-              })
-              .catch((e) => {
-                Alert.alert('プランの更新に失敗しました。');
-                LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
-                return;
-              })
-              .finally(() => {
-                setIsLoading(false);
-              });
-          },
-        },
-      ]
-    );
-  };
-
   /** プレミアムプランの支払い */
-  const handlePayment = async (payment: Payment) => {
+  const handlePayment = async (payment: PurchasesPackage) => {
     if (!session) {
       Alert.alert('セッション情報がありません。');
       return;
     }
-    // すでにプレミアムプランに関する情報がある場合はプラン変更
-    if (profile!.subscription && profile!.subscription.length > 0) {
-      await handleUpdatePayment(payment);
-      return;
-    }
-
-    const subscriptionPlatform: ISubscriptionPay = subscriptionPlatformMap
-      .get(Platform.OS)
-      ?.get(payment.period) as ISubscriptionPay;
-    if (!subscriptionPlatform) {
-      Alert.alert('支払いプラットフォームが見つかりません。');
-      return;
-    }
-
     setIsLoading(true);
     try {
-      let paymentResult = false;
-      // TODO : iosのプラットフォームもリファクタリングする
-      if (Platform.OS === 'ios') {
-        paymentResult = await handleApplyPay(payment);
-      } else if (Platform.OS === 'android') {
-        //   const sp = await subscriptionPlatform.generateSubscription(session);
-        // paymentResult = await sp.confirmPayment(session);
-        paymentResult = await handleRegularPayment(payment);
-      } else {
-        // 通常の支払い処理を実行
-        await handleRegularPayment(payment);
-      }
-      if (paymentResult) {
-        router.push('/(payment)/SubscriptionComplete');
-      }
+      await onSubmit(payment);
+      router.push('/(payment)/SubscriptionComplete');
     } catch (e) {
+      // ユーザーの意思でキャンセルされた場合
+      if (e && (e as { userCancelled?: boolean }).userCancelled) return;
       LogUtil.log(`支払いに失敗しました: ${JSON.stringify(e)}`, {
         level: 'error',
         notify: true,
@@ -227,13 +62,15 @@ export default function PaymentPlan() {
           style: 'destructive',
           onPress: async () => {
             setIsLoading(true);
-            cancelStripeSubscription(profile!.subscription[0].uid!, session)
+            onRestore()
               .then(() => {
-                Alert.alert('プランを解約しました。\n有効期限終了後にフリープランに戻ります。');
+                Alert.alert(
+                  'Re:CoLのプレミアムプランを解約しました。\n有効期限終了後にフリープランに戻ります。'
+                );
                 router.navigate('/');
               })
               .catch((e) => {
-                Alert.alert('プランの解約に失敗しました。');
+                Alert.alert('Re:CoLのプレミアムプランの解約に失敗しました。');
                 LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
                 return;
               })
@@ -294,45 +131,30 @@ export default function PaymentPlan() {
           )}
 
           {/* プラン選択 */}
-          {(profile.subscription.length == 0 || !profile.subscription[0].isCanceled()) && (
-            <View>
-              <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-3">
-                プランを選択
-              </Text>
-              <View className="flex flex-row gap-3">
-                <PlanCard
-                  payment={monthlyPayment}
-                  onPress={() => handlePayment(monthlyPayment)}
-                  disabled={
-                    isLoading ||
-                    (profile &&
-                      profile.subscription.length > 0 &&
-                      profile.subscription[0].isMonthly())
-                  }
-                  isCurrentPlan={
-                    profile &&
-                    profile.subscription.length > 0 &&
-                    profile.subscription[0].isMonthly()
-                  }
-                />
-                <PlanCard
-                  payment={yearlyPayment}
-                  onPress={() => handlePayment(yearlyPayment)}
-                  disabled={
-                    isLoading ||
-                    (profile &&
-                      profile.subscription.length > 0 &&
-                      profile.subscription[0].isYearly())
-                  }
-                  isCurrentPlan={
-                    profile && profile.subscription.length > 0 && profile.subscription[0].isYearly()
-                  }
-                />
-              </View>
+          <View>
+            <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-3">
+              プランを選択
+            </Text>
+            <View className="flex flex-row gap-3">
+              {premiumPlanList &&
+                premiumPlanList.availablePackages &&
+                premiumPlanList.availablePackages.map((p: PurchasesPackage) => (
+                  <PlanCard
+                    key={p.product.identifier}
+                    payment={p}
+                    onPress={() => handlePayment(p)}
+                    disabled={isLoading}
+                    isCurrentPlan={
+                      false
+                      //   p.product.identifier === premiumPlanList.entitlements.active.Premium
+                    }
+                  />
+                ))}
             </View>
-          )}
+          </View>
+
           {/* 解約ボタン */}
-          {profile.subscription.length > 0 && (
+          {isPremium && (
             <View className="items-center">
               <Button
                 text="プレミアムプランを解約"
