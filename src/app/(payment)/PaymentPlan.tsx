@@ -1,25 +1,28 @@
 import React, { useState } from 'react';
-import { Alert, ScrollView, Text, View } from 'react-native';
+import { Alert, Linking, ScrollView, Text, View } from 'react-native';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { useAuth } from '@/src/features/auth';
 import { useRouter } from 'expo-router';
 import { LogUtil } from '@/src/libs/LogUtil';
-import CurrentPlanBadge from './components/(PaymentPlan)/CurrentPlanBadge';
-import dayjs from 'dayjs';
-import PlanTable from './components/(PaymentPlan)/PlanTable';
-import PlanCard from './components/(PaymentPlan)/PlanCard';
 import { usePremiumPlan } from '@/src/features/auth/hooks/usePremiumPlan';
 import { PurchasesPackage } from 'react-native-purchases';
+import CurrentPlanBadge from './components/(PaymentPlan)/CurrentPlanBadge';
+import PlanTable from './components/(PaymentPlan)/PlanTable';
+import PlanCard from './components/(PaymentPlan)/PlanCard';
 
 export default function PaymentPlan() {
   // === Member ===
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { session, profile } = useAuth();
-  const { isPremium, onSubmit, onRestore, premiumPlanList } = usePremiumPlan();
+  const { activePlanId, managementURL, onSubmit, onRefetch, premiumPlanList } = usePremiumPlan();
 
   // === Method ===
   // TODO: setupSubscriptionとupdateSubscriptionはViewには関係ないので分離したい
+  const checkActivePlanId = (payment: PurchasesPackage) => {
+    LogUtil.log(JSON.stringify(payment), { level: 'info' });
+    return activePlanId === payment.product.identifier;
+  };
 
   /** プレミアムプランの支払い */
   const handlePayment = async (payment: PurchasesPackage) => {
@@ -47,40 +50,23 @@ export default function PaymentPlan() {
   /** プレミアムプランの解約 */
   const handleCancel = async () => {
     LogUtil.log('handle cancel.');
-    if (!profile!.subscription || profile!.subscription.length == 0) {
+    if (profile && !profile.isPremiumUser()) {
       Alert.alert('プレミアムプランには契約していません。');
       return;
     }
 
-    Alert.alert(
-      'プレミアムプランを解約しますか？',
-      `${dayjs(profile!.subscription[0].current_period_end).format('YYYY-MM-DD')}までは、プレミアムプランの機能を使うことができます。`,
-      [
-        { text: 'キャンセル', style: 'cancel' },
-        {
-          text: '解約する',
-          style: 'destructive',
-          onPress: async () => {
-            setIsLoading(true);
-            onRestore()
-              .then(() => {
-                Alert.alert(
-                  'Re:CoLのプレミアムプランを解約しました。\n有効期限終了後にフリープランに戻ります。'
-                );
-                router.navigate('/');
-              })
-              .catch((e) => {
-                Alert.alert('Re:CoLのプレミアムプランの解約に失敗しました。');
-                LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
-                return;
-              })
-              .finally(() => {
-                setIsLoading(false);
-              });
-          },
+    Alert.alert('解約の確認', 'プレミアムプランを解約しますか？', [
+      { text: 'キャンセル', style: 'cancel' },
+      {
+        text: '解約する',
+        style: 'destructive',
+        onPress: async () => {
+          Linking.openURL(managementURL || '').then(async () => {
+            await onRefetch();
+          });
         },
-      ]
-    );
+      },
+    ]);
   };
 
   // === Render ===
@@ -114,47 +100,27 @@ export default function PaymentPlan() {
             <PlanTable />
           </View>
 
-          {profile.subscription.length > 0 && profile.subscription[0].isCanceled() && (
-            <View className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-              <View className="flex-row items-center justify-center mb-2">
-                <View className="bg-gray-500 dark:bg-gray-400 rounded-full px-3 py-1">
-                  <Text className="text-white text-sm font-bold">解約予定</Text>
-                </View>
-              </View>
-              <Text className="text-center text-gray-600 dark:text-gray-300 font-medium">
-                解約のリクエストを受け付けました
-              </Text>
-              <Text className="text-center text-gray-500 dark:text-gray-400 text-sm mt-1">
-                有効期限終了後にフリープランに戻ります
-              </Text>
-            </View>
-          )}
-
           {/* プラン選択 */}
           <View>
             <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-3">
               プランを選択
             </Text>
             <View className="flex flex-row gap-3">
-              {premiumPlanList &&
-                premiumPlanList.availablePackages &&
-                premiumPlanList.availablePackages.map((p: PurchasesPackage) => (
+              {premiumPlanList.length > 0 &&
+                premiumPlanList.map((p: PurchasesPackage) => (
                   <PlanCard
                     key={p.product.identifier}
                     payment={p}
                     onPress={() => handlePayment(p)}
                     disabled={isLoading}
-                    isCurrentPlan={
-                      false
-                      //   p.product.identifier === premiumPlanList.entitlements.active.Premium
-                    }
+                    isCurrentPlan={checkActivePlanId(p)}
                   />
                 ))}
             </View>
           </View>
 
           {/* 解約ボタン */}
-          {isPremium && (
+          {profile?.isPremiumUser() && (
             <View className="items-center">
               <Button
                 text="プレミアムプランを解約"

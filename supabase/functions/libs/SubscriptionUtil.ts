@@ -1,12 +1,18 @@
 import { Tables } from './database.types.ts';
+import dayjs from 'dayjs';
 
 export class SubscriptionUtil {
   static isPremiumUser(
     profile: Tables<'profile'> & { subscription: Tables<'subscription'>[] | null }
   ): boolean {
     if (profile.role == 'Admin' || profile.role == 'SuperUser') return true;
-    if (!profile.subscription || profile.subscription.length === 0) return false;
-    // activeなsubscriptionは基本1つなので、それをチェック
-    return profile.subscription.length > 0;
+    if (
+      profile.payment_plan == 'Premium' &&
+      profile.payment_end_at &&
+      dayjs(profile.payment_end_at).isAfter(dayjs())
+    ) {
+      return true;
+    }
+    return false;
   }
 }

@@ -197,7 +197,30 @@ const update = async (c: Hono.Context) => {
   return c.json(data);
 };
 
+const syncPremiumPlan = async (c: Hono.Context) => {
+  console.log('[PUT] sync-premium-plan');
+  const supabase = generateSupabase(c);
+  const { isPremium, endAt } = await c.req.json();
+  const user = await getUser(c, supabase);
+  if (!user) {
+    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
+  }
+
+  const { data, error } = await supabase
+    .from('profile')
+    .update({ payment_plan: isPremium ? 'Premium' : 'Free', payment_end_at: endAt })
+    .eq('uid', user.id);
+
+  if (error) {
+    console.error(error);
+    return c.json({ message: getMessage('C007', ['プロフィール']), code: 'C007' }, 400);
+  }
+
+  return c.json();
+};
+
 app.get('/', get);
 app.post('/', create);
 app.put('/', update);
+app.put('/sync-premium-plan', syncPremiumPlan);
 Deno.serve(app.fetch);

@@ -18,7 +18,7 @@
         "functions:dev": "npx supabase functions serve --env-file .env --no-verify-jwt",
         "functions:deploy": "npx supabase functions deploy",
         "generate:types": "export $(cat .env | grep -v \"#\" | xargs) && npx supabase gen types typescript --project-id ${EXPO_PUBLIC_SUPABASE_REFERENCE_ID} --schema public > src/libs/database.types.ts",
-        "generate:types:local": "export $(cat .env | grep -v \"#\" | xargs) &&  npx supabase gen types --lang typescript --local --schema public > src/libs/database.types.ts",
+        "generate:types:local": "export $(cat .env | grep -v \"#\" | xargs) &&  npx supabase gen types --lang typescript --local --schema public > src/libs/database.types.ts && cp src/libs/database.types.ts supabase/functions/libs/database.types.ts",
         "test": "jest --coverage",
         "lint": "eslint src",
         "lint:fix": "eslint src --fix",

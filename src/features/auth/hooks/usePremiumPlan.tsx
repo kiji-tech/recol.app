@@ -1,37 +1,49 @@
-import { LogUtil } from '@/src/libs/LogUtil';
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { LogUtil } from '@/src/libs/LogUtil';
 import { Platform } from 'react-native';
 import Purchases, {
   CustomerInfo,
-  PurchasesOffering,
   PurchasesOfferings,
   PurchasesPackage,
 } from 'react-native-purchases';
+import { useAuth } from './useAuth';
+import { syncPremiumPlan } from '@/src/features/profile/apis/syncPremiumPlan';
+import dayjs from '@/src/libs/dayjs';
 
 type PremiumPlanContextType = {
   isPremium: boolean;
+  activePlanId: string | null;
+  managementURL: string | null;
+  premiumPlanList: PurchasesPackage[];
   onSubmit: (purchasesPackage: PurchasesPackage) => Promise<void>;
   onRestore: () => Promise<void>;
-  premiumPlanList: PurchasesOffering | null;
-  setPremiumPlanList: (premiumPlanList: PurchasesOffering | null) => void;
+  onRefetch: () => void;
+  setPremiumPlanList: (premiumPlanList: PurchasesPackage[]) => void;
 };
 
 const PremiumPlanContext = createContext<PremiumPlanContextType | undefined>(undefined);
 
 export const PremiumPlanProvider = ({ children }: { children: React.ReactNode }) => {
+  const { session } = useAuth();
+  const IS_PREMIUM_USER = true;
   const [isPremium, setIsPremium] = useState(false);
-  const [premiumPlanList, setPremiumPlanList] = useState<PurchasesOffering | null>(null);
+  const [activePlanId, setActivePlanId] = useState<string | null>(null);
+  const [managementURL, setManagementURL] = useState<string | null>(null);
+  const [premiumPlanList, setPremiumPlanList] = useState<PurchasesPackage[]>([]);
 
   // すでにプレミアム会員になっているかどうか判定しています
   const checkPremium = (customerInfo: CustomerInfo) => {
     LogUtil.log('checkPremium customerInfo: ' + JSON.stringify(customerInfo), {
       level: 'info',
+      notify: true,
     });
-    if (typeof customerInfo.entitlements.active.Premium !== 'undefined') {
-      return true;
+    if (customerInfo.activeSubscriptions.length > 0) {
+      return IS_PREMIUM_USER;
     }
+    return !IS_PREMIUM_USER;
   };
 
+  /** RevenueCat 初期化 */
   const initRevenueCat = async () => {
     try {
       // react-native-purchases初期化
@@ -60,30 +72,54 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
     }
   };
 
-  const setupCustomerInfo = async () => {
+  /**
+   * RevenueCat 顧客情報取得
+   * ユーザー情報の取得・プレミアムプランの判定
+   */
+  const setupCustomerInfo = useCallback(async () => {
     const customerInfo = await Purchases.getCustomerInfo();
-    LogUtil.log('RevenueCat customerInfo: ' + JSON.stringify(customerInfo), {
-      level: 'info',
-    });
-    if (checkPremium(customerInfo)) {
-      setIsPremium(true);
-    }
-  };
+    if (!customerInfo || !session) return;
+    syncPremiumPlan(
+      checkPremium(customerInfo),
+      customerInfo.latestExpirationDate ? dayjs(customerInfo.latestExpirationDate).toDate() : null,
+      session
+    );
+    setIsPremium(checkPremium(customerInfo));
+    setManagementURL(customerInfo.managementURL || null);
+    setActivePlanId(customerInfo.activeSubscriptions[0] || null);
+  }, [session]);
 
+  /**
+   * RevenueCat プレミアムプランの情報の取得・設定処理
+   * Offeringオブジェクトを取得して設定する
+   */
   const setupOfferings = async () => {
     const offerings: PurchasesOfferings = await Purchases.getOfferings();
-    setPremiumPlanList(offerings.current || null);
+    setPremiumPlanList(offerings.current?.availablePackages || []);
   };
 
+  /**
+   * プレミアムプランの購入処理
+   * @param purchasesPackage: {PurchasesPackage} 購入パッケージ ･･･ android,ios 月額,年額
+   */
   const onSubmit = useCallback(async (purchasesPackage: PurchasesPackage) => {
     // 購入処理
     const { customerInfo } = await Purchases.purchasePackage(purchasesPackage);
-    if (checkPremium(customerInfo)) {
-      setIsPremium(true);
-    }
+      if (!customerInfo || !session) return;
+      const premium = checkPremium(customerInfo);
+    syncPremiumPlan(
+      premium,
+      customerInfo.latestExpirationDate ? dayjs(customerInfo.latestExpirationDate).toDate() : null,
+      session
+    );
+    setIsPremium(premium);
+    setManagementURL(customerInfo.managementURL || null);
+    setActivePlanId(customerInfo.activeSubscriptions[0] || null);
   }, []);
 
-  // Restoreの実装をしています
+  /**
+   *
+   */
   const onRestore = useCallback(async () => {
     const restore = await Purchases.restorePurchases();
     if (checkPremium(restore)) {
@@ -91,17 +127,33 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
     }
   }, []);
 
+  const onRefetch = async () => {
+    await setupCustomerInfo();
+  };
+
   useEffect(() => {
     (async () => {
       await initRevenueCat();
-      await setupCustomerInfo();
       await setupOfferings();
     })();
   }, []);
 
+  useEffect(() => {
+    setupCustomerInfo();
+  }, [session]);
+
   return (
     <PremiumPlanContext.Provider
-      value={{ isPremium, onSubmit, onRestore, premiumPlanList, setPremiumPlanList }}
+      value={{
+        isPremium,
+        activePlanId,
+        managementURL,
+        premiumPlanList,
+        onSubmit,
+        onRestore,
+        onRefetch,
+        setPremiumPlanList,
+      }}
     >
       {children}
     </PremiumPlanContext.Provider>
