@@ -8,7 +8,7 @@ type CurrentPlanBadgeProps = {
 };
 
 export default function CurrentPlanBadge({ profile }: CurrentPlanBadgeProps) {
-  if (!profile?.subscription || profile.subscription.length === 0) {
+  if (!profile?.isPremiumUser()) {
     return (
       <View className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
         <Text className="text-center text-gray-600 dark:text-gray-300 font-medium">
@@ -21,8 +21,7 @@ export default function CurrentPlanBadge({ profile }: CurrentPlanBadgeProps) {
     );
   }
 
-  const isMonthly = profile && profile.subscription[0].isMonthly();
-  const endDate = dayjs(profile.subscription[0].current_period_end).format('YYYY年MM月DD日');
+  const endDate = dayjs(profile.payment_end_at).format('YYYY年MM月DD日');
 
   return (
     <View className="bg-light-primary/10 dark:bg-dark-primary/10 rounded-lg p-4 border border-light-primary/20 dark:border-dark-primary/20">
@@ -30,9 +29,6 @@ export default function CurrentPlanBadge({ profile }: CurrentPlanBadgeProps) {
         <View className="bg-light-primary dark:bg-dark-primary rounded-full px-3 py-1">
           <Text className="text-white text-sm font-bold">プレミアム</Text>
         </View>
-        <Text className="ml-2 text-light-primary dark:text-dark-primary font-bold">
-          {isMonthly ? '月額' : '年額'}プラン
-        </Text>
       </View>
       <Text className="text-center text-light-text dark:text-dark-text">
         有効期限: {endDate}まで
