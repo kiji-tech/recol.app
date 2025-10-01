@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { Tables, Enums } from '../../../libs/database.types';
 import { Subscription, SubscriptionType } from '../../payment/types/Subscription';
 
@@ -19,6 +20,7 @@ export class Profile {
   uid: string = '';
   updated_at: string | null = null;
   delete_flag: boolean = false;
+  payment_end_at: string | null = null;
   subscription: Subscription[];
 
   constructor(data: (ProfileType & { subscription: SubscriptionType[] }) | Profile) {
@@ -54,7 +56,7 @@ export class Profile {
   public isPremiumUser(): boolean {
     if (this.isAdmin() || this.isSuperUser()) return Profile.IS_PREMIUM_USER;
     // activeなsubscriptionは基本1つなので、それをチェック
-    if (this.subscription.length > 0) return Profile.IS_PREMIUM_USER;
+    if (this.payment_plan == 'Premium' && this.payment_end_at && dayjs(this.payment_end_at).isAfter(dayjs())) return Profile.IS_PREMIUM_USER;
     return !Profile.IS_PREMIUM_USER;
   }
 }

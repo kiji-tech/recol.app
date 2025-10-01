@@ -18,8 +18,9 @@ export default {
     infoPlist: {
       NSCameraUsageDescription: 'カメラを使ってプロフィール画像を設定します',
       NSPhotoLibraryUsageDescription: 'アカウントのアイコン､計画事に画像の登録します',
+      NSUserNotificationsUsageDescription: 'スケジュールの開始時間に通知を受け取る',
       NSLocationWhenInUseUsageDescription:
-        '地図を表示する際の初期表示位置を設定するために位置情報を使用します',
+        '地図を表示する際の初期表示位置を設定するために使用します',
       NSUserTrackingUsageDescription:
         '広告表示の最適化のため、他社アプリとの横断的な計測を許可するか確認します',
       ITSAppUsesNonExemptEncryption: false,
@@ -33,11 +34,13 @@ export default {
     },
   },
   android: {
-    package: 'com.libetech.recol',
-    packageName: 'com.libetech.recol',
+    package: 'com.libetech.re_col',
+    packageName: 'com.libetech.re_col',
     permissions: [
       'android.permission.ACCESS_COARSE_LOCATION',
       'android.permission.ACCESS_FINE_LOCATION',
+      'android.permission.READ_MEDIA_IMAGES',
+      'android.permission.READ_MEDIA_VIDEO',
     ],
     userInterfaceStyle: 'automatic',
     googleServicesFile: process.env.GOOGLE_SERVICES_ANDROID_FILE ?? './google-services.json',
@@ -56,12 +59,16 @@ export default {
       'expo-build-properties',
       {
         android: {
+          // React Native プレコンパイル使用の有効･無効 ビルド時間がたんしゅくされるが ,
+          buildReactNativeFromSource: false,
           compileSdkVersion: 35,
           targetSdkVersion: 35,
           buildToolsVersion: '35.0.0',
         },
         ios: {
           useFrameworks: 'static',
+          // React Native プレコンパイル使用の有効･無効
+          buildReactNativeFromSource: false,
           deploymentTarget: '15.1',
         },
       },
@@ -164,6 +171,7 @@ export default {
       '@stripe/stripe-react-native',
       {
         merchantIdentifier: 'merchant.com.libetech.recol',
+        enableGooglePay: true,
       },
     ],
     'expo-apple-authentication',

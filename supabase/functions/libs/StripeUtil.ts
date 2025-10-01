@@ -31,6 +31,11 @@ export class StripeUtil {
     return paymentIntent;
   }
 
+  public static async cancelPaymentIntent(paymentIntentId: string): Promise<Stripe.PaymentIntent> {
+    console.log('cancelPaymentIntent', paymentIntentId);
+    return await stripe.paymentIntents.cancel(paymentIntentId);
+  }
+
   /** サブスクリプションの取得 */
   public static async getSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
     return await stripe.subscriptions.retrieve(subscriptionId);

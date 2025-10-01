@@ -15,12 +15,13 @@ import { LogBox } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import mobileAds from 'react-native-google-mobile-ads';
 import { MenuProvider } from 'react-native-popup-menu';
-import * as Font from 'expo-font';
 import { LocationProvider } from '../contexts/LocationContext';
-import { StripeProvider, useStripe } from '@stripe/stripe-react-native';
+import { useStripe } from '@stripe/stripe-react-native';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { useAuth, AuthProvider } from '@/src/features/auth';
+import * as Font from 'expo-font';
+import { PremiumPlanProvider } from '../features/auth/hooks/usePremiumPlan';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -37,18 +38,10 @@ SplashScreen.setOptions({
 });
 
 const Layout = () => {
+  //   const { setPremiumPlanList } = usePremiumPlan();
   const [ready, setReady] = useState(false);
   const { isDarkMode } = useTheme();
   const { initialized } = useAuth();
-  useEffect(() => {
-    (async () => {
-      // ここでフォントや API をプリロード
-      await Font.loadAsync({
-        // 例: 'Roboto': require('./assets/fonts/Roboto-Regular.ttf')
-      });
-      setReady(true);
-    })();
-  }, []);
 
   const onLayout = useCallback(async () => {
     if (ready && initialized) {
@@ -79,8 +72,14 @@ const Layout = () => {
   }, []);
 
   const initializeApp = async () => {
+    // ここでフォントや API をプリロード
+    await Font.loadAsync({
+      // 例: 'Roboto': require('./assets/fonts/Roboto-Regular.ttf')
+    });
     // 広告初期化
-    initAd();
+    await initAd();
+
+    setReady(true);
   };
 
   if (!ready || !initialized) return null;
@@ -109,6 +108,7 @@ const Layout = () => {
 };
 
 const RouteLayout = () => {
+  // === RevenueCat初期化 ===
   // === Stripe Redirect処理 ===
   const { handleURLCallback } = useStripe();
 
@@ -160,24 +160,34 @@ const RouteLayout = () => {
 
   // === Notifications 初期化 ===
   useEffect(() => {
-    NotificationUtil.initializeNotifications();
+    const initializeServices = async () => {
+      // 通知初期化
+      NotificationUtil.initializeNotifications();
+    };
+
+    initializeServices();
   }, []);
 
   return (
     <AuthProvider>
-      <StripeProvider publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}>
-        <MenuProvider>
-          <PlanProvider>
-            <LocationProvider>
-              <GestureHandlerRootView style={{ flex: 1 }}>
-                <ThemeProvider>
+      {/* <StripeProvider
+        publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}
+        merchantIdentifier={process.env.EXPO_PUBLIC_STRIPE_MERCHANT || ''}
+        > */}
+      <MenuProvider>
+        <PlanProvider>
+          <LocationProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <ThemeProvider>
+                <PremiumPlanProvider>
                   <Layout />
-                </ThemeProvider>
-              </GestureHandlerRootView>
-            </LocationProvider>
-          </PlanProvider>
-        </MenuProvider>
-      </StripeProvider>
+                </PremiumPlanProvider>
+              </ThemeProvider>
+            </GestureHandlerRootView>
+          </LocationProvider>
+        </PlanProvider>
+      </MenuProvider>
+      {/* </StripeProvider> */}
     </AuthProvider>
   );
 };
