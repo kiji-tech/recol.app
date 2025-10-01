@@ -34,11 +34,13 @@ export default {
     },
   },
   android: {
-    package: 'com.libetech.recol',
-    packageName: 'com.libetech.recol',
+    package: 'com.libetech.re_col',
+    packageName: 'com.libetech.re_col',
     permissions: [
       'android.permission.ACCESS_COARSE_LOCATION',
       'android.permission.ACCESS_FINE_LOCATION',
+      'android.permission.READ_MEDIA_IMAGES',
+      'android.permission.READ_MEDIA_VIDEO',
     ],
     userInterfaceStyle: 'automatic',
     googleServicesFile: process.env.GOOGLE_SERVICES_ANDROID_FILE ?? './google-services.json',
@@ -72,7 +74,7 @@ export default {
       },
     ],
     'expo-router',
-    [   
+    [
       'expo-location',
       {
         locationAlwaysAndWhenInUsePermission: 'Allow $(PRODUCT_NAME) to use your location.',
