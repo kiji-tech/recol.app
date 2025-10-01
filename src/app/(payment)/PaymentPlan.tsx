@@ -20,7 +20,6 @@ export default function PaymentPlan() {
   // === Method ===
   // TODO: setupSubscriptionとupdateSubscriptionはViewには関係ないので分離したい
   const checkActivePlanId = (payment: PurchasesPackage) => {
-    LogUtil.log(JSON.stringify(payment), { level: 'info' });
     return activePlanId === payment.product.identifier;
   };
 
@@ -129,9 +128,6 @@ export default function PaymentPlan() {
                 loading={isLoading}
                 theme="danger"
               />
-              <Text className="text-gray-500 dark:text-gray-400 text-sm mt-2 text-center">
-                有効期限終了後にフリープランに戻ります
-              </Text>
             </View>
           )}
         </View>

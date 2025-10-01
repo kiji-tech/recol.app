@@ -33,10 +33,6 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
 
   // すでにプレミアム会員になっているかどうか判定しています
   const checkPremium = (customerInfo: CustomerInfo) => {
-    LogUtil.log('checkPremium customerInfo: ' + JSON.stringify(customerInfo), {
-      level: 'info',
-      notify: true,
-    });
     if (customerInfo.activeSubscriptions.length > 0) {
       return IS_PREMIUM_USER;
     }

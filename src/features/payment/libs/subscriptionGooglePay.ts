@@ -66,7 +66,6 @@ export class SubscriptionGooglePay implements ISubscriptionPay {
     ) {
       LogUtil.log('Google Payはサポートされていません。', {
         level: 'warn',
-        notify: true,
       });
       return !SubscriptionGooglePay.COMPLETED;
     }
@@ -93,13 +92,13 @@ export class SubscriptionGooglePay implements ISubscriptionPay {
     return await this.checkPaymentError(error, session);
   }
 
-    /**
-     * 支払いエラーのチェック
-     * エラーなし: 支払い成功(true)
-     * エラー コード Canceled: 支払いキャンセル(false)
-     * エラー その他: 支払い失敗(throw error)
-     * @returns 
-     */
+  /**
+   * 支払いエラーのチェック
+   * エラーなし: 支払い成功(true)
+   * エラー コード Canceled: 支払いキャンセル(false)
+   * エラー その他: 支払い失敗(throw error)
+   * @returns
+   */
   private async checkPaymentError(
     error: StripeError<PlatformPayError> | undefined,
     session: Session
