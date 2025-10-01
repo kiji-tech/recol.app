@@ -2,9 +2,7 @@ import { Tables } from './database.types.ts';
 import dayjs from 'dayjs';
 
 export class SubscriptionUtil {
-  static isPremiumUser(
-    profile: Tables<'profile'> & { subscription: Tables<'subscription'>[] | null }
-  ): boolean {
+  static isPremiumUser(profile: Tables<'profile'>): boolean {
     if (profile.role == 'Admin' || profile.role == 'SuperUser') return true;
     if (
       profile.payment_plan == 'Premium' &&
