@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 import ScheduleComponents from './components/(ScheduleScreen)/(Schedule)';
 import { BackgroundView, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
@@ -21,6 +21,7 @@ export default function ScheduleScreen(): ReactNode {
   const { plan, planLoading } = usePlan();
   const { session } = useAuth();
   const [viewPlan, setViewPlan] = useState<Plan | null>(plan || null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // === Method ===
   const initView = () => {
@@ -37,25 +38,28 @@ export default function ScheduleScreen(): ReactNode {
     }
 
     const ctrl = new AbortController();
-
-    fetchPlan(plan.uid, session, ctrl)
-      .then((data) => {
-        if (!data) {
-          Toast.warn('プランの情報が取得できませんでした');
-        }
-        setViewPlan({ ...data } as Plan);
-      })
-      .catch((e) => {
-        if (e && e.message.includes('Aborted')) {
-          LogUtil.log('Aborted', { level: 'info' });
-          return;
-        }
-        LogUtil.log(JSON.stringify({ fetchPlan: e }), { level: 'error', notify: true });
-        if (e && e.message) {
-          Toast.warn('プランの情報が取得に失敗しました');
-        }
-      });
-
+    setIsLoading(true);
+    try {
+      fetchPlan(plan.uid, session, ctrl)
+        .then((data) => {
+          if (!data) {
+            Toast.warn('プランの情報が取得できませんでした');
+          }
+          setViewPlan({ ...data } as Plan);
+        })
+        .catch((e) => {
+          if (e && e.message.includes('Aborted')) {
+            LogUtil.log('Aborted', { level: 'info' });
+            return;
+          }
+          LogUtil.log(JSON.stringify({ fetchPlan: e }), { level: 'error', notify: true });
+          if (e && e.message) {
+            Toast.warn('プランの情報が取得に失敗しました');
+          }
+        });
+    } finally {
+      setIsLoading(false);
+    }
     return () => {
       ctrl.abort();
     };
@@ -78,13 +82,15 @@ export default function ScheduleScreen(): ReactNode {
 
   // === Effect ===
   useFocusEffect(useCallback(initView, [plan, session]));
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      router.back();
-      return true;
-    });
-    return () => backHandler.remove();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        router.back();
+        return true;
+      });
+      return () => backHandler.remove();
+    }, [])
+  );
 
   // === Render ===
   return (
@@ -105,7 +111,7 @@ export default function ScheduleScreen(): ReactNode {
         )}
       </ScrollView>
       <ToastManager />
-      {planLoading && <MaskLoading />}
+      {(planLoading || isLoading) && <MaskLoading />}
     </BackgroundView>
   );
 }
