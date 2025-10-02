@@ -39,27 +39,28 @@ export default function ScheduleScreen(): ReactNode {
 
     const ctrl = new AbortController();
     setIsLoading(true);
-    try {
-      fetchPlan(plan.uid, session, ctrl)
-        .then((data) => {
-          if (!data) {
-            Toast.warn('プランの情報が取得できませんでした');
-          }
-          setViewPlan({ ...data } as Plan);
-        })
-        .catch((e) => {
-          if (e && e.message.includes('Aborted')) {
-            LogUtil.log('Aborted', { level: 'info' });
-            return;
-          }
-          LogUtil.log(JSON.stringify({ fetchPlan: e }), { level: 'error', notify: true });
-          if (e && e.message) {
-            Toast.warn('プランの情報が取得に失敗しました');
-          }
-        });
-    } finally {
-      setIsLoading(false);
-    }
+
+    fetchPlan(plan.uid, session, ctrl)
+      .then((data) => {
+        if (!data) {
+          Toast.warn('プランの情報が取得できませんでした');
+        }
+        setViewPlan({ ...data } as Plan);
+      })
+      .catch((e) => {
+        if (e && e.message.includes('Aborted')) {
+          LogUtil.log('Aborted', { level: 'info' });
+          return;
+        }
+        LogUtil.log(JSON.stringify({ fetchPlan: e }), { level: 'error', notify: true });
+        if (e && e.message) {
+          Toast.warn('プランの情報が取得に失敗しました');
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+
     return () => {
       ctrl.abort();
     };
