@@ -11,5 +11,8 @@
     "rakuten",
     "SUPABASE",
     "Re:CoL"
-  ]
+  ],
+  "deno.enable": true,
+  "deno.lint": true,
+  "deno.enablePaths": ["./supabase/functions"]
 }
