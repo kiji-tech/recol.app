@@ -19,7 +19,7 @@ const PREMIUM_STORAGE_LIMIT_GB = 10; // 上限を100GBに設定
  */
 const checkStorageCapacity = async (
   supabase: SupabaseClient,
-  profile: Tables<'profile'> & { subscription: Tables<'subscription'>[] | null },
+  profile: Tables<'profile'>,
   planId: string,
   images: string[]
 ) => {
@@ -164,16 +164,14 @@ const post = async (c: Hono.Context) => {
   }
 
   // profile 取得
-  const { data: profile, error: subscriptionError } = await supabase
+  const { data: profile, error: fetchProfileError } = await supabase
     .from('profile')
-    .select('*,subscription(*)')
+    .select('*')
     .eq('uid', user.id)
-    .eq('subscription.status', 'active')
-    .eq('subscription.user_id', user.id)
     .maybeSingle();
 
-  if (subscriptionError) {
-    console.error(subscriptionError);
+  if (fetchProfileError) {
+    console.error(fetchProfileError);
     return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
   }
   const { planId, images } = await c.req.json();
