@@ -16,13 +16,19 @@ import { Button, IconButton } from '@/src/components';
 import ScheduleItem from './ScheduleItem';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import dayjs from 'dayjs';
+import MaskLoading from '@/src/components/MaskLoading';
 
 type Props = {
   plan: Plan | null;
   onDelete?: (schedule: Schedule) => void;
+  isLoading?: boolean;
 };
 
-export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode {
+export default function ScheduleComponents({
+  plan,
+  onDelete,
+  isLoading = false,
+}: Props): ReactNode {
   // === Member ===
   const DATE_FORMAT = 'YYYY-MM-DD';
   const { setEditSchedule } = usePlan();
@@ -174,8 +180,13 @@ export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode
         })}
       </View>
       <View className="mt-8">
-        <Button text="スケジュールを追加" onPress={() => handleAddSchedule()} />
+        <Button
+          text="スケジュールを追加"
+          disabled={isLoading}
+          onPress={() => handleAddSchedule()}
+        />
       </View>
+      {isLoading && <MaskLoading />}
     </>
   );
 }

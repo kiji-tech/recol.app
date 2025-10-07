@@ -9,7 +9,6 @@ import { deleteSchedule, Schedule } from '@/src/features/schedule';
 
 import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
-import MaskLoading from '@/src/components/MaskLoading';
 import ToastManager, { Toast } from 'toastify-react-native';
 import PlanInformation from './components/(ScheduleScreen)/PlanInformation';
 import ScheduleMenu from './components/(ScheduleScreen)/ScheduleMenu';
@@ -107,12 +106,15 @@ export default function ScheduleScreen(): ReactNode {
           <>
             <PlanInformation plan={viewPlan} />
             {/* Schedule */}
-            <ScheduleComponents plan={viewPlan} onDelete={handleDeleteSchedule} />
+            <ScheduleComponents
+              isLoading={planLoading || isLoading}
+              plan={viewPlan}
+              onDelete={handleDeleteSchedule}
+            />
           </>
         )}
       </ScrollView>
       <ToastManager />
-      {(planLoading || isLoading) && <MaskLoading />}
     </BackgroundView>
   );
 }
