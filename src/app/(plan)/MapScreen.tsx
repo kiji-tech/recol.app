@@ -120,7 +120,7 @@ export default function MapScreen() {
           />
         </View>
       </View>
-      <View className={`absolute bottom-0 w-screen px-4 pt-2 pb-8 z-50`}>
+      <View className={`absolute bottom-0 w-screen px-4 pt-2 pb-4 z-50`}>
         <ScrollView
           ref={scrollRef}
           horizontal
