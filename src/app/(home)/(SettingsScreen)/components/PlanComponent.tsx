@@ -34,7 +34,7 @@ export default function PlanComponent() {
           </View>
         )}
 
-        {profile && isPremium && (
+        {profile && profile.isPremiumUser() && (
           <View className="flex-col items-start justify-between">
             <Text className="text-light-text dark:text-dark-text mb-2 text-lg">
               プレミアムプラン
