@@ -3,10 +3,13 @@ import { View, Text } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { BackgroundView } from '@/src/components';
 import { useAuth } from '@/src/features/auth';
+import { usePremiumPlan } from '@/src/features/auth/hooks/usePremiumPlan';
 
 export default function SubscriptionComplete() {
+  const TIMEOUT = 3000;
   const router = useRouter();
   const { getProfile } = useAuth();
+  const { onRefetch } = usePremiumPlan();
 
   // === Effect ===
   useFocusEffect(
@@ -18,8 +21,9 @@ export default function SubscriptionComplete() {
   useFocusEffect(
     useCallback(() => {
       const timer = setTimeout(() => {
+        onRefetch();
         router.replace('/(home)');
-      }, 3000);
+      }, TIMEOUT);
 
       return () => clearTimeout(timer);
     }, [router])
