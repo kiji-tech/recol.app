@@ -1,0 +1,123 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "3A7BA43A",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_askToBuyEnabled" : false,
+    "_billingGracePeriodEnabled" : false,
+    "_billingIssuesEnabled" : false,
+    "_disableDialogs" : false,
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_renewalBillingIssuesEnabled" : false,
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ],
+    "_timeRate" : 0
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "425585DF",
+      "localizations" : [
+        {
+          "description" : "プレミアムプラン",
+          "displayName" : "PremiumPlan",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "プレミアムプラン",
+          "displayName" : "プレミアムプラン",
+          "locale" : "ja"
+        }
+      ],
+      "name" : "PremiumPlan",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "3.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "4D5F1269",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "monthly",
+              "displayName" : "Monthly",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "月額",
+              "displayName" : "月額",
+              "locale" : "ja"
+            }
+          ],
+          "productID" : "MonthylyPremiumPlanSubscription",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "MonthlySubscription",
+          "subscriptionGroupID" : "425585DF",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "29.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "4E05077E",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "yearly",
+              "displayName" : "Yealy",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "yearly",
+              "displayName" : "年額",
+              "locale" : "ja"
+            }
+          ],
+          "productID" : "YearlyPremiumPlanSubscription",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "YearlySubscription",
+          "subscriptionGroupID" : "425585DF",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}
