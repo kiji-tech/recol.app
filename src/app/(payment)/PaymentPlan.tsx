@@ -26,7 +26,8 @@ export default function PaymentPlan() {
   /** プレミアムプランの支払い */
   const handlePayment = async (payment: PurchasesPackage) => {
     if (!session) {
-      Alert.alert('セッション情報がありません。');
+      Alert.alert('セッション情報がありません｡ログインし直してください｡');
+      router.push('/(auth)/SignIn');
       return;
     }
     setIsLoading(true);
