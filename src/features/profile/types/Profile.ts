@@ -21,13 +21,15 @@ export class Profile {
   updated_at: string | null = null;
   delete_flag: boolean = false;
   payment_end_at: string | null = null;
-  subscription: Subscription[];
+  subscription: Subscription[] | null = null;
 
-  constructor(data: (ProfileType & { subscription: SubscriptionType[] }) | Profile) {
+  constructor(data: (ProfileType & { subscription: SubscriptionType[] | null }) | Profile) {
     for (const key in data) {
       this[key as keyof Profile] = data[key as keyof ProfileType] as never;
     }
-    this.subscription = data.subscription.map((subscription) => new Subscription(subscription));
+    if (data.subscription) {
+      this.subscription = data.subscription.map((subscription) => new Subscription(subscription));
+    }
   }
 
   /**

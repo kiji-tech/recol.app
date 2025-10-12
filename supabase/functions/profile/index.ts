@@ -1,4 +1,4 @@
-import { Hono } from 'jsr:@hono/hono';
+import { Hono, Context } from 'jsr:@hono/hono';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
@@ -8,7 +8,7 @@ import { sendSlackNotification } from '../libs/SlackUtil.ts';
 
 const app = new Hono().basePath('/profile');
 
-const createProfile = async (c: Hono.Context) => {
+const createProfile = async (c: Context) => {
   const supabase = generateSupabase(c);
   const user = await getUser(c, supabase);
   if (!user) {
@@ -41,7 +41,7 @@ const createProfile = async (c: Hono.Context) => {
   return c.json(newData);
 };
 
-const get = async (c: Hono.Context) => {
+const get = async (c: Context) => {
   console.log('[GET] profile');
   const supabase = generateSupabase(c);
   const user = await getUser(c, supabase);
@@ -89,7 +89,7 @@ const get = async (c: Hono.Context) => {
   return c.json(data);
 };
 
-const create = async (c: Hono.Context) => {
+const create = async (c: Context) => {
   console.log('[POST] profile');
   const supabase = generateSupabase(c);
   const user = await getUser(c, supabase);
@@ -104,7 +104,7 @@ const create = async (c: Hono.Context) => {
   return c.json(data);
 };
 
-const update = async (c: Hono.Context) => {
+const update = async (c: Context) => {
   console.log('[PUT] profile');
   const supabase = generateSupabase(c);
   const { display_name, avatar_url, notification_token, enabled_schedule_notification } =
@@ -197,7 +197,7 @@ const update = async (c: Hono.Context) => {
   return c.json(data);
 };
 
-const syncPremiumPlan = async (c: Hono.Context) => {
+const syncPremiumPlan = async (c: Context) => {
   console.log('[PUT] sync-premium-plan');
   const supabase = generateSupabase(c);
   const { isPremium, endAt } = await c.req.json();
@@ -209,14 +209,15 @@ const syncPremiumPlan = async (c: Hono.Context) => {
   const { data, error } = await supabase
     .from('profile')
     .update({ payment_plan: isPremium ? 'Premium' : 'Free', payment_end_at: endAt })
-    .eq('uid', user.id);
+    .eq('uid', user.id)
+    .select('*')
+    .maybeSingle();
 
   if (error) {
     console.error(error);
     return c.json({ message: getMessage('C007', ['プロフィール']), code: 'C007' }, 400);
   }
-
-  return c.json();
+  return c.json(data);
 };
 
 app.get('/', get);

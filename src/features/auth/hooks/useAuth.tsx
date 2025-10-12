@@ -15,6 +15,8 @@ import { signInWithGoogle, signInWithApple } from '../libs/socialAuth';
 import { getProfile, getSession, isRecoverySession } from '../libs/session';
 import { AuthContextType } from '../types/Auth';
 import { CommonUtil } from '../../../libs/CommonUtil';
+import { usePremiumPlan } from './usePremiumPlan';
+import { syncPremiumPlan } from '../../profile/apis/syncPremiumPlan';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -22,9 +24,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<(Profile & { subscription: Subscription[] }) | null>(null);
+  const [profile, setProfile] = useState<(Profile & { subscription: Subscription[] | null }) | null>(null);
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
+  const { isPremium, endAt, customerInfo } = usePremiumPlan();
 
   // delete_flagチェック関数
   const checkDeleteFlag = async () => {
@@ -188,11 +191,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   /** プロフィール取得 */
   const getProfileHandler = async () => {
-    if (!session) return;
+    if (!session || !customerInfo) return;
+    LogUtil.log('getProfileHandler', { level: 'info' });
     try {
-      const profileData = await getProfile(session);
+      const profileData = await syncPremiumPlan(isPremium, endAt, session);
       setProfile(profileData);
-    } catch {
+    } catch (e) {
+      LogUtil.log('getProfileHandler error', { level: 'error' });
+      LogUtil.log(JSON.stringify(e), { level: 'error' });
       setProfile(null);
     }
   };
@@ -203,24 +209,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(true);
       try {
         const session = await getSession();
-        if (session) {
-          // リカバリーセッションかどうかチェックする
-          const isRecovery = await isRecoverySession();
-          if (isRecovery) {
-            await logout();
-            return;
-          }
-          setSession(session);
-          setUser(session.user);
-        } else {
-          setSession(null);
-          setUser(null);
-          setProfile(null);
+        if (!session) return;
+        // リカバリーセッションかどうかチェックする
+        const isRecovery = await isRecoverySession();
+        if (isRecovery) {
+          await logout();
+          return;
         }
-      } catch {
-        setSession(null);
-        setUser(null);
-        setProfile(null);
+        setSession(session);
+        setUser(session.user);
       } finally {
         setLoading(false);
         setInitialized(true);
@@ -234,17 +231,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (_event == 'PASSWORD_RECOVERY') {
         router.navigate('/(auth)/ResetPassword');
       }
+      if (!session) return;
 
       setSession(session);
-      setUser(session?.user ?? null);
-      if (session) {
-        try {
-          const profileData = await getProfile(session);
-          setProfile(profileData);
-        } catch {
-          setProfile(null);
-        }
-      } else {
+      setUser(session.user);
+
+      try {
+        const profileData = await getProfile(session);
+        setProfile(profileData);
+      } catch {
         setProfile(null);
       }
     });
@@ -255,9 +250,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // プロフィール再取得
-    if (!session) return;
     getProfileHandler();
-  }, [session, user]);
+  }, [session, user, customerInfo]);
 
   // profileのdelete_flagをチェック
   useEffect(() => {

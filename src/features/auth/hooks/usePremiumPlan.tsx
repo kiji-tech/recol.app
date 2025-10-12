@@ -6,17 +6,16 @@ import Purchases, {
   PurchasesOfferings,
   PurchasesPackage,
 } from 'react-native-purchases';
-import { useAuth } from './useAuth';
-import { syncPremiumPlan } from '@/src/features/profile/apis/syncPremiumPlan';
-import dayjs from '@/src/libs/dayjs';
+import dayjs from 'dayjs';
 
 type PremiumPlanContextType = {
   isPremium: boolean;
   activePlanId: string | null;
   managementURL: string | null;
   premiumPlanList: PurchasesPackage[];
+  endAt: Date | null;
+  customerInfo: CustomerInfo | null;
   onSubmit: (purchasesPackage: PurchasesPackage) => Promise<void>;
-  onRestore: () => Promise<void>;
   onRefetch: () => void;
   setPremiumPlanList: (premiumPlanList: PurchasesPackage[]) => void;
 };
@@ -24,12 +23,13 @@ type PremiumPlanContextType = {
 const PremiumPlanContext = createContext<PremiumPlanContextType | undefined>(undefined);
 
 export const PremiumPlanProvider = ({ children }: { children: React.ReactNode }) => {
-  const { session } = useAuth();
   const IS_PREMIUM_USER = true;
   const [isPremium, setIsPremium] = useState(false);
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
   const [managementURL, setManagementURL] = useState<string | null>(null);
   const [premiumPlanList, setPremiumPlanList] = useState<PurchasesPackage[]>([]);
+  const [endAt, setEndAt] = useState<Date | null>(null);
+  const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
 
   // すでにプレミアム会員になっているかどうか判定しています
   const checkPremium = (customerInfo: CustomerInfo) => {
@@ -74,16 +74,15 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
    */
   const setupCustomerInfo = useCallback(async () => {
     const customerInfo = await Purchases.getCustomerInfo();
-    if (!customerInfo || !session) return;
-    syncPremiumPlan(
-      checkPremium(customerInfo),
-      customerInfo.latestExpirationDate ? dayjs(customerInfo.latestExpirationDate).toDate() : null,
-      session
-    );
+    console.log('customerInfo', JSON.stringify(customerInfo));
     setIsPremium(checkPremium(customerInfo));
     setManagementURL(customerInfo.managementURL || null);
     setActivePlanId(customerInfo.activeSubscriptions[0] || null);
-  }, [session]);
+    setEndAt(
+      customerInfo.latestExpirationDate ? dayjs(customerInfo.latestExpirationDate).toDate() : null
+    );
+    setCustomerInfo(customerInfo);
+  }, []);
 
   /**
    * RevenueCat プレミアムプランの情報の取得・設定処理
@@ -100,27 +99,8 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
    */
   const onSubmit = useCallback(async (purchasesPackage: PurchasesPackage) => {
     // 購入処理
-    const { customerInfo } = await Purchases.purchasePackage(purchasesPackage);
-      if (!customerInfo || !session) return;
-      const premium = checkPremium(customerInfo);
-    syncPremiumPlan(
-      premium,
-      customerInfo.latestExpirationDate ? dayjs(customerInfo.latestExpirationDate).toDate() : null,
-      session
-    );
-    setIsPremium(premium);
-    setManagementURL(customerInfo.managementURL || null);
-    setActivePlanId(customerInfo.activeSubscriptions[0] || null);
-  }, []);
-
-  /**
-   *
-   */
-  const onRestore = useCallback(async () => {
-    const restore = await Purchases.restorePurchases();
-    if (checkPremium(restore)) {
-      setIsPremium(true);
-    }
+    await Purchases.purchasePackage(purchasesPackage);
+    await setupCustomerInfo();
   }, []);
 
   const onRefetch = async () => {
@@ -131,12 +111,9 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
     (async () => {
       await initRevenueCat();
       await setupOfferings();
+      await setupCustomerInfo();
     })();
   }, []);
-
-  useEffect(() => {
-    setupCustomerInfo();
-  }, [session]);
 
   return (
     <PremiumPlanContext.Provider
@@ -145,8 +122,9 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
         activePlanId,
         managementURL,
         premiumPlanList,
+        endAt,
+        customerInfo,
         onSubmit,
-        onRestore,
         onRefetch,
         setPremiumPlanList,
       }}

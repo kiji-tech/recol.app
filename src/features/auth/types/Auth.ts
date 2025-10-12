@@ -5,7 +5,7 @@ import { Subscription } from '../../payment/types/Subscription';
 export type AuthContextType = {
   user: User | null;
   session: Session | null;
-  profile: (Profile & { subscription: Subscription[] }) | null;
+  profile: (Profile & { subscription: Subscription[] | null }) | null;
   getProfile: () => Promise<void>;
   setProfile: (profile: (Profile & { subscription: Subscription[] }) | null) => void;
   loading: boolean;
