@@ -7,14 +7,15 @@
         "android": "expo run:android",
         "android:clear": "npx expo run:ios --no-build-cache",
         "ios": "expo run:ios",
+        "ios:install": "cd ios && rm -f Podfile.lock && pod repo update && pod install --repo-update",
         "ios:clear": "npx expo run:ios --no-build-cache",
+        "ios:simulator": "open -a Simulator",
+        "ios:simulator:remove": "xcrun simctl delete unavailable",
         "web": "expo start --web",
-        "stripe:dev": "stripe listen --forward-to localhost:54321/functions/v1/webhook/stripe",
         "prebuild": "expo prebuild",
         "project:clear": "rm -rf node_modules && pnpm store prune && rm -f pnpm-lock.yaml && pnpm install",
         "postprebuild": "node fix-appdelegate.js",
         "postinstall": "node postinstall.mjs",
-        "pod:install": "cd ios && rm -f Podfile.lock && pod repo update && pod install --repo-update",
         "functions:dev": "npx supabase functions serve --env-file .env --no-verify-jwt",
         "functions:deploy": "npx supabase functions deploy",
         "generate:types": "export $(cat .env | grep -v \"#\" | xargs) && npx supabase gen types typescript --project-id ${EXPO_PUBLIC_SUPABASE_REFERENCE_ID} --schema public > src/libs/database.types.ts",
@@ -22,15 +23,13 @@
         "test": "jest --coverage",
         "lint": "eslint src",
         "lint:fix": "eslint src --fix",
-        "ios:simulator": "open -a Simulator",
         "build:preview": "eas build --profile preview --platform android",
         "build:production": "eas build --profile production --platform all",
         "build:production:android": "eas build --profile production --platform android",
         "build:production:ios": "eas build --profile production --platform ios",
         "submit:android": "eas submit --profile production --platform android",
         "submit:ios": "eas submit --profile production --platform ios",
-        "open:ios": "npx uri-scheme open $link --ios",
-        "remove:ios:simulator": "xcrun simctl delete unavailable"
+        "open:ios": "npx uri-scheme open $link --ios"
     },
     "dependencies": {
         "@expo/metro-runtime": "~5.0.5",
@@ -42,7 +41,6 @@
         "@react-navigation/bottom-tabs": "^7.3.10",
         "@react-navigation/native": "^7.1.6",
         "@react-navigation/native-stack": "^7.3.10",
-        "@stripe/stripe-react-native": "0.45.0",
         "@supabase/supabase-js": "^2.50.3",
         "@testing-library/react-native": "^13.2.2",
         "@testing-library/user-event": "^14.6.1",
@@ -99,7 +97,6 @@
         "react-native-vector-icons": "^10.2.0",
         "react-native-view-shot": "~4.0.3",
         "react-native-web": "~0.20.0",
-        "stripe": "^18.3.0",
         "toastify-react-native": "^7.2.0",
         "zod": "^3.25.71"
     },
@@ -138,5 +135,5 @@
             }
         }
     },
-    "packageManager": "pnpm@10.17.0"
+    "packageManager": "pnpm@10.18.2"
 }

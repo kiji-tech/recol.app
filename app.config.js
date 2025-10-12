@@ -167,13 +167,6 @@ export default {
         iosUrlScheme: 'com.googleusercontent.apps.264549282449-siu16baee5bbs7f2i599eu0ul0kgfst4',
       },
     ],
-    [
-      '@stripe/stripe-react-native',
-      {
-        merchantIdentifier: 'merchant.com.libetech.recol',
-        enableGooglePay: true,
-      },
-    ],
     'expo-apple-authentication',
   ],
   experiments: {
