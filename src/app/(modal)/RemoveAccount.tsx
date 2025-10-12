@@ -7,6 +7,8 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import { deleteAccount } from '@/src/features/auth';
 import { useAuth } from '@/src/features/auth';
 import { useSlackNotification } from '@/src/features/slack/hooks/useSlackNotification';
+import { usePremiumPlan } from '@/src/features/auth/hooks/usePremiumPlan';
+import { Linking } from 'react-native';
 
 interface ConsentItem {
   id: string;
@@ -16,6 +18,7 @@ interface ConsentItem {
 
 export default function RemoveAccount() {
   const router = useRouter();
+  const { activePlanId, managementURL, onRefetch } = usePremiumPlan();
   const { sendNotification } = useSlackNotification();
   const { theme } = useTheme();
   const { logout, session } = useAuth();
@@ -23,7 +26,7 @@ export default function RemoveAccount() {
   const [consentItems, setConsentItems] = useState<ConsentItem[]>([
     {
       id: 'subscription_cancel',
-      text: '有効なサブスクリプションは自動的にキャンセルされます。',
+      text: 'サブスクリプションはキャンセル済みです｡',
       checked: false,
     },
     {
@@ -110,6 +113,29 @@ export default function RemoveAccount() {
             削除を実行する前に、以下の項目をよくお読みになり、同意していただく必要があります。
           </Text>
         </View>
+
+        {/* プレミアムプランの解約案内 */}
+        {activePlanId && (
+          <View className="mb-8">
+            <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-4">
+              プレミアムプランの解約案内
+            </Text>
+            <Text className="text-sm text-light-text dark:text-dark-text">
+              プレミアムプランは自動で解約されません｡
+              <Text
+                onPress={() => {
+                  Linking.openURL(managementURL || '').then(async () => {
+                    await onRefetch();
+                  });
+                }}
+                className="text-sm text-blue-500"
+              >
+                こちら
+              </Text>
+              で購入状況を確認してください｡
+            </Text>
+          </View>
+        )}
 
         {/* 同意項目 */}
         <View className="mb-8">

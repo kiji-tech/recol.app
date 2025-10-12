@@ -1,9 +1,9 @@
-import { Hono } from 'jsr:@hono/hono';
+import { Hono, Context } from 'jsr:@hono/hono';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
 
 const app = new Hono().basePath('/delete-account');
 
-const deleteUserAccount = async (c: Hono.Context) => {
+const deleteUserAccount = async (c: Context) => {
   const supabase = generateSupabase(c, false);
   const user = await getUser(c, supabase);
   if (!user) {
