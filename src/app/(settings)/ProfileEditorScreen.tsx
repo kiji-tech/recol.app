@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { useRouter } from 'expo-router';
-import { View, Text, TextInput, Alert } from 'react-native';
+import { View, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useAuth } from '@/src/features/auth';
 import { updateProfile } from '@/src/features/profile';
 import * as ImagePicker from 'expo-image-picker';

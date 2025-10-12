@@ -6,7 +6,6 @@ import { useRouter } from 'expo-router';
 import { LogUtil } from '../../../libs/LogUtil';
 import { statusCodes } from '@react-native-google-signin/google-signin';
 import { Profile } from '../../profile/types/Profile';
-import { Subscription } from '../../payment/types/Subscription';
 import { login } from '../libs/login';
 import { signup } from '../libs/signup';
 import { resetPassword, updateUserPassword } from '../libs/password';
@@ -24,7 +23,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<(Profile & { subscription: Subscription[] | null }) | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
   const { isPremium, endAt, customerInfo } = usePremiumPlan();

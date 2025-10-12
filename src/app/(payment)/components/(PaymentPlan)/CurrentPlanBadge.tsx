@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import dayjs from 'dayjs';
-import { Profile, Subscription } from '@/src/entities';
+import { Profile } from '@/src/entities';
 
 type CurrentPlanBadgeProps = {
-  profile: (Profile & { subscription: Subscription[] }) | null;
+  profile: Profile | null;
 };
 
 export default function CurrentPlanBadge({ profile }: CurrentPlanBadgeProps) {
