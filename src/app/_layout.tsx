@@ -16,7 +16,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import mobileAds from 'react-native-google-mobile-ads';
 import { MenuProvider } from 'react-native-popup-menu';
 import { LocationProvider } from '../contexts/LocationContext';
-import { useStripe } from '@stripe/stripe-react-native';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { useAuth, AuthProvider } from '@/src/features/auth';
@@ -110,38 +109,30 @@ const Layout = () => {
 const RouteLayout = () => {
   // === RevenueCat初期化 ===
   // === Stripe Redirect処理 ===
-  const { handleURLCallback } = useStripe();
 
   // === DeepLink処理 ===
-  const handleDeepLink = useCallback(
-    async (url: string | null) => {
-      if (url) {
-        const stripeHandled = await handleURLCallback(url);
-        if (stripeHandled) {
-          // This was a Stripe URL - you can return or add extra handling here as you see fit
-        }
-        const urlObj = new URL(url);
-        if (url.includes('ResetPassword')) {
-          const params = new URLSearchParams(urlObj.hash.replace(/^#/, ''));
-          const tokens = {
-            access_token: params.get('access_token') ?? undefined,
-            refresh_token: params.get('refresh_token') ?? undefined,
-            expires_in: params.get('expires_in') ?? undefined,
-            type: params.get('type') ?? undefined,
-          };
-          // パスワードリセット画面に遷移
-          router.push({
-            pathname: '/(auth)/ResetPassword',
-            params: {
-              access_token: tokens.access_token ?? undefined,
-              refresh_token: tokens.refresh_token ?? undefined,
-            },
-          } as const);
-        }
+  const handleDeepLink = useCallback(async (url: string | null) => {
+    if (url) {
+      const urlObj = new URL(url);
+      if (url.includes('ResetPassword')) {
+        const params = new URLSearchParams(urlObj.hash.replace(/^#/, ''));
+        const tokens = {
+          access_token: params.get('access_token') ?? undefined,
+          refresh_token: params.get('refresh_token') ?? undefined,
+          expires_in: params.get('expires_in') ?? undefined,
+          type: params.get('type') ?? undefined,
+        };
+        // パスワードリセット画面に遷移
+        router.push({
+          pathname: '/(auth)/ResetPassword',
+          params: {
+            access_token: tokens.access_token ?? undefined,
+            refresh_token: tokens.refresh_token ?? undefined,
+          },
+        } as const);
       }
-    },
-    [handleURLCallback]
-  );
+    }
+  }, []);
 
   useEffect(() => {
     const getUrlAsync = async () => {
@@ -169,26 +160,26 @@ const RouteLayout = () => {
   }, []);
 
   return (
-    <AuthProvider>
-      {/* <StripeProvider
+    <PremiumPlanProvider>
+      <AuthProvider>
+        {/* <StripeProvider
         publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}
         merchantIdentifier={process.env.EXPO_PUBLIC_STRIPE_MERCHANT || ''}
         > */}
-      <MenuProvider>
-        <PlanProvider>
-          <LocationProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <ThemeProvider>
-                <PremiumPlanProvider>
+        <MenuProvider>
+          <PlanProvider>
+            <LocationProvider>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <ThemeProvider>
                   <Layout />
-                </PremiumPlanProvider>
-              </ThemeProvider>
-            </GestureHandlerRootView>
-          </LocationProvider>
-        </PlanProvider>
-      </MenuProvider>
-      {/* </StripeProvider> */}
-    </AuthProvider>
+                </ThemeProvider>
+              </GestureHandlerRootView>
+            </LocationProvider>
+          </PlanProvider>
+        </MenuProvider>
+        {/* </StripeProvider> */}
+      </AuthProvider>
+    </PremiumPlanProvider>
   );
 };
 
