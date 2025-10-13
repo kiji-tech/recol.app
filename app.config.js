@@ -39,8 +39,6 @@ export default {
     permissions: [
       'android.permission.ACCESS_COARSE_LOCATION',
       'android.permission.ACCESS_FINE_LOCATION',
-      'android.permission.READ_MEDIA_IMAGES',
-      'android.permission.READ_MEDIA_VIDEO',
     ],
     userInterfaceStyle: 'automatic',
     googleServicesFile: process.env.GOOGLE_SERVICES_ANDROID_FILE ?? './google-services.json',
@@ -168,6 +166,13 @@ export default {
       },
     ],
     'expo-apple-authentication',
+    [
+      'expo-image-picker',
+      {
+        photosPermission: 'アカウントのアイコン、計画事に画像の登録します',
+        cameraPermission: 'カメラを使ってプロフィール画像を設定します',
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,

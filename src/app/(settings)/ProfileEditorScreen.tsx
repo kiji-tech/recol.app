@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { useRouter } from 'expo-router';
-import { View, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Alert, TouchableOpacity, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/src/features/auth';
@@ -29,6 +29,10 @@ export default function ProfileEditorScreen() {
       aspect: [1, 1],
       quality: 1,
       base64: true,
+      presentationStyle:
+        Platform.OS === 'android'
+          ? ImagePicker.UIImagePickerPresentationStyle.AUTOMATIC
+          : undefined,
     });
 
     if (!result.canceled) {
