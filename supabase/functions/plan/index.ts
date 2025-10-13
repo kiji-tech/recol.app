@@ -1,5 +1,5 @@
 import { Hono } from 'jsr:@hono/hono';
-import { SupabaseClient, User } from 'jsr:@supabase/supabase-js@2';
+import { SupabaseClient } from 'jsr:@supabase/supabase-js@2';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
@@ -63,23 +63,17 @@ const fetchPlaceInfo = async (supabase: SupabaseClient, placeId: string) => {
  * プランの作成数が制限を超えているかどうかをチェックする
  *
  * @param supabase {SupabaseClient}
- * @param user {User}
+ * @param user {Tables<'profile'>}
  * @returns {boolean}
  */
-const maximumVerifyChecker = async (supabase: SupabaseClient, user: User) => {
+const maximumVerifyChecker = async (supabase: SupabaseClient, profile: Tables<'profile'>) => {
   const IS_OVER = true;
   const from = dayjs().add(-1, 'year').format('YYYY-MM-DD HH:mm');
-  const { data: profile } = await supabase
-    .from('profile')
-    .select('role, subscription(*)')
-    .eq('uid', user.id)
-    .maybeSingle();
-
   const { count } = await supabase
     .from('plan')
     .select('uid, created_at', { count: 'exact' })
     .gte('created_at', from)
-    .eq('user_id', user.id);
+    .eq('user_id', profile.uid);
 
   if (SubscriptionUtil.isPremiumUser(profile) && count > MAXIMUM_PREMIUM_PLAN) {
     return IS_OVER;
@@ -100,8 +94,19 @@ const create = async (c: Hono.Context) => {
     return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
 
+  // profileを取得
+  const { data: profile, error: profileError } = await supabase
+    .from('profile')
+    .select('*')
+    .eq('uid', user.id)
+    .maybeSingle();
+  if (profileError) {
+    console.error(profileError);
+    return c.json({ message: getMessage('C005', ['プラン']), code: 'C005' }, 400);
+  }
+
   // プランの作成数が制限を超えているかどうかをチェックする
-  if (await maximumVerifyChecker(supabase, user)) {
+  if (await maximumVerifyChecker(supabase, profile)) {
     return c.json({ message: getMessage('PP001'), code: 'PP001' }, 400);
   }
 

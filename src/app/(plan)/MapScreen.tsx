@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Platform, View } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { BackHandler, View } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Region } from 'react-native-maps';
 import { useLocation } from '@/src/contexts/LocationContext';
@@ -16,7 +16,6 @@ import ScheduleInfoCard from './components/(MapScreen)/ScheduleInfoCard';
 export default function MapScreen() {
   // === Member ===
   const scrollRef = useRef<ScrollView>(null);
-  const platform = Platform.OS;
   const { plan } = usePlan();
   const { currentRegion } = useLocation();
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(
@@ -90,6 +89,14 @@ export default function MapScreen() {
     }, [selectedPlace])
   );
 
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      router.back();
+      return true;
+    });
+    return () => backHandler.remove();
+  }, []);
+
   // === Memo ===
   const placeList = useMemo(() => {
     return plan?.schedule.flatMap((schedule) => schedule.place_list as unknown as Place[]) || [];
@@ -112,25 +119,23 @@ export default function MapScreen() {
             onSelectedPlace={handleSelectedPlace}
           />
         </View>
-        <View
-          className={`absolute ${platform === 'ios' ? 'bottom-20' : 'bottom-40'} w-screen px-4 pt-2 pb-8`}
+      </View>
+      <View className={`absolute bottom-0 w-screen px-4 pt-2 pb-4 z-50`}>
+        <ScrollView
+          ref={scrollRef}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          alwaysBounceHorizontal={false}
+          snapToAlignment={'end'}
         >
-          <ScrollView
-            ref={scrollRef}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            alwaysBounceHorizontal={false}
-            snapToAlignment={'end'}
-          >
-            {plan?.schedule.map((schedule) => (
-              <ScheduleInfoCard
-                key={schedule.uid}
-                schedule={schedule}
-                onPress={handleSelectedInfoCard}
-              />
-            ))}
-          </ScrollView>
-        </View>
+          {plan?.schedule.map((schedule) => (
+            <ScheduleInfoCard
+              key={schedule.uid}
+              schedule={schedule}
+              onPress={handleSelectedInfoCard}
+            />
+          ))}
+        </ScrollView>
       </View>
     </>
   );

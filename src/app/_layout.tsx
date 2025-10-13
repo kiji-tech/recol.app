@@ -2,7 +2,6 @@ import '@/global.css';
 import React, { useCallback, useEffect, useState } from 'react';
 import { router, Stack } from 'expo-router';
 import { PlanProvider } from '../contexts/PlanContext';
-import { AuthProvider } from '../features/auth';
 import { Linking, StatusBar, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider } from '../contexts/ThemeContext';
@@ -16,11 +15,12 @@ import { LogBox } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import mobileAds from 'react-native-google-mobile-ads';
 import { MenuProvider } from 'react-native-popup-menu';
-import * as Font from 'expo-font';
 import { LocationProvider } from '../contexts/LocationContext';
-import { StripeProvider, useStripe } from '@stripe/stripe-react-native';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import { useAuth, AuthProvider } from '@/src/features/auth';
+import * as Font from 'expo-font';
+import { PremiumPlanProvider } from '../features/auth/hooks/usePremiumPlan';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -37,24 +37,17 @@ SplashScreen.setOptions({
 });
 
 const Layout = () => {
+  //   const { setPremiumPlanList } = usePremiumPlan();
   const [ready, setReady] = useState(false);
   const { isDarkMode } = useTheme();
-  useEffect(() => {
-    (async () => {
-      // ここでフォントや API をプリロード
-      await Font.loadAsync({
-        // 例: 'Roboto': require('./assets/fonts/Roboto-Regular.ttf')
-      });
-      setReady(true);
-    })();
-  }, []);
+  const { initialized } = useAuth();
 
   const onLayout = useCallback(async () => {
-    if (ready) {
+    if (ready && initialized) {
       // レイアウトが終わってから隠すと白画面を防げる
       await SplashScreen.hideAsync();
     }
-  }, [ready]);
+  }, [ready, initialized]);
 
   const initAd = useCallback(async () => {
     try {
@@ -78,11 +71,17 @@ const Layout = () => {
   }, []);
 
   const initializeApp = async () => {
+    // ここでフォントや API をプリロード
+    await Font.loadAsync({
+      // 例: 'Roboto': require('./assets/fonts/Roboto-Regular.ttf')
+    });
     // 広告初期化
-    initAd();
+    await initAd();
+
+    setReady(true);
   };
 
-  if (!ready) return null;
+  if (!ready || !initialized) return null;
 
   return (
     <View onLayout={onLayout} style={{ flex: 1 }}>
@@ -108,39 +107,32 @@ const Layout = () => {
 };
 
 const RouteLayout = () => {
+  // === RevenueCat初期化 ===
   // === Stripe Redirect処理 ===
-  const { handleURLCallback } = useStripe();
 
   // === DeepLink処理 ===
-  const handleDeepLink = useCallback(
-    async (url: string | null) => {
-      if (url) {
-        const stripeHandled = await handleURLCallback(url);
-        if (stripeHandled) {
-          // This was a Stripe URL - you can return or add extra handling here as you see fit
-        }
-        const urlObj = new URL(url);
-        if (url.includes('ResetPassword')) {
-          const params = new URLSearchParams(urlObj.hash.replace(/^#/, ''));
-          const tokens = {
-            access_token: params.get('access_token') ?? undefined,
-            refresh_token: params.get('refresh_token') ?? undefined,
-            expires_in: params.get('expires_in') ?? undefined,
-            type: params.get('type') ?? undefined,
-          };
-          // パスワードリセット画面に遷移
-          router.push({
-            pathname: '/(auth)/ResetPassword',
-            params: {
-              access_token: tokens.access_token ?? undefined,
-              refresh_token: tokens.refresh_token ?? undefined,
-            },
-          } as const);
-        }
+  const handleDeepLink = useCallback(async (url: string | null) => {
+    if (url) {
+      const urlObj = new URL(url);
+      if (url.includes('ResetPassword')) {
+        const params = new URLSearchParams(urlObj.hash.replace(/^#/, ''));
+        const tokens = {
+          access_token: params.get('access_token') ?? undefined,
+          refresh_token: params.get('refresh_token') ?? undefined,
+          expires_in: params.get('expires_in') ?? undefined,
+          type: params.get('type') ?? undefined,
+        };
+        // パスワードリセット画面に遷移
+        router.push({
+          pathname: '/(auth)/ResetPassword',
+          params: {
+            access_token: tokens.access_token ?? undefined,
+            refresh_token: tokens.refresh_token ?? undefined,
+          },
+        } as const);
       }
-    },
-    [handleURLCallback]
-  );
+    }
+  }, []);
 
   useEffect(() => {
     const getUrlAsync = async () => {
@@ -159,12 +151,21 @@ const RouteLayout = () => {
 
   // === Notifications 初期化 ===
   useEffect(() => {
-    NotificationUtil.initializeNotifications();
+    const initializeServices = async () => {
+      // 通知初期化
+      NotificationUtil.initializeNotifications();
+    };
+
+    initializeServices();
   }, []);
 
   return (
-    <AuthProvider>
-      <StripeProvider publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}>
+    <PremiumPlanProvider>
+      <AuthProvider>
+        {/* <StripeProvider
+        publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}
+        merchantIdentifier={process.env.EXPO_PUBLIC_STRIPE_MERCHANT || ''}
+        > */}
         <MenuProvider>
           <PlanProvider>
             <LocationProvider>
@@ -176,8 +177,9 @@ const RouteLayout = () => {
             </LocationProvider>
           </PlanProvider>
         </MenuProvider>
-      </StripeProvider>
-    </AuthProvider>
+        {/* </StripeProvider> */}
+      </AuthProvider>
+    </PremiumPlanProvider>
   );
 };
 

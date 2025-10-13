@@ -4,10 +4,11 @@ import { Plan } from '@/src/features/plan';
 import { Schedule } from '@/src/features/schedule';
 import { useRouter } from 'expo-router';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
-import { View } from 'react-native';
+import { Share, View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { usePlan } from '@/src/contexts/PlanContext';
 import dayjs from 'dayjs';
+import generateShareMessage from '@/src/features/schedule/libs/generateShareMessage';
 
 export default function ScheduleMenu({ plan }: { plan: Plan }) {
   const router = useRouter();
@@ -29,6 +30,16 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
     } as Schedule;
     setEditSchedule(schedule);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
+  };
+
+  /**
+   * スケジュールを共有する
+   */
+  const handleSharePress = async () => {
+    await Share.share({
+      message: generateShareMessage(plan),
+      title: 'スケジュールを共有します',
+    });
   };
 
   return (
@@ -71,6 +82,19 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
           }}
           onSelect={() => {
             handleAddPress();
+          }}
+        />
+        <MenuOption
+          text="共有する"
+          customStyles={{
+            optionText: {
+              paddingVertical: 12,
+              paddingHorizontal: 8,
+              color: 'black',
+            },
+          }}
+          onSelect={() => {
+            handleSharePress();
           }}
         />
       </MenuOptions>

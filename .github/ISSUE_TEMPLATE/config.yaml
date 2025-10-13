@@ -1,0 +1,12 @@
+blank_issues_enabled: false
+
+defaults:
+  - template: 'bug_report.yml'
+    name: '🐛 Bug'
+    about: 'バグ報告用の課題'
+  - template: 'feature_request.yml'
+    name: '💡 Feature Request'
+    about: '機能追加用の課題'
+  - template: 'apple_store_review_problem.yml'
+    name: '💡 AppleStore Review Problem'
+    about: 'AppleStoreから指摘された場合に立てる課題'

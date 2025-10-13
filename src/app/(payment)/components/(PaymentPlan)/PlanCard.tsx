@@ -1,25 +1,20 @@
 import React from 'react';
 import { TouchableOpacity, View, Text } from 'react-native';
+import { PurchasesPackage } from 'react-native-purchases';
 
 export default function PlanCard({
-  price,
-  period,
-  originalPrice,
-  discount,
-  isPopular = false,
+  payment,
   onPress,
   disabled = false,
   isCurrentPlan = false,
 }: {
-  price: string;
-  period: string;
-  originalPrice?: string;
-  discount?: string;
-  isPopular?: boolean;
+  payment: PurchasesPackage;
   onPress: () => void;
   disabled?: boolean;
   isCurrentPlan?: boolean;
 }) {
+  const isPopular = payment.identifier === '$rc_annual' ? true : false;
+  const discount = undefined;
   return (
     <TouchableOpacity
       className={`relative flex-1 rounded-xl p-4 ${
@@ -55,11 +50,13 @@ export default function PlanCard({
       )}
 
       <View className="flex-1 items-center justify-center">
-        {originalPrice && !isCurrentPlan && (
+        {/* 元の金額
+        {payment.product.price && !isCurrentPlan && (
           <Text className={`text-sm line-through ${isPopular ? 'text-white/70' : 'text-gray-500'}`}>
-            {originalPrice}
+            {payment.product.priceString}
           </Text>
-        )}
+        )} */}
+        {/* 金額 */}
         <Text
           className={`text-3xl font-bold ${
             isCurrentPlan
@@ -69,8 +66,9 @@ export default function PlanCard({
                 : 'text-light-text dark:text-dark-text'
           }`}
         >
-          {price}
+          {payment.product.priceString}
         </Text>
+        {/* 期間 */}
         <Text
           className={`text-sm ${
             isCurrentPlan
@@ -80,8 +78,9 @@ export default function PlanCard({
                 : 'text-gray-600 dark:text-gray-400'
           }`}
         >
-          / {period}
+          / {payment.identifier === '$rc_monthly' ? '月額' : '年額'}
         </Text>
+        {/* 割引 */}
         {discount && !isCurrentPlan && (
           <View className="mt-2 bg-light-danger dark:bg-dark-danger px-2 py-1 rounded-full">
             <Text className="text-white text-xs font-bold">{discount}</Text>

@@ -10,11 +10,7 @@ export async function createPaymentSheet(
   session: Session | null,
   ctrl?: AbortController
 ) {
-  const response = await apiRequest<{
-    paymentIntent: Stripe.PaymentIntent;
-    ephemeralKey: Stripe.EphemeralKey;
-    customerId: string;
-  }>('/stripe/payment-sheet', {
+  const response = await apiRequest<Stripe.PaymentIntent>('/stripe/payment-sheet', {
     method: 'POST',
     session,
     body: { redirectURL },

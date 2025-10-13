@@ -1,0 +1,26 @@
+name: 💡 Store レビュー結果
+description: Storeから指摘された場合に立てる課題
+labels: ['Bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Storeから指摘された場合に立てる課題
+  - type: dropdown
+    id: platform
+    attributes:
+      label: プラットフォーム
+      description: 指摘されたプラットフォームを選択してください
+      options:
+        - iOS
+        - Android
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: 指摘内容
+      description: 指摘内容を詳しく説明してください
+      placeholder: できるだけ具体的に記述してください
+    validations:
+      required: true

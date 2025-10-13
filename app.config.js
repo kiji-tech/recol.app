@@ -18,9 +18,9 @@ export default {
     infoPlist: {
       NSCameraUsageDescription: 'カメラを使ってプロフィール画像を設定します',
       NSPhotoLibraryUsageDescription: 'アカウントのアイコン､計画事に画像の登録します',
-      NSLocationAlwaysUsageDescription: '位置情報をアップロードします',
-      NSLocationUsageDescription: '位置情報をアップロードします',
-      NSLocationWhenInUseUsageDescription: '位置情報をアップロードします',
+      NSUserNotificationsUsageDescription: 'スケジュールの開始時間に通知を受け取る',
+      NSLocationWhenInUseUsageDescription:
+        '地図を表示する際の初期表示位置を設定するために使用します',
       NSUserTrackingUsageDescription:
         '広告表示の最適化のため、他社アプリとの横断的な計測を許可するか確認します',
       ITSAppUsesNonExemptEncryption: false,
@@ -34,11 +34,15 @@ export default {
     },
   },
   android: {
-    package: 'com.libetech.recol',
-    packageName: 'com.libetech.recol',
+    package: 'com.libetech.re_col',
+    packageName: 'com.libetech.re_col',
     permissions: [
       'android.permission.ACCESS_COARSE_LOCATION',
       'android.permission.ACCESS_FINE_LOCATION',
+    ],
+    blockedPermissions: [
+      'android.permission.READ_MEDIA_IMAGES',
+      'android.permission.READ_MEDIA_VIDEO',
     ],
     userInterfaceStyle: 'automatic',
     googleServicesFile: process.env.GOOGLE_SERVICES_ANDROID_FILE ?? './google-services.json',
@@ -57,12 +61,16 @@ export default {
       'expo-build-properties',
       {
         android: {
+          // React Native プレコンパイル使用の有効･無効 ビルド時間がたんしゅくされるが ,
+          buildReactNativeFromSource: false,
           compileSdkVersion: 35,
           targetSdkVersion: 35,
           buildToolsVersion: '35.0.0',
         },
         ios: {
           useFrameworks: 'static',
+          // React Native プレコンパイル使用の有効･無効
+          buildReactNativeFromSource: false,
           deploymentTarget: '15.1',
         },
       },
@@ -161,13 +169,14 @@ export default {
         iosUrlScheme: 'com.googleusercontent.apps.264549282449-siu16baee5bbs7f2i599eu0ul0kgfst4',
       },
     ],
+    'expo-apple-authentication',
     [
-      '@stripe/stripe-react-native',
+      'expo-image-picker',
       {
-        merchantIdentifier: 'merchant.com.libetech.recol',
+        photosPermission: 'アカウントのアイコン、計画事に画像の登録します',
+        cameraPermission: 'カメラを使ってプロフィール画像を設定します',
       },
     ],
-    'expo-apple-authentication',
   ],
   experiments: {
     typedRoutes: true,

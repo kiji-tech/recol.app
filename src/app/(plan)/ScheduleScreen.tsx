@@ -9,17 +9,18 @@ import { deleteSchedule, Schedule } from '@/src/features/schedule';
 
 import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
-import MaskLoading from '@/src/components/MaskLoading';
 import ToastManager, { Toast } from 'toastify-react-native';
 import PlanInformation from './components/(ScheduleScreen)/PlanInformation';
 import ScheduleMenu from './components/(ScheduleScreen)/ScheduleMenu';
 import { ScrollView } from 'react-native-gesture-handler';
+import { BackHandler } from 'react-native';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
   const { plan, planLoading } = usePlan();
   const { session } = useAuth();
   const [viewPlan, setViewPlan] = useState<Plan | null>(plan || null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // === Method ===
   const initView = () => {
@@ -36,6 +37,7 @@ export default function ScheduleScreen(): ReactNode {
     }
 
     const ctrl = new AbortController();
+    setIsLoading(true);
 
     fetchPlan(plan.uid, session, ctrl)
       .then((data) => {
@@ -53,6 +55,9 @@ export default function ScheduleScreen(): ReactNode {
         if (e && e.message) {
           Toast.warn('プランの情報が取得に失敗しました');
         }
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
 
     return () => {
@@ -77,6 +82,15 @@ export default function ScheduleScreen(): ReactNode {
 
   // === Effect ===
   useFocusEffect(useCallback(initView, [plan, session]));
+  useFocusEffect(
+    useCallback(() => {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        router.back();
+        return true;
+      });
+      return () => backHandler.remove();
+    }, [])
+  );
 
   // === Render ===
   return (
@@ -92,10 +106,13 @@ export default function ScheduleScreen(): ReactNode {
           <>
             <PlanInformation plan={viewPlan} />
             {/* Schedule */}
-            <ScheduleComponents plan={viewPlan} onDelete={handleDeleteSchedule} />
+            <ScheduleComponents
+              isLoading={planLoading || isLoading}
+              plan={viewPlan}
+              onDelete={handleDeleteSchedule}
+            />
           </>
         )}
-        {planLoading && <MaskLoading />}
       </ScrollView>
       <ToastManager />
     </BackgroundView>

@@ -8,7 +8,7 @@ import { Badge } from '@/src/components';
 // 定数
 const IMAGE_WIDTH = '100%';
 const IMAGE_HEIGHT = 256;
-const IMAGE_RADIUS = 8;
+const IMAGE_RADIUS = 4;
 const MAP_MARKER_COLOR = '#f87171';
 
 // 日付フォーマット関数

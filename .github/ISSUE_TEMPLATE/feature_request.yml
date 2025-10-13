@@ -1,0 +1,44 @@
+name: 💡 機能リクエスト
+description: 新機能のアイデアを提案する
+labels: ['Task']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        機能の提案ありがとうございます。以下の情報を記入してください。
+  - type: dropdown
+    id: screen
+    attributes:
+      label: 機能の場所
+      description: この機能を実装するスクリーンを教えて下さい
+      options:
+        - '-'
+        - ログイン
+        - 新規登録
+        - ホーム
+        - 計画一覧
+        - 計画作成
+        - 計画編集
+        - 計画詳細
+        - 設定
+        - スケジュール一覧
+        - スケジュール作成
+        - スケジュール編集
+        - マップ
+        - メディア
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 機能内容
+      description: この機能の内容を説明してください
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: 理由
+      description: この機能を追加する理由を説明してください
+    validations:
+      required: true

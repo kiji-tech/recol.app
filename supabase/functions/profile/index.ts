@@ -1,13 +1,14 @@
-import { Hono } from 'jsr:@hono/hono';
+import { Hono, Context } from 'jsr:@hono/hono';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { StripeUtil } from '../libs/StripeUtil.ts';
 import dayjs from 'dayjs';
+import { sendSlackNotification } from '../libs/SlackUtil.ts';
 
 const app = new Hono().basePath('/profile');
 
-const createProfile = async (c: Hono.Context) => {
+const createProfile = async (c: Context) => {
   const supabase = generateSupabase(c);
   const user = await getUser(c, supabase);
   if (!user) {
@@ -28,18 +29,19 @@ const createProfile = async (c: Hono.Context) => {
   const { data: newData, error: newError } = await supabase
     .from('profile')
     .insert({ uid: user.id, stripe_customer_id: customer.id })
-    .select('*, subscription(*)')
-    .eq('subscription.user_id', user.id)
-    .eq('subscription.status', 'active')
+    .select('*')
     .maybeSingle();
   if (newError) {
     LogUtil.log(newError, { level: 'error', notify: true });
     throw newError;
   }
-  return newData;
+  // 作成時はsubscriptionは空で返却する
+  newData.subscription = [];
+
+  return c.json(newData);
 };
 
-const get = async (c: Hono.Context) => {
+const get = async (c: Context) => {
   console.log('[GET] profile');
   const supabase = generateSupabase(c);
   const user = await getUser(c, supabase);
@@ -56,6 +58,12 @@ const get = async (c: Hono.Context) => {
     const newData = await createProfile(c).catch(() => {
       return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
     });
+    // Slackに通知
+    await sendSlackNotification({
+      message: `[${user.id}]が新規登録されました`,
+      webhookUrl: Deno.env.get('NEW_ACCOUNT_SLACK_WEBHOOK_URL') || '',
+    });
+
     return c.json(newData);
   }
 
@@ -81,7 +89,7 @@ const get = async (c: Hono.Context) => {
   return c.json(data);
 };
 
-const create = async (c: Hono.Context) => {
+const create = async (c: Context) => {
   console.log('[POST] profile');
   const supabase = generateSupabase(c);
   const user = await getUser(c, supabase);
@@ -96,7 +104,7 @@ const create = async (c: Hono.Context) => {
   return c.json(data);
 };
 
-const update = async (c: Hono.Context) => {
+const update = async (c: Context) => {
   console.log('[PUT] profile');
   const supabase = generateSupabase(c);
   const { display_name, avatar_url, notification_token, enabled_schedule_notification } =
@@ -189,7 +197,31 @@ const update = async (c: Hono.Context) => {
   return c.json(data);
 };
 
+const syncPremiumPlan = async (c: Context) => {
+  console.log('[PUT] sync-premium-plan');
+  const supabase = generateSupabase(c);
+  const { isPremium, endAt } = await c.req.json();
+  const user = await getUser(c, supabase);
+  if (!user) {
+    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
+  }
+
+  const { data, error } = await supabase
+    .from('profile')
+    .update({ payment_plan: isPremium ? 'Premium' : 'Free', payment_end_at: endAt })
+    .eq('uid', user.id)
+    .select('*')
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+    return c.json({ message: getMessage('C007', ['プロフィール']), code: 'C007' }, 400);
+  }
+  return c.json(data);
+};
+
 app.get('/', get);
 app.post('/', create);
 app.put('/', update);
+app.put('/sync-premium-plan', syncPremiumPlan);
 Deno.serve(app.fetch);

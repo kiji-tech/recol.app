@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
+import { Alert } from 'react-native';
 import { supabase } from '../../../libs/supabase';
 import { useRouter } from 'expo-router';
 import { LogUtil } from '../../../libs/LogUtil';
 import { statusCodes } from '@react-native-google-signin/google-signin';
 import { Profile } from '../../profile/types/Profile';
-import { Subscription } from '../../payment/types/Subscription';
 import { login } from '../libs/login';
 import { signup } from '../libs/signup';
 import { resetPassword, updateUserPassword } from '../libs/password';
@@ -13,6 +13,9 @@ import { logout } from '../libs/logout';
 import { signInWithGoogle, signInWithApple } from '../libs/socialAuth';
 import { getProfile, getSession, isRecoverySession } from '../libs/session';
 import { AuthContextType } from '../types/Auth';
+import { CommonUtil } from '../../../libs/CommonUtil';
+import { usePremiumPlan } from './usePremiumPlan';
+import { syncPremiumPlan } from '../../profile/apis/syncPremiumPlan';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -20,8 +23,45 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<(Profile & { subscription: Subscription[] }) | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
+  const { isPremium, endAt, customerInfo } = usePremiumPlan();
+
+  // delete_flagチェック関数
+  const checkDeleteFlag = async () => {
+    if (profile && profile.delete_flag) {
+      LogUtil.log('User account has delete_flag set to true, forcing logout', { level: 'info' });
+      try {
+        await logout();
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+        Alert.alert(
+          'アカウントは無効化されています',
+          '同じメールアドレスをご利用したい場合は、お問い合わせからご連絡ください。',
+          [
+            {
+              text: 'お問い合わせ',
+              onPress: () => {
+                const contactUrl = process.env.EXPO_PUBLIC_CONTACT_PAGE_URL;
+                if (contactUrl) {
+                  CommonUtil.openBrowser(contactUrl).catch((error) => {
+                    LogUtil.log(`Error opening contact page: ${JSON.stringify(error)}`, {
+                      level: 'error',
+                    });
+                  });
+                }
+              },
+            },
+            { text: 'OK', style: 'cancel' },
+          ]
+        );
+      } catch (error) {
+        LogUtil.log(`Error during forced logout: ${JSON.stringify(error)}`, { level: 'error' });
+      }
+    }
+  };
 
   // ログイン関数
   const loginHandler = async (email: string, password: string) => {
@@ -150,11 +190,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   /** プロフィール取得 */
   const getProfileHandler = async () => {
-    if (!session) return;
+    if (!session || !customerInfo) return;
+    LogUtil.log('getProfileHandler', { level: 'info' });
     try {
-      const profileData = await getProfile(session);
+      const profileData = await syncPremiumPlan(isPremium, endAt, session);
       setProfile(profileData);
-    } catch {
+    } catch (e) {
+      LogUtil.log('getProfileHandler error', { level: 'error' });
+      LogUtil.log(JSON.stringify(e), { level: 'error' });
       setProfile(null);
     }
   };
@@ -165,26 +208,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(true);
       try {
         const session = await getSession();
-        if (session) {
-          // リカバリーセッションかどうかチェックする
-          const isRecovery = await isRecoverySession();
-          if (isRecovery) {
-            await logout();
-            return;
-          }
-          setSession(session);
-          setUser(session.user);
-        } else {
-          setSession(null);
-          setUser(null);
-          setProfile(null);
+        if (!session) return;
+        // リカバリーセッションかどうかチェックする
+        const isRecovery = await isRecoverySession();
+        if (isRecovery) {
+          await logout();
+          return;
         }
-      } catch {
-        setSession(null);
-        setUser(null);
-        setProfile(null);
+        setSession(session);
+        setUser(session.user);
       } finally {
         setLoading(false);
+        setInitialized(true);
       }
     };
     getSessionAndProfile();
@@ -195,17 +230,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (_event == 'PASSWORD_RECOVERY') {
         router.navigate('/(auth)/ResetPassword');
       }
+      if (!session) return;
 
       setSession(session);
-      setUser(session?.user ?? null);
-      if (session) {
-        try {
-          const profileData = await getProfile(session);
-          setProfile(profileData);
-        } catch {
-          setProfile(null);
-        }
-      } else {
+      setUser(session.user);
+
+      try {
+        const profileData = await getProfile(session);
+        setProfile(profileData);
+      } catch {
         setProfile(null);
       }
     });
@@ -216,9 +249,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // プロフィール再取得
-    if (!session) return;
     getProfileHandler();
-  }, [session, user]);
+  }, [session, user, customerInfo]);
+
+  // profileのdelete_flagをチェック
+  useEffect(() => {
+    checkDeleteFlag();
+  }, [profile]);
 
   return (
     <AuthContext.Provider
@@ -227,6 +264,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         session,
         profile,
         loading,
+        initialized,
         getProfile: getProfileHandler,
         setProfile,
         login: loginHandler,

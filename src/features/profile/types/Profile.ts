@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { Tables, Enums } from '../../../libs/database.types';
 import { Subscription, SubscriptionType } from '../../payment/types/Subscription';
 
@@ -18,13 +19,17 @@ export class Profile {
   stripe_customer_id: string | null = null;
   uid: string = '';
   updated_at: string | null = null;
-  subscription: Subscription[];
+  delete_flag: boolean = false;
+  payment_end_at: string | null = null;
+  subscription: Subscription[] | null = null;
 
-  constructor(data: (ProfileType & { subscription: SubscriptionType[] }) | Profile) {
+  constructor(data: (ProfileType & { subscription: SubscriptionType[] | null }) | Profile) {
     for (const key in data) {
       this[key as keyof Profile] = data[key as keyof ProfileType] as never;
     }
-    this.subscription = data.subscription.map((subscription) => new Subscription(subscription));
+    if (data.subscription) {
+      this.subscription = data.subscription.map((subscription) => new Subscription(subscription));
+    }
   }
 
   /**
@@ -48,12 +53,17 @@ export class Profile {
   /**
    * プレミアムユーザー判定
    * @param profile
-   * @returns
+   * @returns true: プレミアムユーザー, false: プレミアムユーザーではない
    */
   public isPremiumUser(): boolean {
     if (this.isAdmin() || this.isSuperUser()) return Profile.IS_PREMIUM_USER;
     // activeなsubscriptionは基本1つなので、それをチェック
-    if (this.subscription.length > 0) return Profile.IS_PREMIUM_USER;
+    if (
+      this.payment_plan == 'Premium' &&
+      this.payment_end_at &&
+      dayjs(this.payment_end_at).isAfter(dayjs())
+    )
+      return Profile.IS_PREMIUM_USER;
     return !Profile.IS_PREMIUM_USER;
   }
 }

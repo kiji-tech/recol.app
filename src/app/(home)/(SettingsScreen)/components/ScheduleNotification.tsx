@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Switch } from 'react-native';
+import { View, Text, Switch, Alert, Linking, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { useAuth } from '@/src/features/auth';
@@ -16,6 +16,64 @@ export default function ScheduleNotification() {
   const isDarkMode = theme === 'dark';
   const { profile, setProfile, session } = useAuth();
 
+  // 通知権限のチェックとエラーハンドリング
+  const checkNotificationPermission = async (): Promise<boolean> => {
+    LogUtil.log('Permission check', { level: 'info' });
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+
+    if (existingStatus !== 'granted') {
+      LogUtil.log('Permission Request', { level: 'info' });
+      const { status } = await Notifications.requestPermissionsAsync();
+      LogUtil.log(JSON.stringify(status), { level: 'info' });
+
+      if (status === 'denied') {
+        // 権限が拒否された場合の処理
+        if (profile) {
+          profile.enabled_schedule_notification = false;
+          setProfile(new Profile(profile));
+        }
+
+        Alert.alert(
+          '通知権限が必要です',
+          'スケジュール通知を使用するには、デバイスの設定から通知権限を許可してください。',
+          [
+            {
+              text: '設定を開く',
+              onPress: () => {
+                // iOS/Androidの設定画面を開く
+                if (Platform.OS === 'ios') {
+                  Linking.openURL('app-settings:');
+                } else {
+                  Linking.openSettings();
+                }
+              },
+            },
+            {
+              text: 'キャンセル',
+              style: 'cancel',
+            },
+          ]
+        );
+        return false;
+      } else if (status !== 'granted') {
+        // その他の理由で権限が取得できない場合
+        if (profile) {
+          profile.enabled_schedule_notification = false;
+          setProfile(new Profile(profile));
+        }
+
+        Alert.alert(
+          '通知権限の取得に失敗しました',
+          '通知権限を取得できませんでした。後でもう一度お試しください。',
+          [{ text: 'OK' }]
+        );
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   // スケジュール通知設定の変更
   const handleScheduleNotificationChange = async (value: boolean) => {
     if (!profile) return;
@@ -31,16 +89,9 @@ export default function ScheduleNotification() {
 
     // 有効にした場合
     if (value) {
-      LogUtil.log('Permission check', { level: 'info' });
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      if (existingStatus !== 'granted') {
-        LogUtil.log('Permission Request', { level: 'info' });
-        const { status } = await Notifications.requestPermissionsAsync();
-        if (status !== 'granted') {
-          profile.enabled_schedule_notification = false;
-          setProfile(new Profile(profile));
-          return;
-        }
+      const hasPermission = await checkNotificationPermission();
+      if (!hasPermission) {
+        return;
       }
     }
     if (!token) {

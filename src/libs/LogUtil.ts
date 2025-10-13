@@ -1,3 +1,5 @@
+import { notifySlack } from '../features/slack';
+
 type LogLevel = 'info' | 'warn' | 'error';
 
 interface LogOptions {
@@ -57,26 +59,25 @@ export class LogUtil {
       }
     }
 
-    // Slack通知が有効で、通知フラグがtrueの場合
-    if (
-      process.env.EXPO_PUBLIC_ENABLE_SLACK_NOTIFICATION == 'ON' &&
-      (level === 'error' || notify)
-    ) {
-      const m = typeof message == 'string' ? message : JSON.stringify(message);
-      if (m.includes('Aborted') || m.includes('JWT')) {
-        return;
-      }
-      await fetch(process.env.EXPO_PUBLIC_SLACK_WEBHOOK_URL || '', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: `*【${level.toUpperCase()}】*\n${message}\n\`\`\`${JSON.stringify(logData)}\`\`\``,
-        }),
-      }).catch((e) => {
-        console.error(e);
-      });
-    }
+    // Slack通知処理（libに委譲）
+    await this.sendSlackNotification(level, m, logData, notify);
+  }
+
+  /**
+   * Slack通知を送信する
+   */
+  private static async sendSlackNotification(
+    level: LogLevel,
+    message: string,
+    logData: LogData,
+    notify: boolean
+  ): Promise<void> {
+    // LogUtilからの通知は常にerrorタイプ
+    if (level !== 'error' && !notify) return;
+    await notifySlack({
+      message,
+      type: 'error',
+      data: logData,
+    });
   }
 }

@@ -19,7 +19,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
   // === Render ===
   return (
     <View className={`flex-col ${isIOS && 'mb-8'} z-10`}>
-      <MyBannerAd profile={profile} />
+      <MyBannerAd />
       <View className="flex-row w-full border-t-[1px] border-light-border dark:border-dark-border mx-auto">
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];

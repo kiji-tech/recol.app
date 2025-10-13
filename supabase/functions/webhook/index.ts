@@ -75,7 +75,6 @@ const updateSubscription = async (
     return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
   }
   const subscription = convertSubscriptionData(data);
-  console.log({ subscription });
 
   const { data: profile, error: profileError } = await supabase
     .from('profile')

@@ -11,32 +11,34 @@ import { Place } from '@/src/entities/Place';
 import { Schedule } from '@/src/features/schedule';
 import { Toast } from 'toastify-react-native';
 import { LogUtil } from '@/src/libs/LogUtil';
+import { useTheme } from '@/src/contexts/ThemeContext';
+import { Button, IconButton } from '@/src/components';
 import ScheduleItem from './ScheduleItem';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import dayjs from 'dayjs';
-import Button from '@/src/components/Common/Button';
+import MaskLoading from '@/src/components/MaskLoading';
 
 type Props = {
   plan: Plan | null;
   onDelete?: (schedule: Schedule) => void;
+  isLoading?: boolean;
 };
 
-export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode {
+export default function ScheduleComponents({
+  plan,
+  onDelete,
+  isLoading = false,
+}: Props): ReactNode {
   // === Member ===
   const DATE_FORMAT = 'YYYY-MM-DD';
   const { setEditSchedule } = usePlan();
   const { session } = useAuth();
   const [scheduleList, setScheduleList] = useState<Schedule[]>([]);
+  const { isDarkMode } = useTheme();
   const router = useRouter();
 
   // === Method ====
-  const handleAddSchedule = () => {
-    // スケジュールリストの最後の日付(to)を設定する
-    const from =
-      scheduleList.length > 0
-        ? dayjs(scheduleList[scheduleList.length - 1].to)
-        : dayjs().set('minute', 0);
-    const to = dayjs(from).add(1, 'hour');
-
+  const onNewSchedule = (planId: string, from: dayjs.Dayjs, to: dayjs.Dayjs) => {
     const newSchedule = {
       plan_id: plan!.uid,
       from: from.format('YYYY-MM-DDTHH:mm:00.000Z'),
@@ -44,6 +46,23 @@ export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode
     } as Tables<'schedule'> & { place_list: Place[] };
     setEditSchedule(newSchedule);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
+  };
+
+  const handleAddSchedule = () => {
+    // スケジュールリストの最後の日付(to)を設定する
+    const from =
+      scheduleList.length > 0
+        ? dayjs(scheduleList[scheduleList.length - 1].to)
+        : dayjs().set('minute', 0);
+    const to = dayjs(from).add(1, 'hour');
+    onNewSchedule(plan!.uid, from, to);
+  };
+
+  /** 間のスケジュールから予定を追加する */
+  const handleAddScheduleBetween = (schedule: Schedule) => {
+    const from = dayjs(schedule.to);
+    const to = dayjs(from).add(1, 'hour');
+    onNewSchedule(plan!.uid, from, to);
   };
 
   /** アイテムクリックイベント */
@@ -138,6 +157,18 @@ export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode
                   {date}
                 </Text>
               )}
+
+              {index != 0 && scheduleList[index - 1].to != schedule.from && (
+                <View className="w-full flex justify-center items-start my-4 ml-4">
+                  <IconButton
+                    theme="background"
+                    icon={
+                      <MaterialIcons name="add" size={18} color={isDarkMode ? 'white' : 'black'} />
+                    }
+                    onPress={() => handleAddScheduleBetween(scheduleList[index - 1])}
+                  />
+                </View>
+              )}
               <ScheduleItem
                 item={schedule}
                 isEndDateView={isEndDateView}
@@ -149,8 +180,13 @@ export default function ScheduleComponents({ plan, onDelete }: Props): ReactNode
         })}
       </View>
       <View className="mt-8">
-        <Button text="スケジュールを追加" onPress={() => handleAddSchedule()} />
+        <Button
+          text="スケジュールを追加"
+          disabled={isLoading}
+          onPress={() => handleAddSchedule()}
+        />
       </View>
+      {isLoading && <MaskLoading />}
     </>
   );
 }

@@ -1,37 +1,38 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { BackgroundView, Button } from '@/src/components';
 import { useAuth } from '@/src/features/auth';
-import { useTheme } from '@/src/contexts/ThemeContext';
 import { router, useFocusEffect } from 'expo-router';
 import { Text, View, ScrollView } from 'react-native';
-import { STORAGE_KEYS } from '@/src/libs/ConstValue';
 import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts/PlanContext';
 import Constants from 'expo-constants';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import SettingItem from './components/SettingItem';
 import PlanComponent from './components/PlanComponent';
 import SettingDarkMode from './components/SettingDarkMode';
 import ScheduleNotification from './components/ScheduleNotification';
 import ProfileAvatar from './components/ProfileAvatar';
+import DevelopmentBar from './components/DevelopmentBar';
+// import { STORAGE_KEYS } from '@/src/libs/ConstValue';
 
 // TODO: 将来的にはDB化
-const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
+// const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
 
 export default function Settings() {
+  // === Member ===
   const { logout } = useAuth();
   const { clearStoragePlan } = usePlan();
-  const { theme } = useTheme();
-  const [chatNotification, setChatNotification] = useState(false);
-  const isDarkMode = theme === 'dark';
   const version = Constants.expoConfig?.version || '1.0.0';
 
+  // === チャット関係 ===
   // チャット通知設定の変更
-  const handleChatNotificationChange = async (value: boolean) => {
-    await AsyncStorage.setItem(CHAT_NOTIFICATION_KEY, String(value));
-    setChatNotification(value);
-  };
+  //   const { isDarkMode } = useTheme();
+  //   const [chatNotification, setChatNotification] = useState(false);
+  //   const handleChatNotificationChange = async (value: boolean) => {
+  //     await AsyncStorage.setItem(CHAT_NOTIFICATION_KEY, String(value));
+  //     setChatNotification(value);
+  //   };
 
+  // === Method ===
   // サインアウト処理
   const handleSignOut = async () => {
     router.replace('/(auth)/SignIn');
@@ -44,9 +45,8 @@ export default function Settings() {
   useFocusEffect(
     useCallback(() => {
       const loadSettings = async () => {
-        const [chatEnabled] = await Promise.all([AsyncStorage.getItem(CHAT_NOTIFICATION_KEY)]);
-
-        setChatNotification(chatEnabled !== 'false');
+        // const [chatEnabled] = await Promise.all([AsyncStorage.getItem(CHAT_NOTIFICATION_KEY)]);
+        // setChatNotification(chatEnabled !== 'false');
       };
       loadSettings();
     }, [])
@@ -55,6 +55,7 @@ export default function Settings() {
   // === Render ===
   return (
     <BackgroundView>
+      <DevelopmentBar />
       <ScrollView className="gap-8 flex flex-col" showsVerticalScrollIndicator={false}>
         {/* プロフィールセクション */}
         <ProfileAvatar />
@@ -67,7 +68,6 @@ export default function Settings() {
           <SettingItem
             icon="person-outline"
             title="プロフィール編集"
-            isDarkMode={isDarkMode}
             onPress={() => router.push('/(settings)/ProfileEditorScreen')}
           />
         </View>
@@ -111,7 +111,6 @@ export default function Settings() {
             title="アプリバージョン"
             value={version}
             showArrow={false}
-            isDarkMode={isDarkMode}
           />
         </View>
 
@@ -121,20 +120,24 @@ export default function Settings() {
           <SettingItem
             icon="document-text-outline"
             title="利用規約"
-            isDarkMode={isDarkMode}
             onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/terms`)}
           />
           <SettingItem
             icon="shield-outline"
             title="プライバシーポリシー"
-            isDarkMode={isDarkMode}
             onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/policy`)}
           />
           <SettingItem
             icon="mail-outline"
             title="お問い合わせはこちら"
-            isDarkMode={isDarkMode}
             onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_CONTACT_PAGE_URL}`)}
+          />
+          <SettingItem
+            icon="trash-outline"
+            title="アカウント削除する"
+            isDanger={true}
+            showArrow={false}
+            onPress={() => router.push('/(modal)/RemoveAccount')}
           />
         </View>
 

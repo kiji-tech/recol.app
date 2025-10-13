@@ -1,8 +1,16 @@
-import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, View, Text, Alert, Dimensions, Platform } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  TouchableOpacity,
+  View,
+  Text,
+  Alert,
+  Dimensions,
+  Platform,
+  BackHandler,
+} from 'react-native';
 import { Image } from 'expo-image';
 import { IconButton } from '@/src/components';
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { FlatList } from 'react-native-gesture-handler';
@@ -92,6 +100,10 @@ export default function MediaScreen() {
       quality: 0.75,
       allowsMultipleSelection: true,
       base64: true,
+      presentationStyle:
+        Platform.OS === 'android'
+          ? ImagePicker.UIImagePickerPresentationStyle.AUTOMATIC
+          : undefined,
     });
     if (result.canceled) {
       LogUtil.log('canceled', { level: 'info' });
@@ -167,6 +179,14 @@ export default function MediaScreen() {
       }
     }, [plan, session])
   );
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      router.back();
+      return true;
+    });
+    return () => backHandler.remove();
+  }, []);
 
   // === Render ===
   /**  画像が選択された場合 */

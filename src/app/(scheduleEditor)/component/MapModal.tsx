@@ -52,7 +52,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
   /** 座標のロケーション情報取得 */
   const fetchLocation = async (latitude: number, longitude: number) => {
     setSearchPlaceList([]);
-    if (selectedCategory === 'selected') return;
+    if (selectedCategory === 'selected' || selectedCategory === 'text') return;
     setIsLoading(true);
     try {
       const placeList = await searchNearby(session, latitude, longitude, selectedCategory, radius);
