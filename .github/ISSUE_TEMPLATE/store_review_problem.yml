@@ -1,11 +1,11 @@
-name: 💡 AppleStore レビュー結果
-description: AppleStoreから指摘された場合に立てる課題
+name: 💡 Store レビュー結果
+description: Storeから指摘された場合に立てる課題
 labels: ['Bug']
 body:
   - type: markdown
     attributes:
       value: |
-        AppleStoreから指摘された場合に立てる課題
+        Storeから指摘された場合に立てる課題
 
   - type: textarea
     id: description
