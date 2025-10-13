@@ -6,7 +6,16 @@ body:
     attributes:
       value: |
         Storeから指摘された場合に立てる課題
-
+  - type: dropdown
+    id: platform
+    attributes:
+      label: プラットフォーム
+      description: 指摘されたプラットフォームを選択してください
+      options:
+        - iOS
+        - Android
+    validations:
+      required: true
   - type: textarea
     id: description
     attributes:
