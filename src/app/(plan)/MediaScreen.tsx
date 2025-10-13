@@ -100,6 +100,10 @@ export default function MediaScreen() {
       quality: 0.75,
       allowsMultipleSelection: true,
       base64: true,
+      presentationStyle:
+        Platform.OS === 'android'
+          ? ImagePicker.UIImagePickerPresentationStyle.AUTOMATIC
+          : undefined,
     });
     if (result.canceled) {
       LogUtil.log('canceled', { level: 'info' });

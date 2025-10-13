@@ -6,7 +6,17 @@ body:
     attributes:
       value: |
         バグ報告ありがとうございます。以下の情報を記入してください。
-
+  - type: dropdown
+    id: platform
+    attributes:
+      label: プラットフォーム
+      description: バグが発生したプラットフォームを選択してください
+      options:
+        - iOS
+        - Android
+        - 両方
+    validations:
+      required: true
   - type: textarea
     id: description
     attributes:
