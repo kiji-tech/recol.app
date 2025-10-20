@@ -41,11 +41,7 @@ export default function PlanCreator() {
       })
       .catch((e: ApiErrorResponse) => {
         LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
-        if (e.code.startsWith('PP')) {
-          Toast.warn(e.message);
-          router.push('/(payment)/PaymentPlan');
-          return;
-        } else if (e && e.message) {
+        if (e && e.message) {
           Alert.alert('プランの登録に失敗しました', e.message);
         }
       })

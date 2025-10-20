@@ -51,7 +51,6 @@ export default function PlanTable() {
           </View>
         </View>
       </View>
-      <PlanItem title="プラン数" free="4プラン / 年" premium="20プラン / 年" highlight={true} />
       <PlanItem title="メディア容量" free="1GB / プラン" premium="100GB / プラン" />
       <PlanItem title="広告表示" free="○" premium="-" />
       {/* <PlanItem title="AI分析機能" free="-" premium="○" highlight={true} />
