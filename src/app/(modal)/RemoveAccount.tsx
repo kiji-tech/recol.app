@@ -36,7 +36,7 @@ export default function RemoveAccount() {
     },
     {
       id: 'plan_restore',
-      text: 'このアカウントに紐づいている計画は､削除後復元することはできません。',
+      text: 'このアカウントに紐づいている予定は､削除後復元することはできません。',
       checked: false,
     },
   ]);

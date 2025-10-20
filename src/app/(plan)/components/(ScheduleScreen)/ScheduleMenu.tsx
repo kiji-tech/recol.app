@@ -61,7 +61,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
         }}
       >
         <MenuOption
-          text="プラン編集"
+          text="予定編集"
           customStyles={{
             optionText: {
               paddingVertical: 12,

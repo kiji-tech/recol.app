@@ -216,7 +216,7 @@ export default function CompleteNewAccount() {
               Re:CoLへようこそ
             </Text>
             <Text className="text-base text-center text-gray-600 dark:text-gray-400 leading-6">
-              素晴らしい旅の計画を一緒に作りましょう
+              素晴らしい旅の予定を一緒に作りましょう
             </Text>
           </Animated.View>
 
