@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View, Text } from 'react-native';
 import { PurchasesPackage } from 'react-native-purchases';
-import TrialMessage from './TrialMessage';
+import MessageBanner from './MessageBanner';
 
 export default function PlanCard({
   payment,
@@ -15,10 +15,6 @@ export default function PlanCard({
   isCurrentPlan?: boolean;
 }) {
   // === Member ===
-  console.log(
-    'monthly plan identifier',
-    process.env.EXPO_PUBLIC_REVENUECAT_MONTHLY_PLAN_IDENTIFIER
-  );
   const MONTHLY_PLAN_IDENTIFIER = process.env.EXPO_PUBLIC_REVENUECAT_MONTHLY_PLAN_IDENTIFIER || ''; // 月額プランID
   const YEARLY_PLAN_IDENTIFIER = process.env.EXPO_PUBLIC_REVENUECAT_YEARLY_PLAN_IDENTIFIER || ''; // 年額プランID
   const isPopular = payment.identifier === YEARLY_PLAN_IDENTIFIER ? true : false; // 人気プラン
@@ -42,10 +38,11 @@ export default function PlanCard({
       onPress={onPress}
       disabled={disabled}
     >
-      {isPopular && !isCurrentPlan && (
-        <View className="absolute -top-3 self-center">
-          <View className="bg-light-danger dark:bg-dark-danger px-3 py-1 rounded-full">
-            <Text className="text-white text-xs font-bold">人気</Text>
+      {/* 月額プランの無料トライアル表示 */}
+      {isMonthly && !isCurrentPlan && (
+        <View className="absolute -top-3 right-3">
+          <View className="bg-light-success dark:bg-dark-success px-3 py-1 rounded-full shadow-sm">
+            <Text className="text-white text-xs font-bold">初月無料</Text>
           </View>
         </View>
       )}
@@ -99,7 +96,22 @@ export default function PlanCard({
           / {payment.identifier === MONTHLY_PLAN_IDENTIFIER ? '月額' : '年額'}
         </Text>
         {/* 月額のトライアル補足 */}
-        <TrialMessage isMonthly={isMonthly} isCurrentPlan={isCurrentPlan} />
+        {isMonthly && !isCurrentPlan && (
+          <MessageBanner
+            mainText="初回1ヶ月無料！"
+            subText="いつでもキャンセル可能"
+            backgroundColor="#10B981"
+            icon="🎉"
+          />
+        )}
+        {isPopular && (
+          <MessageBanner
+            mainText="人気プラン！"
+            subText="約30%OFF！"
+            backgroundColor="#EF4444"
+            icon="🔥"
+          />
+        )}
         {/* 割引 */}
         {discount && !isCurrentPlan && (
           <View className="mt-2 bg-light-danger dark:bg-dark-danger px-2 py-1 rounded-full">
