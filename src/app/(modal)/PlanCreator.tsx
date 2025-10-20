@@ -24,7 +24,7 @@ export default function PlanCreator() {
   // === Method ===
   const verify = () => {
     if (!title) {
-      Toast.warn('計画の題目を入力してください');
+      Toast.warn('予定の題目を入力してください');
       return false;
     }
     return true;
@@ -53,7 +53,7 @@ export default function PlanCreator() {
   return (
     <BackgroundView>
       <Header
-        title="新しい計画を作成する"
+        title="新しい予定を作成する"
         onBack={() => {
           router.back();
         }}
@@ -61,7 +61,7 @@ export default function PlanCreator() {
       {/* タイトル */}
       <View className="w-full flex flex-col justify-start items-start">
         <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
-          計画の題目を入力してください｡
+          予定の題目を入力してください｡
         </Text>
         <TextInput
           placeholder="◯◯のお茶会..."

@@ -59,7 +59,7 @@ export default function PlanListScreen() {
 
   return (
     <BackgroundView>
-      <Header title="計画一覧" rightComponent={addButton()} />
+      <Header title="予定一覧" rightComponent={addButton()} />
       {/* プランがない場合 */}
       {!planLoading && planList.length === 0 && <NotFoundPlanView />}
       {/* プラン一覧 */}

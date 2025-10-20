@@ -22,7 +22,7 @@ export default function PlanInformation({ plan }: Props) {
   return (
     <View className="flex flex-col gap-2 mb-4">
       <Title text={plan.title || ''} />
-      {/* 計画メモ */}
+      {/* 予定メモ */}
       {plan.memo ? (
         <Text className="text-md text-light-text dark:text-dark-text">{plan.memo}</Text>
       ) : (
