@@ -122,7 +122,7 @@ export default function PaymentPlan() {
                     key={p.product.identifier}
                     payment={p}
                     onPress={() => handlePayment(p)}
-                    disabled={isLoading}
+                    disabled={isLoading || checkActivePlanId(p)}
                     isCurrentPlan={checkActivePlanId(p)}
                   />
                 ))}
