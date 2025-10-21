@@ -2,7 +2,7 @@ export default {
   scheme: 'recol',
   name: 'Re:CoL',
   slug: 'yuru-tabi',
-  version: '1.0.5',
+  version: '1.0.6',
   deepLinking: true,
   icon: './assets/images/icon.png',
   owner: 'shinji5761',
@@ -17,7 +17,7 @@ export default {
     bundleIdentifier: 'com.libetech.recol',
     infoPlist: {
       NSCameraUsageDescription: 'カメラを使ってプロフィール画像を設定します',
-      NSPhotoLibraryUsageDescription: 'アカウントのアイコン､計画事に画像の登録します',
+      NSPhotoLibraryUsageDescription: 'アカウントのアイコン､予定ごとに画像の登録します',
       NSUserNotificationsUsageDescription: 'スケジュールの開始時間に通知を受け取る',
       NSLocationWhenInUseUsageDescription:
         '地図を表示する際の初期表示位置を設定するために使用します',
@@ -173,7 +173,7 @@ export default {
     [
       'expo-image-picker',
       {
-        photosPermission: 'アカウントのアイコン、計画事に画像の登録します',
+        photosPermission: 'アカウントのアイコン、予定ごとに画像の登録します',
         cameraPermission: 'カメラを使ってプロフィール画像を設定します',
       },
     ],

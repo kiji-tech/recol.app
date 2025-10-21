@@ -85,7 +85,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
                   )}
                 </>
               )}
-              {(label == '計画' || label == 'スケジュール') && (
+              {(label == '予定' || label == 'スケジュール') && (
                 <>
                   {isFocused ? (
                     <Ionicons

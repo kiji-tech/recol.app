@@ -1,15 +1,10 @@
-import { Hono } from 'jsr:@hono/hono';
+import { Context, Hono } from 'jsr:@hono/hono';
 import { SupabaseClient } from 'jsr:@supabase/supabase-js@2';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
-import { SubscriptionUtil } from '../libs/SubscriptionUtil.ts';
-import dayjs from 'dayjs';
 
 const app = new Hono().basePath('/plan');
-
-const MAXIMUM_FREE_PLAN = 4;
-const MAXIMUM_PREMIUM_PLAN = 20;
 
 const TTL = 60 * 60 * 24 * 25; // 25日
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
@@ -48,7 +43,7 @@ const fetchPlaceInfo = async (supabase: SupabaseClient, placeId: string) => {
       .upload(key, placeData, {
         upsert: true,
         contentType: 'application/json',
-        cacheControl: TTL,
+        cacheControl: TTL.toString(),
       });
     if (storageSaveError) {
       console.error('キャッシュ保存エラー');
@@ -59,32 +54,7 @@ const fetchPlaceInfo = async (supabase: SupabaseClient, placeId: string) => {
   return null;
 };
 
-/**
- * プランの作成数が制限を超えているかどうかをチェックする
- *
- * @param supabase {SupabaseClient}
- * @param user {Tables<'profile'>}
- * @returns {boolean}
- */
-const maximumVerifyChecker = async (supabase: SupabaseClient, profile: Tables<'profile'>) => {
-  const IS_OVER = true;
-  const from = dayjs().add(-1, 'year').format('YYYY-MM-DD HH:mm');
-  const { count } = await supabase
-    .from('plan')
-    .select('uid, created_at', { count: 'exact' })
-    .gte('created_at', from)
-    .eq('user_id', profile.uid);
-
-  if (SubscriptionUtil.isPremiumUser(profile) && count > MAXIMUM_PREMIUM_PLAN) {
-    return IS_OVER;
-  } else if (!SubscriptionUtil.isPremiumUser(profile) && count > MAXIMUM_FREE_PLAN) {
-    return IS_OVER;
-  }
-
-  return !IS_OVER;
-};
-
-const create = async (c: Hono.Context) => {
+const create = async (c: Context) => {
   console.log('[POST] plan');
   const supabase = generateSupabase(c);
   const { title, memo } = await c.req.json();
@@ -92,22 +62,6 @@ const create = async (c: Hono.Context) => {
   const user = await getUser(c, supabase);
   if (!user) {
     return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
-  }
-
-  // profileを取得
-  const { data: profile, error: profileError } = await supabase
-    .from('profile')
-    .select('*')
-    .eq('uid', user.id)
-    .maybeSingle();
-  if (profileError) {
-    console.error(profileError);
-    return c.json({ message: getMessage('C005', ['プラン']), code: 'C005' }, 400);
-  }
-
-  // プランの作成数が制限を超えているかどうかをチェックする
-  if (await maximumVerifyChecker(supabase, profile)) {
-    return c.json({ message: getMessage('PP001'), code: 'PP001' }, 400);
   }
 
   // planを作成
@@ -124,7 +78,7 @@ const create = async (c: Hono.Context) => {
   return c.json({ data, error });
 };
 
-const update = async (c: Hono.Context) => {
+const update = async (c: Context) => {
   console.log('[PUT] plan');
   const supabase = generateSupabase(c);
   const user = await getUser(c, supabase);
@@ -150,7 +104,7 @@ const update = async (c: Hono.Context) => {
   return c.json(data);
 };
 
-const get = async (c: Hono.Context) => {
+const get = async (c: Context) => {
   console.log('[GET] plan/:uid');
   const supabase = generateSupabase(c);
   const uid = c.req.param('uid');
@@ -189,9 +143,9 @@ const get = async (c: Hono.Context) => {
   return c.json(plan);
 };
 
-const list = async (c: Hono.Context) => {
+const list = async (c: Context) => {
   console.log('[POST] plan/list');
-  const supabase = generateSupabase(c);
+  const supabase = generateSupabase(c, false);
   const user = await getUser(c, supabase);
   if (!user) {
     return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
@@ -227,7 +181,7 @@ const list = async (c: Hono.Context) => {
   return c.json(planList);
 };
 
-const deletePlan = async (c: Hono.Context) => {
+const deletePlan = async (c: Context) => {
   console.log('[POST] plan/delete');
   const supabase = generateSupabase(c);
   const { planId } = await c.req.json();

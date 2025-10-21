@@ -45,7 +45,7 @@ export default function PlanEditor() {
   return (
     <BackgroundView>
       <Header
-        title={`${plan?.title || '新しい計画'}を編集する`}
+        title={`${plan?.title || '新しい予定'}を編集する`}
         onBack={() => {
           router.back();
         }}
@@ -53,7 +53,7 @@ export default function PlanEditor() {
       {/* タイトル */}
       <View className="w-full flex flex-col justify-start items-start">
         <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
-          計画の題目を入力してください｡
+          予定の題目を入力してください｡
         </Text>
         <TextInput
           value={plan?.title || ''}

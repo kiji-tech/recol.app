@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View, Text } from 'react-native';
 import { PurchasesPackage } from 'react-native-purchases';
+import TrialMessage from './TrialMessage';
 
 export default function PlanCard({
   payment,
@@ -13,7 +14,15 @@ export default function PlanCard({
   disabled?: boolean;
   isCurrentPlan?: boolean;
 }) {
-  const isPopular = payment.identifier === '$rc_annual' ? true : false;
+  // === Member ===
+  console.log(
+    'monthly plan identifier',
+    process.env.EXPO_PUBLIC_REVENUECAT_MONTHLY_PLAN_IDENTIFIER
+  );
+  const MONTHLY_PLAN_IDENTIFIER = process.env.EXPO_PUBLIC_REVENUECAT_MONTHLY_PLAN_IDENTIFIER || ''; // 月額プランID
+  const YEARLY_PLAN_IDENTIFIER = process.env.EXPO_PUBLIC_REVENUECAT_YEARLY_PLAN_IDENTIFIER || ''; // 年額プランID
+  const isPopular = payment.identifier === YEARLY_PLAN_IDENTIFIER ? true : false; // 人気プラン
+  const isMonthly = payment.identifier === MONTHLY_PLAN_IDENTIFIER; // 月額プラン
   const discount = undefined;
   return (
     <TouchableOpacity
@@ -37,6 +46,15 @@ export default function PlanCard({
         <View className="absolute -top-3 self-center">
           <View className="bg-light-danger dark:bg-dark-danger px-3 py-1 rounded-full">
             <Text className="text-white text-xs font-bold">人気</Text>
+          </View>
+        </View>
+      )}
+
+      {/* 月額プランの無料トライアル表示 */}
+      {isMonthly && !isCurrentPlan && (
+        <View className="absolute -top-3 right-3">
+          <View className="bg-light-success dark:bg-dark-success px-3 py-1 rounded-full shadow-sm">
+            <Text className="text-white text-xs font-bold">初月無料</Text>
           </View>
         </View>
       )}
@@ -78,8 +96,10 @@ export default function PlanCard({
                 : 'text-gray-600 dark:text-gray-400'
           }`}
         >
-          / {payment.identifier === '$rc_monthly' ? '月額' : '年額'}
+          / {payment.identifier === MONTHLY_PLAN_IDENTIFIER ? '月額' : '年額'}
         </Text>
+        {/* 月額のトライアル補足 */}
+        <TrialMessage isMonthly={isMonthly} isCurrentPlan={isCurrentPlan} />
         {/* 割引 */}
         {discount && !isCurrentPlan && (
           <View className="mt-2 bg-light-danger dark:bg-dark-danger px-2 py-1 rounded-full">
