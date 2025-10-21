@@ -9,19 +9,24 @@ import Purchases, {
 import dayjs from 'dayjs';
 
 type PremiumPlanContextType = {
-  isPremium: boolean;
-  activePlanId: string | null;
-  managementURL: string | null;
+  isPremium: boolean; // プレミアムユーザーかどうか
+  activePlanId: string | null; // 現在のプランID
+  managementURL: string | null; // 管理URL
   premiumPlanList: PurchasesPackage[];
-  endAt: Date | null;
-  customerInfo: CustomerInfo | null;
-  onSubmit: (purchasesPackage: PurchasesPackage) => Promise<void>;
-  onRefetch: () => void;
-  setPremiumPlanList: (premiumPlanList: PurchasesPackage[]) => void;
+  endAt: Date | null; // プレミアムプランの有効期限
+  customerInfo: CustomerInfo | null; // 顧客情報
+  onSubmit: (purchasesPackage: PurchasesPackage) => Promise<void>; // プレミアムプランの購入
+  onRefetch: () => void; // プレミアムプランの再取得
+  setPremiumPlanList: (premiumPlanList: PurchasesPackage[]) => void; // プレミアムプランリストの設定
 };
 
 const PremiumPlanContext = createContext<PremiumPlanContextType | undefined>(undefined);
 
+/**
+ * プレミアムプランコンテキスト
+ * @param children {React.ReactNode} 子要素
+ * @returns {React.ReactNode} プレミアムプランプロバイダー
+ */
 export const PremiumPlanProvider = ({ children }: { children: React.ReactNode }) => {
   const IS_PREMIUM_USER = true;
   const [isPremium, setIsPremium] = useState(false);
@@ -45,10 +50,8 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
       // react-native-purchases初期化
       //   Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
 
-      let apiKey = '';
-      if (Platform.OS === 'ios') {
-        apiKey = process.env.EXPO_PUBLIC_REVENUECAT_APPLE_API_KEY || '';
-      } else if (Platform.OS === 'android') {
+      let apiKey = process.env.EXPO_PUBLIC_REVENUECAT_APPLE_API_KEY || '';
+      if (Platform.OS === 'android') {
         apiKey = process.env.EXPO_PUBLIC_REVENUECAT_GOOGLE_API_KEY || '';
       }
 
@@ -107,6 +110,9 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
     await setupCustomerInfo();
   };
 
+  /**
+   * RevenueCat 初期化・プレミアムプランリストの取得・顧客情報の取得
+   */
   useEffect(() => {
     (async () => {
       await initRevenueCat();

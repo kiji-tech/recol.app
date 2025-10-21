@@ -18,12 +18,20 @@ export default function PaymentPlan() {
   const { activePlanId, managementURL, onSubmit, onRefetch, premiumPlanList } = usePremiumPlan();
 
   // === Method ===
-  // TODO: setupSubscriptionとupdateSubscriptionはViewには関係ないので分離したい
+  /**
+   * 現在のプランIDと購入パッケージのIDが一致しているかどうかを判定する
+   * @param payment {PurchasesPackage} 購入パッケージ
+   * @returns {boolean} 現在のプランIDと一致しているかどうか
+   */
   const checkActivePlanId = (payment: PurchasesPackage) => {
     return activePlanId === payment.product.identifier;
   };
 
-  /** プレミアムプランの支払い */
+  /**
+   * プレミアムプランの支払い
+   * @param payment {PurchasesPackage} 購入パッケージ
+   * @returns {Promise<void>} プレミアムプランの支払い
+   */
   const handlePayment = async (payment: PurchasesPackage) => {
     if (!session) {
       Alert.alert('セッション情報がありません｡ログインし直してください｡');
@@ -47,7 +55,9 @@ export default function PaymentPlan() {
     }
   };
 
-  /** プレミアムプランの解約 */
+  /**
+   * プレミアムプランの解約イベントハンドラ
+   */
   const handleCancel = async () => {
     LogUtil.log('handle cancel.');
     if (profile && !profile.isPremiumUser()) {
