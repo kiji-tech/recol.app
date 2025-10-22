@@ -37,7 +37,6 @@ SplashScreen.setOptions({
 });
 
 const Layout = () => {
-  //   const { setPremiumPlanList } = usePremiumPlan();
   const [ready, setReady] = useState(false);
   const { isDarkMode } = useTheme();
   const { initialized } = useAuth();
@@ -107,30 +106,25 @@ const Layout = () => {
 };
 
 const RouteLayout = () => {
-  // === RevenueCat初期化 ===
-  // === Stripe Redirect処理 ===
-
   // === DeepLink処理 ===
   const handleDeepLink = useCallback(async (url: string | null) => {
-    if (url) {
+    if (url && url.includes('ResetPassword')) {
       const urlObj = new URL(url);
-      if (url.includes('ResetPassword')) {
-        const params = new URLSearchParams(urlObj.hash.replace(/^#/, ''));
-        const tokens = {
-          access_token: params.get('access_token') ?? undefined,
-          refresh_token: params.get('refresh_token') ?? undefined,
-          expires_in: params.get('expires_in') ?? undefined,
-          type: params.get('type') ?? undefined,
-        };
-        // パスワードリセット画面に遷移
-        router.push({
-          pathname: '/(auth)/ResetPassword',
-          params: {
-            access_token: tokens.access_token ?? undefined,
-            refresh_token: tokens.refresh_token ?? undefined,
-          },
-        } as const);
-      }
+      const params = new URLSearchParams(urlObj.hash.replace(/^#/, ''));
+      const tokens = {
+        access_token: params.get('access_token') ?? undefined,
+        refresh_token: params.get('refresh_token') ?? undefined,
+        expires_in: params.get('expires_in') ?? undefined,
+        type: params.get('type') ?? undefined,
+      };
+      // パスワードリセット画面に遷移
+      router.push({
+        pathname: '/(auth)/ResetPassword',
+        params: {
+          access_token: tokens.access_token ?? undefined,
+          refresh_token: tokens.refresh_token ?? undefined,
+        },
+      } as const);
     }
   }, []);
 
@@ -162,10 +156,6 @@ const RouteLayout = () => {
   return (
     <PremiumPlanProvider>
       <AuthProvider>
-        {/* <StripeProvider
-        publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}
-        merchantIdentifier={process.env.EXPO_PUBLIC_STRIPE_MERCHANT || ''}
-        > */}
         <MenuProvider>
           <PlanProvider>
             <LocationProvider>
@@ -177,7 +167,6 @@ const RouteLayout = () => {
             </LocationProvider>
           </PlanProvider>
         </MenuProvider>
-        {/* </StripeProvider> */}
       </AuthProvider>
     </PremiumPlanProvider>
   );

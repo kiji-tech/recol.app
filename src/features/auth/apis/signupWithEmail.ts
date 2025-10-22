@@ -1,7 +1,6 @@
 import { supabase } from '../../../libs/supabase';
 import { fetchProfile } from '../../profile/apis/fetchProfile';
 import { Profile } from '../../profile/types/Profile';
-import { Subscription } from '../../payment/types/Subscription';
 import { AuthResult } from '../types/Auth';
 
 /**
@@ -19,7 +18,7 @@ export const signupWithEmail = async (email: string, password: string): Promise<
 
   const session = data.session;
   const user = data.session?.user ?? null;
-  let profile: (Profile & { subscription: Subscription[] }) | null = null;
+  let profile: Profile | null = null;
 
   if (session) {
     try {
