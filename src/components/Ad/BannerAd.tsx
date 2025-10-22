@@ -12,7 +12,7 @@ const adUnitId =
 
 export const MyBannerAd = () => {
   const bannerRef = useRef<BannerAd | null>(null);
-  const { profile } = useAuth();
+  const { profile, initialized } = useAuth();
 
   // (iOS) WKWebView can terminate if app is in a "suspended state", resulting in an empty banner when app returns to foreground.
   // Therefore it's advised to "manually" request a new ad when the app is foregrounded (https://groups.google.com/g/google-admob-ads-sdk/c/rwBpqOUr8m8).
@@ -24,7 +24,7 @@ export const MyBannerAd = () => {
     }
   });
 
-  if (!adUnitId || profile?.isPremiumUser()) return null;
+  if (!adUnitId || !initialized || profile?.isPremiumUser()) return null;
 
   return (
     <BannerAd ref={bannerRef} unitId={adUnitId} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />

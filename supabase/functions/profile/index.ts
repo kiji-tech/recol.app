@@ -2,7 +2,6 @@ import { Hono, Context } from 'jsr:@hono/hono';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
-import { StripeUtil } from '../libs/StripeUtil.ts';
 import dayjs from 'dayjs';
 import { sendSlackNotification } from '../libs/SlackUtil.ts';
 
@@ -17,28 +16,21 @@ const createProfile = async (c: Context) => {
 
   // プロフィールがない場合は作成して返却する
   LogUtil.log(`${user.id}のプロフィールがないため作成します`, { level: 'info' });
-  const customer = await StripeUtil.createCustomer(user.email!);
-  LogUtil.log('Stripeアカウントの作成', { level: 'info' });
   // プロフィールを作成
   LogUtil.log('プロフィールの作成', { level: 'info' });
-  if (!customer) {
-    LogUtil.log('Stripeアカウントの作成に失敗しました', { level: 'error' });
-    throw new Error(getMessage('C005', ['プロフィール']));
-  }
-
   const { data: newData, error: newError } = await supabase
     .from('profile')
-    .insert({ uid: user.id, stripe_customer_id: customer.id })
+    .insert({ uid: user.id })
     .select('*')
     .maybeSingle();
   if (newError) {
-    LogUtil.log(newError, { level: 'error', notify: true });
+    LogUtil.log(JSON.stringify(newError), { level: 'error', notify: true });
     throw newError;
   }
   // 作成時はsubscriptionは空で返却する
   newData.subscription = [];
 
-  return c.json(newData);
+  return newData;
 };
 
 const get = async (c: Context) => {
@@ -60,7 +52,7 @@ const get = async (c: Context) => {
     });
     // Slackに通知
     await sendSlackNotification({
-      message: `[${user.id}]が新規登録されました`,
+      message: `[${user.id}] [${user.email}]が新規登録されました`,
       webhookUrl: Deno.env.get('NEW_ACCOUNT_SLACK_WEBHOOK_URL') || '',
     });
 

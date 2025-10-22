@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { Tables, Enums } from '../../../libs/database.types';
-import { Subscription, SubscriptionType } from '../../payment/types/Subscription';
+import { Subscription } from '../../payment/types/Subscription';
 
 export type ProfileType = Tables<'profile'>;
 export type PaymentPlan = Enums<'PaymentPlan'>;
@@ -16,19 +16,15 @@ export class Profile {
   notification_token: string | null = null;
   payment_plan: PaymentPlan | null = null;
   role: Role | null = null;
-  stripe_customer_id: string | null = null;
   uid: string = '';
   updated_at: string | null = null;
   delete_flag: boolean = false;
   payment_end_at: string | null = null;
   subscription: Subscription[] | null = null;
 
-  constructor(data: (ProfileType & { subscription: SubscriptionType[] | null }) | Profile) {
+  constructor(data: ProfileType | Profile) {
     for (const key in data) {
       this[key as keyof Profile] = data[key as keyof ProfileType] as never;
-    }
-    if (data.subscription) {
-      this.subscription = data.subscription.map((subscription) => new Subscription(subscription));
     }
   }
 
