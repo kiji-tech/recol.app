@@ -15,10 +15,8 @@ export default function PlanCard({
   isCurrentPlan?: boolean;
 }) {
   // === Member ===
-  const MONTHLY_PLAN_IDENTIFIER = process.env.EXPO_PUBLIC_REVENUECAT_MONTHLY_PLAN_IDENTIFIER || ''; // 月額プランID
-  const YEARLY_PLAN_IDENTIFIER = process.env.EXPO_PUBLIC_REVENUECAT_YEARLY_PLAN_IDENTIFIER || ''; // 年額プランID
-  const isPopular = payment.identifier === YEARLY_PLAN_IDENTIFIER ? true : false; // 人気プラン
-  const isMonthly = payment.identifier === MONTHLY_PLAN_IDENTIFIER; // 月額プラン
+  const isPopular = payment.packageType === 'ANNUAL' ? true : false; // 人気プラン
+  const isMonthly = payment.packageType === 'MONTHLY'; // 月額プラン
   const discount = undefined;
   return (
     <TouchableOpacity
@@ -38,24 +36,6 @@ export default function PlanCard({
       onPress={onPress}
       disabled={disabled}
     >
-      {/* 月額プランの無料トライアル表示 */}
-      {isMonthly && !isCurrentPlan && (
-        <View className="absolute -top-3 right-3">
-          <View className="bg-light-success dark:bg-dark-success px-3 py-1 rounded-full shadow-sm">
-            <Text className="text-white text-xs font-bold">初月無料</Text>
-          </View>
-        </View>
-      )}
-
-      {/* 月額プランの無料トライアル表示 */}
-      {isMonthly && !isCurrentPlan && (
-        <View className="absolute -top-3 right-3">
-          <View className="bg-light-success dark:bg-dark-success px-3 py-1 rounded-full shadow-sm">
-            <Text className="text-white text-xs font-bold">初月無料</Text>
-          </View>
-        </View>
-      )}
-
       {isCurrentPlan && (
         <View className="absolute -top-3 self-center">
           <View className="bg-light-danger dark:bg-dark-danger px-3 py-1 rounded-full">
@@ -93,10 +73,10 @@ export default function PlanCard({
                 : 'text-gray-600 dark:text-gray-400'
           }`}
         >
-          / {payment.identifier === MONTHLY_PLAN_IDENTIFIER ? '月額' : '年額'}
+          / {isMonthly ? '月額' : '年額'}
         </Text>
         {/* 月額のトライアル補足 */}
-        {isMonthly && !isCurrentPlan && (
+        {isMonthly && (
           <MessageBanner
             mainText="初回1ヶ月無料！"
             subText="いつでもキャンセル可能"
