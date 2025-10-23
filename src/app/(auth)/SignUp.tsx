@@ -126,8 +126,7 @@ export default function SignUpScreen() {
               ログイン画面に戻る
             </Text>
           </TouchableOpacity>
-
-                  <Bar text="または" />
+          <Bar text="または" />
           <ExternalSignInButton isLoading={isLoading} />
           <BackHomeLink />
         </View>
