@@ -148,7 +148,7 @@ export type Database = {
       }
       schedule: {
         Row: {
-          category: Database["public"]["Enums"]["schedule_category"] | null
+          category: Database["public"]["Enums"]["ScheduleCategory"] | null
           created_at: string
           delete_flag: boolean | null
           description: string | null
@@ -161,7 +161,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          category?: Database["public"]["Enums"]["schedule_category"] | null
+          category?: Database["public"]["Enums"]["ScheduleCategory"] | null
           created_at?: string
           delete_flag?: boolean | null
           description?: string | null
@@ -174,7 +174,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          category?: Database["public"]["Enums"]["schedule_category"] | null
+          category?: Database["public"]["Enums"]["ScheduleCategory"] | null
           created_at?: string
           delete_flag?: boolean | null
           description?: string | null
@@ -261,6 +261,13 @@ export type Database = {
       PaymentPlan: "Free" | "Basic" | "Premium"
       Role: "Admin" | "SuperUser" | "User"
       schedule_category: "movement" | "meals" | "sightseeing" | "other"
+      ScheduleCategory:
+        | "Movement"
+        | "Shopping"
+        | "Cafe"
+        | "Meals"
+        | "amusement"
+        | "Other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -391,6 +398,14 @@ export const Constants = {
       PaymentPlan: ["Free", "Basic", "Premium"],
       Role: ["Admin", "SuperUser", "User"],
       schedule_category: ["movement", "meals", "sightseeing", "other"],
+      ScheduleCategory: [
+        "Movement",
+        "Shopping",
+        "Cafe",
+        "Meals",
+        "amusement",
+        "Other",
+      ],
     },
   },
 } as const
