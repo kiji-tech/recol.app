@@ -56,7 +56,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
             borderStartEndRadius: 10,
             borderEndStartRadius: 10,
             borderEndEndRadius: 10,
-            width: 140,
+            width: 160,
           },
         }}
       >
