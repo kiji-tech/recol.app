@@ -14,6 +14,7 @@ import { Schedule } from '@/src/features/schedule';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { FontAwesome5 } from '@expo/vector-icons';
+import CategorySelector from './component/CategorySelector';
 
 export default function ScheduleEditor() {
   // === Member ===
@@ -124,6 +125,17 @@ export default function ScheduleEditor() {
             />
           </View>
         </View>
+
+        {/* カテゴリ */}
+        <CategorySelector
+          category={editSchedule.category || 'Other'}
+          onChange={(category: string) => {
+            setEditSchedule({
+              ...editSchedule,
+              category,
+            } as Schedule);
+          }}
+        />
         {/* マップから追加する */}
         <View className="w-full flex flex-col justify-start items-start gap-4">
           <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>候補</Text>

@@ -1,6 +1,6 @@
-import { Hono } from 'jsr:@hono/hono';
-import { generateSupabase, getUser } from '../libs/supabase.ts';
+import { Context, Hono } from 'jsr:@hono/hono';
 import { SupabaseClient } from 'npm:@supabase/supabase-js';
+import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import dayjs from 'dayjs';
@@ -42,7 +42,7 @@ const fetchPlaceInfo = async (supabase: SupabaseClient, placeId: string) => {
       .upload(key, placeData, {
         upsert: true,
         contentType: 'application/json',
-        cacheControl: TTL,
+        cacheControl: TTL.toString(),
       });
     if (storageSaveError) {
       console.error('キャッシュ保存エラー');
@@ -53,7 +53,7 @@ const fetchPlaceInfo = async (supabase: SupabaseClient, placeId: string) => {
   return null;
 };
 
-const get = async (c: Hono.Context) => {
+const get = async (c: Context) => {
   const scheduleId = c.req.param('id');
   console.log(`[GET] schedule/${scheduleId}`);
   const supabase = generateSupabase(c);
@@ -82,7 +82,7 @@ const get = async (c: Hono.Context) => {
   return c.json(schedule);
 };
 
-const list = async (c: Hono.Context) => {
+const list = async (c: Context) => {
   console.log(`[POST] schedule/list`);
   const { planId } = await c.req.json();
   const supabase = generateSupabase(c);
@@ -114,7 +114,7 @@ const list = async (c: Hono.Context) => {
   return c.json(scheduleList);
 };
 
-const listForNotification = async (c: Hono.Context) => {
+const listForNotification = async (c: Context) => {
   console.log('[POST] schedule/list/notification');
   const supabase = generateSupabase(c);
   const user = await getUser(c, supabase);
@@ -143,7 +143,7 @@ const listForNotification = async (c: Hono.Context) => {
   return c.json(scheduleList);
 };
 
-const upsert = async (c: Hono.Context) => {
+const upsert = async (c: Context) => {
   console.log('[UPSERT] schedule');
   const supabase = generateSupabase(c);
   const user = await getUser(c, supabase);
@@ -171,7 +171,7 @@ const upsert = async (c: Hono.Context) => {
   return c.json(data);
 };
 
-const deleteSchedule = async (c: Hono.Context) => {
+const deleteSchedule = async (c: Context) => {
   console.log('[DELETE] schedule/:id');
   const supabase = generateSupabase(c);
   const { uid } = await c.req.json();
