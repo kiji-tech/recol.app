@@ -15,7 +15,7 @@ export default function CategorySelector({ category, onChange }: Props) {
   return (
     <View className="w-full flex flex-col justify-start items-start">
       <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>カテゴリ</Text>
-      <View className="w-full flex flex-row justify-start items-center gap-2 bg-light-background dark:bg-dark-background border border-light-border dark:border-dark-border rounded-xl p-4">
+      <View className="w-full flex flex-row justify-start items-center gap-2  rounded-xl p-4">
         {/* アイコン */}
         {category === 'Movement' && (
           <FontAwesome6 name="person-running" size={20} color={isDarkMode ? 'white' : 'black'} />
@@ -37,12 +37,22 @@ export default function CategorySelector({ category, onChange }: Props) {
           items={ScheduleCategoryList}
           style={{
             inputIOS: {
+              backgroundColor: isDarkMode ? '#1a1a1a' : 'white',
+              padding: 8,
+              width: 100,
               marginLeft: 8,
-              lineHeight: 18,
+              borderRadius: 8,
+              borderWidth: 1,
+              borderColor: isDarkMode ? '#5A5A5A' : '#D7D7D7',
             },
             inputAndroid: {
+              backgroundColor: isDarkMode ? '#1a1a1a' : 'white',
+              padding: 8,
+              width: 100,
               marginLeft: 8,
-              lineHeight: 18,
+              borderRadius: 8,
+              borderWidth: 1,
+              borderColor: isDarkMode ? '#5A5A5A' : '#D7D7D7',
             },
           }}
           placeholder={{
