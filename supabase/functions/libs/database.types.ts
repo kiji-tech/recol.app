@@ -266,7 +266,7 @@ export type Database = {
         | "Shopping"
         | "Cafe"
         | "Meals"
-        | "amusement"
+        | "Amusement"
         | "Other"
     }
     CompositeTypes: {
@@ -403,7 +403,7 @@ export const Constants = {
         "Shopping",
         "Cafe",
         "Meals",
-        "amusement",
+        "Amusement",
         "Other",
       ],
     },
