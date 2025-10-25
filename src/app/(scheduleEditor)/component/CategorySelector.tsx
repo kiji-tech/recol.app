@@ -39,7 +39,7 @@ export default function CategorySelector({ category, onChange }: Props) {
             inputIOS: {
               backgroundColor: isDarkMode ? '#1a1a1a' : 'white',
               padding: 8,
-              width: 100,
+              width: 200,
               marginLeft: 8,
               borderRadius: 8,
               borderWidth: 1,
@@ -48,9 +48,8 @@ export default function CategorySelector({ category, onChange }: Props) {
             inputAndroid: {
               backgroundColor: isDarkMode ? '#1a1a1a' : 'white',
               padding: 8,
-              width: 100,
+              width: 200,
               marginLeft: 8,
-              borderRadius: 8,
               borderWidth: 1,
               borderColor: isDarkMode ? '#5A5A5A' : '#D7D7D7',
             },
