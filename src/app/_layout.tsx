@@ -21,7 +21,7 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import { useAuth, AuthProvider } from '@/src/features/auth';
 import * as Font from 'expo-font';
 import { PremiumPlanProvider } from '../features/auth/hooks/usePremiumPlan';
-import { VersionUtil } from '../libs/VersionUtil';
+import { isUpdateRequired, checkVersion as checkVersionApi } from '../features/version';
 import { ForceUpdateModal } from '../components/Modal/ForceUpdateModal';
 import Constants from 'expo-constants';
 
@@ -75,10 +75,10 @@ const Layout = () => {
 
   const checkVersion = useCallback(async () => {
     try {
-      const versionInfo = await VersionUtil.checkVersion();
+      const versionInfo = await checkVersionApi();
       const currentVersion = Constants.expoConfig?.version || '';
 
-      if (VersionUtil.isUpdateRequired(currentVersion, versionInfo.minVersion)) {
+      if (isUpdateRequired(currentVersion, versionInfo.minVersion)) {
         setShowForceUpdate(true);
       }
     } catch (error) {
