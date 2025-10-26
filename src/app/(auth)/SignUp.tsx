@@ -51,7 +51,10 @@ export default function SignUpScreen() {
     signup(email, password)
       .then(() => {
         // メールを送信しました
-        router.navigate('/(auth)/RequestNewAccount');
+        router.navigate({
+          pathname: '/(auth)/RequestNewAccount',
+          params: { email },
+        });
       })
       .catch((error) => {
         // TODO エラーの種類によってメッセージを変える
