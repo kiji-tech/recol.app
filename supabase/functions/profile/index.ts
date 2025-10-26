@@ -2,8 +2,8 @@ import { Hono, Context } from 'jsr:@hono/hono';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
-import dayjs from 'dayjs';
 import { sendSlackNotification } from '../libs/SlackUtil.ts';
+import dayjs from 'dayjs';
 
 const app = new Hono().basePath('/profile');
 

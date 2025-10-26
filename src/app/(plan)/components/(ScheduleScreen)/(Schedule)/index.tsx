@@ -135,19 +135,16 @@ export default function ScheduleComponents({
       <View className="bg-light-background dark:bg-dark-background rounded-xl">
         {scheduleList.map((schedule, index) => {
           const date = dayjs(schedule.from).format(DATE_FORMAT);
-          let isDateView = true;
-          let isEndDateView = true;
-
-          if (index > 0 && date == dayjs(scheduleList[index - 1].from).format(DATE_FORMAT)) {
-            isDateView = false;
-          }
-
-          if (
+          const isDateView =
+            index > 0 && date == dayjs(scheduleList[index - 1].from).format(DATE_FORMAT)
+              ? false
+              : true;
+          const isEndDateView =
             index + 1 < scheduleList.length &&
             dayjs(schedule.to).isSame(dayjs(scheduleList[index + 1].from))
-          ) {
-            isEndDateView = false;
-          }
+              ? false
+              : true;
+
           return (
             <View key={schedule.uid} className="relative">
               {isDateView && (

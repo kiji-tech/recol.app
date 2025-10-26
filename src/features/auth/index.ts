@@ -4,6 +4,7 @@ export * from './types/Auth';
 // API
 export * from './apis/loginWithEmail';
 export * from './apis/signupWithEmail';
+export * from './apis/resendConfirmationEmail';
 export * from './apis/resetPassword';
 export * from './apis/updateUserPassword';
 export * from './apis/logout';
@@ -17,6 +18,7 @@ export * from './apis/isRecoverySession';
 // ライブラリ
 export { login } from './libs/login';
 export { signup } from './libs/signup';
+export { resendConfirmationEmailLib } from './libs/resendConfirmationEmail';
 export { resetPassword, updateUserPassword } from './libs/password';
 export { logout } from './libs/logout';
 export { deleteAccount } from './libs/deleteAccount';
