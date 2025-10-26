@@ -21,6 +21,9 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import { useAuth, AuthProvider } from '@/src/features/auth';
 import * as Font from 'expo-font';
 import { PremiumPlanProvider } from '../features/auth/hooks/usePremiumPlan';
+import { VersionUtil } from '../libs/VersionUtil';
+import { ForceUpdateModal } from '../components/Modal/ForceUpdateModal';
+import Constants from 'expo-constants';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -38,6 +41,7 @@ SplashScreen.setOptions({
 
 const Layout = () => {
   const [ready, setReady] = useState(false);
+  const [showForceUpdate, setShowForceUpdate] = useState(false);
   const { isDarkMode } = useTheme();
   const { initialized } = useAuth();
 
@@ -69,6 +73,19 @@ const Layout = () => {
     initializeApp();
   }, []);
 
+  const checkVersion = useCallback(async () => {
+    try {
+      const versionInfo = await VersionUtil.checkVersion();
+      const currentVersion = Constants.expoConfig?.version || '';
+
+      if (VersionUtil.isUpdateRequired(currentVersion, versionInfo.minVersion)) {
+        setShowForceUpdate(true);
+      }
+    } catch (error) {
+      console.error('バージョンチェックエラー:', error);
+    }
+  }, []);
+
   const initializeApp = async () => {
     // ここでフォントや API をプリロード
     await Font.loadAsync({
@@ -76,6 +93,9 @@ const Layout = () => {
     });
     // 広告初期化
     await initAd();
+
+    // バージョンチェック
+    await checkVersion();
 
     setReady(true);
   };
@@ -101,6 +121,7 @@ const Layout = () => {
         <Stack.Screen name="(payment)" options={{ title: 'プラン更新', headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ title: 'ログイン', headerShown: false }} />
       </Stack>
+      <ForceUpdateModal visible={showForceUpdate} />
     </View>
   );
 };
