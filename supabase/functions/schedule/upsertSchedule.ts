@@ -26,7 +26,7 @@ export const upsertSchedule = async (c: Context, supabase: SupabaseClient) => {
     )
     .select('*');
   if (error) {
-    LogUtil.log(error, { level: 'error' });
+    LogUtil.log(JSON.stringify(error), { level: 'error' });
     return c.json({ message: getMessage('C007', ['スケジュール']), code: 'C007' }, 400);
   }
 
