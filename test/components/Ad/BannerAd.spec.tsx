@@ -1,6 +1,5 @@
 import React from 'react';
 import { MockProfileFactory } from '../../mocks/mockProfiles';
-import { MockAuthFactory } from '../../mocks/mockAuth';
 import { MyBannerAd } from '@/src/components/Ad/BannerAd';
 import { render, renderHook, waitFor } from '@testing-library/react-native';
 import { useAuth } from '@/src/features/auth';

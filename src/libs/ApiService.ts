@@ -49,15 +49,6 @@ async function apiRequest<T, B = Record<string, unknown>>(
   return { data: data, error: null };
 }
 
-// ============ Plan ============
-
-// ============ Schedule ============
-
-// ============ Media ============
-
-// ============ Profile ============
-
-// ============ Cache ============
 /**
  * GoogleMap Place情報の取得
  */

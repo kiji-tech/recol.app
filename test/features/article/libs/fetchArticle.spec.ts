@@ -1,13 +1,10 @@
 import { Article, ArticleType } from '@/src/features/article/types/Article';
-import { fetchArticle } from '@/src/features/article/libs/fetchArticle';
+import { fetchArticle } from '@/src/features/article/apis/fetchArticle';
 
 // モジュール全体をMock化
 jest.mock('@/src/features/article/apis/fetchArticle', () => ({
   fetchArticle: jest.fn(),
 }));
-
-// Mock化された関数をインポート
-import { fetchArticle as fetchArticleApi } from '@/src/features/article/apis/fetchArticle';
 
 describe('##### fetchArticle Test #####', () => {
   beforeEach(() => {
@@ -33,7 +30,7 @@ describe('##### fetchArticle Test #####', () => {
       const mockArticle = new Article(mockArticleData);
 
       // fetchArticle関数のMock実装
-      (fetchArticleApi as jest.Mock).mockResolvedValue(mockArticle);
+      (fetchArticle as jest.Mock).mockResolvedValue(mockArticle);
 
       // テスト実行
       const result = await fetchArticle('test-id');
@@ -48,7 +45,7 @@ describe('##### fetchArticle Test #####', () => {
   describe('error test.', () => {
     test('APIで任意のエラーが発生した場合', async () => {
       const error = new Error('Failed to fetch blog');
-      (fetchArticleApi as jest.Mock).mockRejectedValue(error);
+      (fetchArticle as jest.Mock).mockRejectedValue(error);
 
       await expect(fetchArticle('test-id')).rejects.toThrow('記事の取得に失敗しました');
     });
