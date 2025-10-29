@@ -180,6 +180,9 @@ export default function MediaScreen() {
     }, [plan, session])
   );
 
+  /**
+   * バックボタンを押した場合は､モーダルを閉じるイベントハンドラを追加
+   */
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       router.back();
