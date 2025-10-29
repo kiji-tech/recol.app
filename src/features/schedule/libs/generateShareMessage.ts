@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
  * @param plan {Plan} プラン
  * @returns {string} 共有メッセージ
  */
-export default function generateShareMessage(plan: Plan) {
+export const generateShareMessage = (plan: Plan) => {
   const { schedule: scheduleList } = plan;
   const message = `【Re:CoL】${plan.title}
 ■■■メモ■■■
@@ -35,6 +35,5 @@ const generateScheduleMessage = (schedule: Schedule) => {
 - ${dayjs(schedule.from).format('YYYY/M/D H:mm')} 〜 ${dayjs(schedule.to).format('H:mm')}
 - ${schedule.title || '(タイトル未設定)'}
 - ${schedule.description || ''}
-${schedule.place_list?.map((place: Place) => `●${place.displayName.text}\n${place.googleMapsUri}`).join('\n') || ''}
-`;
+${schedule.place_list?.map((place: Place) => `●${place.displayName.text}\n${place.googleMapsUri}\n`).join('\n') || ''}`.trim();
 };

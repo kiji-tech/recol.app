@@ -8,7 +8,7 @@ import { Share, View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { usePlan } from '@/src/contexts/PlanContext';
 import dayjs from 'dayjs';
-import generateShareMessage from '@/src/features/schedule/libs/generateShareMessage';
+import {generateShareMessage} from '@/src/features/schedule/libs/generateShareMessage';
 
 export default function ScheduleMenu({ plan }: { plan: Plan }) {
   const router = useRouter();
