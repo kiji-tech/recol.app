@@ -30,7 +30,12 @@ alwaysApply: true
   - functions/: supabase関数
   - migrations/: supabaseマイグレーションファイル
 
-### 1.4. 禁止事項
+### 1.4.共通ルール
+
+- any型などは使わないこと（型定義必須）
+-
+
+### 15. 禁止事項
 
 以下の設定ファイルは､指定がない限り変更しないこと
 

@@ -1,4 +1,4 @@
-import { Context, Hono } from 'jsr:@hono/hono';
+import { Hono } from 'jsr:@hono/hono';
 import { fetchProfile } from './fetchProfile.ts';
 
 const app = new Hono().basePath('/profile');
