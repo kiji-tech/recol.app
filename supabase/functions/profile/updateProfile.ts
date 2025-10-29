@@ -1,47 +1,17 @@
 import { Context } from 'jsr:@hono/hono';
-import { SupabaseClient } from 'npm:@supabase/supabase-js';
-import { generateSupabase, getUser } from '../libs/supabase.ts';
+import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { Tables } from '../libs/database.types.ts';
 import dayjs from 'dayjs';
 
-export const updateProfile = async (c: Context) => {
-  console.log('[PUT] profile');
-  const supabase = generateSupabase(c);
-  const { display_name, avatar_url, notification_token, enabled_schedule_notification } =
-    await c.req.json();
-
-  const user = await getUser(c, supabase);
-  if (!user) {
-    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
-  }
-
-  const finalAvatarUrl = await handleAvatarUpdate(supabase, user.id, avatar_url);
-  if (avatar_url && finalAvatarUrl === null) {
-    return c.json({ message: getMessage('C006', ['アバター']), code: 'C006' }, 500);
-  }
-
-  const profileData = await updateProfileData(supabase, user.id, {
-    display_name,
-    avatar_url: avatar_url ? finalAvatarUrl : null,
-    notification_token,
-    enabled_schedule_notification,
-  } as Tables<'profile'>);
-
-  if (!profileData) {
-    return c.json({ message: getMessage('C007', ['プロフィール']), code: 'C007' }, 400);
-  }
-
-  const subscriptionData = await getSubscriptionData(supabase, user.id);
-  if (!subscriptionData) {
-    return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
-  }
-
-  profileData.subscription = subscriptionData;
-  return c.json(profileData);
-};
-
+/**
+ * アバター画像の更新処理を行う
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param userId {string} ユーザーID
+ * @param avatarUrl {string | null} アバター画像URL（Base64形式またはnull）
+ * @return {Promise<string | null>} 更新後のアバターURLまたはnull
+ */
 const handleAvatarUpdate = async (
   supabase: SupabaseClient,
   userId: string,
@@ -71,6 +41,14 @@ const handleAvatarUpdate = async (
   return finalAvatarUrl;
 };
 
+/**
+ * アバター画像をストレージにアップロードする
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param userId {string} ユーザーID
+ * @param avatarUrl {string} Base64形式のアバター画像データ
+ * @param oldAvatarUrl {string} 既存のアバター画像URL（削除対象）
+ * @return {Promise<string | null>} アップロードされた画像のファイルパスまたはnull
+ */
 const uploadAvatarImage = async (
   supabase: SupabaseClient,
   userId: string,
@@ -108,6 +86,13 @@ const uploadAvatarImage = async (
   return filePath;
 };
 
+/**
+ * プロフィールデータをデータベースに更新する
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param userId {string} ユーザーID
+ * @param profileData {Tables<'profile'>} 更新するプロフィールデータ
+ * @return {Promise<Tables<'profile'> | null>} 更新されたプロフィールデータまたはnull
+ */
 const updateProfileData = async (
   supabase: SupabaseClient,
   userId: string,
@@ -133,6 +118,12 @@ const updateProfileData = async (
   return data;
 };
 
+/**
+ * ユーザーのサブスクリプション情報を取得する
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param userId {string} ユーザーID
+ * @return {Promise<Tables<'subscription'>[] | null>} サブスクリプション情報の配列またはnull
+ */
 const getSubscriptionData = async (supabase: SupabaseClient, userId: string) => {
   const { data: subscriptionData, error: subscriptionError } = await supabase
     .from('subscription')
@@ -147,4 +138,41 @@ const getSubscriptionData = async (supabase: SupabaseClient, userId: string) => 
   }
 
   return subscriptionData || [];
+};
+
+/**
+ * プロフィール更新APIのメイン処理
+ * @param c {Context} Honoコンテキスト
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param user {User} 認証済みユーザー情報
+ * @return {Promise<Response>} 更新されたプロフィール情報を含むレスポンス
+ */
+export const updateProfile = async (c: Context, supabase: SupabaseClient, user: User) => {
+  LogUtil.log('[PUT] profile', { level: 'info' });
+  const { display_name, avatar_url, notification_token, enabled_schedule_notification } =
+    await c.req.json();
+
+  const finalAvatarUrl = await handleAvatarUpdate(supabase, user.id, avatar_url);
+  if (avatar_url && finalAvatarUrl === null) {
+    return c.json({ message: getMessage('C006', ['アバター']), code: 'C006' }, 500);
+  }
+
+  const profileData = await updateProfileData(supabase, user.id, {
+    display_name,
+    avatar_url: avatar_url ? finalAvatarUrl : null,
+    notification_token,
+    enabled_schedule_notification,
+  } as Tables<'profile'>);
+
+  if (!profileData) {
+    return c.json({ message: getMessage('C007', ['プロフィール']), code: 'C007' }, 400);
+  }
+
+  const subscriptionData = await getSubscriptionData(supabase, user.id);
+  if (!subscriptionData) {
+    return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
+  }
+
+  profileData.subscription = subscriptionData;
+  return c.json(profileData);
 };

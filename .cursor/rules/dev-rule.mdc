@@ -33,7 +33,19 @@ alwaysApply: true
 ### 1.4.共通ルール
 
 - any型などは使わないこと（型定義必須）
--
+- メソッド定義には必ずコメントをつけること
+
+
+【コメント例】
+```
+/**
+  * メソッド説明
+  * @params メンバ名 {型} 説明
+  * @params メンバ名 {型} 説明
+  * @return {型} 説明(voidのときは不要)
+  */
+const method_name = (param1: string, param2: number): void => {}
+```
 
 ### 15. 禁止事項
 
