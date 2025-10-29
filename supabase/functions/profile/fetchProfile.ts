@@ -1,17 +1,27 @@
 import { Context } from 'jsr:@hono/hono';
-import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { sendSlackNotification } from '../libs/SlackUtil.ts';
 import dayjs from 'dayjs';
+import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 
-export const createProfile = async (c: Context) => {
-  const supabase = generateSupabase(c);
-  const user = await getUser(c, supabase);
-  if (!user) {
-    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
+const getSubscriptionData = async (supabase: SupabaseClient, userId: string) => {
+  const { data: subscriptionData, error: subscriptionError } = await supabase
+    .from('subscription')
+    .select('*')
+    .eq('user_id', userId)
+    .in('status', ['active', 'trying', 'canceled'])
+    .gte('current_period_end', dayjs().format('YYYY-MM-DD HH:mm:ss'));
+
+  if (subscriptionError) {
+    LogUtil.log(JSON.stringify(subscriptionError), { level: 'error', notify: true });
+    return null;
   }
 
+  return subscriptionData || [];
+};
+
+export const createProfile = async (c: Context, supabase: SupabaseClient, user: User) => {
   LogUtil.log(`${user.id}のプロフィールがないため作成します`, { level: 'info' });
   LogUtil.log('プロフィールの作成', { level: 'info' });
 
@@ -30,14 +40,8 @@ export const createProfile = async (c: Context) => {
   return newData;
 };
 
-export const getProfile = async (c: Context) => {
+export const getProfile = async (c: Context, supabase: SupabaseClient, user: User) => {
   console.log('[GET] profile');
-  const supabase = generateSupabase(c);
-  const user = await getUser(c, supabase);
-  if (!user) {
-    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
-  }
-
   const { data, error } = await supabase
     .from('profile')
     .select('*')
@@ -45,7 +49,7 @@ export const getProfile = async (c: Context) => {
     .maybeSingle();
 
   if (!data) {
-    const newData = await createProfile(c).catch(() => {
+    const newData = await createProfile(c, supabase, user).catch(() => {
       return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
     });
 
@@ -68,20 +72,4 @@ export const getProfile = async (c: Context) => {
 
   data.subscription = subscriptionData;
   return c.json(data);
-};
-
-const getSubscriptionData = async (supabase: any, userId: string) => {
-  const { data: subscriptionData, error: subscriptionError } = await supabase
-    .from('subscription')
-    .select('*')
-    .eq('user_id', userId)
-    .in('status', ['active', 'trying', 'canceled'])
-    .gte('current_period_end', dayjs().format('YYYY-MM-DD HH:mm:ss'));
-
-  if (subscriptionError) {
-    LogUtil.log(JSON.stringify(subscriptionError), { level: 'error', notify: true });
-    return null;
-  }
-
-  return subscriptionData || [];
 };

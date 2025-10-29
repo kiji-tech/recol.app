@@ -1,6 +1,5 @@
 import { Context } from 'jsr:@hono/hono';
-import { SupabaseClient } from 'npm:@supabase/supabase-js';
-import { generateSupabase, getUser } from '../libs/supabase.ts';
+import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { Plan, CreatePlanRequest, ValidationResult, DatabaseResult } from '../libs/types.ts';
@@ -45,19 +44,16 @@ const createPlanRecord = async (
   return { data, error: null };
 };
 
-export const create = async (c: Context) => {
+export const createPlan = async (
+  c: Context,
+  supabase: SupabaseClient,
+  user: User
+): Promise<Response> => {
   LogUtil.log('[POST] plan 開始', { level: 'info' });
-
-  const supabase = generateSupabase(c);
-  const user = await getUser(c, supabase);
-  if (!user) {
-    LogUtil.log('プラン作成: 認証失敗', { level: 'warn' });
-    return c.json({ message: getMessage('C001'), code: 'C001' }, 401);
-  }
 
   const validation = await validateCreateRequest(c);
   if (!validation.isValid) {
-    return validation.error;
+    return validation.error as Response;
   }
 
   const { data, error } = await createPlanRecord(

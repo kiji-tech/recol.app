@@ -1,15 +1,16 @@
 import { Context } from 'jsr:@hono/hono';
-import { generateSupabase, getUser } from '../libs/supabase.ts';
+import { SupabaseClient } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 
-export const upsertSchedule = async (c: Context) => {
+/**
+ * スケジュールの作成・更新APIのメイン処理
+ * @param c {Context} Honoコンテキスト
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @return {Promise<Response>} 作成・更新されたスケジュール情報を含むレスポンス
+ */
+export const upsertSchedule = async (c: Context, supabase: SupabaseClient) => {
   LogUtil.log('[UPSERT] schedule', { level: 'info' });
-  const supabase = generateSupabase(c);
-  const user = await getUser(c, supabase);
-  if (!user) {
-    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
-  }
   const { schedule } = await c.req.json();
   // scheduleの更新
   const { data, error } = await supabase

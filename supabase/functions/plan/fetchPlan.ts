@@ -1,6 +1,5 @@
 import { Context } from 'jsr:@hono/hono';
-import { SupabaseClient } from 'npm:@supabase/supabase-js';
-import { generateSupabase, getUser } from '../libs/supabase.ts';
+import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { enrichScheduleWithPlaceData, enrichPlanListWithPlaceData } from './placeUtils.ts';
@@ -60,17 +59,9 @@ const fetchPlanList = async (
   return { data: planList, error: null };
 };
 
-export const get = async (c: Context) => {
+export const get = async (c: Context, supabase: SupabaseClient, user: User) => {
   LogUtil.log('[GET] plan/:uid 開始', { level: 'info' });
-
-  const supabase = generateSupabase(c);
   const uid = c.req.param('uid');
-
-  const user = await getUser(c, supabase);
-  if (!user) {
-    LogUtil.log('プラン取得: 認証失敗', { level: 'warn' });
-    return c.json({ message: getMessage('C001'), code: 'C001' }, 401);
-  }
 
   const { data: plan, error } = await fetchPlanWithSchedule(supabase, uid, user.id);
   if (error) {
@@ -92,16 +83,8 @@ export const get = async (c: Context) => {
   return c.json(plan);
 };
 
-export const list = async (c: Context) => {
+export const list = async (c: Context, supabase: SupabaseClient, user: User) => {
   LogUtil.log('[POST] plan/list 開始', { level: 'info' });
-
-  const supabase = generateSupabase(c, false);
-  const user = await getUser(c, supabase);
-  if (!user) {
-    LogUtil.log('プラン一覧取得: 認証失敗', { level: 'warn' });
-    return c.json({ message: getMessage('C001'), code: 'C001' }, 401);
-  }
-
   const { data: planList, error } = await fetchPlanList(supabase, user.id);
   if (error) {
     return c.json({ message: getMessage('C005', ['プラン']), code: 'C005' }, 500);

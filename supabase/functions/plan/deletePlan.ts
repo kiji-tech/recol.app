@@ -1,6 +1,5 @@
 import { Context } from 'jsr:@hono/hono';
-import { SupabaseClient } from 'npm:@supabase/supabase-js';
-import { generateSupabase, getUser } from '../libs/supabase.ts';
+import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { DeletePlanRequest, ValidationResult, DatabaseResult } from '../libs/types.ts';
@@ -45,19 +44,16 @@ const softDeletePlan = async (
   return { data, error: null };
 };
 
-export const deletePlan = async (c: Context) => {
+export const deletePlan = async (
+  c: Context,
+  supabase: SupabaseClient,
+  user: User
+): Promise<Response> => {
   LogUtil.log('[POST] plan/delete 開始', { level: 'info' });
-
-  const supabase = generateSupabase(c);
-  const user = await getUser(c, supabase);
-  if (!user) {
-    LogUtil.log('プラン削除: 認証失敗', { level: 'warn' });
-    return c.json({ message: getMessage('C001'), code: 'C001' }, 401);
-  }
 
   const validation = await validateDeleteRequest(c);
   if (!validation.isValid) {
-    return validation.error;
+    return validation.error as Response;
   }
 
   const { data, error } = await softDeletePlan(supabase, validation.data!.planId, user.id);

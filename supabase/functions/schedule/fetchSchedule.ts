@@ -1,12 +1,17 @@
 import { Context } from 'jsr:@hono/hono';
-import { SupabaseClient } from 'npm:@supabase/supabase-js';
-import { generateSupabase, getUser } from '../libs/supabase.ts';
+import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { Schedule, DatabaseResult } from '../libs/types.ts';
 import { enrichScheduleWithPlaceData, enrichScheduleListWithPlaceData } from './scheduleUtils.ts';
 import dayjs from 'dayjs';
 
+/**
+ * スケジュールIDを指定してスケジュールを取得する
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param scheduleId {string} スケジュールID
+ * @return {Promise<DatabaseResult<Schedule>>} スケジュールデータまたはエラー
+ */
 const fetchScheduleById = async (
   supabase: SupabaseClient,
   scheduleId: string
@@ -31,6 +36,12 @@ const fetchScheduleById = async (
   return { data: schedule, error: null };
 };
 
+/**
+ * プランIDを指定してスケジュール一覧を取得する
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param planId {string} プランID
+ * @return {Promise<DatabaseResult<Schedule[]>>} スケジュール一覧またはエラー
+ */
 const fetchScheduleListByPlanId = async (
   supabase: SupabaseClient,
   planId: string
@@ -57,6 +68,12 @@ const fetchScheduleListByPlanId = async (
   return { data: scheduleList, error: null };
 };
 
+/**
+ * 通知用のスケジュール一覧を取得する（未来のスケジュールのみ）
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param userId {string} ユーザーID
+ * @return {Promise<DatabaseResult<Schedule[]>>} 通知用スケジュール一覧またはエラー
+ */
 const fetchScheduleListForNotification = async (
   supabase: SupabaseClient,
   userId: string
@@ -91,11 +108,16 @@ const fetchScheduleListForNotification = async (
   return { data: scheduleList, error: null };
 };
 
-export const get = async (c: Context) => {
+/**
+ * スケジュール詳細取得APIのメイン処理
+ * @param c {Context} Honoコンテキスト
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @return {Promise<Response>} スケジュール詳細を含むレスポンス
+ */
+export const get = async (c: Context, supabase: SupabaseClient) => {
   LogUtil.log('[GET] schedule/:id 開始', { level: 'info' });
 
   const scheduleId = c.req.param('id');
-  const supabase = generateSupabase(c);
 
   const { data: schedule, error } = await fetchScheduleById(supabase, scheduleId);
   if (error) {
@@ -112,12 +134,15 @@ export const get = async (c: Context) => {
   return c.json(schedule);
 };
 
-export const list = async (c: Context) => {
+/**
+ * スケジュール一覧取得APIのメイン処理
+ * @param c {Context} Honoコンテキスト
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @return {Promise<Response>} スケジュール一覧を含むレスポンス
+ */
+export const list = async (c: Context, supabase: SupabaseClient) => {
   LogUtil.log('[POST] schedule/list 開始', { level: 'info' });
-
   const { planId } = await c.req.json();
-  const supabase = generateSupabase(c);
-
   const { data: scheduleList, error } = await fetchScheduleListByPlanId(supabase, planId);
   if (error) {
     return c.json({ message: getMessage('C005', ['スケジュール']), code: 'C005' }, 400);
@@ -129,21 +154,20 @@ export const list = async (c: Context) => {
   return c.json(enrichedScheduleList);
 };
 
-export const listForNotification = async (c: Context) => {
+/**
+ * 通知用スケジュール一覧取得APIのメイン処理
+ * @param c {Context} Honoコンテキスト
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param user {User} 認証済みユーザー情報
+ * @return {Promise<Response>} 通知用スケジュール一覧を含むレスポンス
+ */
+export const listForNotification = async (c: Context, supabase: SupabaseClient, user: User) => {
   LogUtil.log('[POST] schedule/list/notification 開始', { level: 'info' });
-
-  const supabase = generateSupabase(c);
-  const user = await getUser(c, supabase);
-  if (!user) {
-    LogUtil.log('通知用スケジュール取得: 認証失敗', { level: 'warn' });
-    return c.json({ message: getMessage('C001'), code: 'C001' }, 401);
-  }
-
   const { data: scheduleList, error } = await fetchScheduleListForNotification(supabase, user.id);
   if (error) {
-    return c.json({ message: getMessage('C005', ['プラン']), code: 'C005' }, 403);
+    return c.json({ message: getMessage('C005', ['スケジュール']), code: 'C005' }, 400);
   }
 
   LogUtil.log('[POST] schedule/list/notification 完了', { level: 'info' });
-  return c.json(scheduleList);
+  return c.json(scheduleList || []);
 };

@@ -1,15 +1,11 @@
 import { Context } from 'jsr:@hono/hono';
-import { generateSupabase, getUser } from '../libs/supabase.ts';
+import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
+import { LogUtil } from '../libs/LogUtil.ts';
 
-export const syncPremiumPlan = async (c: Context) => {
-  console.log('[PUT] sync-premium-plan');
-  const supabase = generateSupabase(c);
+export const syncPremiumPlan = async (c: Context, supabase: SupabaseClient, user: User) => {
+  LogUtil.log('[PUT] sync-premium-plan', { level: 'info' });
   const { isPremium, endAt } = await c.req.json();
-  const user = await getUser(c, supabase);
-  if (!user) {
-    return c.json({ message: getMessage('C001'), code: 'C001' }, 403);
-  }
 
   const { data, error } = await supabase
     .from('profile')
@@ -19,7 +15,7 @@ export const syncPremiumPlan = async (c: Context) => {
     .maybeSingle();
 
   if (error) {
-    console.error(error);
+    LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
     return c.json({ message: getMessage('C007', ['プロフィール']), code: 'C007' }, 400);
   }
 

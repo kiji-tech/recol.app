@@ -7,6 +7,11 @@ const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
 const FiledMaskValue =
   'id,types,reviews,displayName,formattedAddress,rating,location,photos,websiteUri,editorialSummary,currentOpeningHours.openNow,currentOpeningHours.weekdayDescriptions,googleMapsUri,googleMapsLinks.*';
 
+/**
+ * Google Places APIを使用してプレイスIDから場所情報を検索する
+ * @param placeId {string} GoogleプレイスID
+ * @return {Promise<string>} JSON形式の場所情報
+ */
 const searchPlaceById = async (placeId: string) => {
   LogUtil.log(`[searchPlaceById] 開始: ${placeId}`, { level: 'info' });
 
@@ -25,6 +30,12 @@ const searchPlaceById = async (placeId: string) => {
   return responseText;
 };
 
+/**
+ * キャッシュストレージから場所情報を取得する
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param placeId {string} GoogleプレイスID
+ * @return {Promise<PlaceData | null>} キャッシュされた場所情報またはnull
+ */
 const getCachedPlaceData = async (supabase: SupabaseClient, placeId: string) => {
   const key = `google-place/${placeId}`;
   const { data: cachePlaceData } = await supabase.storage.from('caches').download(key);
@@ -39,6 +50,13 @@ const getCachedPlaceData = async (supabase: SupabaseClient, placeId: string) => 
   return null;
 };
 
+/**
+ * 場所情報をキャッシュストレージに保存する
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param placeId {string} GoogleプレイスID
+ * @param placeData {string} JSON形式の場所情報
+ * @return {Promise<boolean>} 保存成功時true、失敗時false
+ */
 const savePlaceDataToCache = async (
   supabase: SupabaseClient,
   placeId: string,
@@ -65,6 +83,12 @@ const savePlaceDataToCache = async (
   return true;
 };
 
+/**
+ * プレイスIDから場所情報を取得する（キャッシュ優先、なければAPIから取得）
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param placeId {string} GoogleプレイスID
+ * @return {Promise<PlaceData | null>} 場所情報またはnull
+ */
 export const fetchPlaceInfo = async (
   supabase: SupabaseClient,
   placeId: string
@@ -86,6 +110,12 @@ export const fetchPlaceInfo = async (
   return null;
 };
 
+/**
+ * スケジュールに場所情報を付加する
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param schedule {Schedule} スケジュールデータ
+ * @return {Promise<Schedule & { place_list: PlaceData[] }>} 場所情報が付加されたスケジュール
+ */
 export const enrichScheduleWithPlaceData = async (
   supabase: SupabaseClient,
   schedule: Schedule
@@ -108,6 +138,12 @@ export const enrichScheduleWithPlaceData = async (
   } as Schedule & { place_list: PlaceData[] };
 };
 
+/**
+ * スケジュール一覧に場所情報を付加する
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param scheduleList {Schedule[]} スケジュール一覧
+ * @return {Promise<Schedule[] & { place_list: PlaceData[] }[]>} 場所情報が付加されたスケジュール一覧
+ */
 export const enrichScheduleListWithPlaceData = async (
   supabase: SupabaseClient,
   scheduleList: Schedule[]
