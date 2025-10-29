@@ -147,6 +147,7 @@ export default function ScheduleComponents({
 
           return (
             <View key={schedule.uid} className="relative">
+              {/* 日付 */}
               {isDateView && (
                 <Text
                   className={`font-bold text-xl text-center text-light-text dark:text-dark-text sticky top-0 pt-4`}
@@ -155,6 +156,7 @@ export default function ScheduleComponents({
                 </Text>
               )}
 
+              {/* スケジュールの間から予定を追加する */}
               {index != 0 && scheduleList[index - 1].to != schedule.from && (
                 <View className="w-full flex justify-center items-start my-4 ml-4">
                   <IconButton
@@ -166,6 +168,7 @@ export default function ScheduleComponents({
                   />
                 </View>
               )}
+              {/* スケジュール */}
               <ScheduleItem
                 item={schedule}
                 isEndDateView={isEndDateView}

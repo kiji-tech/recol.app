@@ -23,6 +23,9 @@ export default function ScheduleScreen(): ReactNode {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // === Method ===
+  /**
+   * 初期表示処理
+   */
   const initView = () => {
     if (!session) {
       Toast.warn('ログイン情報が見つかりませんでした');
@@ -65,7 +68,9 @@ export default function ScheduleScreen(): ReactNode {
     };
   };
 
-  /** 予定の削除 */
+  /**
+   * 予定の削除処理
+   */
   const handleDeleteSchedule = async (schedule: Schedule) => {
     deleteSchedule(schedule, session)
       .then(() => {
@@ -81,7 +86,14 @@ export default function ScheduleScreen(): ReactNode {
   };
 
   // === Effect ===
+  /**
+   * 初回ロード
+   */
   useFocusEffect(useCallback(initView, [plan, session]));
+
+  /**
+   * バックボタンを押した場合は､画面を閉じるイベントハンドラを追加
+   */
   useFocusEffect(
     useCallback(() => {
       const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -101,7 +113,7 @@ export default function ScheduleScreen(): ReactNode {
         rightComponent={viewPlan ? <ScheduleMenu plan={viewPlan} /> : undefined}
       />
       {/* Plan Information */}
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ height: '100%' }}>
         {viewPlan && (
           <>
             <PlanInformation plan={viewPlan} />
