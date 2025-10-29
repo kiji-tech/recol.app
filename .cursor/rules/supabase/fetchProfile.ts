@@ -3,7 +3,7 @@ import { SupabaseClient } from 'jsr:@supabase/supabase-js@2';
 import { generateSupabase, getUser } from '../libs/supabase.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 
-export const getProfile = async (c: Context) => {
+export const fetchProfile = async (c: Context) => {
   LogUtil.log(`[GET] /profile`, { level: 'info' });
 
   const supabase: SupabaseClient = generateSupabase(c);

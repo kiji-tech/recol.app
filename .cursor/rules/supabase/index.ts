@@ -1,7 +1,7 @@
 import { Context, Hono } from 'jsr:@hono/hono';
-import { getProfile } from './getProfile.ts';
+import { fetchProfile } from './fetchProfile.ts';
 
 const app = new Hono().basePath('/profile');
 
-app.get('/', getProfile);
+app.get('/', fetchProfile);
 Deno.serve(app.fetch);
