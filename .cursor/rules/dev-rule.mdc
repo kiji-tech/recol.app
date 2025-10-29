@@ -1,48 +1,44 @@
 ---
 alwaysApply: true
 ---
-機能ごとに整理されたコンポーネントやロジックを管理するためのベストプラクティスを反映しています。
 
 **適応されているルールのファイル名を出力すること｡**
 
-1. 基本ルール
-1.1. 基本構成
+機能ごとに整理されたコンポーネントやロジックを管理するためのベストプラクティスを反映しています。
+
+## 1. 基本ルール
+
+### 1.1. 基本構成
+
 - 本プロジェクトは､**expo**と**supabase**を使用している
-- 本プロジェクトは､**typescript**を使用している
-- 本プロジェクトは､**tailwindcss**を使用している
-- 本プロジェクトは､**zod**を使用している
-1.2. 命名規則
+- 本プロジェクトは､**TypeScript**を使用している
+- 本プロジェクトは､**TailwindCSS**を使用している
+
+### 1.2. 命名規則
+
 - ファイル・ディレクトリ命名規則
-    - 先頭
-        - ファイル：大英文字を使用すること｡
-        - ディレクトリ：小英文字を使用すること｡
+  - 先頭文字
+    - ファイル：大英文字を使用すること｡
+    - ディレクトリ：小英文字を使用すること｡
     - 単語ごとに大英文字を使用すること｡
-    - ファイル名はキャメルケースとすること｡
-1. ディレクトリ構成
-2.1. 構成
-- src/ ･･･ expoに関わるファイル｡ [expo-rule.mdc](mdc:.cursor/rules/expo-rule.mdc) を使用すること
-    - app/:expoページファイル
-    - components/:共通コンポーネント
-    - contexts/:共通コンテキストファイル
-    - config/:設定ファイル
-    - libs/:ライブラリ
-    - entities/:型定義
-    - themes/:テーマ
+
+### 1.3. ディレクトリ構成
+
+- src/ ･･･ expoに関わるファイル｡ [expo-rule.mdc](./frontend/expo-rule.mdc) を使用すること
 - test/:テストファイル
-- supabase/: supabaseに関わるファイル｡ [functions-rule.mdc](mdc:.cursor/rules/functions-rule.mdc) を使用すること｡
-    - functions/: supabase関数
-    - migrations/: supabaseマイグレーションファイル
+- supabase/: supabaseに関わるファイル｡ [functions-rule.mdc](./supabase/functions-rule.mdc) を使用すること｡
+  - functions/: supabase関数
+  - migrations/: supabaseマイグレーションファイル
 
-1. エラーハンドリングルール
+### 1.4. 禁止事項
 
-2. ドキュメント
-
-3. 禁止事項
 以下の設定ファイルは､指定がない限り変更しないこと
+
 - .env
 - .gitignore
 - global.css
-- supabase/migrations/*
-- *.json
-- *.config.ts
-- *.config.js
+- supabase/migrations/\*
+- \*.json
+- \*.config.ts
+- \*.config.js
+- assets/\*

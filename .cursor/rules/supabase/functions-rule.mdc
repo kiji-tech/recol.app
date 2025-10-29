@@ -1,0 +1,26 @@
+---
+description: 
+globs: *.ts
+alwaysApply: false
+---
+
+## ディレクトリ構成
+- supabase/
+  - functions/(機能)/: 各種RestAPIの機能別ディレクトリ
+    - index.ts: HonoでRestAPIの設定を行うためのファイル｡[index.ts](./index.ts)を参考にすること｡
+    - xxx.ts: 任意のRestAPIの実行ファイル｡RestAPI単位でファイルを作成すること｡
+      - [getProfile](./getProfile.ts)を参考にすること
+      - xxxのファイル名は**[fetch | create | update | delete][機能名].ts**っとすること
+    - deno.json: 機能ごとに必要なライブラリなどを定義するためのファイル
+  - functions/libs/: すべてのRestAPIで共通で利用するファイルをまとめる｡Utilityファイルなど｡
+  - migrations/: supabaseのDBマイグレーションファイル｡**編集しないこと**
+  - config.toml: supabaseをローカルで実行するときの設定ファイル
+  - seed.sql: supabaseの初期シード値を設定するためのファイル **編集しないこと**
+
+
+## 追加・変更ルール
+- DBの構造はファイル[database.types.ts](../../../supabase/functions/libs/database.types.ts)を参考にすること
+- 該当する機能がない場合はディレクトリを追加すること
+- すでに同じ機能がある場合は､ファイルを追加して､機能を書くこと
+- index.tsファイルには直接機能を書かないこと｡HonoでRestAPIの受け口だけを書くこと
+- Logなど､幅広いファイルで使う機能についてはlibsディレクトリの下にファイルを作成・編集すること
