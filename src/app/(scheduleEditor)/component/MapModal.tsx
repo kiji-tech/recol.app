@@ -210,7 +210,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
       />
 
       {/* マップ */}
-      <View className="w-screen h-screen absolute top-0 left-0">
+      <View style={{ height: '70%' }} className="w-screen absolute top-0 left-0">
         <Map
           radius={radius}
           region={region || currentRegion}
