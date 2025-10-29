@@ -47,7 +47,7 @@ const INCLUDED_TYPES: Record<MapCategory, string[]> = {
     'camping_cabin',
     'cottage',
     'extended_stay_hotel',
-    '~~~~',
+    'farmstay',
     'hotel',
     'inn',
     'japanese_inn',

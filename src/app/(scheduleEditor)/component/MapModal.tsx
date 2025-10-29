@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import Map from '@/src/components/GoogleMaps/Map';
 import { Place } from '@/src/entities/Place';
-import { Platform, View } from 'react-native';
+import { BackHandler, Platform, View } from 'react-native';
 import { Region } from 'react-native-maps';
 import { searchNearby, searchPlaceByText } from '@/src/apis/GoogleMaps';
 import MapBottomSheet from '@/src/components/GoogleMaps/BottomSheet/MapBottomSheet';
@@ -141,6 +141,18 @@ export default function MapModal({ isOpen, onClose }: Props) {
   };
 
   // === Effect ===
+
+  /**
+   * バックボタンを押した場合は､モーダルを閉じるイベントハンドラを追加
+   */
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      handleClose();
+      return true;
+    });
+    return () => backHandler.remove();
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
       setSelectedPlaceList((editSchedule?.place_list as unknown as Place[]) || []);
@@ -210,7 +222,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
       />
 
       {/* マップ */}
-      <View className="w-screen h-screen absolute top-0 left-0">
+      <View style={{ height: '70%' }} className="w-screen absolute top-0 left-0">
         <Map
           radius={radius}
           region={region || currentRegion}
