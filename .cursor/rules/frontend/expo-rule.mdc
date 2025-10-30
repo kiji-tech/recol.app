@@ -10,7 +10,7 @@ alwaysApply: false
 
 - app/:expoページファイル
   - (page)/component: ページ特有のコンポーネント
-- components/:共通コンポーネント
+- components/:共通コンポーネント ･･･ ButtonやLoadingなど､featureに属さないもの
 - contexts/:共通コンテキストファイル
 - features/: 機能ごとのフォルダ
   - (機能ディレクトリ)/
@@ -32,8 +32,8 @@ alwaysApply: false
 - 本プロジェクトは､Expo（ReactNative）を使用している
 - デザインは基本､**NativewindCSS**のルールに則ること
 - ページを追加する際は [index.tsx](./index.tsx)を参考にすること
-- _layout.tsxは[StackLayout.tsx](./StackLayout.tsx)､または[Tablayout.tsx](./TabLayout.tsx)を参考にすること
-- 
+- \_layout.tsxは[StackLayout.tsx](./StackLayout.tsx)､または[Tablayout.tsx](./TabLayout.tsx)を参考にすること
+-
 
 ## ライブラリ
 

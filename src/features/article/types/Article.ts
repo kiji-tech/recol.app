@@ -1,4 +1,4 @@
-import { MetaData } from '@/src/entities/MetaData';
+import { MetaData } from '@/src/features/map/types/MetaData';
 
 export type LocationContentsType = {
   fieldId: string;

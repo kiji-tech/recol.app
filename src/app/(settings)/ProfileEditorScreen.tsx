@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/src/features/auth';
 import { updateProfile } from '@/src/features/profile';
 import * as ImagePicker from 'expo-image-picker';
-import { Profile } from '@/src/entities';
+import { Profile } from '@/src/features/profile/types/Profile';
 
 export default function ProfileEditorScreen() {
   // === Member ===

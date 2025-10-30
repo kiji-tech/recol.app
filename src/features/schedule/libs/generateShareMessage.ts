@@ -1,4 +1,4 @@
-import { Place } from '@/src/entities/Place';
+import { Place } from '@/src/features/map/types/Place';
 import { Plan } from '../../plan';
 import { Schedule } from '../types/Schedule';
 import dayjs from 'dayjs';
@@ -22,7 +22,7 @@ ${scheduleList
 ---------------------------------------------
 `;
   return message;
-}
+};
 
 /**
  * スケジュールを共有のためのメッセージ（text）を作成する

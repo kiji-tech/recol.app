@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback, useState } from 'react';
-import ScheduleComponents from './components/(ScheduleScreen)/(Schedule)';
+import ScheduleComponents from '../../features/schedule/components/ScheduleComponent';
 import { BackgroundView, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useRouter } from 'expo-router';
@@ -10,8 +10,8 @@ import { deleteSchedule, Schedule } from '@/src/features/schedule';
 import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
 import ToastManager, { Toast } from 'toastify-react-native';
-import PlanInformation from './components/(ScheduleScreen)/PlanInformation';
-import ScheduleMenu from './components/(ScheduleScreen)/ScheduleMenu';
+import PlanInformation from '../../features/schedule/components/PlanInformation';
+import ScheduleMenu from '../../features/schedule/components/ScheduleMenu';
 import { ScrollView } from 'react-native-gesture-handler';
 import { BackHandler } from 'react-native';
 
