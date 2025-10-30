@@ -18,7 +18,7 @@ import { deletePlanMediaList, fetchPlanMediaList, uploadPlanMediaList } from '@/
 import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { Media } from '@/src/features/media';
-import MediaDetailModal from '@/src/components/Modal/MediaDetailModal';
+import MediaDetailModal from '@/src/features/media/components/MediaDetailModal';
 import BackgroundView from '@/src/components/BackgroundView';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import * as ImagePicker from 'expo-image-picker';

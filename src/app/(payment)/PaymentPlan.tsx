@@ -6,9 +6,9 @@ import { useRouter } from 'expo-router';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { usePremiumPlan } from '@/src/features/auth/hooks/usePremiumPlan';
 import { PurchasesPackage } from 'react-native-purchases';
-import CurrentPlanBadge from './components/(PaymentPlan)/CurrentPlanBadge';
-import PlanTable from './components/(PaymentPlan)/PlanTable';
-import PlanCard from './components/(PaymentPlan)/PlanCard';
+import CurrentPlanBadge from '../../features/payment/components/CurrentPlanBadge';
+import PlanTable from '../../features/payment/components/PlanTable';
+import PlanCard from '../../features/payment/components/PlanCard';
 
 export default function PaymentPlan() {
   // === Member ===

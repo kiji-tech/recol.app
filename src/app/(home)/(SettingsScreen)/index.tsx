@@ -6,13 +6,12 @@ import { Text, View, ScrollView } from 'react-native';
 import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts/PlanContext';
 import Constants from 'expo-constants';
-import SettingItem from './components/SettingItem';
-import PlanComponent from './components/PlanComponent';
-import SettingDarkMode from './components/SettingDarkMode';
-import ScheduleNotification from './components/ScheduleNotification';
-import ProfileAvatar from './components/ProfileAvatar';
-import DevelopmentBar from './components/DevelopmentBar';
-// import { STORAGE_KEYS } from '@/src/libs/ConstValue';
+import SettingItem from '@/src/features/auth/components/Setting/SettingItem';
+import SettingDarkMode from '@/src/features/auth/components/Setting/SettingDarkMode';
+import ScheduleNotification from '@/src/features/auth/components/Setting/ScheduleNotification';
+import DevelopmentBar from '@/src/features/auth/components/DevelopmentBar';
+import ProfileAvatar from '@/src/features/profile/components/ProfileAvatar';
+import PlanComponent from '@/src/features/plan/components/PlanComponent';
 
 // TODO: 将来的にはDB化
 // const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;

@@ -1,6 +1,6 @@
 ## Re:CoL
 
-### 開発ツール
+### 開発ツールについて
 
 ```mermaid
 ---
@@ -29,7 +29,7 @@ app -- REST API --> backend
 backend --> db
 ```
 
-### 使用技術
+### 使用技術について
 
 | カテゴリ       | 仕様技術                                                        |
 | -------------- | --------------------------------------------------------------- |
@@ -114,9 +114,7 @@ $ npx expo install --check
 $ pnpm prebuild
 
 # iOS
-$ cd ios
-$ pod repo update
-$ pod install --repo-update
+$ pnpm ios:install
 
 # android
 $ cd android
@@ -131,17 +129,24 @@ $ ### 調べ中 ###
 $ pnpm ios
 $ pnpm android
 
+
+### iosでStoreをシミュレーションする場合の手順 ###
+# ※ pnpm prebuild --clean など､iosプロジェクトを初期化すると設定が消えるので注意
+# 1. assets/Tests.storekitをiosフォルダに置く
+# 2. xcodeでiosのプロジェクトを開く
+# 3. ｢Product > Scheme > Edit Scheme… > Run > Options > StoreKit Configuration｣でStoreKitを設定する
+# 4. pnpm start で Expoを起動しておく
+# 5. xcodeの ▶（run） からアプリを起動する
+# 6. xcodeの ｢Debug > StoreKit > Manage Transaction｣ で購入履歴を管理できる
+
 ### Supabase ###
 # Supabase CLIがインストールされていること
 # supabase linkで該当のSupabaseが紐づいていること
 # Dockerがインストールされていること
 $ supabase start
+
+# ローカルでEdgeFunctionを動かす
 $ pnpm functions:dev
-
-### Stripe ###
-# Stripe CLIがインストールされていること
-$ pnpm stripe:dev
-
 ```
 
 ### Supabase DB Types Generation

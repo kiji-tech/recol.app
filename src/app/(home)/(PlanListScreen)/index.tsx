@@ -1,7 +1,7 @@
 import React from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { BackgroundView, Header } from '@/src/components';
-import IconButton from '@/src/components/Common/IconButton';
+import IconButton from '@/src/components/IconButton';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { View } from 'react-native';
@@ -10,8 +10,8 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import { LogUtil } from '@/src/libs/LogUtil';
 import ToastManager, { Toast } from 'toastify-react-native';
 import { Plan } from '@/src/features/plan/types/Plan';
-import NotFoundPlanView from './components/NotFoundPlanView';
-import PlanCard from './components/PlanCard';
+import NotFoundPlanView from '../../../features/plan/components/NotFoundPlanView';
+import PlanCard from '../../../features/plan/components/PlanCard';
 
 export default function PlanListScreen() {
   // === Member ===

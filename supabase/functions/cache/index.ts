@@ -1,4 +1,4 @@
-import { Hono } from 'jsr:@hono/hono';
+import { Context, Hono } from 'jsr:@hono/hono';
 import { generateSupabase } from '../libs/supabase.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 
@@ -25,7 +25,7 @@ const searchId = async (placeId: string) => {
   return await upstream.text();
 };
 
-const getPlace = async (c: Hono.Context) => {
+const getPlace = async (c: Context) => {
   LogUtil.log('[POST] /cache/place', { level: 'info' });
   const { placeIdList } = await c.req.json();
   LogUtil.log(JSON.stringify({ placeIdList }), { level: 'info' });
@@ -52,7 +52,7 @@ const getPlace = async (c: Hono.Context) => {
         .upload(key, placeData, {
           upsert: true,
           contentType: 'application/json',
-          cacheControl: TTL,
+          cacheControl: TTL.toString(),
         });
       if (storageSaveError) {
         LogUtil.log(JSON.stringify({ storageSaveError }), { level: 'error' });
@@ -65,7 +65,7 @@ const getPlace = async (c: Hono.Context) => {
   });
 };
 
-const getGooglePlacePhoto = async (c: Hono.Context) => {
+const getGooglePlacePhoto = async (c: Context) => {
   LogUtil.log('[GET] /cache/google-place/photo/:id', { level: 'info' });
   const id = c.req.param('id');
   const supabase = generateSupabase(c);
@@ -103,7 +103,7 @@ const getGooglePlacePhoto = async (c: Hono.Context) => {
   // 取得したらStorageに保存
   const { error: storageError } = await supabase.storage.from('caches').upload(key, buf, {
     contentType,
-    cacheControl: TTL,
+    cacheControl: TTL.toString(),
     upsert: true,
   });
   if (storageError) {
