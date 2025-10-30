@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { Tables } from '@/src/libs/database.types';
-import { Alert, Text, TextInput, View } from 'react-native';
+import { Alert, ScrollView, Text, TextInput, View } from 'react-native';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
-import DatePicker from '../../components/Common/DatePicker';
+import DatePicker from '../../components/DatePicker';
 import dayjs from '@/src/libs/dayjs';
-import MapModal from './component/MapModal';
+import MapModal from '../../features/map/components/MapModal';
 import { upsertSchedule } from '@/src/features/schedule';
 import { useAuth } from '@/src/features/auth';
-import { Place } from '@/src/entities/Place';
+import { Place } from '@/src/features/map/types/Place';
 import { Schedule } from '@/src/features/schedule';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { FontAwesome5 } from '@expo/vector-icons';
-import CategorySelector from './component/CategorySelector';
+import CategorySelector from '../../features/schedule/components/CategorySelector';
 
 export default function ScheduleEditor() {
   // === Member ===
@@ -79,97 +79,104 @@ export default function ScheduleEditor() {
     <>
       <BackgroundView>
         <Header onBack={() => handleBack()} />
-        <TextInput
-          placeholder="タイトル..."
-          value={editSchedule.title!}
-          className={`flex flex-row justify-center rounded-xl items-center border-b-[1px] px-4 py-4 w-full text-3xl
-            border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
-          onChangeText={(text) => {
-            setEditSchedule({
-              ...editSchedule,
-              title: text,
-            } as Schedule);
-          }}
-          placeholderTextColor={'gray'}
-        />
-        {/* 日程 */}
-        <View className="w-full flex flex-col justify-start items-start">
-          <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>日時</Text>
-          <View className={`flex flex-row justify-center items-center gap-4`}>
-            <DatePicker
-              mode="datetime"
-              value={editSchedule.from ? dayjs(editSchedule.from) : dayjs()}
-              onChange={(date) => {
-                const to = dayjs(editSchedule.to).isBefore(dayjs(date))
-                  ? dayjs(date).add(1, 'hour').format(DATE_FORMAT)
-                  : editSchedule.to;
+        <ScrollView showsVerticalScrollIndicator={false} className="flex-1 ">
+          <View className="flex flex-col gap-6 pb-8">
+            <TextInput
+              placeholder="タイトル..."
+              value={editSchedule.title!}
+              className={`flex flex-row justify-center rounded-xl items-center border-b-[1px] px-4 py-4 w-full text-3xl
+              border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
+              onChangeText={(text) => {
                 setEditSchedule({
                   ...editSchedule,
-                  from: date.format(DATE_FORMAT),
-                  to,
-                } as Tables<'schedule'> & { place_list: Place[] });
+                  title: text,
+                } as Schedule);
+              }}
+              placeholderTextColor={'gray'}
+            />
+            {/* 日程 */}
+            <View className="w-full flex flex-col justify-start items-start">
+              <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>日時</Text>
+              <View className={`flex flex-row justify-center items-center gap-4`}>
+                <DatePicker
+                  mode="datetime"
+                  value={editSchedule.from ? dayjs(editSchedule.from) : dayjs()}
+                  onChange={(date) => {
+                    const to = dayjs(editSchedule.to).isBefore(dayjs(date))
+                      ? dayjs(date).add(1, 'hour').format(DATE_FORMAT)
+                      : editSchedule.to;
+                    setEditSchedule({
+                      ...editSchedule,
+                      from: date.format(DATE_FORMAT),
+                      to,
+                    } as Tables<'schedule'> & { place_list: Place[] });
+                  }}
+                />
+                <Text className="text-light-text dark:text-dark-text"> ― </Text>
+                <DatePicker
+                  mode="datetime"
+                  value={
+                    editSchedule.to
+                      ? dayjs(editSchedule.to)
+                      : dayjs(editSchedule.from).add(1, 'hour')
+                  }
+                  onChange={(date) =>
+                    setEditSchedule({
+                      ...editSchedule,
+                      to: date.format(DATE_FORMAT),
+                    } as Schedule)
+                  }
+                />
+              </View>
+            </View>
+
+            {/* カテゴリ */}
+            <CategorySelector
+              category={editSchedule.category || 'Other'}
+              onChange={(category: string) => {
+                setEditSchedule({
+                  ...editSchedule,
+                  category,
+                } as Schedule);
               }}
             />
-            <Text className="text-light-text dark:text-dark-text"> ― </Text>
-            <DatePicker
-              mode="datetime"
-              value={
-                editSchedule.to ? dayjs(editSchedule.to) : dayjs(editSchedule.from).add(1, 'hour')
-              }
-              onChange={(date) =>
-                setEditSchedule({
-                  ...editSchedule,
-                  to: date.format(DATE_FORMAT),
-                } as Schedule)
-              }
-            />
+            {/* マップから追加する */}
+            <View className="w-full flex flex-col justify-start items-start gap-4">
+              <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>候補</Text>
+              {/* 追加ボタン */}
+              <Button theme={'info'} onPress={handleMapModal} text={'マップから確認・追加'} />
+
+              {/* 候補数 */}
+              <View className="flex flex-row gap-2 items-center">
+                <FontAwesome5 name="map-marker-alt" size={18} color="#f87171" />
+                <Text className="text-light-text dark:text-dark-text">
+                  {(editSchedule.place_list && editSchedule.place_list!.length) || 0}
+                  件候補があります｡
+                </Text>
+              </View>
+            </View>
+
+            {/* メモ */}
+            <View className="w-full flex flex-col justify-start items-start">
+              <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>メモ</Text>
+              <TextInput
+                value={editSchedule.description!}
+                multiline={true}
+                className={`rounded-xl border px-4 py-4 w-full text-lg h-48 text-start align-top 
+                          border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
+                onChangeText={(text) => {
+                  setEditSchedule({
+                    ...editSchedule,
+                    description: text,
+                  } as Schedule);
+                }}
+              />
+            </View>
+
+            {/* 保存ボタン */}
+            <Button theme="theme" onPress={handleScheduleSubmit} text="保存" />
           </View>
-        </View>
-
-        {/* カテゴリ */}
-        <CategorySelector
-          category={editSchedule.category || 'Other'}
-          onChange={(category: string) => {
-            setEditSchedule({
-              ...editSchedule,
-              category,
-            } as Schedule);
-          }}
-        />
-        {/* マップから追加する */}
-        <View className="w-full flex flex-col justify-start items-start gap-4">
-          <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>候補</Text>
-          {/* 追加ボタン */}
-          <Button theme={'info'} onPress={handleMapModal} text={'マップから確認・追加'} />
-
-          {/* 候補数 */}
-          <View className="flex flex-row gap-2 items-center">
-            <FontAwesome5 name="map-marker-alt" size={18} color="#f87171" />
-            <Text className="text-light-text dark:text-dark-text">
-              {(editSchedule.place_list && editSchedule.place_list!.length) || 0}件候補があります｡
-            </Text>
-          </View>
-        </View>
-
-        {/* メモ */}
-        <View className="w-full flex flex-col justify-start items-start">
-          <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>メモ</Text>
-          <TextInput
-            value={editSchedule.description!}
-            multiline={true}
-            className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
-                        border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
-            onChangeText={(text) => {
-              setEditSchedule({
-                ...editSchedule,
-                description: text,
-              } as Schedule);
-            }}
-          />
-        </View>
-
-        {/* 保存ボタン */}
-        <Button theme="theme" onPress={handleScheduleSubmit} text="保存" />
+        </ScrollView>
       </BackgroundView>
       {/* マップモーダル */}
       {openMapModal && <MapModal isOpen={openMapModal} onClose={handleSelectedPlaceList} />}

@@ -4,10 +4,7 @@ import { Alert, ScrollView, TextInput, View } from 'react-native';
 import { Link, router } from 'expo-router';
 import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
-import ExternalSignInButton from './components/ExternalSignInButton';
-import BackHomeLink from './components/BackHomeLink';
-import ReCoLTop from './components/ReCoLTop';
-import Bar from './components/Bar';
+import { ExternalSignInButton, BackHomeLink, ReCoLTop, Bar } from '@/src/features/auth';
 
 export default function SignInScreen() {
   // ==== Member ===

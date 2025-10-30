@@ -22,7 +22,7 @@ import { useAuth, AuthProvider } from '@/src/features/auth';
 import * as Font from 'expo-font';
 import { PremiumPlanProvider } from '../features/auth/hooks/usePremiumPlan';
 import { isUpdateRequired, checkVersion as checkVersionApi } from '../features/version';
-import { ForceUpdateModal } from '../components/Modal/ForceUpdateModal';
+import { ForceUpdateModal } from '../features/version/components/ForceUpdateModal';
 import Constants from 'expo-constants';
 
 // === LogBox ===
@@ -111,7 +111,6 @@ const Layout = () => {
       <Stack>
         <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
         <Stack.Screen name="(plan)" options={{ title: '予定表示', headerShown: false }} />
-        <Stack.Screen name="(chat)" options={{ title: 'チャット', headerShown: false }} />
         <Stack.Screen name="(settings)" options={{ title: '設定', headerShown: false }} />
         <Stack.Screen name="(modal)" options={{ title: '', headerShown: false }} />
         <Stack.Screen
