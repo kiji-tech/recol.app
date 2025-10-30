@@ -4,11 +4,11 @@ import { router, useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Region } from 'react-native-maps';
 import { useLocation } from '@/src/contexts/LocationContext';
-import { Place } from '@/src/entities/Place';
+import { Place } from '@/src/features/map/types/Place';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DEFAULT_RADIUS } from '@/src/libs/ConstValue';
-import Map from '@/src/components/GoogleMaps/Map';
-import ScheduleInfoCard from './components/(MapScreen)/ScheduleInfoCard';
+import Map from '@/src/features/map/components/Map';
+import ScheduleInfoCard from '../../features/schedule/components/ScheduleInfoCard';
 
 /**
  * 初期表示
@@ -105,20 +105,18 @@ export default function MapScreen() {
   // === Render ===
   return (
     <>
-      <View className="w-screen h-screen absolute top-0 left-0">
-        <View className="w-screen h-40 flex-1">
-          <Map
-            radius={radius}
-            region={region || currentRegion}
-            placeList={placeList}
-            selectedPlaceList={placeList.filter((place) => place.id === selectedPlace?.id)}
-            isMarker={true}
-            isCallout={true}
-            isCenterCircle={false}
-            onRegionChange={handleRegionChange}
-            onSelectedPlace={handleSelectedPlace}
-          />
-        </View>
+      <View className="w-screen absolute top-0 left-0 h-[70%]">
+        <Map
+          radius={radius}
+          region={region || currentRegion}
+          placeList={placeList}
+          selectedPlaceList={placeList.filter((place) => place.id === selectedPlace?.id)}
+          isMarker={true}
+          isCallout={true}
+          isCenterCircle={false}
+          onRegionChange={handleRegionChange}
+          onSelectedPlace={handleSelectedPlace}
+        />
       </View>
       <View className={`absolute bottom-0 w-screen px-4 pt-2 pb-4 z-50`}>
         <ScrollView

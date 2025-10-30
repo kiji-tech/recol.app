@@ -1,3 +1,10 @@
+// === Types ===
+export type { ProfileType, PaymentPlan, Role } from './types/Profile';
+export { Profile } from './types/Profile';
+
+// === Components ===
+
+// === APIs ===
 export * from './types/Profile';
 export * from './apis/createProfile';
 export * from './apis/updateProfile';
