@@ -47,33 +47,40 @@ export const ArticleCard: React.FC<{ item: Article }> = ({ item }) => {
           }}
         />
       )}
-      <View className="flex flex-col gap-2 p-4">
+      <View className="flex flex-col gap-2 p-4 justify-between flex-1">
         {/* 冗談 カテゴリ タイトル */}
-        {/* カテゴリバッジ */}
-        <View className="flex-row items-center w-full justify-between">
+        <View className="flex flex-col gap-2">
+          {/* カテゴリバッジ */}
           <Badge text={item.category?.name || ''} />
+          {/* タイトル */}
+          <Text
+            className="text-sm color-light-text dark:color-dark-text"
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {item.title}
+          </Text>
+        </View>
+        {/* 下段 ロケーション 日付 */}
+        <View className="flex flex-row justify-between items-center">
+          {/* 場所（旅行系の場合） */}
+          {hasLocation(item.location) && (
+            <View className="flex-row items-center justify-start">
+              <FontAwesome5
+                name="map-marker-alt"
+                size={14}
+                color={MAP_MARKER_COLOR}
+                style={{ marginRight: 4 }}
+              />
+              <Text className="text-sm color-light-text dark:color-dark-text">{item.location}</Text>
+            </View>
+          )}
+
           {/* 日付 */}
-          <Text className="text-xs color-light-text dark:color-dark-text">
+          <Text className="text-xs color-light-text dark:color-dark-text opacity-80">
             {formatPublishedDate(item.publishedAt)}
           </Text>
         </View>
-        {/* タイトル */}
-        <Text className="text-md color-light-text dark:color-dark-text line-clamp-2">
-          {item.title}
-        </Text>
-        {/* 下段 ロケーション 日付 */}
-        {/* 場所（旅行系の場合） */}
-        {hasLocation(item.location) && (
-          <View className="flex-row items-center justify-start">
-            <FontAwesome5
-              name="map-marker-alt"
-              size={14}
-              color={MAP_MARKER_COLOR}
-              style={{ marginRight: 4 }}
-            />
-            <Text className="text-sm color-light-text dark:color-dark-text">{item.location}</Text>
-          </View>
-        )}
       </View>
     </TouchableOpacity>
   );
