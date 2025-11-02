@@ -1,13 +1,12 @@
 import React from 'react';
 import { BackgroundView, Header } from '@/src/components';
-import { FlatList, View } from 'react-native';
+import { FlatList, ScrollView, View } from 'react-native';
 import { Article } from '@/src/features/article';
 import { ArticleCard } from '../../features/article/components/ArticleCard';
 import { TodayScheduleList } from '@/src/features/schedule';
 import { useArticles } from '@/src/features/article/hooks/useArticles';
 import MaskLoading from '@/src/components/MaskLoading';
 import Title from '@/src/components/Title';
-import { ScrollView } from 'react-native-gesture-handler';
 
 export default function Home() {
   const { articles, loading } = useArticles();
