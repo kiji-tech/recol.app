@@ -9,9 +9,9 @@ type Props = {
 export default function Badge({ text, className = '' }: Props) {
   return (
     <View
-      className={`rounded-full px-4 py-1 self-start bg-light-theme dark:bg-dark-theme ${className}`}
+      className={`rounded-full px-2 py-1 self-start bg-light-theme dark:bg-dark-theme ${className}`}
     >
-      <Text className="text-sm font-medium text-light-text dark:text-dark-text">{text}</Text>
+      <Text className="text-xs font-medium text-light-text dark:text-dark-text">{text}</Text>
     </View>
   );
 }
