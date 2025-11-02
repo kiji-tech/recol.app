@@ -5,11 +5,13 @@ import { Article } from '@/src/features/article';
 import { ArticleCard } from '../../features/article/components/ArticleCard';
 import { TodayScheduleList } from '@/src/features/schedule';
 import { useArticles } from '@/src/features/article/hooks/useArticles';
+import { useInformation, InformationModal } from '@/src/features/information';
 import MaskLoading from '@/src/components/MaskLoading';
 import Title from '@/src/components/Title';
 
 export default function Home() {
   const { articles, loading } = useArticles();
+  const { currentInformation, isModalVisible, handleCloseModal } = useInformation();
 
   if (loading) {
     return <MaskLoading />;
@@ -39,6 +41,11 @@ export default function Home() {
           </View>
         </View>
       </ScrollView>
+      <InformationModal
+        information={currentInformation}
+        visible={isModalVisible}
+        onClose={handleCloseModal}
+      />
     </BackgroundView>
   );
 }
