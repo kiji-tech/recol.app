@@ -1,7 +1,7 @@
 module.exports = {
   project: {
     android: {
-      packageName: 'com.libetech.recol',
+      packageName: 'com.libetech.re_col',
     },
   },
 };
