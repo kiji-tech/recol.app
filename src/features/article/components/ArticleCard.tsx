@@ -51,7 +51,13 @@ export const ArticleCard: React.FC<{ item: Article }> = ({ item }) => {
         {/* 冗談 カテゴリ タイトル */}
         <View className="flex flex-col gap-2">
           {/* カテゴリバッジ */}
-          <Badge text={item.category?.name || ''} />
+          <View className="flex flex-row items-center justify-between">
+            <Badge text={item.category?.name || ''} />
+            {/* 日付 */}
+            <Text className="text-xs color-light-text dark:color-dark-text opacity-80">
+              {formatPublishedDate(item.publishedAt)}
+            </Text>
+          </View>
           {/* タイトル */}
           <Text
             className="text-sm color-light-text dark:color-dark-text"
@@ -75,10 +81,10 @@ export const ArticleCard: React.FC<{ item: Article }> = ({ item }) => {
               <Text className="text-sm color-light-text dark:color-dark-text">{item.location}</Text>
             </View>
           )}
-
-          {/* 日付 */}
-          <Text className="text-xs color-light-text dark:color-dark-text opacity-80">
-            {formatPublishedDate(item.publishedAt)}
+          {/* 提供者 */}
+          {/* TODO: 今後外部などから提供される場合は変更する */}
+          <Text className="text-xs color-light-text dark:color-dark-text opacity-70">
+            Re:CoL公式
           </Text>
         </View>
       </View>
