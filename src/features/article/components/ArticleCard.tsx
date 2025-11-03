@@ -7,7 +7,7 @@ import { Badge } from '@/src/components';
 
 // 定数
 const IMAGE_WIDTH = '100%';
-const IMAGE_HEIGHT = 256;
+const IMAGE_HEIGHT = 128;
 const IMAGE_RADIUS = 4;
 const MAP_MARKER_COLOR = '#f87171';
 
@@ -29,7 +29,7 @@ const hasLocation = (location: string) => {
 export const ArticleCard: React.FC<{ item: Article }> = ({ item }) => {
   return (
     <TouchableOpacity
-      className="flex flex-col bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border border rounded-md mb-4"
+      className="flex flex-col bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border border rounded-md w-60"
       onPress={() => openBrowser(item)}
       accessibilityLabel={`記事: ${item.title}`}
     >
@@ -47,22 +47,28 @@ export const ArticleCard: React.FC<{ item: Article }> = ({ item }) => {
           }}
         />
       )}
-      <View className="gap-2 p-4 flex flex-col items-start justify-start">
-        {/* 上段 */}
-        <View className="flex-1 gap-2 flex flex-col items-start justify-start">
+      <View className="flex flex-col gap-2 p-4 justify-between flex-1">
+        {/* 冗談 カテゴリ タイトル */}
+        <View className="flex flex-col gap-2">
           {/* カテゴリバッジ */}
-          <Badge text={item.category?.name || ''} />
+          <View className="flex flex-row items-center justify-between">
+            <Badge text={item.category?.name || ''} />
+            {/* 日付 */}
+            <Text className="text-xs color-light-text dark:color-dark-text opacity-80">
+              {formatPublishedDate(item.publishedAt)}
+            </Text>
+          </View>
           {/* タイトル */}
-          <Text className="text-md color-light-text dark:color-dark-text line-clamp-2">
+          <Text
+            className="text-sm color-light-text dark:color-dark-text"
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
             {item.title}
           </Text>
         </View>
-        {/* 下段 */}
-        <View className="flex-row-reverse items-center justify-between w-full">
-          {/* 日付 */}
-          <Text className="text-xs color-light-text dark:color-dark-text">
-            {formatPublishedDate(item.publishedAt)}
-          </Text>
+        {/* 下段 ロケーション 日付 */}
+        <View className="flex flex-row justify-between items-center">
           {/* 場所（旅行系の場合） */}
           {hasLocation(item.location) && (
             <View className="flex-row items-center justify-start">
@@ -75,6 +81,11 @@ export const ArticleCard: React.FC<{ item: Article }> = ({ item }) => {
               <Text className="text-sm color-light-text dark:color-dark-text">{item.location}</Text>
             </View>
           )}
+          {/* 提供者 */}
+          {/* TODO: 今後外部などから提供される場合は変更する */}
+          <Text className="text-xs color-light-text dark:color-dark-text opacity-70">
+            Re:CoL公式
+          </Text>
         </View>
       </View>
     </TouchableOpacity>

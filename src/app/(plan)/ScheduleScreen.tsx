@@ -113,7 +113,7 @@ export default function ScheduleScreen(): ReactNode {
         rightComponent={viewPlan ? <ScheduleMenu plan={viewPlan} /> : undefined}
       />
       {/* Plan Information */}
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ height: '100%' }}>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {viewPlan && (
           <>
             <PlanInformation plan={viewPlan} />
