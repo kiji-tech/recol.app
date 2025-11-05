@@ -18,9 +18,14 @@ export default {
     infoPlist: {
       NSCameraUsageDescription: 'カメラを使ってプロフィール画像を設定します',
       NSPhotoLibraryUsageDescription: 'アカウントのアイコン､予定ごとに画像の登録します',
+      NSPhotoLibraryAddUsageDescription: 'アカウントのアイコン、予定ごとに画像の登録します',
       NSUserNotificationsUsageDescription: 'スケジュールの開始時間に通知を受け取る',
       NSLocationWhenInUseUsageDescription:
         '地図を表示する際の初期表示位置を設定するために使用します',
+      NSLocationAlwaysAndWhenInUseUsageDescription:
+        '地図を表示する際の初期表示位置を設定するために使用します',
+      NSLocationAlwaysUsageDescription: '地図を表示する際の初期表示位置を設定するために使用します',
+      NSMicrophoneUsageDescription: '現在未使用（将来の機能拡張用）',
       NSUserTrackingUsageDescription:
         '広告表示の最適化のため、他社アプリとの横断的な計測を許可するか確認します',
       ITSAppUsesNonExemptEncryption: false,
@@ -79,13 +84,15 @@ export default {
     [
       'expo-location',
       {
-        locationAlwaysAndWhenInUsePermission: 'Allow $(PRODUCT_NAME) to use your location.',
+        locationAlwaysAndWhenInUsePermission:
+          '地図を表示する際の初期表示位置を設定するために使用します',
       },
     ],
     [
       'expo-tracking-transparency',
       {
-        userTrackingPermission: 'This identifier will be used to deliver personalized ads to you.',
+        userTrackingPermission:
+          '広告表示の最適化のため、他社アプリとの横断的な計測を許可するか確認します',
       },
     ],
     'expo-font',
@@ -160,7 +167,7 @@ export default {
           '3qcr597p9d.skadnetwork',
         ],
         userTrackingUsageDescription:
-          'This identifier will be used to deliver personalized ads to you.',
+          '広告表示の最適化のため、他社アプリとの横断的な計測を許可するか確認します',
       },
     ],
     [
