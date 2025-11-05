@@ -1,104 +1,96 @@
 import React from 'react';
 import { TouchableOpacity, View, Text } from 'react-native';
 import { PurchasesPackage } from 'react-native-purchases';
-import MessageBanner from './MessageBanner';
 
 export default function PlanCard({
   payment,
   onPress,
   disabled = false,
   isCurrentPlan = false,
+  discount = undefined,
 }: {
   payment: PurchasesPackage;
   onPress: () => void;
   disabled?: boolean;
   isCurrentPlan?: boolean;
+  discount?: number;
 }) {
   // === Member ===
-  const isPopular = payment.packageType === 'ANNUAL' ? true : false; // 人気プラン
+  const isPopular = payment.packageType === 'ANNUAL'; // 人気プラン
   const isMonthly = payment.packageType === 'MONTHLY'; // 月額プラン
-  const discount = undefined;
+
+  const getPriceString = (price: string) => {
+    // 日本円なら､記号を外して､円をつけて返す
+    if (price.includes('\¥')) {
+      return (price.replace('\¥', '') + '円').trim();
+    }
+    return price;
+  };
+
   return (
     <TouchableOpacity
-      className={`relative flex-1 rounded-xl p-4 ${
-        isCurrentPlan
-          ? 'bg-gray-300 dark:bg-gray-600'
-          : isPopular
-            ? 'bg-light-primary dark:bg-dark-primary'
-            : 'bg-white dark:bg-gray-800'
-      } border-2 ${
-        isCurrentPlan
-          ? 'border-gray-400 dark:border-gray-500'
-          : isPopular
-            ? 'border-light-primary dark:border-dark-primary'
-            : 'border-gray-200 dark:border-gray-600'
-      } shadow-lg ${disabled ? 'opacity-60' : ''}`}
+      className={`flex flex-col gap-2 py-2 px-4 rounded-md 
+        border border-light-border dark:border-dark-border  
+        ${isCurrentPlan ? 'bg-light-shadow dark:bg-dark-shadow' : 'bg-light-background dark:bg-dark-background'}
+        `}
       onPress={onPress}
       disabled={disabled}
     >
-      {isCurrentPlan && (
-        <View className="absolute -top-3 self-center">
-          <View className="bg-light-danger dark:bg-dark-danger px-3 py-1 rounded-full">
-            <Text className="text-light-text dark:text-dark-text text-xs font-bold">契約済み</Text>
+      {/* 現在のプラン */}
+      {isCurrentPlan ? (
+        <View className="absolute top-[-10px] right-[-10px]">
+          <Text className="text-xs bg-light-primary dark:bg-dark-primary text-white px-2 py-1 rounded-full">
+            現在のプラン
+          </Text>
+        </View>
+      ) : (
+        isPopular && (
+          <View className="absolute top-[-10px] right-[-10px]">
+            <Text className="text-xs bg-light-primary dark:bg-dark-primary text-white px-2 py-1 rounded-full">
+              人気のプラン
+            </Text>
           </View>
+        )
+      )}
+      {/* 月額プランの場合 */}
+      {isMonthly && (
+        <View className="flex flex-col gap-2">
+          <Text className="text-sm font-bold text-light-text dark:text-dark-text">
+            無料トライアルを開始する
+          </Text>
+          <View className="flex flex-row gap-2 justify-start items-end">
+            <Text className="text-3xl font-bold text-light-text dark:text-dark-text">
+              {getPriceString(payment.product.priceString)} / Month
+            </Text>
+            <Text className="text-md font-semibold text-light-danger dark:text-dark-dangers">
+              が1ヶ月無料です！!
+            </Text>
+          </View>
+          <Text className="text-xs opacity-70 font-semibold">
+            トライアル終了後プレミアムプランに自動的にアップグレードされます。
+          </Text>
         </View>
       )}
 
-      <View className="flex-1 items-center justify-center">
-        {/* 元の金額
-        {payment.product.price && !isCurrentPlan && (
-          <Text className={`text-sm line-through ${isPopular ? 'text-white/70' : 'text-gray-500'}`}>
-            {payment.product.priceString}
+      {/* 人気のプラン */}
+      {!isMonthly && (
+        <View className="flex flex-col gap-2">
+          <Text className="text-sm font-bold text-light-text dark:text-dark-text">
+            人気のプラン
           </Text>
-        )} */}
-        {/* 金額 */}
-        <Text
-          className={`text-3xl font-bold ${
-            isCurrentPlan
-              ? 'text-gray-600 dark:text-gray-300'
-              : isPopular
-                ? 'text-white'
-                : 'text-light-text dark:text-dark-text'
-          }`}
-        >
-          {payment.product.priceString}
-        </Text>
-        {/* 期間 */}
-        <Text
-          className={`text-sm ${
-            isCurrentPlan
-              ? 'text-gray-500 dark:text-gray-400'
-              : isPopular
-                ? 'text-white/80'
-                : 'text-gray-600 dark:text-gray-400'
-          }`}
-        >
-          / {isMonthly ? '月額' : '年額'}
-        </Text>
-        {/* 月額のトライアル補足 */}
-        {isMonthly && (
-          <MessageBanner
-            mainText="初回1ヶ月無料！"
-            subText="いつでもキャンセル可能"
-            backgroundColor="#10B981"
-            icon="🎉"
-          />
-        )}
-        {isPopular && (
-          <MessageBanner
-            mainText="人気プラン！"
-            subText="約30%OFF！"
-            backgroundColor="#EF4444"
-            icon="🔥"
-          />
-        )}
-        {/* 割引 */}
-        {discount && !isCurrentPlan && (
-          <View className="mt-2 bg-light-danger dark:bg-dark-danger px-2 py-1 rounded-full">
-            <Text className="text-white text-xs font-bold">{discount}</Text>
+          <View className="flex flex-row gap-2 justify-start items-end">
+            <Text className="text-3xl font-bold text-light-text dark:text-dark-text">
+              {getPriceString(payment.product.priceString)} / Year
+            </Text>
+            <Text className="text-md font-semibold text-light-danger dark:text-dark-danger">
+              月額の{discount?.toFixed(0)}%OFF！!
+            </Text>
           </View>
-        )}
-      </View>
+          <Text className="text-xs opacity-70 font-semibold">
+            （{getPriceString(payment.product.pricePerMonthString || '')} / Month）
+          </Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 }

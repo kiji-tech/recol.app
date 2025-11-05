@@ -65,7 +65,7 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
       return true;
     } catch (error) {
       LogUtil.log('RevenueCat initialization failed: ' + JSON.stringify(error), {
-        level: 'error',
+        level: 'warn',
       });
       return false;
     }
@@ -77,7 +77,6 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
    */
   const setupCustomerInfo = useCallback(async () => {
     const customerInfo = await Purchases.getCustomerInfo();
-    console.log('customerInfo', JSON.stringify(customerInfo));
     setIsPremium(checkPremium(customerInfo));
     setManagementURL(customerInfo.managementURL || null);
     setActivePlanId(customerInfo.activeSubscriptions[0] || null);
@@ -93,6 +92,7 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
    */
   const setupOfferings = async () => {
     const offerings: PurchasesOfferings = await Purchases.getOfferings();
+    console.log({ offerings: JSON.stringify(offerings) });
     setPremiumPlanList(offerings.current?.availablePackages || []);
   };
 

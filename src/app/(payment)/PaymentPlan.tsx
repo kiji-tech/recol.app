@@ -98,10 +98,8 @@ export default function PaymentPlan() {
               あなたの旅･休日をより豊かにします
             </Text>
           </View>
-
           {/* 現在のプラン状況 */}
           <CurrentPlanBadge profile={profile} />
-
           {/* 比較表 */}
           <View>
             <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-3">
@@ -109,13 +107,12 @@ export default function PaymentPlan() {
             </Text>
             <PlanTable />
           </View>
-
           {/* プラン選択 */}
           <View>
             <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-3">
               プランを選択
             </Text>
-            <View className="flex flex-row gap-3">
+            <View className="flex flex-col gap-8">
               {premiumPlanList.length > 0 &&
                 premiumPlanList.map((p: PurchasesPackage) => (
                   <PlanCard
@@ -124,11 +121,16 @@ export default function PaymentPlan() {
                     onPress={() => handlePayment(p)}
                     disabled={isLoading || checkActivePlanId(p)}
                     isCurrentPlan={checkActivePlanId(p)}
+                    discount={
+                      (1 -
+                        premiumPlanList[1].product.pricePerYear /
+                          premiumPlanList[0].product.pricePerYear) *
+                      100
+                    }
                   />
                 ))}
             </View>
           </View>
-
           {/* 解約ボタン */}
           {profile?.isPremiumUser() && (
             <View className="items-center">
