@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { Tables } from '@/src/libs/database.types';
-import { Alert, ScrollView, Text, TextInput, View } from 'react-native';
+import { ScrollView, Text, TextInput, View } from 'react-native';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
 import DatePicker from '../../components/DatePicker';
@@ -15,6 +15,11 @@ import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { FontAwesome5 } from '@expo/vector-icons';
 import CategorySelector from '../../features/schedule/components/CategorySelector';
+import ToastManager, { Toast } from 'toastify-react-native';
+import {
+  adjustEndAtWhenReversed,
+  adjustStartAtWhenNormal,
+} from '@/src/features/schedule/libs/scheduleTime';
 
 export default function ScheduleEditor() {
   // === Member ===
@@ -22,26 +27,20 @@ export default function ScheduleEditor() {
   const { session, profile } = useAuth();
   const [openMapModal, setOpenMapModal] = useState(false);
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   // === Method ===
   /**
    * スケジュールを保存する
    */
   const saveSchedule = async (updateSchedule: Schedule) => {
-    await upsertSchedule(updateSchedule, session)
-      .then(async () => {
-        LogUtil.log('complete update schedule', { level: 'info' });
-        // 通知処理の見直し
-        await NotificationUtil.upsertUserSchedule(
-          editSchedule as Schedule,
-          profile?.enabled_schedule_notification ?? false
-        );
-      })
-      .catch((e) => {
-        if (e && e.message) {
-          Alert.alert(e.message);
-        }
-      });
+    await upsertSchedule(updateSchedule, session).then(async () => {
+      LogUtil.log('complete update schedule', { level: 'info' });
+      // 通知処理の見直し
+      await NotificationUtil.upsertUserSchedule(
+        editSchedule as Schedule,
+        profile?.enabled_schedule_notification ?? false
+      );
+    });
   };
 
   /**
@@ -49,15 +48,26 @@ export default function ScheduleEditor() {
    */
   const handleScheduleSubmit = async () => {
     if (!plan || !editSchedule) return;
+    setIsLoading(true);
     const updateSchedule = {
       ...editSchedule,
       from: dayjs(editSchedule.from).format(DATE_FORMAT),
       to: dayjs(editSchedule.to).format(DATE_FORMAT),
     } as Schedule;
-    await saveSchedule(updateSchedule).then(() => {
-      // プランの再取得
-      router.back();
-    });
+    saveSchedule(updateSchedule)
+      .then(() => {
+        // プランの再取得
+        router.back();
+      })
+      .catch((e) => {
+        if (e && e.message) {
+          LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+          Toast.warn('スケジュールの保存に失敗しました');
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   /**
@@ -115,14 +125,15 @@ export default function ScheduleEditor() {
                   mode="datetime"
                   value={editSchedule.from ? dayjs(editSchedule.from) : dayjs()}
                   onChange={(date) => {
-                    const to = dayjs(editSchedule.to).isBefore(dayjs(date))
-                      ? dayjs(date).add(1, 'hour').format(DATE_FORMAT)
-                      : editSchedule.to;
+                    const { from, to } = adjustEndAtWhenReversed(
+                      date.format(DATE_FORMAT),
+                      editSchedule.to!
+                    );
                     setEditSchedule({
                       ...editSchedule,
-                      from: date.format(DATE_FORMAT),
+                      from,
                       to,
-                    } as Tables<'schedule'> & { place_list: Place[] });
+                    } as Schedule);
                   }}
                 />
                 <Text className="text-light-text dark:text-dark-text"> ― </Text>
@@ -133,12 +144,17 @@ export default function ScheduleEditor() {
                       ? dayjs(editSchedule.to)
                       : dayjs(editSchedule.from).add(1, 'hour')
                   }
-                  onChange={(date) =>
+                  onChange={(date) => {
+                    const { from, to } = adjustStartAtWhenNormal(
+                      editSchedule.from!,
+                      date.format(DATE_FORMAT)
+                    );
                     setEditSchedule({
                       ...editSchedule,
-                      to: date.format(DATE_FORMAT),
-                    } as Schedule)
-                  }
+                      from,
+                      to,
+                    } as Schedule);
+                  }}
                 />
               </View>
             </View>
@@ -187,12 +203,19 @@ export default function ScheduleEditor() {
             </View>
 
             {/* 保存ボタン */}
-            <Button theme="theme" onPress={handleScheduleSubmit} text="保存" />
+            <Button
+              theme="theme"
+              onPress={handleScheduleSubmit}
+              text="保存"
+              disabled={isLoading}
+              loading={isLoading}
+            />
           </View>
         </ScrollView>
       </BackgroundView>
       {/* マップモーダル */}
       {openMapModal && <MapModal isOpen={openMapModal} onClose={handleSelectedPlaceList} />}
+      <ToastManager />
     </>
   );
 }

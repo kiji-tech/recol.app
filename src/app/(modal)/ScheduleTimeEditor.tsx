@@ -10,6 +10,10 @@ import { Plan, updatePlan } from '@/src/features/plan';
 import CategoryIcon from '@/src/features/schedule/components/CategoryIcon';
 import dayjs from '@/src/libs/dayjs';
 import { useAuth } from '@/src/features/auth';
+import {
+  adjustEndAtWhenReversed,
+  adjustStartAtWhenNormal,
+} from '@/src/features/schedule/libs/scheduleTime';
 
 const ScheduleTimeEditorItem = ({
   item,
@@ -23,8 +27,9 @@ const ScheduleTimeEditorItem = ({
   onChange: (item: Schedule) => void;
 }) => {
   const { isDarkMode } = useTheme();
+
   return (
-    <View className="flex flex-col justify-start items-start p-4 border-b border-light-border dark:border-dark-border gap-4">
+    <View className="flex flex-col justify-start items-start p-4 border-b border-light-border dark:border-dark-border gap-2">
       {/* 予定タイトル・カテゴリ */}
       <View className="flex flex-row justify-start items-center gap-2">
         <CategoryIcon schedule={item} isDarkMode={isDarkMode} />
@@ -37,15 +42,17 @@ const ScheduleTimeEditorItem = ({
           <TouchableOpacity
             onPress={() => {
               if (previousSchedule) {
+                const { from, to } = adjustEndAtWhenReversed(previousSchedule.to!, item.to!);
                 onChange({
                   ...item,
-                  from: previousSchedule.to,
+                  from,
+                  to,
                 });
               }
             }}
           >
             <Text className="text-light-text dark:text-dark-text text-sm px-2 py-1">
-              前の予定から開始時刻を設定
+              前から開始時刻を設定
             </Text>
           </TouchableOpacity>
         )}
@@ -53,29 +60,32 @@ const ScheduleTimeEditorItem = ({
           <TouchableOpacity
             onPress={() => {
               if (nextSchedule) {
+                const { from, to } = adjustStartAtWhenNormal(item.from!, nextSchedule.from!);
                 onChange({
                   ...item,
-                  to: nextSchedule.from,
+                  from,
+                  to,
                 });
               }
             }}
           >
             <Text className="text-light-text dark:text-dark-text text-sm px-2 py-1">
-              次の予定から終了時刻を設定
+              次の開始時刻を設定
             </Text>
           </TouchableOpacity>
         )}
       </View>
       {/* 日時 */}
-      <View className="flex flex-row justify-center items-center gap-2">
+      <View className="flex flex-row justify-between items-center w-full gap-2">
         <DatePicker
           mode="datetime"
           value={dayjs(item.from)}
           onChange={(date) => {
-            onChange({
-              ...item,
-              from: date.format('YYYY-MM-DDTHH:mm:00.000Z'),
-            });
+            const { from, to } = adjustEndAtWhenReversed(
+              date.format('YYYY-MM-DDTHH:mm:00.000Z'),
+              item.to!
+            );
+            onChange({ ...item, from, to });
           }}
         />
         <Text className="text-light-text dark:text-dark-text"> ― </Text>
@@ -83,10 +93,11 @@ const ScheduleTimeEditorItem = ({
           mode="datetime"
           value={dayjs(item.to)}
           onChange={(date) => {
-            onChange({
-              ...item,
-              to: date.format('YYYY-MM-DDTHH:mm:00.000Z'),
-            });
+            const { from, to } = adjustStartAtWhenNormal(
+              item.from!,
+              date.format('YYYY-MM-DDTHH:mm:00.000Z')
+            );
+            onChange({ ...item, from, to });
           }}
         />
       </View>
@@ -116,7 +127,6 @@ export default function ScheduleTimeEditor() {
    * @param item {Schedule} スケジュール
    */
   const handleChangeSchedule = (item: Schedule) => {
-    console.log(item);
     setCurrentPlan({
       ...currentPlan,
       schedule: currentPlan?.schedule.map((s: Schedule) => (s.uid == item.uid ? item : s)),
@@ -128,6 +138,7 @@ export default function ScheduleTimeEditor() {
    */
   const handleSave = () => {
     if (!currentPlan) return;
+    console.log(JSON.stringify(currentPlan, null, 2));
     updatePlan(currentPlan, session)
       .then(() => {
         router.back();

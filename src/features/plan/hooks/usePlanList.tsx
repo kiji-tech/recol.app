@@ -58,7 +58,7 @@ export const usePlanList = (plan?: Plan | null, setPlan?: (plan: Plan) => void) 
           setPlanLoading(false);
         });
     },
-    [session, plan, setPlan]
+    [session, setPlan]
   );
 
   const clearStoragePlan = async () => {
