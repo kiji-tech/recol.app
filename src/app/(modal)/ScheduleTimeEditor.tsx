@@ -103,7 +103,12 @@ export default function ScheduleTimeEditor() {
   // === Member ===
   const { plan } = usePlan();
   const { session } = useAuth();
-  const [currentPlan, setCurrentPlan] = useState<Plan | null>(plan);
+  const [currentPlan, setCurrentPlan] = useState<Plan | null>({
+    ...plan,
+    schedule: plan?.schedule
+      ? plan?.schedule.sort((a: Schedule, b: Schedule) => dayjs(a.from).diff(dayjs(b.from)))
+      : [],
+  } as Plan);
 
   // === Method ===
   /**
@@ -139,9 +144,7 @@ export default function ScheduleTimeEditor() {
       <Header title="時間をまとめて編集" onBack={() => router.back()} />
       <View className="flex-1 max-h-[80%]">
         <FlatList
-          data={currentPlan?.schedule.sort((a: Schedule, b: Schedule) =>
-            dayjs(a.from).diff(dayjs(b.from))
-          )}
+          data={currentPlan?.schedule}
           renderItem={({ item, index }) => (
             <ScheduleTimeEditorItem
               item={item}
