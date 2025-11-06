@@ -32,7 +32,7 @@ const ScheduleTimeEditorItem = ({
   const { isDarkMode } = useTheme();
 
   return (
-    <View className="flex flex-col justify-start items-start p-4 border-b border-light-border dark:border-dark-border gap-2">
+    <View className="flex flex-col justify-start items-start p-4  gap-2">
       {/* 予定タイトル・カテゴリ */}
       <View className="flex flex-row justify-start items-center gap-2">
         <CategoryIcon schedule={item} isDarkMode={isDarkMode} />
@@ -162,7 +162,7 @@ export default function ScheduleTimeEditor() {
     <>
       <BackgroundView>
         <Header title="時間をまとめて編集" onBack={() => router.back()} />
-        <View className="flex-1 max-h-[80%]">
+        <View className="flex-1">
           <FlatList
             data={currentPlan?.schedule}
             renderItem={({ item, index }) => (
@@ -182,13 +182,15 @@ export default function ScheduleTimeEditor() {
           />
           {isLoading && <MaskLoading />}
         </View>
-        <Button
-          text="保存"
-          onPress={() => handleSave()}
-          disabled={isLoading}
-          loading={isLoading}
-          theme="theme"
-        />
+        <View className="my-4">
+          <Button
+            text="保存"
+            onPress={() => handleSave()}
+            disabled={isLoading}
+            loading={isLoading}
+            theme="theme"
+          />
+        </View>
       </BackgroundView>
       <ToastManager />
     </>
