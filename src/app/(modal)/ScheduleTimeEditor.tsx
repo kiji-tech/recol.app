@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BackgroundView, DatePicker, Header } from '@/src/components';
-import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Schedule } from '@/src/features/schedule';
@@ -14,6 +14,9 @@ import {
   adjustEndAtWhenReversed,
   adjustStartAtWhenNormal,
 } from '@/src/features/schedule/libs/scheduleTime';
+import { LogUtil } from '@/src/libs/LogUtil';
+import ToastManager, { Toast } from 'toastify-react-native';
+import MaskLoading from '@/src/components/MaskLoading';
 
 const ScheduleTimeEditorItem = ({
   item,
@@ -120,6 +123,7 @@ export default function ScheduleTimeEditor() {
       ? plan?.schedule.sort((a: Schedule, b: Schedule) => dayjs(a.from).diff(dayjs(b.from)))
       : [],
   } as Plan);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // === Method ===
   /**
@@ -138,41 +142,55 @@ export default function ScheduleTimeEditor() {
    */
   const handleSave = () => {
     if (!currentPlan) return;
-    console.log(JSON.stringify(currentPlan, null, 2));
+    setIsLoading(true);
     updatePlan(currentPlan, session)
       .then(() => {
         router.back();
       })
       .catch((e) => {
         if (e && e.message) {
-          Alert.alert(e.message);
+          LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+          Toast.warn(e.message);
         }
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
   return (
-    <BackgroundView>
-      <Header title="時間をまとめて編集" onBack={() => router.back()} />
-      <View className="flex-1 max-h-[80%]">
-        <FlatList
-          data={currentPlan?.schedule}
-          renderItem={({ item, index }) => (
-            <ScheduleTimeEditorItem
-              item={item}
-              onChange={handleChangeSchedule}
-              previousSchedule={index > 0 ? currentPlan?.schedule[index - 1] : undefined}
-              nextSchedule={
-                index < (currentPlan?.schedule.length ?? 0) - 1
-                  ? currentPlan?.schedule[index + 1]
-                  : undefined
-              }
-            />
-          )}
-          keyExtractor={(item) => item.uid}
-          showsVerticalScrollIndicator={false}
+    <>
+      <BackgroundView>
+        <Header title="時間をまとめて編集" onBack={() => router.back()} />
+        <View className="flex-1 max-h-[80%]">
+          <FlatList
+            data={currentPlan?.schedule}
+            renderItem={({ item, index }) => (
+              <ScheduleTimeEditorItem
+                item={item}
+                onChange={handleChangeSchedule}
+                previousSchedule={index > 0 ? currentPlan?.schedule[index - 1] : undefined}
+                nextSchedule={
+                  index < (currentPlan?.schedule.length ?? 0) - 1
+                    ? currentPlan?.schedule[index + 1]
+                    : undefined
+                }
+              />
+            )}
+            keyExtractor={(item) => item.uid}
+            showsVerticalScrollIndicator={false}
+          />
+          {isLoading && <MaskLoading />}
+        </View>
+        <Button
+          text="保存"
+          onPress={() => handleSave()}
+          disabled={isLoading}
+          loading={isLoading}
+          theme="theme"
         />
-      </View>
-      <Button text="保存" onPress={() => handleSave()} />
-    </BackgroundView>
+      </BackgroundView>
+      <ToastManager />
+    </>
   );
 }
