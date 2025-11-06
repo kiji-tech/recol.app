@@ -2,10 +2,16 @@ import { Context } from 'jsr:@hono/hono';
 import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
-import { Plan, UpdatePlanRequest, ValidationResult, DatabaseResult } from '../libs/types.ts';
+import {
+  Plan,
+  UpdatePlanRequest,
+  ValidationResult,
+  DatabaseResult,
+  Schedule,
+} from '../libs/types.ts';
 
 const validateUpdateRequest = async (c: Context): Promise<ValidationResult<UpdatePlanRequest>> => {
-  const { uid, title, memo } = await c.req.json();
+  const { uid, title, memo, schedule } = await c.req.json();
 
   if (!uid || typeof uid !== 'string') {
     LogUtil.log('プラン更新リクエスト: UIDが無効', { level: 'warn' });
@@ -25,7 +31,7 @@ const validateUpdateRequest = async (c: Context): Promise<ValidationResult<Updat
     };
   }
 
-  return { isValid: true, data: { uid, title, memo }, error: null };
+  return { isValid: true, data: { uid, title, memo, schedule: schedule || [] }, error: null };
 };
 
 const updatePlanRecord = async (
@@ -56,6 +62,26 @@ const updatePlanRecord = async (
   return { data, error: null };
 };
 
+/**
+ * スケジュールを更新する
+ * @param supabase {SupabaseClient} Supabaseクライアント
+ * @param uid {string} プランUID
+ * @param schedule {Schedule[]} スケジュール
+ * @return {Promise<DatabaseResult<Schedule[]>>} スケジュール更新結果
+ */
+const updateScheduleRecord = async (
+  supabase: SupabaseClient,
+  schedule: Schedule[]
+): Promise<DatabaseResult<Schedule[]>> => {
+  if (!schedule || schedule.length === 0) return { data: null, error: null };
+
+  const { data, error } = await supabase
+    .from('schedule')
+    .upsert(schedule, { onConflict: 'uid' })
+    .select('*');
+  return { data, error };
+};
+
 export const updatePlan = async (
   c: Context,
   supabase: SupabaseClient,
@@ -80,6 +106,16 @@ export const updatePlan = async (
     return c.json({ message: getMessage('C007', ['プラン']), code: 'C007' }, 500);
   }
 
+  // scheduleを更新
+  const { data: updateScheduleData, error: updateScheduleError } = await updateScheduleRecord(
+    supabase,
+    validation.data!.schedule || []
+  );
+
+  if (updateScheduleError) {
+    return c.json({ message: getMessage('C007', ['スケジュール']), code: 'C007' }, 500);
+  }
+
   LogUtil.log('[PUT] plan 完了', { level: 'info' });
-  return c.json(data);
+  return c.json({ ...data, schedule: updateScheduleData });
 };
