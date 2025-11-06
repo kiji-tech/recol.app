@@ -59,7 +59,7 @@ export default function PlanCreator() {
         }}
       />
       {/* タイトル */}
-      <View className="w-full flex flex-col justify-start items-start">
+      <View className="w-full flex flex-col justify-start items-start gap-4">
         <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
           予定の題目を入力してください｡
         </Text>
@@ -72,21 +72,19 @@ export default function PlanCreator() {
           onChangeText={(text) => setTitle(text)}
           editable={!isLoading}
         />
-      </View>
-      <View className="w-full flex flex-col justify-start items-start">
-        <Text className="text-lg font-bold text-light-text dark:text-dark-text">メモ</Text>
-        <TextInput
-          multiline={true}
-          placeholder="メモを入力してください｡"
-          placeholderTextColor="gray"
-          className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
-                        border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
-          onChangeText={(text) => setMemo(text)}
-          editable={!isLoading}
-        />
-      </View>
+        <View className="w-full flex flex-col justify-start items-start">
+          <Text className="text-lg font-bold text-light-text dark:text-dark-text">メモ</Text>
+          <TextInput
+            multiline={true}
+            placeholder="メモを入力してください｡"
+            placeholderTextColor="gray"
+            className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
+            border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
+            onChangeText={(text) => setMemo(text)}
+            editable={!isLoading}
+          />
+        </View>
 
-      <View>
         <Text className="text-lg font-bold text-light-text dark:text-dark-text">
           友達を追加する
         </Text>
@@ -97,8 +95,6 @@ export default function PlanCreator() {
           disabled={isLoading}
           loading={isLoading}
         />
-      </View>
-      <View className="w-full justify-center">
         <Button
           theme="theme"
           text="登録する"

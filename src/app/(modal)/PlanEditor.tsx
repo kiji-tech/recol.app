@@ -51,7 +51,7 @@ export default function PlanEditor() {
         }}
       />
       {/* タイトル */}
-      <View className="w-full flex flex-col justify-start items-start">
+      <View className="w-full flex flex-col justify-start items-start gap-4">
         <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
           予定の題目を入力してください｡
         </Text>
@@ -64,26 +64,22 @@ export default function PlanEditor() {
                 `}
           onChangeText={(text) => setPlan({ ...plan, title: text } as Plan)}
         />
-      </View>
-      <View className="w-full flex flex-col justify-start items-start">
-        <Text className="text-lg font-bold text-light-text dark:text-dark-text">メモ</Text>
-        <TextInput
-          value={plan?.memo || ''}
-          multiline={true}
-          placeholder="メモを入力してください｡"
-          placeholderTextColor="gray"
-          className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
-                        border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
-          onChangeText={(text) => setPlan({ ...plan, memo: text } as Plan)}
-        />
-      </View>
-      <View>
+        <View className="w-full flex flex-col justify-start items-start">
+          <Text className="text-lg font-bold text-light-text dark:text-dark-text">メモ</Text>
+          <TextInput
+            value={plan?.memo || ''}
+            multiline={true}
+            placeholder="メモを入力してください｡"
+            placeholderTextColor="gray"
+            className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
+            border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
+            onChangeText={(text) => setPlan({ ...plan, memo: text } as Plan)}
+          />
+        </View>
         <Text className="text-lg font-bold text-light-text dark:text-dark-text">
           友達を追加する
         </Text>
         <Button theme="info" text="選択" onPress={() => alert('準備中')} />
-      </View>
-      <View className="w-full justify-center">
         <Button theme="theme" text="登録する" onPress={handlerSubmit} />
       </View>
     </BackgroundView>
