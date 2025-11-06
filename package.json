@@ -18,6 +18,7 @@
         "postinstall": "node postinstall.mjs",
         "functions:dev": "npx supabase functions serve --env-file .env --no-verify-jwt",
         "functions:deploy": "npx supabase functions deploy",
+        "functions:test": "deno test --allow-all supabase/functions/tests/*.test.ts --no-check",
         "generate:types": "export $(cat .env | grep -v \"#\" | xargs) && npx supabase gen types typescript --project-id ${EXPO_PUBLIC_SUPABASE_REFERENCE_ID} --schema public > src/libs/database.types.ts",
         "generate:types:local": "export $(cat .env | grep -v \"#\" | xargs) &&  npx supabase gen types --lang typescript --local --schema public > src/libs/database.types.ts && cp src/libs/database.types.ts supabase/functions/libs/database.types.ts",
         "test": "jest --coverage",

@@ -94,3 +94,7 @@ google-services.*
 google-services-web.json
 service-account-key.json
 jwtEncode.js
+
+# Deno
+deno.lock
+/supabase/functions/**/deno.lock

@@ -1,8 +1,8 @@
 import { Context, Hono } from 'jsr:@hono/hono';
 import { generateSupabase } from '../libs/supabase.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
-
-const app = new Hono().basePath('/cache');
+const BASE_PATH = '/cache';
+const app = new Hono().basePath(BASE_PATH);
 const TTL = 60 * 60 * 24 * 25; // 25日
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
 const FiledMaskValue =

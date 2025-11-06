@@ -1,0 +1,7 @@
+{
+    "nodeModulesDir": "auto",
+    "imports": {
+        "dayjs": "npm:dayjs@1.11.13",
+        "dayjs/utc": "npm:dayjs/plugin/utc"
+    }
+}
