@@ -14,7 +14,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
   const { profile } = useAuth();
   const isIOS = Platform.OS === 'ios';
   const LARGE_ICON_SIZE = 24;
-  const SMALL_ICON_SIZE = 20;
+  const SMALL_ICON_SIZE = 18;
 
   // === Render ===
   return (

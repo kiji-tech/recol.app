@@ -29,7 +29,7 @@ export default function ModalLayout({ children, visible = true, size, onClose }:
     bg-light-background dark:bg-dark-border`}
     >
       <BackgroundView>
-        <TouchableOpacity onPress={onClose}>
+        <TouchableOpacity onPress={onClose} className="mb-4">
           <Text className="text-xl text-light-text dark:text-dark-text">Close</Text>
         </TouchableOpacity>
         {children}

@@ -17,9 +17,8 @@ import { BackHandler } from 'react-native';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
-  const { plan, planLoading } = usePlan();
+  const { plan, setPlan, planLoading } = usePlan();
   const { session } = useAuth();
-  const [viewPlan, setViewPlan] = useState<Plan | null>(plan || null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // === Method ===
@@ -47,7 +46,7 @@ export default function ScheduleScreen(): ReactNode {
         if (!data) {
           Toast.warn('プランの情報が取得できませんでした');
         }
-        setViewPlan({ ...data } as Plan);
+        setPlan({ ...data } as Plan);
       })
       .catch((e) => {
         if (e && e.message.includes('Aborted')) {
@@ -89,7 +88,7 @@ export default function ScheduleScreen(): ReactNode {
   /**
    * 初回ロード
    */
-  useFocusEffect(useCallback(initView, [plan, session]));
+  useFocusEffect(useCallback(initView, [session]));
 
   /**
    * バックボタンを押した場合は､画面を閉じるイベントハンドラを追加
@@ -110,17 +109,17 @@ export default function ScheduleScreen(): ReactNode {
       {/* ヘッダー */}
       <Header
         onBack={() => router.back()}
-        rightComponent={viewPlan ? <ScheduleMenu plan={viewPlan} /> : undefined}
+        rightComponent={plan ? <ScheduleMenu plan={plan} /> : undefined}
       />
       {/* Plan Information */}
       <ScrollView showsVerticalScrollIndicator={false}>
-        {viewPlan && (
+        {plan && (
           <>
-            <PlanInformation plan={viewPlan} />
+            <PlanInformation plan={plan} />
             {/* Schedule */}
             <ScheduleComponents
               isLoading={planLoading || isLoading}
-              plan={viewPlan}
+              plan={plan}
               onDelete={handleDeleteSchedule}
             />
           </>
