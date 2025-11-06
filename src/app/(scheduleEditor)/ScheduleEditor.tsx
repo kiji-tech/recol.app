@@ -15,25 +15,25 @@ import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { FontAwesome5 } from '@expo/vector-icons';
 import CategorySelector from '../../features/schedule/components/CategorySelector';
+import { findRelatedScheduleList } from '@/src/features/schedule/libs/findRelatedSchedule';
+import RelatedScheduleModal from '@/src/features/schedule/components/RelatedScheduleModal';
 
 export default function ScheduleEditor() {
   // === Member ===
-  const { editSchedule, setEditSchedule, fetchPlan } = usePlan();
+  const { plan, editSchedule, setEditSchedule } = usePlan();
   const { session, profile } = useAuth();
   const [openMapModal, setOpenMapModal] = useState(false);
+  const [openRelatedScheduleModal, setOpenRelatedScheduleModal] = useState(false);
+  const [relatedScheduleList, setRelatedScheduleList] = useState<Schedule[]>([]);
+  const orgSchedule = plan!.schedule.find((s) => s.uid == editSchedule?.uid);
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
 
   // === Method ===
-  /** スケジュールの編集 */
-  const handleScheduleSubmit = async () => {
-    if (!editSchedule) return;
-    const schedule = {
-      ...editSchedule,
-      from: dayjs(editSchedule.from).format(DATE_FORMAT),
-      to: dayjs(editSchedule.to).format(DATE_FORMAT),
-    } as Schedule;
-
-    await upsertSchedule(schedule, session)
+  /**
+   * スケジュールを保存する
+   */
+  const saveSchedule = async (updateSchedule: Schedule) => {
+    await upsertSchedule(updateSchedule, session)
       .then(async () => {
         LogUtil.log('complete update schedule', { level: 'info' });
         // 通知処理の見直し
@@ -41,10 +41,6 @@ export default function ScheduleEditor() {
           editSchedule as Schedule,
           profile?.enabled_schedule_notification ?? false
         );
-
-        // プランの再取得
-        await fetchPlan();
-        router.back();
       })
       .catch((e) => {
         if (e && e.message) {
@@ -53,19 +49,86 @@ export default function ScheduleEditor() {
       });
   };
 
-  /** マップから選択した場所を追加 */
+  /**
+   * スケジュールの編集 イベントハンドラ
+   */
+  const handleScheduleSubmit = async () => {
+    if (!plan || !editSchedule) return;
+    const relatedScheduleList = findRelatedScheduleList(plan!, editSchedule, orgSchedule);
+    const isChangedDate =
+      dayjs(editSchedule.from).diff(dayjs(orgSchedule?.from)) != 0 ||
+      dayjs(editSchedule.to).diff(dayjs(orgSchedule?.to)) != 0;
+    // 関連スケジュールがある場合は確認モーダルを表示して一緒に編集してもらう
+    if (
+      isChangedDate &&
+      orgSchedule &&
+      plan.schedule.length > 0 &&
+      relatedScheduleList.length > 0
+    ) {
+      setRelatedScheduleList(relatedScheduleList);
+      setOpenRelatedScheduleModal(true);
+      return;
+    }
+
+    const updateSchedule = {
+      ...editSchedule,
+      from: dayjs(editSchedule.from).format(DATE_FORMAT),
+      to: dayjs(editSchedule.to).format(DATE_FORMAT),
+    } as Schedule;
+    await saveSchedule(updateSchedule).then(() => {
+      // プランの再取得
+      router.back();
+    });
+  };
+
+  /**
+   * マップから選択した場所を追加
+   */
   const handleSelectedPlaceList = () => {
     setOpenMapModal(false);
   };
 
-  /** マップを表示する */
+  /**
+   * マップを表示する
+   */
   const handleMapModal = () => {
     setOpenMapModal(true);
   };
 
-  /** 戻る */
+  /**
+   * 戻る イベントハンドラ
+   */
   const handleBack = () => {
     router.back();
+  };
+
+  /**
+   * 関連スケジュールを保存する
+   * @param list {Schedule[]} 関連スケジュールリスト
+   * @returns {Promise<void>}
+   */
+  const handleSubmitRelatedScheduleList = async (list: Schedule[]) => {
+    if (!plan || !editSchedule) return;
+    const relatedScheduleList = findRelatedScheduleList(plan!, editSchedule, orgSchedule);
+    if (plan.schedule.length > 0 && relatedScheduleList.length > 0) {
+      setRelatedScheduleList(relatedScheduleList);
+      setOpenRelatedScheduleModal(true);
+      return;
+    }
+    setOpenRelatedScheduleModal(false);
+    setRelatedScheduleList([]);
+
+    for (const s of list) {
+      await saveSchedule(s);
+    }
+  };
+
+  /**
+   * 関連スケジュール確認モーダルを閉じる
+   */
+  const handleCloseRelatedScheduleModal = () => {
+    setOpenRelatedScheduleModal(false);
+    setRelatedScheduleList([]);
   };
 
   // === Effect ===
@@ -180,6 +243,14 @@ export default function ScheduleEditor() {
       </BackgroundView>
       {/* マップモーダル */}
       {openMapModal && <MapModal isOpen={openMapModal} onClose={handleSelectedPlaceList} />}
+      {/* 関連スケジュール確認モーダル */}
+      <RelatedScheduleModal
+        isOpen={openRelatedScheduleModal}
+        onSubmit={handleSubmitRelatedScheduleList}
+        onClose={handleCloseRelatedScheduleModal}
+        relatedScheduleList={relatedScheduleList}
+        orgSchedule={orgSchedule}
+      />
     </>
   );
 }
