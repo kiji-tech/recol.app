@@ -79,6 +79,7 @@
         "react-dom": "19.0.0",
         "react-i18next": "^15.5.3",
         "react-native": "0.79.6",
+        "react-native-autolink": "^4.2.0",
         "react-native-dotenv": "^3.4.11",
         "react-native-elements": "^3.4.3",
         "react-native-gesture-handler": "~2.24.0",
