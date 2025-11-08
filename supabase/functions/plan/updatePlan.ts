@@ -71,13 +71,22 @@ const updatePlanRecord = async (
  */
 const updateScheduleRecord = async (
   supabase: SupabaseClient,
-  schedule: Schedule[]
+  scheduleList: (Schedule & { place_list: { id: string }[] })[]
 ): Promise<DatabaseResult<Schedule[]>> => {
-  if (!schedule || schedule.length === 0) return { data: null, error: null };
+  if (!scheduleList || scheduleList.length === 0) return { data: null, error: null };
+
+  const updateData = scheduleList.map((schedule) => {
+    return {
+      ...schedule,
+      place_list: schedule.place_list
+        ? schedule.place_list.map((place: { id: string }) => place.id)
+        : [],
+    } as Schedule;
+  });
 
   const { data, error } = await supabase
     .from('schedule')
-    .upsert(schedule, { onConflict: 'uid' })
+    .upsert(updateData, { onConflict: 'uid' })
     .select('*');
   return { data, error };
 };
