@@ -199,6 +199,7 @@ export default function ScheduleEditor() {
                     description: text,
                   } as Schedule);
                 }}
+                autoCapitalize="none"
               />
             </View>
 

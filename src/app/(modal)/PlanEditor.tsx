@@ -74,6 +74,7 @@ export default function PlanEditor() {
             className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
             border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
             onChangeText={(text) => setPlan({ ...plan, memo: text } as Plan)}
+            autoCapitalize="none"
           />
         </View>
         <Text className="text-lg font-bold text-light-text dark:text-dark-text">
