@@ -137,7 +137,9 @@
             "reactNativeDirectoryCheck": {
                 "listUnknownPackages": false,
                 "exclude": [
-                    "react-native-image-zoom-viewer"
+                    "react-native-image-zoom-viewer",
+                    "react-native-autolink",
+                    "react-native-progress"
                 ]
             }
         }
