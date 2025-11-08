@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { BackgroundView, Button } from '@/src/components';
 import { useAuth } from '@/src/features/auth';
 import { router, useFocusEffect } from 'expo-router';
-import { Text, View, ScrollView } from 'react-native';
+import { Text, View, ScrollView, Platform } from 'react-native';
 import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts/PlanContext';
 import Constants from 'expo-constants';
@@ -12,6 +12,7 @@ import ScheduleNotification from '@/src/features/auth/components/Setting/Schedul
 import DevelopmentBar from '@/src/features/auth/components/DevelopmentBar';
 import ProfileAvatar from '@/src/features/profile/components/ProfileAvatar';
 import PlanComponent from '@/src/features/plan/components/PlanComponent';
+import Share from 'react-native-share';
 
 // TODO: 将来的にはDB化
 // const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
@@ -37,6 +38,22 @@ export default function Settings() {
     router.replace('/(auth)/SignIn');
     await clearStoragePlan();
     await logout();
+  };
+
+  // アプリからデータを送信
+  const handleShareTwitter = async () => {
+    // 共有オプション
+    const shareOptions = {
+      title: 'Re:CoL',
+      message:
+        'カフェ行きたいってなったとき、候補がたくさんあってまとめるのがめんどいってことありませんか？\nRe:CoLなら、お店をまとめて紐づけることができるので楽ちん！\n詳しくはリンクから！',
+      url: Platform.select({
+        ios: process.env.EXPO_PUBLIC_IOS_STORE,
+        android: process.env.EXPO_PUBLIC_ANDROID_STORE,
+      }),
+    };
+
+    await Share.open(shareOptions);
   };
 
   // === Effect ===
@@ -130,6 +147,13 @@ export default function Settings() {
             icon="mail-outline"
             title="お問い合わせはこちら"
             onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_CONTACT_PAGE_URL}`)}
+          />
+          <SettingItem
+            icon="logo-twitter"
+            title="Twitterで宣伝する"
+            onPress={() => {
+              handleShareTwitter();
+            }}
           />
           <SettingItem
             icon="trash-outline"
