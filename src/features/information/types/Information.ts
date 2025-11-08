@@ -12,6 +12,7 @@ export type InformationType = {
   endAt: string | undefined;
   image: ImageType | undefined;
   detailUrl: string | undefined;
+  platform: string[] | undefined;
 };
 
 /**
@@ -40,6 +41,7 @@ export class Information {
   endAt: string | undefined;
   image: Image | undefined;
   detailUrl: string | undefined;
+  platform: string[] | undefined;
 
   constructor(data: InformationType) {
     this.id = data.id;
@@ -49,5 +51,6 @@ export class Information {
     this.endAt = data.endAt;
     this.image = data.image ? new Image(data.image) : undefined;
     this.detailUrl = data.detailUrl;
+    this.platform = data.platform;
   }
 }
