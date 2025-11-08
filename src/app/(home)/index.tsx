@@ -6,6 +6,7 @@ import { ArticleCard } from '../../features/article/components/ArticleCard';
 import { TodayScheduleList } from '@/src/features/schedule';
 import { useArticles } from '@/src/features/article/hooks/useArticles';
 import { useInformation, InformationModal } from '@/src/features/information';
+import RecentPlanList from '@/src/features/plan/components/recentPlan/RecentPlanList';
 import MaskLoading from '@/src/components/MaskLoading';
 import Title from '@/src/components/Title';
 import { useRouter } from 'expo-router';
@@ -52,6 +53,10 @@ export default function Home() {
           {/* 登録されているスケジ ュールで予定が近いものを5つくらい表示する */}
           <Title text="本日の予定" />
           <TodayScheduleList />
+
+          {/* 直近n日のプラン */}
+          <Title text="直近の予定" />
+          <RecentPlanList />
 
           {/* 新着・おすすめ・旅行先・グッズ */}
           <Title text="新着記事" />
