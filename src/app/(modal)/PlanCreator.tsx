@@ -82,6 +82,7 @@ export default function PlanCreator() {
             border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
             onChangeText={(text) => setMemo(text)}
             editable={!isLoading}
+            autoCapitalize="none"
           />
         </View>
 
