@@ -3,11 +3,15 @@ import dayjs from 'dayjs';
 import { Platform } from 'react-native';
 
 /**
- * お知らせ一覧の取得
- * endAtが今日を過ぎているものは除外する
- * 起動しているプラットフォームでフィルタリングする
+ * お知らせ一覧の取得（ページネーション対応）
+ * @param {number} offset - 取得開始位置
+ * @param {number} limit - 取得件数
+ * @return {Promise<{ informationList: Information[]; totalCount: number }>} お知らせ一覧と総件数
  */
-export async function fetchInformationList() {
+export async function fetchInformationListPaginated(
+  offset: number = 0,
+  limit: number = 10
+): Promise<{ informationList: Information[]; totalCount: number }> {
   // 今日の日付を取得（YYYY-MM-DD形式）
   const todayString = dayjs().format('YYYY-MM-DD');
   // 現在のプラットフォームを取得（"ios"または"android"）
@@ -18,6 +22,10 @@ export async function fetchInformationList() {
   const filters = `endAt[greater_than]${todayString}[or]endAt[not_exists][and]platform[contains]${currentPlatform}[or]platform[not_exists]`;
   const url = new URL(`${process.env.EXPO_PUBLIC_MICROCMS_URI!}/news`);
   url.searchParams.append('filters', filters);
+  url.searchParams.append('offset', offset.toString());
+  url.searchParams.append('limit', limit.toString());
+  // 最新の通知を上から順に表示するため、startAtで降順ソート
+  url.searchParams.append('orders', '-startAt');
 
   const response = await fetch(url, {
     method: 'GET',
@@ -28,6 +36,9 @@ export async function fetchInformationList() {
     throw new Error('Failed to fetch information list');
   }
 
-  const informationList = await response.json();
-  return informationList.contents.map((content: InformationType) => new Information(content));
+  const data = await response.json();
+  const informationList = data.contents.map((content: InformationType) => new Information(content));
+  const totalCount = data.totalCount || 0;
+
+  return { informationList, totalCount };
 }

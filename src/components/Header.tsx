@@ -21,7 +21,7 @@ export default function Header({
   const { isDarkMode } = useTheme();
   const [searchText, setSearchText] = useState<string>('');
   return (
-    <View className="w-full flex flex-row items-center justify-center gap-4 px-2">
+    <View className="w-full flex flex-row items-center justify-center gap-4 px-2 mb-4">
       {/* 戻るボタン */}
       {onBack ? <BackButton onPress={() => onBack()} /> : <View className="w-12 h-12" />}
       {/* タイトル */}

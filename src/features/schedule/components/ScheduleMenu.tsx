@@ -8,7 +8,7 @@ import { Share, View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { usePlan } from '@/src/contexts/PlanContext';
 import dayjs from 'dayjs';
-import {generateShareMessage} from '@/src/features/schedule/libs/generateShareMessage';
+import { generateShareMessage } from '@/src/features/schedule/libs/generateShareMessage';
 
 export default function ScheduleMenu({ plan }: { plan: Plan }) {
   const router = useRouter();
@@ -32,6 +32,10 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
 
+  const handleEditTimePress = () => {
+    router.push(`/(modal)/ScheduleTimeEditor`);
+  };
+
   /**
    * スケジュールを共有する
    */
@@ -45,7 +49,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
   return (
     <Menu>
       <MenuTrigger>
-        <View className="w-10 h-10 bg-light-info dark:bg-dark-info rounded-full flex flex-row items-center justify-center">
+        <View className="w-10 h-10 bg-light-background dark:bg-dark-background rounded-full flex flex-row items-center justify-center">
           <SimpleLineIcons name="options" size={14} color={isDarkMode ? 'white' : 'black'} />
         </View>
       </MenuTrigger>
@@ -82,6 +86,19 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
           }}
           onSelect={() => {
             handleAddPress();
+          }}
+        />
+        <MenuOption
+          text="時間をまとめて編集"
+          customStyles={{
+            optionText: {
+              paddingVertical: 12,
+              paddingHorizontal: 8,
+              color: 'black',
+            },
+          }}
+          onSelect={() => {
+            handleEditTimePress();
           }}
         />
         <MenuOption

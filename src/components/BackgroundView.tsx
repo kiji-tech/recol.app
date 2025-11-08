@@ -10,7 +10,7 @@ type Props = {
 export default function BackgroundView({ children, isTabbar = true }: Props) {
   return (
     <View
-      className={`px-2 flex flex-col justify-start h-full bg-[#f7f7f7] dark:bg-black gap-8 ${isTabbar && isIOS ? 'pt-20' : 'pt-4'}`}
+      className={`flex flex-col justify-start h-full bg-[#f7f7f7] dark:bg-black ${isTabbar && isIOS ? 'pt-20' : 'pt-4'} px-2`}
     >
       {children}
     </View>

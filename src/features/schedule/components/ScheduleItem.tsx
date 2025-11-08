@@ -8,6 +8,8 @@ import { Schedule } from '@/src/features/schedule';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import CategoryIcon from './CategoryIcon';
 import { isTargetTime } from '../libs/isTargetTime';
+import Autolink from 'react-native-autolink';
+import { openUrl } from '@/src/features/article/libs/openBrowser';
 
 type Props = {
   item: Schedule;
@@ -33,9 +35,17 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
         </View>
         {/* 情報詳細 */}
         <View className="flex flex-col gap-2 p-4 ml-4 border-l-[1px] border-light-border dark:border-dark-border">
-          <Text className="text-light-text dark:text-dark-text line-clamp-2">
-            {item.description}
-          </Text>
+          <Autolink
+            text={item.description || ''}
+            linkStyle={{
+              color: isDarkMode ? '#60a5fa' : '#2563eb',
+            }}
+            onPress={openUrl}
+            textProps={{
+              className: 'text-light-text dark:text-dark-text line-clamp-2',
+            }}
+            numberOfLines={2}
+          />
           <View className="flex flex-row justify-between">
             {/* TODO: チェックリスト（将来機能） */}
             {/* <Text className="text-light-text dark:text-dark-text">☑ 0/2 件</Text> */}

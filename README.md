@@ -79,13 +79,15 @@ backend --> db
 src/ ･･･ Expoアプリケーション
 ├ app/ ･･･ スクリーン（ページ）関係
 ├ components/ ･･･ 共通コンポーネント
+├ libs/ ･･･ 共通ライブラリ（supabase､dayjsなど）
 ├ contexts/ ･･･ プロバイダー
-├ entities/ ･･･ モデル
 ├ features/ ･･･ 機能ごとロジックまとめ
+│   ├ (機能名)/components/ ･･･ コンポーネント
 │   ├ (機能名)/apis/ ･･･ API
 │   ├ (機能名)/hooks/ ･･･ useHooks（controller部分）
-│   ├ (機能名)/libs/ ･･･ 機能特有のロジック
-├ theme/ ･･･ 配色などのテーマ関係
+│   ├ (機能名)/libs/ ･･･ ロジック
+│   ├ (機能名)/types/ ･･･ 型定義
+├ themes/ ･･･ 配色などのテーマ関係
 ├ supabase/ ･･･ Supabase関係
 │   ├ functions/ ･･･ EdgeFunctions
 │   ├ migrations/ ･･･ データベースマイグレーションファイル（手動変更禁止）
@@ -93,6 +95,55 @@ src/ ･･･ Expoアプリケーション
 │   ├ seed.sql ･･･ DB構築時の初回SQL実行ファイル
 ├ test/ ･･･ テストコード
 ├ assets/ ･･･ アイコンなどの画像ファイル
+```
+
+## ローカル環境の起動
+
+### Supabase DB EdgeFunctionsの起動
+
+```bash
+# Supabase CLIがインストールされていること
+# supabase linkで該当のSupabaseが紐づいていること
+# Dockerがインストール､起動されていること
+$ supabase start
+
+# ローカルでEdgeFunctionを動かす
+$ pnpm functions:dev
+```
+
+### iOSのプロジェクト作成から実行まで
+
+```bash
+### プロジェクトの作成 / ライブラリのインストール ###
+# ※ pnpm prebuild --clean など､iosプロジェクトを初期化するとStoreKitの設定が消えるので注意
+$ pnpm prebuild -p ios
+$ pnpm ios:install
+
+### 実行 ###
+$ pnpm ios
+
+### アプリの購入テストをする場合 StoreKitの設定 ###
+# 1. assets/Tests.storekitをiosフォルダ下にコピーする
+# 2. xcodeでiosのプロジェクトを開く
+# 3. ｢Product > Scheme > Edit Scheme… > Run > Options > StoreKit Configuration｣でStoreKitを設定する
+
+### iPhone シミュレータを起動 ###
+# 4. pnpm start で Expoを起動しておく
+$ pnpm start
+
+# 5. xcodeの ▶（run） からアプリを起動する
+# 6. xcodeの ｢Debug > StoreKit > Manage Transaction｣ で購入履歴を管理できる
+```
+
+### Androidのプロジェクト作成から実行まで
+
+```bash
+### プロジェクトの作成 / ライブラリのインストール ###
+# ※ Androidにライブラリインストールは不要
+$ pnpm prebuild -p android
+
+# 実行
+$ pnpm android
 ```
 
 ## 作業コマンド
@@ -107,59 +158,17 @@ $ npx expo-doctor
 $ npx expo install --check
 ```
 
-### iOS Androidプロジェクトのbuild packageのupdate
-
-```bash
-# iOS､Android用のプロジェクト作成
-$ pnpm prebuild
-
-# iOS
-$ pnpm ios:install
-
-# android
-$ cd android
-$ ### 調べ中 ###
-```
-
-### ローカル環境の起動
-
-```bash
-# モバイルアプリの起動
-# あらかじめシミュレータが起動できるようになっていること
-$ pnpm ios
-$ pnpm android
-
-
-### iosでStoreをシミュレーションする場合の手順 ###
-# ※ pnpm prebuild --clean など､iosプロジェクトを初期化すると設定が消えるので注意
-# 1. assets/Tests.storekitをiosフォルダに置く
-# 2. xcodeでiosのプロジェクトを開く
-# 3. ｢Product > Scheme > Edit Scheme… > Run > Options > StoreKit Configuration｣でStoreKitを設定する
-# 4. pnpm start で Expoを起動しておく
-# 5. xcodeの ▶（run） からアプリを起動する
-# 6. xcodeの ｢Debug > StoreKit > Manage Transaction｣ で購入履歴を管理できる
-
-### Supabase ###
-# Supabase CLIがインストールされていること
-# supabase linkで該当のSupabaseが紐づいていること
-# Dockerがインストールされていること
-$ supabase start
-
-# ローカルでEdgeFunctionを動かす
-$ pnpm functions:dev
-```
-
 ### Supabase DB Types Generation
 
 ```bash
 # DB - Table情報の更新
-$ npm run generate:types:local
+$ pnpm generate:types:local
 ```
 
 ### テスト
 
 ```bash
-$ npm run test
+$ pnpm test
 ```
 
 ## ビルド・デプロイコマンド
@@ -183,11 +192,10 @@ $ pnpm submit:android
 
 ```bash
 # 全functionsをデプロイ
-$ npm run functions:deploy
+$ pnpm functions:deploy
 
 # 特定のfunctionsをデプロイ
-$ npm run functions:deploy [functions名]
-
+$ pnpm functions:deploy [functions名]
 ```
 
 ### migration関係

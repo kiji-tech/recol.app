@@ -104,6 +104,7 @@ export interface UpdatePlanRequest {
   uid: string;
   title: string;
   memo?: string;
+  schedule?: (Schedule & { place_list: { id: string }[] })[];
 }
 
 export interface DeletePlanRequest {

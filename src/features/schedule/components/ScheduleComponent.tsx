@@ -132,7 +132,7 @@ export default function ScheduleComponents({
   // === Render ===
   return (
     <>
-      <View className="bg-light-background dark:bg-dark-background rounded-xl">
+      <View className="bg-light-background dark:bg-dark-background rounded-xl border-[1px] border-light-border dark:border-dark-border ">
         {scheduleList.map((schedule, index) => {
           const date = dayjs(schedule.from).format(DATE_FORMAT);
           const isDateView =
@@ -179,7 +179,7 @@ export default function ScheduleComponents({
           );
         })}
       </View>
-      <View className="mt-8">
+      <View className="my-8">
         <Button
           text="スケジュールを追加"
           disabled={isLoading}

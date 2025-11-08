@@ -29,7 +29,7 @@ export default function SettingItem({
       <View className="flex-row items-center">
         <Ionicons name={icon} size={24} color={isDanger ? 'red' : isDarkMode ? 'white' : 'black'} />
         <Text
-          className={`ml-3 ${isDanger ? 'text-red-500' : 'text-light-text dark:text-dark-text'}`}
+          className={`ml-3 ${isDanger ? 'text-light-danger dark:text-dark-danger' : 'text-light-text dark:text-dark-text'}`}
         >
           {title}
         </Text>

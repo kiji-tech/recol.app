@@ -105,7 +105,7 @@ export default function MapScreen() {
   // === Render ===
   return (
     <>
-      <View className="w-screen absolute top-0 left-0 h-[70%]">
+      <View className="w-screen absolute top-0 left-0 h-full">
         <Map
           radius={radius}
           region={region || currentRegion}

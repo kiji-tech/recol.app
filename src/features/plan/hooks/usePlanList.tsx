@@ -3,6 +3,7 @@ import { fetchPlanList } from '../index';
 import { useAuth } from '../../auth';
 import { LogUtil } from '../../../libs/LogUtil';
 import { Plan } from '../index';
+import { PlanSortType } from '../types/PlanSortType';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PLAN_LIST_STORAGE_KEY = '@plan_list';
@@ -34,10 +35,10 @@ export const usePlanList = (plan?: Plan | null, setPlan?: (plan: Plan) => void) 
   };
 
   const fetchPlan = useCallback(
-    async (ctrl?: AbortController) => {
+    async (ctrl?: AbortController, sortType?: PlanSortType) => {
       if (!session) return;
       setPlanLoading(true);
-      fetchPlanList(session, ctrl)
+      fetchPlanList(session, ctrl, sortType)
         .then(async (response) => {
           setPlanList(response);
           await setStoragePlan(response);
@@ -58,7 +59,7 @@ export const usePlanList = (plan?: Plan | null, setPlan?: (plan: Plan) => void) 
           setPlanLoading(false);
         });
     },
-    [session, plan, setPlan]
+    [session, setPlan]
   );
 
   const clearStoragePlan = async () => {

@@ -47,7 +47,7 @@ export const ArticleCard: React.FC<{ item: Article }> = ({ item }) => {
           }}
         />
       )}
-      <View className="flex flex-col gap-2 p-4 justify-between flex-1">
+      <View className="flex flex-col gap-2 p-4 justify-between min-h-32">
         {/* 冗談 カテゴリ タイトル */}
         <View className="flex flex-col gap-2">
           {/* カテゴリバッジ */}

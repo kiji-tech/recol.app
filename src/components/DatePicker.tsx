@@ -10,8 +10,9 @@ type Props = {
   value: Dayjs;
   mode?: 'date' | 'time' | 'datetime';
   onChange: (date: Dayjs) => void;
+  disabled?: boolean;
 };
-const DatePicker = ({ label, mode = 'date', value, onChange }: Props) => {
+const DatePicker = ({ label, mode = 'date', value, onChange, disabled = false }: Props) => {
   // === Member ===
   const format = mode === 'date' ? 'YYYY-MM-DD' : mode === 'time' ? 'HH:mm' : 'YYYY-MM-DD HH:mm';
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -33,7 +34,7 @@ const DatePicker = ({ label, mode = 'date', value, onChange }: Props) => {
   return (
     <View className={`flex flex-col justify-start`}>
       {label && <Text className={`text-light-text dark:text-dark-text`}>{label}</Text>}
-      <TouchableOpacity onPress={showDatePicker}>
+      <TouchableOpacity onPress={showDatePicker} disabled={disabled}>
         <View
           className={`border py-4 px-4 rounded-xl bg-light-background dark:bg-dark-background  border-light-border dark:border-dark-border`}
         >
