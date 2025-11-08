@@ -47,14 +47,15 @@ export default function RecentPlanList() {
 
   // === Memo ===
   /**
-   * 直近n日以内のプランをフィルタリング
+   * 未来n日以内のプランをフィルタリング
    */
   const recentPlanList = useMemo(() => {
     if (isDaysLoading) {
       return [];
     }
 
-    const cutoffDate = dayjs().subtract(days, 'day');
+    const now = dayjs();
+    const cutoffDate = dayjs().add(days, 'day');
     return planList.filter((plan: Plan) => {
       if (!plan.schedule || plan.schedule.length === 0) {
         return false;
@@ -72,8 +73,8 @@ export default function RecentPlanList() {
         return false;
       }
 
-      // 現在日時からn日以内かどうかを判定
-      return minScheduleDate.isAfter(cutoffDate);
+      // 当日以降で、かつn日以内かどうかを判定
+      return !minScheduleDate.isBefore(now, 'day') && minScheduleDate.isBefore(cutoffDate);
     });
   }, [planList, days, isDaysLoading]);
 
