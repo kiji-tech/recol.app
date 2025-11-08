@@ -1,7 +1,10 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import Autolink from 'react-native-autolink';
 import Title from '@/src/components/Title';
 import { Plan } from '@/src/features/plan';
+import { useTheme } from '@/src/contexts/ThemeContext';
+import { openUrl } from '../../article/libs/openBrowser';
 
 type Props = {
   plan: Plan | null;
@@ -15,6 +18,7 @@ type Props = {
  */
 export default function PlanInformation({ plan }: Props) {
   // === Member ===
+  const { isDarkMode } = useTheme();
 
   // === Render ===
   if (!plan) return <></>;
@@ -24,7 +28,17 @@ export default function PlanInformation({ plan }: Props) {
       <Title text={plan.title || ''} />
       {/* 予定メモ */}
       {plan.memo ? (
-        <Text className="text-md text-light-text dark:text-dark-text">{plan.memo}</Text>
+        <Autolink
+          text={plan.memo || ''}
+          linkStyle={{
+            color: isDarkMode ? '#60a5fa' : '#2563eb',
+          }}
+          onPress={openUrl}
+          textProps={{
+            className: 'text-light-text dark:text-dark-text line-clamp-2',
+          }}
+          numberOfLines={2}
+        />
       ) : (
         <Text className="text-md text-light-text dark:text-dark-text opacity-70">
           メモはありません.
