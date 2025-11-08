@@ -4,6 +4,7 @@ import { Plan } from '../features/plan';
 import { Schedule } from '../features/schedule';
 import { usePlanList } from '../features/plan/hooks/usePlanList';
 import { usePlan as usePlanHook } from '../features/plan/hooks/usePlan';
+import { PlanSortType } from '../features/plan/types/PlanSortType';
 
 type PlanContextType = {
   planList: Plan[];
@@ -13,7 +14,7 @@ type PlanContextType = {
   editSchedule: Schedule | null;
   setEditSchedule: (schedule: Schedule) => void;
   planLoading: boolean;
-  fetchPlan: (ctrl?: AbortController) => Promise<void>;
+  fetchPlan: (ctrl?: AbortController, sortType?: PlanSortType) => Promise<void>;
   clearStoragePlan: () => void;
 };
 
