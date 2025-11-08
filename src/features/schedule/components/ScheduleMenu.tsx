@@ -49,7 +49,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
   return (
     <Menu>
       <MenuTrigger>
-        <View className="w-10 h-10 bg-light-info dark:bg-dark-info rounded-full flex flex-row items-center justify-center">
+        <View className="w-10 h-10 bg-light-background dark:bg-dark-background rounded-full flex flex-row items-center justify-center">
           <SimpleLineIcons name="options" size={14} color={isDarkMode ? 'white' : 'black'} />
         </View>
       </MenuTrigger>

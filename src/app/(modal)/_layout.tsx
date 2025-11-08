@@ -12,6 +12,10 @@ const RouteLayout = () => {
         name="RemoveAccount"
         options={{ title: 'アカウント削除', headerShown: false }}
       />
+      <Stack.Screen
+        name="InformationList"
+        options={{ title: 'お知らせ一覧', headerShown: false }}
+      />
     </Stack>
   );
 };
