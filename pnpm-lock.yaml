@@ -200,6 +200,9 @@ importers:
       react-native-screens:
         specifier: ~4.11.1
         version: 4.11.1(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      react-native-share:
+        specifier: ^12.2.0
+        version: 12.2.0
       react-native-svg:
         specifier: 15.11.2
         version: 15.11.2(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
@@ -4828,6 +4831,10 @@ packages:
     peerDependencies:
       react: '*'
       react-native: '*'
+
+  react-native-share@12.2.0:
+    resolution: {integrity: sha512-f6MB9BsKa9xVvu0DKbxq5jw4IyYHqQeqUlCNkD8eAFoJx6SD31ObPAn7SQ6NG9AOuhCy6aYuSJYJvx25DaoMZQ==}
+    engines: {node: '>=16'}
 
   react-native-size-matters@0.3.1:
     resolution: {integrity: sha512-mKOfBLIBFBcs9br1rlZDvxD5+mAl8Gfr5CounwJtxI6Z82rGrMO+Kgl9EIg3RMVf3G855a85YVqHJL2f5EDRlw==}
@@ -11502,6 +11509,8 @@ snapshots:
       react-native: 0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0)
       react-native-is-edge-to-edge: 1.2.1(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
       warn-once: 0.1.1
+
+  react-native-share@12.2.0: {}
 
   react-native-size-matters@0.3.1(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0)):
     dependencies:
