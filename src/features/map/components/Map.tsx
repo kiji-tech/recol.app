@@ -175,6 +175,9 @@ export default function Map({
               fillColor={
                 !isDarkMode ? `rgba(59,130,246,${opacity})` : `rgba(96,165,250,${opacity})`
               }
+              strokeColor={
+                !isDarkMode ? `rgba(59,130,246,${opacity})` : `rgba(96,165,250,${opacity})`
+              }
               strokeWidth={6}
             />
           );

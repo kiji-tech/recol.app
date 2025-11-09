@@ -8,10 +8,10 @@ import { Place, Direction, Route } from '@/src/features/map';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DEFAULT_RADIUS } from '@/src/libs/ConstValue';
 import Map from '@/src/features/map/components/Map';
-import ScheduleInfoCard from '../../features/schedule/components/ScheduleInfoCard';
 import { fetchDirection } from '@/src/features/map/libs/direction';
 import { LogUtil } from '@/src/libs/LogUtil';
 import ToastManager, { Toast } from 'toastify-react-native';
+import SelectedMapBottomSheet from '@/src/features/map/components/SelectedMapBottomSheet/SelectedMapBottomSheet';
 
 /**
  * 初期表示
@@ -48,8 +48,8 @@ export default function MapScreen() {
     return DEFAULT_RADIUS * region!.longitudeDelta * 10;
   }, [region]);
   const [routeList, setRouteList] = useState<Route[]>([]);
-  // === Method ===
 
+  // === Method ===
   /**
    * 経路設定処理
    * @param place {Place} 選択した場所
@@ -152,7 +152,7 @@ export default function MapScreen() {
   // === Render ===
   return (
     <>
-      <View className="w-screen absolute top-0 left-0 h-full">
+      <View className="w-screen absolute top-0 left-0 h-[70%]">
         <Map
           radius={radius}
           region={region || currentRegion}
@@ -166,7 +166,12 @@ export default function MapScreen() {
           onSelectedPlace={handleSelectedPlace}
         />
       </View>
-      <View className={`absolute bottom-0 w-screen px-4 pt-2 pb-4 z-50`}>
+      <SelectedMapBottomSheet
+        placeList={placeList}
+        selectedPlace={selectedPlace}
+        onSelectedPlace={handleSelectedInfoCard}
+      />
+      {/* <View className={`absolute bottom-0 w-screen px-4 pt-2 pb-4 z-50`}>
         <ScrollView
           ref={scrollRef}
           horizontal
@@ -182,7 +187,7 @@ export default function MapScreen() {
             />
           ))}
         </ScrollView>
-      </View>
+      </View> */}
       <ToastManager />
     </>
   );
