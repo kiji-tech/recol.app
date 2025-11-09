@@ -14,6 +14,10 @@ import { Schedule } from '@/src/features/schedule';
 import dayjs from 'dayjs';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import ScheduleBottomSheet from '@/src/features/map/components/ScheduleBottomSheet/ScheduleBottomSheet';
+import DirectionBottomSheet from '@/src/features/map/components/DirectionBottomSheet/DirectionBottomSheet';
+import PlaceDetailModal from '@/src/features/map/components/Place/PlaceDetailModal';
+import { LogUtil } from '@/src/libs/LogUtil';
+import { DirectionMode } from '@/src/features/map/types/Direction';
 
 /**
  * 初期表示
@@ -24,15 +28,6 @@ export default function MapScreen() {
   const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
   const { plan } = usePlan();
   const { currentRegion } = useLocation();
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(
-    plan &&
-      plan.schedule &&
-      plan.schedule.length > 0 &&
-      plan.schedule[0].place_list &&
-      plan.schedule[0].place_list.length > 0
-      ? (plan!.schedule[0].place_list[0] as unknown as Place)
-      : null
-  );
   const [region, setRegion] = useState<Region | null>(
     plan &&
       plan.schedule &&
@@ -50,6 +45,7 @@ export default function MapScreen() {
     if (!region) return 0;
     return DEFAULT_RADIUS * region!.longitudeDelta * 10;
   }, [region]);
+  const [isDirectionView, setIsDirectionView] = useState(false);
   const [routeList, setRouteList] = useState<Route[]>([]);
   const [handleBackPress, setHandleBackPress] = useState<NativeEventSubscription | null>(null);
 
@@ -63,18 +59,17 @@ export default function MapScreen() {
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
     viewScheduleList[0] || null
   );
+  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+  const [selectedMode, setSelectedMode] = useState<DirectionMode>('walking');
 
   // === Method ===
   /**
    * 経路設定処理
    * @param place {Place} 選択した場所
-   * @param mode {'walking' | 'driving' | 'transit'} 交通手段
+   * @param mode {DirectionMode} 交通手段
    * @returns {void}
    */
-  const setupDirections = async (
-    place: Place,
-    mode: 'walking' | 'driving' | 'transit' = 'walking'
-  ) => {
+  const setupDirections = async (place: Place, mode?: DirectionMode) => {
     const directions: Direction = await fetchDirection(
       `${currentRegion?.latitude},${currentRegion?.longitude}`,
       `${place.location.latitude},${place.location.longitude}`,
@@ -85,6 +80,7 @@ export default function MapScreen() {
       setRouteList([]);
       return;
     }
+    LogUtil.log(JSON.stringify(directions), { level: 'info' });
     setRouteList(directions.routes);
   };
 
@@ -110,7 +106,6 @@ export default function MapScreen() {
    * @param place {Place} 選択した場所
    */
   const handleSelectedPlace = async (place: Place) => {
-    setupDirections(place);
     setRegion((prev) => {
       return {
         ...(prev || {}),
@@ -122,10 +117,39 @@ export default function MapScreen() {
   };
 
   /**
+   * 経路表示ボトムシート 表示処理
+   * @returns {void}
+   */
+  const handleDirectionView = async () => {
+    if (!selectedPlace) return;
+    await setupDirections(selectedPlace!, selectedMode);
+    setIsDirectionView(true);
+  };
+
+  /**
+   * 経路表示ボトムシート クローズ処理
+   * @returns {void}
+   */
+  const handleCloseDirectionView = () => {
+    setIsDirectionView(false);
+    setRouteList([]);
+  };
+
+  /**
+   * モード選択処理
+   * @param mode {DirectionMode} 選択したモード
+   */
+  const handleSelectedMode = (mode: DirectionMode) => {
+    setSelectedMode(mode);
+    setRouteList([]);
+    setupDirections(selectedPlace!, mode);
+  };
+
+  /**
    * バックボタンを押した場合は､画面を閉じるイベントハンドラを追加
    * @returns {void}
    */
-  const handleAddBackPress = () => {
+  const setupBackPress = () => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       router.back();
       return true;
@@ -136,7 +160,7 @@ export default function MapScreen() {
   // === Effect ===
   useFocusEffect(
     useCallback(() => {
-      handleAddBackPress();
+      setupBackPress();
       return () => handleBackPress?.remove();
     }, [])
   );
@@ -162,15 +186,40 @@ export default function MapScreen() {
           onSelectedPlace={handleSelectedPlace}
         />
       </View>
-      <ScheduleBottomSheet
-        ref={bottomSheetRef}
-        scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
-        scheduleList={viewScheduleList}
-        selectedSchedule={selectedSchedule}
-        selectedPlace={selectedPlace}
-        onSelectedSchedule={handleSelectedSchedule}
-        onSelectedPlace={handleSelectedPlace}
-      />
+      {/* 経路表示ボトムシート */}
+      {isDirectionView && (
+        <DirectionBottomSheet
+          bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
+          selectedPlace={selectedPlace!}
+          selectedMode={selectedMode}
+          onSelectedMode={handleSelectedMode}
+          onClose={handleCloseDirectionView}
+        />
+      )}
+      {!isDirectionView && (
+        <>
+          {/* スケジュールボトムシート */}
+          <ScheduleBottomSheet
+            ref={bottomSheetRef}
+            scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
+            scheduleList={viewScheduleList}
+            selectedSchedule={selectedSchedule}
+            selectedPlace={selectedPlace}
+            onSelectedSchedule={handleSelectedSchedule}
+            onSelectedPlace={handleSelectedPlace}
+          />
+          {/* 場所詳細モーダル */}
+          {selectedPlace && (
+            <PlaceDetailModal
+              place={selectedPlace}
+              isEdit={true}
+              onDirection={handleDirectionView}
+              onClose={() => setSelectedPlace(null)}
+            />
+          )}
+        </>
+      )}
+
       <ToastManager />
     </>
   );

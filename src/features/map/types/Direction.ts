@@ -1,3 +1,4 @@
+export type DirectionMode = 'walking' | 'driving' | 'transit' | 'bicycling';
 export interface Direction {
   geocoded_waypoints: Waypoint[];
   routes: Route[];
