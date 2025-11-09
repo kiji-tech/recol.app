@@ -1,17 +1,12 @@
 import React, { ForwardedRef, forwardRef, useCallback } from 'react';
-import { View } from 'react-native';
 import BottomSheetLayout from '@/src/components/BottomSheetLayout';
 import { Place } from '@/src/features/map/types/Place';
-import BottomSheet, {
-  BottomSheetFlatList,
-  BottomSheetScrollViewMethods,
-} from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { Schedule } from '@/src/features/schedule';
-import BottomSheetHeaderButton from '../BottomSheet/BottomSheetHeaderButton';
-import dayjs from 'dayjs';
-import SelectedMapBottomSheetBody from './SelectedMapBottomSheetBody';
+import SelectedMapBottomSheetBody from './ScheduleBottomSheetBody';
 import { useFocusEffect } from '@react-navigation/native';
 import { SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
+import SelectedMapBottomSheetHeader from './ScheduleBottomSheetHeader';
 
 type Props = {
   scrollRef: React.RefObject<BottomSheetScrollViewMethods>;
@@ -22,7 +17,7 @@ type Props = {
   onSelectedPlace: (place: Place) => void;
 };
 
-const SelectedMapBottomSheet = forwardRef(
+const ScheduleBottomSheet = forwardRef(
   (
     {
       scrollRef,
@@ -43,23 +38,6 @@ const SelectedMapBottomSheet = forwardRef(
      */
     const handleSelectSchedule = (schedule: Schedule) => {
       onSelectedSchedule(schedule);
-    };
-
-    /**
-     * スケジュールヘッダーコンポーネント
-     * @param schedule {Schedule} スケジュール
-     * @returns {React.ReactNode} スケジュールヘッダーコンポーネント
-     */
-    const renderHeaderItem = (schedule: Schedule) => {
-      if (schedule.place_list.length == 0) return <></>;
-      return (
-        <BottomSheetHeaderButton
-          id={schedule.uid}
-          label={`${dayjs(schedule.from).format('HH:mm')} ~ ${dayjs(schedule.to).format('HH:mm')}  ${schedule.title || 'No Title'}`}
-          selected={selectedSchedule?.uid === schedule.uid}
-          onPress={() => handleSelectSchedule(schedule)}
-        />
-      );
     };
 
     /** マップ選択時のスクロール位置計算 */
@@ -89,17 +67,11 @@ const SelectedMapBottomSheet = forwardRef(
     return (
       <BottomSheetLayout ref={ref}>
         {/* ヘッダー */}
-        <View className="px-2 py-4">
-          <BottomSheetFlatList
-            className="w-screen"
-            data={scheduleList}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            scrollToOverflowEnabled={false}
-            contentContainerStyle={{ gap: 8 }}
-            renderItem={({ item }) => renderHeaderItem(item)}
-          />
-        </View>
+        <SelectedMapBottomSheetHeader
+          scheduleList={scheduleList}
+          selectedSchedule={selectedSchedule}
+          onSelectedSchedule={handleSelectSchedule}
+        />
         {/* コンテンツ */}
         <SelectedMapBottomSheetBody
           ref={scrollRef}
@@ -112,6 +84,6 @@ const SelectedMapBottomSheet = forwardRef(
   }
 );
 
-SelectedMapBottomSheet.displayName = 'SelectedMapBottomSheet';
+ScheduleBottomSheet.displayName = 'ScheduleBottomSheet';
 
-export default SelectedMapBottomSheet;
+export default ScheduleBottomSheet;

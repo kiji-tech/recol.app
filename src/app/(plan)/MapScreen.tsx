@@ -8,13 +8,12 @@ import { Place, Direction, Route } from '@/src/features/map';
 import { DEFAULT_RADIUS } from '@/src/libs/ConstValue';
 import Map from '@/src/features/map/components/Map';
 import { fetchDirection } from '@/src/features/map/libs/direction';
-import { LogUtil } from '@/src/libs/LogUtil';
 import ToastManager, { Toast } from 'toastify-react-native';
-import SelectedMapBottomSheet from '@/src/features/map/components/SelectedMapBottomSheet/SelectedMapBottomSheet';
 import { NativeEventSubscription } from 'react-native';
-import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { Schedule } from '@/src/features/schedule';
 import dayjs from 'dayjs';
+import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
+import ScheduleBottomSheet from '@/src/features/map/components/ScheduleBottomSheet/ScheduleBottomSheet';
 
 /**
  * 初期表示
@@ -24,14 +23,6 @@ export default function MapScreen() {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
   const { plan } = usePlan();
-  const viewScheduleList: Schedule[] = useMemo(() => {
-    return (
-      plan?.schedule
-        .filter((schedule) => schedule.place_list?.length > 0)
-        .sort((a, b) => dayjs(a.from).diff(dayjs(b.from))) || []
-    );
-  }, [plan]);
-
   const { currentRegion } = useLocation();
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(
     plan &&
@@ -61,6 +52,14 @@ export default function MapScreen() {
   }, [region]);
   const [routeList, setRouteList] = useState<Route[]>([]);
   const [handleBackPress, setHandleBackPress] = useState<NativeEventSubscription | null>(null);
+
+  const viewScheduleList: Schedule[] = useMemo(() => {
+    return (
+      plan?.schedule
+        .filter((schedule) => schedule.place_list?.length > 0)
+        .sort((a, b) => dayjs(a.from).diff(dayjs(b.from))) || []
+    );
+  }, [plan]);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
     viewScheduleList[0] || null
   );
@@ -97,6 +96,11 @@ export default function MapScreen() {
     setRegion(region);
   };
 
+  /**
+   * スケジュール選択処理
+   * @param schedule {Schedule} 選択したスケジュール
+   * @returns {void}
+   */
   const handleSelectedSchedule = (schedule: Schedule) => {
     setSelectedSchedule(schedule);
   };
@@ -158,7 +162,7 @@ export default function MapScreen() {
           onSelectedPlace={handleSelectedPlace}
         />
       </View>
-      <SelectedMapBottomSheet
+      <ScheduleBottomSheet
         ref={bottomSheetRef}
         scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
         scheduleList={viewScheduleList}

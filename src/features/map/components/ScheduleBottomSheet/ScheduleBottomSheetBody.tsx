@@ -12,7 +12,7 @@ type Props = {
   onSelectedPlace: (place: Place) => void;
 };
 
-const SelectedMapBottomSheetBody = forwardRef(
+const ScheduleBottomSheetBody = forwardRef(
   (
     { selectedSchedule, selectedPlace, onSelectedPlace }: Props,
     ref: ForwardedRef<BottomSheetScrollViewMethods>
@@ -54,6 +54,6 @@ const SelectedMapBottomSheetBody = forwardRef(
   }
 );
 
-SelectedMapBottomSheetBody.displayName = 'SelectedMapBottomSheetBody';
+ScheduleBottomSheetBody.displayName = 'ScheduleBottomSheetBody';
 
-export default SelectedMapBottomSheetBody;
+export default ScheduleBottomSheetBody;
