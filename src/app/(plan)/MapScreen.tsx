@@ -5,20 +5,22 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { Region } from 'react-native-maps';
 import { useLocation } from '@/src/contexts/LocationContext';
 import { Place, Direction, Route } from '@/src/features/map';
-import { ScrollView } from 'react-native-gesture-handler';
 import { DEFAULT_RADIUS } from '@/src/libs/ConstValue';
 import Map from '@/src/features/map/components/Map';
 import { fetchDirection } from '@/src/features/map/libs/direction';
 import { LogUtil } from '@/src/libs/LogUtil';
 import ToastManager, { Toast } from 'toastify-react-native';
 import SelectedMapBottomSheet from '@/src/features/map/components/SelectedMapBottomSheet/SelectedMapBottomSheet';
+import { NativeEventSubscription } from 'react-native';
+import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 
 /**
  * 初期表示
  */
 export default function MapScreen() {
   // === Member ===
-  const scrollRef = useRef<ScrollView>(null);
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
   const { plan } = usePlan();
   const { currentRegion } = useLocation();
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(
@@ -48,6 +50,7 @@ export default function MapScreen() {
     return DEFAULT_RADIUS * region!.longitudeDelta * 10;
   }, [region]);
   const [routeList, setRouteList] = useState<Route[]>([]);
+  const [handleBackPress, setHandleBackPress] = useState<NativeEventSubscription | null>(null);
 
   // === Method ===
   /**
@@ -114,33 +117,22 @@ export default function MapScreen() {
   };
 
   /**
-   * スクロールする際のX軸の計算
-   * @param place {Place} 選択した場所
-   * @returns {number} スクロールする際のX軸の計算
+   * バックボタンを押した場合は､画面を閉じるイベントハンドラを追加
+   * @returns {void}
    */
-  const calcScrollWidth = (place: Place): number => {
-    const CARD_WIDTH = 380;
-    const index = placeList.findIndex((p) => p.id === place.id);
-    return index * CARD_WIDTH;
+  const handleAddBackPress = () => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      router.back();
+      return true;
+    });
+    setHandleBackPress(backHandler);
   };
 
   // === Effect ===
   useFocusEffect(
     useCallback(() => {
-      if (!selectedPlace) {
-        return;
-      }
-      scrollRef.current?.scrollTo({ x: calcScrollWidth(selectedPlace), animated: true });
-    }, [selectedPlace])
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-        router.back();
-        return true;
-      });
-      return () => backHandler.remove();
+      handleAddBackPress();
+      return () => handleBackPress?.remove();
     }, [])
   );
 
@@ -167,7 +159,8 @@ export default function MapScreen() {
         />
       </View>
       <SelectedMapBottomSheet
-        placeList={placeList}
+        ref={bottomSheetRef}
+        scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
         selectedPlace={selectedPlace}
         onSelectedPlace={handleSelectedInfoCard}
       />
