@@ -11,3 +11,8 @@ export * from './components/BottomSheet/MapBottomSheetHeader';
 export * from './components/BottomSheet/MapBottomSheetBody';
 export * from './components/Place/PlaceCard';
 export * from './components/Place/RateViewer';
+
+// === Types ===
+export * from './types/Direction';
+export * from './types/Place';
+export * from './types/MapCategory';

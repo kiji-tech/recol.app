@@ -1,14 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { BackHandler, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Region } from 'react-native-maps';
 import { useLocation } from '@/src/contexts/LocationContext';
-import { Place } from '@/src/features/map/types/Place';
+import { Place, Direction, Route } from '@/src/features/map';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DEFAULT_RADIUS } from '@/src/libs/ConstValue';
 import Map from '@/src/features/map/components/Map';
 import ScheduleInfoCard from '../../features/schedule/components/ScheduleInfoCard';
+import { fetchDirection } from '@/src/features/map/libs/direction';
+import { LogUtil } from '@/src/libs/LogUtil';
+import ToastManager, { Toast } from 'toastify-react-native';
 
 /**
  * 初期表示
@@ -44,12 +47,44 @@ export default function MapScreen() {
     if (!region) return 0;
     return DEFAULT_RADIUS * region!.longitudeDelta * 10;
   }, [region]);
-
+  const [routeList, setRouteList] = useState<Route[]>([]);
   // === Method ===
+
+  /**
+   * 経路設定処理
+   * @param place {Place} 選択した場所
+   * @param mode {'walking' | 'driving' | 'transit'} 交通手段
+   * @returns {void}
+   */
+  const setupDirections = async (
+    place: Place,
+    mode: 'walking' | 'driving' | 'transit' = 'walking'
+  ) => {
+    const directions: Direction = await fetchDirection(
+      `${currentRegion?.latitude},${currentRegion?.longitude}`,
+      `${place.location.latitude},${place.location.longitude}`,
+      mode
+    );
+    if (directions.status !== 'OK' || !directions.routes || directions.routes.length === 0) {
+      Toast.warn('経路の取得に失敗しました｡');
+      setRouteList([]);
+      return;
+    }
+    setRouteList(directions.routes);
+  };
+
+  /**
+   * リージョン変更処理
+   * @param region {Region} 移動したリージョン
+   */
   const handleRegionChange = (region: Region) => {
     setRegion(region);
   };
 
+  /**
+   * 場所選択処理
+   * @param place {Place} 選択した場所
+   */
   const handleSelectedPlace = (place: Place) => {
     setRegion((prev) => {
       return {
@@ -61,7 +96,13 @@ export default function MapScreen() {
     setSelectedPlace(place);
   };
 
-  const handleSelectedInfoCard = (place: Place) => {
+  /**
+   * スケジュール情報カード選択処理
+   * @param place {Place} 選択した場所
+   */
+  const handleSelectedInfoCard = async (place: Place) => {
+    LogUtil.log('handleSelectedInfoCard', { level: 'info', notify: false });
+    setupDirections(place);
     setRegion((prev) => {
       return {
         ...(prev || {}),
@@ -72,8 +113,12 @@ export default function MapScreen() {
     setSelectedPlace(place);
   };
 
-  /** スクロールする際のX軸の計算 */
-  const calcScrollWidth = (place: Place) => {
+  /**
+   * スクロールする際のX軸の計算
+   * @param place {Place} 選択した場所
+   * @returns {number} スクロールする際のX軸の計算
+   */
+  const calcScrollWidth = (place: Place): number => {
     const CARD_WIDTH = 380;
     const index = placeList.findIndex((p) => p.id === place.id);
     return index * CARD_WIDTH;
@@ -89,13 +134,15 @@ export default function MapScreen() {
     }, [selectedPlace])
   );
 
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      router.back();
-      return true;
-    });
-    return () => backHandler.remove();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        router.back();
+        return true;
+      });
+      return () => backHandler.remove();
+    }, [])
+  );
 
   // === Memo ===
   const placeList = useMemo(() => {
@@ -114,6 +161,7 @@ export default function MapScreen() {
           isMarker={true}
           isCallout={true}
           isCenterCircle={false}
+          routeList={routeList}
           onRegionChange={handleRegionChange}
           onSelectedPlace={handleSelectedPlace}
         />
@@ -135,6 +183,7 @@ export default function MapScreen() {
           ))}
         </ScrollView>
       </View>
+      <ToastManager />
     </>
   );
 }
