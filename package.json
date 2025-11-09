@@ -5,7 +5,7 @@
         "check": "npx expo install --check",
         "start": "expo start --dev-client",
         "android": "expo run:android",
-        "android:clear": "npx expo run:ios --no-build-cache",
+        "android:clear": "npx expo run:android --no-build-cache",
         "ios": "expo run:ios",
         "ios:install": "cd ios && rm -f Podfile.lock && pod repo update && pod install --repo-update",
         "ios:clear": "npx expo run:ios --no-build-cache",
