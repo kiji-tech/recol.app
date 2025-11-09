@@ -13,6 +13,8 @@ import ToastManager, { Toast } from 'toastify-react-native';
 import SelectedMapBottomSheet from '@/src/features/map/components/SelectedMapBottomSheet/SelectedMapBottomSheet';
 import { NativeEventSubscription } from 'react-native';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
+import { Schedule } from '@/src/features/schedule';
+import dayjs from 'dayjs';
 
 /**
  * 初期表示
@@ -22,6 +24,14 @@ export default function MapScreen() {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
   const { plan } = usePlan();
+  const viewScheduleList: Schedule[] = useMemo(() => {
+    return (
+      plan?.schedule
+        .filter((schedule) => schedule.place_list?.length > 0)
+        .sort((a, b) => dayjs(a.from).diff(dayjs(b.from))) || []
+    );
+  }, [plan]);
+
   const { currentRegion } = useLocation();
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(
     plan &&
@@ -51,6 +61,9 @@ export default function MapScreen() {
   }, [region]);
   const [routeList, setRouteList] = useState<Route[]>([]);
   const [handleBackPress, setHandleBackPress] = useState<NativeEventSubscription | null>(null);
+  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
+    viewScheduleList[0] || null
+  );
 
   // === Method ===
   /**
@@ -84,27 +97,15 @@ export default function MapScreen() {
     setRegion(region);
   };
 
+  const handleSelectedSchedule = (schedule: Schedule) => {
+    setSelectedSchedule(schedule);
+  };
+
   /**
    * 場所選択処理
    * @param place {Place} 選択した場所
    */
-  const handleSelectedPlace = (place: Place) => {
-    setRegion((prev) => {
-      return {
-        ...(prev || {}),
-        ...place.location,
-        latitude: place.location.latitude,
-      } as Region;
-    });
-    setSelectedPlace(place);
-  };
-
-  /**
-   * スケジュール情報カード選択処理
-   * @param place {Place} 選択した場所
-   */
-  const handleSelectedInfoCard = async (place: Place) => {
-    LogUtil.log('handleSelectedInfoCard', { level: 'info', notify: false });
+  const handleSelectedPlace = async (place: Place) => {
     setupDirections(place);
     setRegion((prev) => {
       return {
@@ -136,11 +137,6 @@ export default function MapScreen() {
     }, [])
   );
 
-  // === Memo ===
-  const placeList = useMemo(() => {
-    return plan?.schedule.flatMap((schedule) => schedule.place_list as unknown as Place[]) || [];
-  }, [plan]);
-
   // === Render ===
   return (
     <>
@@ -148,8 +144,12 @@ export default function MapScreen() {
         <Map
           radius={radius}
           region={region || currentRegion}
-          placeList={placeList}
-          selectedPlaceList={placeList.filter((place) => place.id === selectedPlace?.id)}
+          placeList={selectedSchedule?.place_list || []}
+          selectedPlaceList={
+            selectedSchedule?.place_list?.filter(
+              (place: Place) => place.id === selectedPlace?.id
+            ) || []
+          }
           isMarker={true}
           isCallout={true}
           isCenterCircle={false}
@@ -161,26 +161,12 @@ export default function MapScreen() {
       <SelectedMapBottomSheet
         ref={bottomSheetRef}
         scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
+        scheduleList={viewScheduleList}
+        selectedSchedule={selectedSchedule}
         selectedPlace={selectedPlace}
-        onSelectedPlace={handleSelectedInfoCard}
+        onSelectedSchedule={handleSelectedSchedule}
+        onSelectedPlace={handleSelectedPlace}
       />
-      {/* <View className={`absolute bottom-0 w-screen px-4 pt-2 pb-4 z-50`}>
-        <ScrollView
-          ref={scrollRef}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          alwaysBounceHorizontal={false}
-          snapToAlignment={'end'}
-        >
-          {plan?.schedule.map((schedule) => (
-            <ScheduleInfoCard
-              key={schedule.uid}
-              schedule={schedule}
-              onPress={handleSelectedInfoCard}
-            />
-          ))}
-        </ScrollView>
-      </View> */}
       <ToastManager />
     </>
   );

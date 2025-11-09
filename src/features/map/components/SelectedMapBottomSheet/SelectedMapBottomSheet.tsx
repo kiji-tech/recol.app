@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, useCallback, useMemo, useState } from 'react';
+import React, { ForwardedRef, forwardRef, useCallback } from 'react';
 import { View } from 'react-native';
 import BottomSheetLayout from '@/src/components/BottomSheetLayout';
 import { Place } from '@/src/features/map/types/Place';
@@ -6,7 +6,6 @@ import BottomSheet, {
   BottomSheetFlatList,
   BottomSheetScrollViewMethods,
 } from '@gorhom/bottom-sheet';
-import { usePlan } from '@/src/contexts/PlanContext';
 import { Schedule } from '@/src/features/schedule';
 import BottomSheetHeaderButton from '../BottomSheet/BottomSheetHeaderButton';
 import dayjs from 'dayjs';
@@ -16,25 +15,26 @@ import { SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
 
 type Props = {
   scrollRef: React.RefObject<BottomSheetScrollViewMethods>;
+  scheduleList: Schedule[];
   selectedPlace: Place | null;
+  selectedSchedule: Schedule | null;
+  onSelectedSchedule: (schedule: Schedule) => void;
   onSelectedPlace: (place: Place) => void;
 };
 
 const SelectedMapBottomSheet = forwardRef(
-  ({ scrollRef, selectedPlace, onSelectedPlace }: Props, ref: ForwardedRef<BottomSheet>) => {
+  (
+    {
+      scrollRef,
+      scheduleList,
+      selectedPlace,
+      selectedSchedule,
+      onSelectedSchedule,
+      onSelectedPlace,
+    }: Props,
+    ref: ForwardedRef<BottomSheet>
+  ) => {
     // === Member ===
-    const { plan } = usePlan();
-    const viewScheduleList: Schedule[] = useMemo(() => {
-      return (
-        plan?.schedule
-          .filter((schedule) => schedule.place_list?.length > 0)
-          .sort((a, b) => dayjs(a.from).diff(dayjs(b.from))) || []
-      );
-    }, [plan]);
-    const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
-      viewScheduleList[0] || null
-    );
-
     // ==== Method ===
     /**
      * スケジュールを選択 イベントハンドラ
@@ -42,7 +42,7 @@ const SelectedMapBottomSheet = forwardRef(
      * @returns {void}
      */
     const handleSelectSchedule = (schedule: Schedule) => {
-      setSelectedSchedule(schedule);
+      onSelectedSchedule(schedule);
     };
 
     /**
@@ -92,7 +92,7 @@ const SelectedMapBottomSheet = forwardRef(
         <View className="px-2 py-4">
           <BottomSheetFlatList
             className="w-screen"
-            data={viewScheduleList}
+            data={scheduleList}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             scrollToOverflowEnabled={false}
