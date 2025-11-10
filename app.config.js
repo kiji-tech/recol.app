@@ -2,7 +2,7 @@ export default {
   scheme: 'recol',
   name: 'Re:CoL',
   slug: 'yuru-tabi',
-  version: '1.3.0',
+  version: '1.4.0',
   deepLinking: true,
   icon: './assets/images/icon.png',
   owner: 'shinji5761',
@@ -195,6 +195,15 @@ export default {
           'com.zhiliaoapp.musically',
         ],
         enableBase64ShareAndroid: true,
+      },
+    ],
+    [
+      'expo-localization',
+      {
+        supportedLocales: {
+          ios: ['en', 'ja'],
+          android: ['en', 'ja'],
+        },
       },
     ],
   ],

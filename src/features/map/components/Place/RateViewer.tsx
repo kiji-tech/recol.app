@@ -5,16 +5,14 @@ type Props = {
 };
 
 export default function RateViewer({ rating }: Props) {
+  const ratingStars: string = Array.from({ length: 5 }, (_, index) =>
+    index < rating ? '★' : '☆'
+  ).join('');
+
   return (
-    <View className="flex flex-row">
-      <Text className="text-lg text-light-text dark:text-dark-text">
-        {Array.from({ length: 5 }, (_, index) => (
-          <Text key={index} className="text-lg text-yellow-500 dark:text-yellow-400">
-            {index < rating ? '★' : '☆'}
-          </Text>
-        ))}
-        （{rating || ' - '}）
-      </Text>
+    <View className="flex flex-row items-center">
+      <Text className="text-lg text-light-warn dark:text-dark-warn">{ratingStars}</Text>
+      <Text className="text-lg text-light-text dark:text-dark-text">（{rating || ' - '}）</Text>
     </View>
   );
 }

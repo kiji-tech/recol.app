@@ -113,6 +113,15 @@ const INCLUDED_TYPES: Record<MapCategory, string[]> = {
 };
 const FiledMaskValue = 'places.id';
 
+/**
+ * GoogleMaps APIを使用して近くの場所を検索する
+ * @param session {Session | null} セッション
+ * @param latitude {number} 緯度
+ * @param longitude {number} 経度
+ * @param category {MapCategory} カテゴリ
+ * @param radius {number} 半径
+ * @returns {Promise<Place[]>} 場所リスト
+ */
 export const searchNearby = async (
   session: Session | null,
   latitude: number,

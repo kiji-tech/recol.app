@@ -1,16 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Tables } from '@/src/libs/database.types';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode } from 'react';
 import { Text, View, Alert } from 'react-native';
-import { fetchScheduleList } from '@/src/features/schedule';
 import { useRouter } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { useAuth } from '@/src/features/auth';
 import { Plan } from '@/src/features/plan';
 import { Place } from '@/src/features/map/types/Place';
 import { Schedule } from '@/src/features/schedule';
-import { Toast } from 'toastify-react-native';
-import { LogUtil } from '@/src/libs/LogUtil';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { Button, IconButton } from '@/src/components';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -32,13 +28,14 @@ export default function ScheduleComponents({
   // === Member ===
   const DATE_FORMAT = 'YYYY-MM-DD';
   const { setEditSchedule } = usePlan();
-  const { session } = useAuth();
-  const [scheduleList, setScheduleList] = useState<Schedule[]>([]);
+  const scheduleList = useMemo(() => {
+    return plan?.schedule.sort((a, b) => dayjs(a.from).diff(dayjs(b.from))) as Schedule[];
+  }, [plan]);
   const { isDarkMode } = useTheme();
   const router = useRouter();
 
   // === Method ====
-  const onNewSchedule = (planId: string, from: dayjs.Dayjs, to: dayjs.Dayjs) => {
+  const onNewSchedule = (from: dayjs.Dayjs, to: dayjs.Dayjs) => {
     const newSchedule = {
       plan_id: plan!.uid,
       from: from.format('YYYY-MM-DDTHH:mm:00.000Z'),
@@ -55,14 +52,14 @@ export default function ScheduleComponents({
         ? dayjs(scheduleList[scheduleList.length - 1].to)
         : dayjs().set('minute', 0);
     const to = dayjs(from).add(1, 'hour');
-    onNewSchedule(plan!.uid, from, to);
+    onNewSchedule(from, to);
   };
 
   /** 間のスケジュールから予定を追加する */
   const handleAddScheduleBetween = (schedule: Schedule) => {
     const from = dayjs(schedule.to);
     const to = dayjs(from).add(1, 'hour');
-    onNewSchedule(plan!.uid, from, to);
+    onNewSchedule(from, to);
   };
 
   /** アイテムクリックイベント */
@@ -101,31 +98,6 @@ export default function ScheduleComponents({
   };
 
   // === Effect ===
-  useEffect(() => {
-    if (!plan) return;
-    const ctrl = new AbortController();
-
-    fetchScheduleList(plan.uid, session, ctrl)
-      .then((data) => {
-        if (data) {
-          setScheduleList(data.sort((a, b) => dayjs(a.from).diff(dayjs(b.from))) as Schedule[]);
-        }
-      })
-      .catch((e) => {
-        if (e && e.message.includes('Aborted')) {
-          LogUtil.log('Aborted', { level: 'info' });
-          return;
-        }
-        LogUtil.log(JSON.stringify({ fetchScheduleList: e }), { level: 'error', notify: true });
-        if (e && e.message) {
-          Toast.warn('スケジュールの取得に失敗しました');
-        }
-      });
-
-    return () => {
-      ctrl.abort();
-    };
-  }, [plan]);
 
   // ==== Memo ===
 

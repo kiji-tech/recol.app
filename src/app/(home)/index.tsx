@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { BackgroundView, Header, IconButton } from '@/src/components';
 import { FlatList, ScrollView, View } from 'react-native';
 import { Article } from '@/src/features/article';
@@ -12,19 +12,35 @@ import Title from '@/src/components/Title';
 import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import { useFocusEffect } from '@react-navigation/native';
+import { usePlan } from '@/src/contexts/PlanContext';
 
 export default function Home() {
+  // === Member ===
   const { articles, loading } = useArticles();
+  const { fetchPlan } = usePlan();
   const { currentInformation, isModalVisible, handleCloseModal } = useInformation();
   const router = useRouter();
   const { isDarkMode } = useTheme();
 
+  // === Method ===
   /**
    * 通知一覧画面へ遷移
    */
   const handleNotificationPress = (): void => {
     router.push('/(modal)/InformationList');
   };
+
+  // === Effect ===
+  useFocusEffect(
+    useCallback(() => {
+      const ctrl = new AbortController();
+      fetchPlan(ctrl);
+      return () => {
+        ctrl.abort();
+      };
+    }, [])
+  );
 
   if (loading) {
     return <MaskLoading />;
