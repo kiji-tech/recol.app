@@ -4,7 +4,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Region } from 'react-native-maps';
 import { useLocation } from '@/src/contexts/LocationContext';
-import { Place, Direction, Route } from '@/src/features/map';
+import { Place, Direction, Route, Step } from '@/src/features/map';
 import { DEFAULT_RADIUS } from '@/src/libs/ConstValue';
 import Map from '@/src/features/map/components/Map';
 import { fetchDirection } from '@/src/features/map/libs/direction';
@@ -47,6 +47,7 @@ export default function MapScreen() {
   }, [region]);
   const [isDirectionView, setIsDirectionView] = useState(false);
   const [routeList, setRouteList] = useState<Route[]>([]);
+  const [isLoadingDirection, setIsLoadingDirection] = useState(false);
   const [handleBackPress, setHandleBackPress] = useState<NativeEventSubscription | null>(null);
 
   const viewScheduleList: Schedule[] = useMemo(() => {
@@ -61,6 +62,13 @@ export default function MapScreen() {
   );
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [selectedMode, setSelectedMode] = useState<DirectionMode>('walking');
+  const [selectedStepIndex, setSelectedStepIndex] = useState<number | null>(null);
+  const stepList: Step[] = useMemo(() => {
+    if (!routeList || routeList.length === 0) return [];
+    const [firstRoute] = routeList;
+    if (!firstRoute || !firstRoute.legs || firstRoute.legs.length === 0) return [];
+    return firstRoute.legs.flatMap((leg) => leg.steps || []);
+  }, [routeList]);
 
   // === Method ===
   /**
@@ -70,18 +78,23 @@ export default function MapScreen() {
    * @returns {void}
    */
   const setupDirections = async (place: Place, mode?: DirectionMode) => {
-    const directions: Direction = await fetchDirection(
-      `${currentRegion?.latitude},${currentRegion?.longitude}`,
-      `${place.location.latitude},${place.location.longitude}`,
-      mode
-    );
-    if (directions.status !== 'OK' || !directions.routes || directions.routes.length === 0) {
-      Toast.warn('経路の取得に失敗しました｡');
-      setRouteList([]);
-      return;
+    setIsLoadingDirection(true);
+    try {
+      const directions: Direction = await fetchDirection(
+        `${currentRegion?.latitude},${currentRegion?.longitude}`,
+        `${place.location.latitude},${place.location.longitude}`,
+        mode
+      );
+      if (directions.status !== 'OK' || !directions.routes || directions.routes.length === 0) {
+        Toast.warn('経路の取得に失敗しました｡');
+        setRouteList([]);
+        return;
+      }
+      LogUtil.log(JSON.stringify(directions), { level: 'info' });
+      setRouteList(directions.routes);
+    } finally {
+      setIsLoadingDirection(false);
     }
-    LogUtil.log(JSON.stringify(directions), { level: 'info' });
-    setRouteList(directions.routes);
   };
 
   /**
@@ -114,6 +127,8 @@ export default function MapScreen() {
       } as Region;
     });
     setSelectedPlace(place);
+
+    if (isDirectionView) await setupDirections(place, selectedMode);
   };
 
   /**
@@ -133,6 +148,16 @@ export default function MapScreen() {
   const handleCloseDirectionView = () => {
     setIsDirectionView(false);
     setRouteList([]);
+    setSelectedStepIndex(null);
+  };
+
+  /**
+   * Step選択処理
+   * @param index {number} 選択したStepのインデックス
+   * @returns {void}
+   */
+  const handleStepSelect = (index: number) => {
+    setSelectedStepIndex(index);
   };
 
   /**
@@ -142,6 +167,7 @@ export default function MapScreen() {
   const handleSelectedMode = (mode: DirectionMode) => {
     setSelectedMode(mode);
     setRouteList([]);
+    setSelectedStepIndex(null);
     setupDirections(selectedPlace!, mode);
   };
 
@@ -182,6 +208,7 @@ export default function MapScreen() {
           isCallout={true}
           isCenterCircle={false}
           routeList={routeList}
+          selectedStepIndex={selectedStepIndex}
           onRegionChange={handleRegionChange}
           onSelectedPlace={handleSelectedPlace}
         />
@@ -192,7 +219,11 @@ export default function MapScreen() {
           bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
           selectedPlace={selectedPlace!}
           selectedMode={selectedMode}
+          stepList={stepList}
+          selectedStepIndex={selectedStepIndex}
+          isLoading={isLoadingDirection}
           onSelectedMode={handleSelectedMode}
+          onStepSelect={handleStepSelect}
           onClose={handleCloseDirectionView}
         />
       )}

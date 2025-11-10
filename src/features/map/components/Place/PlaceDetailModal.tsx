@@ -80,7 +80,7 @@ export default function PlaceDetailModal({
                       <MaterialCommunityIcons
                         name={place.websiteUri.includes('instagram') ? 'instagram' : 'web'}
                         size={18}
-                        className={`text-light-text dark:text-dark-text`}
+                        color={isDarkMode ? 'white' : 'black'}
                       />
                     }
                     theme="theme"
@@ -93,7 +93,7 @@ export default function PlaceDetailModal({
                       <FontAwesome5
                         name="map-marker-alt"
                         size={18}
-                        className={`text-light-text dark:text-dark-text`}
+                        color={isDarkMode ? 'white' : 'black'}
                       />
                     }
                     theme="theme"

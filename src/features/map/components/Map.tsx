@@ -12,6 +12,7 @@ import { Place } from '@/src/features/map/types/Place';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { useLocation } from '@/src/contexts/LocationContext';
 import { Route } from '../types/Direction';
+import { decodePolyline } from '../libs/direction';
 
 /** センターサークル */
 const CenterCircle = ({
@@ -98,6 +99,7 @@ export default function Map({
   isCallout = false,
   isCenterCircle = false,
   routeList = [],
+  selectedStepIndex = null,
   onRegionChange = () => void 0,
   onSelectedPlace = () => void 0,
 }: {
@@ -109,6 +111,7 @@ export default function Map({
   isCallout?: boolean;
   isCenterCircle?: boolean;
   routeList?: Route[] | null;
+  selectedStepIndex?: number | null;
   onRegionChange?: (region: Region) => void;
   onSelectedPlace?: (place: Place) => void;
 }) {
@@ -129,23 +132,19 @@ export default function Map({
 
   // === Member ===
   const routeSteps = useMemo(() => {
-    const r: LatLng[][] = [];
-    if (!routeList || routeList.length === 0) return [[]];
+    const stepPolylines: LatLng[][] = [];
+    if (!routeList || routeList.length === 0) return [];
     for (const route of routeList) {
-      const stepList: { lat: number; lng: number }[] = [];
       for (const leg of route.legs) {
-        const startStep = leg.start_location;
-        stepList.push(startStep);
         for (const step of leg.steps) {
-          const endStep = step.end_location;
-          stepList.push(endStep);
+          if (step.polyline?.points) {
+            const decoded = decodePolyline(step.polyline.points);
+            stepPolylines.push(decoded);
+          }
         }
-        const endStep = leg.end_location;
-        stepList.push(endStep);
       }
-      r.push(stepList.map((step) => ({ latitude: step.lat, longitude: step.lng })));
     }
-    return r;
+    return stepPolylines;
   }, [routeList]);
 
   // === Render ===
@@ -164,21 +163,33 @@ export default function Map({
         handleChangeRegion(r, isGesture || false);
       }}
     >
-      {/* 経路マーカー */}
+      {/* 経路マーカー（Stepごと） */}
       {routeSteps.length > 0 &&
-        routeSteps.map((route: LatLng[], index: number) => {
-          const opacity = index != 0 ? 0.5 : 1;
+        routeSteps.map((stepPolyline: LatLng[], index: number) => {
+          const isSelected = selectedStepIndex === index;
           return (
             <Polyline
-              key={`route-${index}`}
-              coordinates={route}
+              key={`step-${index}`}
+              coordinates={stepPolyline}
               fillColor={
-                !isDarkMode ? `rgba(59,130,246,${opacity})` : `rgba(96,165,250,${opacity})`
+                isSelected
+                  ? !isDarkMode
+                    ? 'rgba(239,68,68,1)'
+                    : 'rgba(248,113,113,1)'
+                  : !isDarkMode
+                    ? 'rgba(59,130,246,0.6)'
+                    : 'rgba(96,165,250,0.6)'
               }
               strokeColor={
-                !isDarkMode ? `rgba(59,130,246,${opacity})` : `rgba(96,165,250,${opacity})`
+                isSelected
+                  ? !isDarkMode
+                    ? 'rgba(239,68,68,1)'
+                    : 'rgba(248,113,113,1)'
+                  : !isDarkMode
+                    ? 'rgba(59,130,246,0.6)'
+                    : 'rgba(96,165,250,0.6)'
               }
-              strokeWidth={6}
+              strokeWidth={isSelected ? 10 : 6}
             />
           );
         })}
