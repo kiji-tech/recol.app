@@ -197,6 +197,15 @@ export default {
         enableBase64ShareAndroid: true,
       },
     ],
+    [
+      'expo-localization',
+      {
+        supportedLocales: {
+          ios: ['en', 'ja'],
+          android: ['en', 'ja'],
+        },
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,

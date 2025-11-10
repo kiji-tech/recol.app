@@ -18,6 +18,7 @@ type Props = {
   selected?: boolean;
   onAdd?: (place: Place) => void;
   onRemove?: (place: Place) => void;
+  onDirection?: () => void;
   onClose: () => void;
 };
 export default function PlaceDetailModal({
@@ -26,6 +27,7 @@ export default function PlaceDetailModal({
   selected,
   onAdd,
   onRemove,
+  onDirection,
   onClose,
 }: Props) {
   // === Member ===
@@ -34,6 +36,11 @@ export default function PlaceDetailModal({
   const [imageModalVisible, setImageModalVisible] = useState(false);
 
   // === Method ===
+  /**
+   * 写真を選択した時の処理
+   * @param image {string} 選択した写真のURL
+   * @returns {void}
+   */
   const handleSelectedImage = (image: string) => {
     setSelectedImage(image);
     setImageModalVisible(true);
@@ -73,7 +80,7 @@ export default function PlaceDetailModal({
                       <MaterialCommunityIcons
                         name={place.websiteUri.includes('instagram') ? 'instagram' : 'web'}
                         size={18}
-                        className={`text-light-text dark:text-dark-text`}
+                        color={isDarkMode ? 'white' : 'black'}
                       />
                     }
                     theme="theme"
@@ -86,14 +93,28 @@ export default function PlaceDetailModal({
                       <FontAwesome5
                         name="map-marker-alt"
                         size={18}
-                        className={`text-light-text dark:text-dark-text`}
+                        color={isDarkMode ? 'white' : 'black'}
                       />
                     }
                     theme="theme"
                     onPress={() => Linking.openURL(place.googleMapsUri)}
                   />
                 )}
-                {isEdit && selected && (
+                {onDirection && (
+                  <IconButton
+                    icon={
+                      <FontAwesome5
+                        name="directions"
+                        size={16}
+                        color={isDarkMode ? 'white' : 'black'}
+                      />
+                    }
+                    theme="theme"
+                    onPress={onDirection}
+                  />
+                )}
+
+                {onRemove && isEdit && selected && (
                   <IconButton
                     icon={
                       <FontAwesome5 name="trash" size={16} color={isDarkMode ? 'white' : 'black'} />
@@ -102,7 +123,7 @@ export default function PlaceDetailModal({
                     onPress={() => onRemove && onRemove(place)}
                   />
                 )}
-                {isEdit && !selected && (
+                {onAdd && isEdit && !selected && (
                   <IconButton
                     icon={
                       <FontAwesome6 name="add" size={16} color={isDarkMode ? 'white' : 'black'} />

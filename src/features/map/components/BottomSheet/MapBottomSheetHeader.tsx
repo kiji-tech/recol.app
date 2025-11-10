@@ -1,7 +1,8 @@
 import { MapCategory } from '@/src/features/map/types/MapCategory';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import React, { useCallback } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View } from 'react-native';
+import BottomSheetHeaderButton from './BottomSheetHeaderButton';
 
 type SearchSelectedButtonProps = {
   id: MapCategory;
@@ -34,18 +35,6 @@ export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }
   ];
 
   // === Render ====
-  const SearchSelectedButton = ({ id, label, onPress }: SearchSelectedButtonProps) => {
-    if (id === 'text' && selectedCategory != 'text') return;
-    return (
-      <TouchableOpacity key={id} onPress={() => onPress(id)}>
-        <View
-          className={`px-4 py-2 mr-2 rounded-xl ${checkSelectedCategory(id) ? 'bg-light-info dark:bg-dark-info' : 'bg-light-background dark:bg-dark-background'}`}
-        >
-          <Text className={`text-light-text dark:text-dark-text`}>{label}</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
 
   return (
     <View className="py-4 px-2">
@@ -55,7 +44,19 @@ export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
       >
-        {categoryButtonList.map((button) => SearchSelectedButton(button))}
+        {categoryButtonList.map((button) => {
+          if (button.id === 'text' && selectedCategory != 'text') return;
+
+          return (
+            <BottomSheetHeaderButton
+              key={button.id}
+              id={button.id}
+              label={button.label}
+              selected={checkSelectedCategory(button.id)}
+              onPress={(id: string) => button.onPress(id as MapCategory)}
+            />
+          );
+        })}
       </BottomSheetScrollView>
     </View>
   );
