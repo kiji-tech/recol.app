@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import BottomSheetLayout from '@/src/components/BottomSheetLayout';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { Place } from '../../types/Place';
 import PlaceBottomSheetHeader from './PlaceBottomSheetHeader';
 import PlaceBottomSheetBody from './PlaceBottomSheetBody';
+import { BackHandler } from 'react-native';
 
 type Props = {
   bottomSheetRef: React.RefObject<BottomSheet>;
@@ -25,6 +26,18 @@ export default function PlaceBottomSheet({
   onDirection,
   onClose,
 }: Props) {
+  // === Effect ===
+  /**
+   * バックボタンを押した場合は､経路表示ボトムシートを閉じるイベントハンドラを追加
+   */
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      onClose();
+      return true;
+    });
+    return () => backHandler.remove();
+  }, []);
+
   return (
     <>
       <BottomSheetLayout ref={bottomSheetRef}>
