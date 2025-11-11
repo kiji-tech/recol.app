@@ -162,6 +162,16 @@ export default function MapScreen() {
    */
   const handleStepSelect = (index: number) => {
     setSelectedStepIndex(index);
+    // 経路マーカーを選択したStepのマーカーに移動
+    const step = stepList[index];
+    if (step) {
+      setRegion((prev) => {
+        return {
+          ...(prev || {}),
+          ...{ latitude: step.end_location.lat, longitude: step.end_location.lng },
+        } as Region;
+      });
+    }
   };
 
   /**
@@ -171,7 +181,7 @@ export default function MapScreen() {
   const handleSelectedDirectionMode = (mode: DirectionMode) => {
     setSelectedMode(mode);
     setRouteList([]);
-    setSelectedStepIndex(null);
+    setSelectedStepIndex(0);
     setupDirections(selectedPlace!, mode);
   };
 
@@ -236,8 +246,8 @@ export default function MapScreen() {
       {viewMode === 'detail' && (
         <PlaceBottomSheet
           bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
-          selectedPlace={selectedPlace!}
           isEdit={true}
+          selectedPlace={selectedPlace!}
           onDirection={handleDirectionView}
           onClose={() => setViewMode('list')}
         />
