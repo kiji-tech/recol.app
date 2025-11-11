@@ -47,7 +47,6 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
             >
               {place.displayName.text}
             </Text>
-            <View className="flex-1 flex-row justify-end items-center"></View>
           </View>
           {/* 評価 */}
           <RateViewer rating={place.rating} />
