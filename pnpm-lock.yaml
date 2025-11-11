@@ -23,6 +23,9 @@ importers:
       '@react-native-community/datetimepicker':
         specifier: 8.4.1
         version: 8.4.1(expo@53.0.23(@babel/core@7.28.5)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      '@react-native-community/geolocation':
+        specifier: ^3.4.0
+        version: 3.4.0(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
       '@react-native-google-signin/google-signin':
         specifier: ^15.0.0
         version: 15.0.0(expo@53.0.23(@babel/core@7.28.5)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
@@ -1206,6 +1209,13 @@ packages:
         optional: true
       react-native-windows:
         optional: true
+
+  '@react-native-community/geolocation@3.4.0':
+    resolution: {integrity: sha512-bzZH89/cwmpkPMKKveoC72C4JH0yF4St5Ceg/ZM9pA1SqX9MlRIrIrrOGZ/+yi++xAvFDiYfihtn9TvXWU9/rA==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
 
   '@react-native-google-signin/google-signin@15.0.0':
     resolution: {integrity: sha512-oU49nE+Z9TT/WaO1K7BH/QL2Nx3d2T3I5PGcYdD8swKNtfhMt8qCX/3mOnNEzthTBPrR0CWFGo3LXpkYspalog==}
@@ -7193,6 +7203,11 @@ snapshots:
       react-native: 0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0)
     optionalDependencies:
       expo: 53.0.23(@babel/core@7.28.5)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+
+  '@react-native-community/geolocation@3.4.0(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      react: 19.0.0
+      react-native: 0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0)
 
   '@react-native-google-signin/google-signin@15.0.0(expo@53.0.23(@babel/core@7.28.5)(@expo/metro-runtime@5.0.5(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.6(@babel/core@7.28.5)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)':
     dependencies:

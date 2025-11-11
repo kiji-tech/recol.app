@@ -3,7 +3,7 @@ import { Place } from '@/src/features/map/types/Place';
 import { Tables } from '@/src/libs/database.types';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
-import PlaceDetailModal from '@/src/features/map/components/Place/PlaceDetailModal';
+import PlaceDetailModal from '@/src/features/map/components/PlaceBottomSheet/PlaceDetailModal';
 import RateViewer from '@/src/features/map/components/Place/RateViewer';
 
 type ScheduleInfoCardProps = {

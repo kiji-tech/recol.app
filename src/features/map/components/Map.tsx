@@ -3,16 +3,15 @@ import MapView, {
   Callout,
   Circle,
   LatLng,
-  Marker,
   Polyline,
   PROVIDER_GOOGLE,
   Region,
 } from 'react-native-maps';
 import { Place } from '@/src/features/map/types/Place';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { useLocation } from '@/src/contexts/LocationContext';
 import { Route } from '../types/Direction';
 import { decodePolyline } from '../libs/direction';
+import { CurrentMarker, DefaultMarker, SelectedMarker } from './Marker';
 
 /** センターサークル */
 const CenterCircle = ({
@@ -40,53 +39,6 @@ const CenterCircle = ({
   );
 };
 
-/** 選択中の場所マーカー */
-const SelectedMarker = ({
-  place,
-  onPress = () => void 0,
-}: {
-  place: Place;
-  onPress?: () => void;
-}) => {
-  const { isDarkMode } = useTheme();
-  return (
-    <Marker
-      title={`✔ ${place.displayName.text}`}
-      pinColor={!isDarkMode ? '#B5F3C3' : '#17AC38'}
-      coordinate={place.location}
-      onPress={onPress}
-    ></Marker>
-  );
-};
-
-/** デフォルトのマーカー */
-const DefaultMarker = ({
-  place,
-  onPress = () => void 0,
-}: {
-  place: Place;
-  onPress?: () => void;
-}) => {
-  return <Marker coordinate={place.location} title={place.displayName.text} onPress={onPress} />;
-};
-
-/**
- * 現在地のマーカー
- */
-const CurrentMarker = () => {
-  const { currentRegion } = useLocation();
-  const { isDarkMode } = useTheme();
-  if (!currentRegion) return null;
-
-  return (
-    <Marker
-      coordinate={currentRegion}
-      title="現在地"
-      pinColor={!isDarkMode ? '#3B82F6' : '#60A5FA'}
-    />
-  );
-};
-
 /**
  * マップコンポーネント
  */
@@ -100,6 +52,7 @@ export default function Map({
   isCenterCircle = false,
   routeList = [],
   selectedStepIndex = null,
+  isRealTimePosition = false,
   onRegionChange = () => void 0,
   onSelectedPlace = () => void 0,
 }: {
@@ -110,6 +63,7 @@ export default function Map({
   isMarker?: boolean;
   isCallout?: boolean;
   isCenterCircle?: boolean;
+  isRealTimePosition?: boolean;
   routeList?: Route[] | null;
   selectedStepIndex?: number | null;
   onRegionChange?: (region: Region) => void;
@@ -174,37 +128,44 @@ export default function Map({
               fillColor={
                 isSelected
                   ? !isDarkMode
-                    ? 'rgba(239,68,68,1)'
+                    ? 'rgba(220,38,38,1)'
                     : 'rgba(248,113,113,1)'
                   : !isDarkMode
-                    ? 'rgba(59,130,246,0.6)'
-                    : 'rgba(96,165,250,0.6)'
+                    ? 'rgba(16,185,129,0.8)'
+                    : 'rgba(34,197,94,0.8)'
               }
               strokeColor={
                 isSelected
                   ? !isDarkMode
-                    ? 'rgba(239,68,68,1)'
+                    ? 'rgba(220,38,38,1)'
                     : 'rgba(248,113,113,1)'
                   : !isDarkMode
-                    ? 'rgba(59,130,246,0.6)'
-                    : 'rgba(96,165,250,0.6)'
+                    ? 'rgba(16,185,129,0.8)'
+                    : 'rgba(34,197,94,0.8)'
               }
-              strokeWidth={isSelected ? 10 : 6}
+              strokeWidth={isSelected ? 8 : 6}
             />
           );
         })}
 
       {/* 現在地のマーカー */}
-      <CurrentMarker />
-
+      {isRealTimePosition && <CurrentMarker />}
       {/** 選択中の場所マーカー */}
       {isMarker && (
         <>
           {selectedPlaceList.map((place) => (
-            <SelectedMarker key={place.id} place={place} onPress={() => onSelectedPlace(place)} />
+            <SelectedMarker
+              key={`selected-${place.id}`}
+              place={place}
+              onPress={() => onSelectedPlace(place)}
+            />
           ))}
           {filterPlaceList.map((place) => (
-            <DefaultMarker key={place.id} place={place} onPress={() => onSelectedPlace(place)} />
+            <DefaultMarker
+              key={`default-${place.id}`}
+              place={place}
+              onPress={() => onSelectedPlace(place)}
+            />
           ))}
         </>
       )}

@@ -44,6 +44,7 @@ export default function CategorySelector({ category, onChange }: Props) {
               borderRadius: 8,
               borderWidth: 1,
               borderColor: isDarkMode ? '#5A5A5A' : '#D7D7D7',
+              color: isDarkMode ? 'white' : 'black',
             },
             inputAndroid: {
               backgroundColor: isDarkMode ? '#1a1a1a' : 'white',
@@ -52,12 +53,14 @@ export default function CategorySelector({ category, onChange }: Props) {
               marginLeft: 8,
               borderWidth: 1,
               borderColor: isDarkMode ? '#5A5A5A' : '#D7D7D7',
+              color: isDarkMode ? 'white' : 'black',
             },
           }}
           placeholder={{
             key: 'placeholder',
             label: 'カテゴリを選んでください…',
             value: 'placeholder',
+            color: isDarkMode ? '#5A5A5A' : '#D7D7D7',
           }}
           value={category}
           onValueChange={(value: string) => {

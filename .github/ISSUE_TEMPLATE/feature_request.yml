@@ -35,10 +35,3 @@ body:
       description: この機能の内容を説明してください
     validations:
       required: true
-  - type: textarea
-    id: reason
-    attributes:
-      label: 理由
-      description: この機能を追加する理由を説明してください
-    validations:
-      required: true
