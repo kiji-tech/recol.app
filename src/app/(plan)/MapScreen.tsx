@@ -168,7 +168,7 @@ export default function MapScreen() {
       setRegion((prev) => {
         return {
           ...(prev || {}),
-          ...{ latitude: step.end_location.lat, longitude: step.end_location.lng },
+          ...{ latitude: step.start_location.lat, longitude: step.start_location.lng },
         } as Region;
       });
     }
