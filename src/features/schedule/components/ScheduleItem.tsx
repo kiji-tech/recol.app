@@ -59,7 +59,7 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
               </View>
             )}
           </View>
-        </View>
+        </View> 
         {/* 終了時刻 */}
         {isEndDateView && (
           <View className="flex flex-row gap-2 items-center mb-4">

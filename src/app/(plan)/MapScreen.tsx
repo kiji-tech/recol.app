@@ -15,9 +15,8 @@ import dayjs from 'dayjs';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import ScheduleBottomSheet from '@/src/features/map/components/ScheduleBottomSheet/ScheduleBottomSheet';
 import DirectionBottomSheet from '@/src/features/map/components/DirectionBottomSheet/DirectionBottomSheet';
-import PlaceDetailModal from '@/src/features/map/components/Place/PlaceDetailModal';
-import { LogUtil } from '@/src/libs/LogUtil';
 import { DirectionMode } from '@/src/features/map/types/Direction';
+import PlaceBottomSheet from '@/src/features/map/components/PlaceBottomSheet/PlaceBottomSheet';
 
 /**
  * 初期表示
@@ -45,7 +44,8 @@ export default function MapScreen() {
     if (!region) return 0;
     return DEFAULT_RADIUS * region!.longitudeDelta * 10;
   }, [region]);
-  const [isDirectionView, setIsDirectionView] = useState(false);
+
+  const [viewMode, setViewMode] = useState<'list' | 'detail' | 'direction'>('list');
   const [routeList, setRouteList] = useState<Route[]>([]);
   const [isLoadingDirection, setIsLoadingDirection] = useState(false);
   const [handleBackPress, setHandleBackPress] = useState<NativeEventSubscription | null>(null);
@@ -90,7 +90,6 @@ export default function MapScreen() {
         setRouteList([]);
         return;
       }
-      LogUtil.log(JSON.stringify(directions), { level: 'info' });
       setRouteList(directions.routes);
     } finally {
       setIsLoadingDirection(false);
@@ -128,7 +127,12 @@ export default function MapScreen() {
     });
     setSelectedPlace(place);
 
-    if (isDirectionView) await setupDirections(place, selectedMode);
+    /** 経路表示ボトムシートなら経路を取得 */
+    if (viewMode === 'direction') {
+      await setupDirections(place, selectedMode);
+      return;
+    }
+    setViewMode('detail');
   };
 
   /**
@@ -138,7 +142,7 @@ export default function MapScreen() {
   const handleDirectionView = async () => {
     if (!selectedPlace) return;
     await setupDirections(selectedPlace!, selectedMode);
-    setIsDirectionView(true);
+    setViewMode('direction');
   };
 
   /**
@@ -146,13 +150,13 @@ export default function MapScreen() {
    * @returns {void}
    */
   const handleCloseDirectionView = () => {
-    setIsDirectionView(false);
+    setViewMode('detail');
     setRouteList([]);
     setSelectedStepIndex(null);
   };
 
   /**
-   * Step選択処理
+   * 経路表示ボトムシート Step選択処理
    * @param index {number} 選択したStepのインデックス
    * @returns {void}
    */
@@ -161,10 +165,10 @@ export default function MapScreen() {
   };
 
   /**
-   * モード選択処理
-   * @param mode {DirectionMode} 選択したモード
+   * 経路表示ボトムシート 経路モード選択処理
+   * @param mode {DirectionMode} 選択した経路モード
    */
-  const handleSelectedMode = (mode: DirectionMode) => {
+  const handleSelectedDirectionMode = (mode: DirectionMode) => {
     setSelectedMode(mode);
     setRouteList([]);
     setSelectedStepIndex(null);
@@ -215,7 +219,7 @@ export default function MapScreen() {
         />
       </View>
       {/* 経路表示ボトムシート */}
-      {isDirectionView && (
+      {viewMode === 'direction' && (
         <DirectionBottomSheet
           bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
           selectedPlace={selectedPlace!}
@@ -223,33 +227,32 @@ export default function MapScreen() {
           stepList={stepList}
           selectedStepIndex={selectedStepIndex}
           isLoading={isLoadingDirection}
-          onSelectedMode={handleSelectedMode}
+          onSelectedMode={handleSelectedDirectionMode}
           onStepSelect={handleStepSelect}
           onClose={handleCloseDirectionView}
         />
       )}
-      {!isDirectionView && (
-        <>
-          {/* スケジュールボトムシート */}
-          <ScheduleBottomSheet
-            ref={bottomSheetRef}
-            scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
-            scheduleList={viewScheduleList}
-            selectedSchedule={selectedSchedule}
-            selectedPlace={selectedPlace}
-            onSelectedSchedule={handleSelectedSchedule}
-            onSelectedPlace={handleSelectedPlace}
-          />
-          {/* 場所詳細モーダル */}
-          {selectedPlace && (
-            <PlaceDetailModal
-              place={selectedPlace}
-              isEdit={true}
-              onDirection={handleDirectionView}
-              onClose={() => setSelectedPlace(null)}
-            />
-          )}
-        </>
+      {/* 場所詳細ボトムシート */}
+      {viewMode === 'detail' && (
+        <PlaceBottomSheet
+          bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
+          selectedPlace={selectedPlace!}
+          isEdit={true}
+          onDirection={handleDirectionView}
+          onClose={() => setViewMode('list')}
+        />
+      )}
+      {/* スケジュールボトムシート */}
+      {viewMode === 'list' && (
+        <ScheduleBottomSheet
+          ref={bottomSheetRef}
+          scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
+          scheduleList={viewScheduleList}
+          selectedSchedule={selectedSchedule}
+          selectedPlace={selectedPlace}
+          onSelectedSchedule={handleSelectedSchedule}
+          onSelectedPlace={handleSelectedPlace}
+        />
       )}
 
       <ToastManager />

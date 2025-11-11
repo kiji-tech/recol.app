@@ -3,7 +3,6 @@ import MapView, {
   Callout,
   Circle,
   LatLng,
-  Marker,
   Polyline,
   PROVIDER_GOOGLE,
   Region,
@@ -12,7 +11,7 @@ import { Place } from '@/src/features/map/types/Place';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { Route } from '../types/Direction';
 import { decodePolyline } from '../libs/direction';
-import CurrentMarker from './Marker/CurrentMarker';
+import { CurrentMarker, DefaultMarker, SelectedMarker } from './Marker';
 
 /** センターサークル */
 const CenterCircle = ({
@@ -38,36 +37,6 @@ const CenterCircle = ({
       strokeColor={strokeColor}
     />
   );
-};
-
-/** 選択中の場所マーカー */
-const SelectedMarker = ({
-  place,
-  onPress = () => void 0,
-}: {
-  place: Place;
-  onPress?: () => void;
-}) => {
-  const { isDarkMode } = useTheme();
-  return (
-    <Marker
-      title={`✔ ${place.displayName.text}`}
-      pinColor={!isDarkMode ? '#B5F3C3' : '#17AC38'}
-      coordinate={place.location}
-      onPress={onPress}
-    ></Marker>
-  );
-};
-
-/** デフォルトのマーカー */
-const DefaultMarker = ({
-  place,
-  onPress = () => void 0,
-}: {
-  place: Place;
-  onPress?: () => void;
-}) => {
-  return <Marker coordinate={place.location} title={place.displayName.text} onPress={onPress} />;
 };
 
 /**
@@ -159,22 +128,22 @@ export default function Map({
               fillColor={
                 isSelected
                   ? !isDarkMode
-                    ? 'rgba(239,68,68,1)'
+                    ? 'rgba(220,38,38,1)'
                     : 'rgba(248,113,113,1)'
                   : !isDarkMode
-                    ? 'rgba(59,130,246,0.6)'
-                    : 'rgba(96,165,250,0.6)'
+                    ? 'rgba(16,185,129,0.8)'
+                    : 'rgba(34,197,94,0.8)'
               }
               strokeColor={
                 isSelected
                   ? !isDarkMode
-                    ? 'rgba(239,68,68,1)'
+                    ? 'rgba(220,38,38,1)'
                     : 'rgba(248,113,113,1)'
                   : !isDarkMode
-                    ? 'rgba(59,130,246,0.6)'
-                    : 'rgba(96,165,250,0.6)'
+                    ? 'rgba(16,185,129,0.8)'
+                    : 'rgba(34,197,94,0.8)'
               }
-              strokeWidth={isSelected ? 10 : 6}
+              strokeWidth={isSelected ? 8 : 6}
             />
           );
         })}
@@ -185,10 +154,18 @@ export default function Map({
       {isMarker && (
         <>
           {selectedPlaceList.map((place) => (
-            <SelectedMarker key={place.id} place={place} onPress={() => onSelectedPlace(place)} />
+            <SelectedMarker
+              key={`selected-${place.id}`}
+              place={place}
+              onPress={() => onSelectedPlace(place)}
+            />
           ))}
           {filterPlaceList.map((place) => (
-            <DefaultMarker key={place.id} place={place} onPress={() => onSelectedPlace(place)} />
+            <DefaultMarker
+              key={`default-${place.id}`}
+              place={place}
+              onPress={() => onSelectedPlace(place)}
+            />
           ))}
         </>
       )}

@@ -19,7 +19,13 @@ export default function CurrentMarker() {
           const { latitude, longitude } = position.coords;
           setCurrentRegion({ latitude, longitude } as Region);
         },
-        (error) => console.log(error)
+        (error) => console.log(error),
+        {
+          enableHighAccuracy: true,
+          timeout: 20000,
+          maximumAge: 1000,
+          distanceFilter: 10,
+        }
       );
       setWatchId(id);
 
