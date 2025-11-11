@@ -3,11 +3,13 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import { Marker, Region } from 'react-native-maps';
 import { useFocusEffect } from 'expo-router';
 import Geolocation from '@react-native-community/geolocation';
+import { useLocation } from '@/src/contexts/LocationContext';
 /**
  * 現在地のマーカー
  */
 export default function CurrentMarker() {
-  const [currentRegion, setCurrentRegion] = useState<Region | null>(null);
+  const { currentRegion } = useLocation();
+  const [watchRegion, setWatchRegion] = useState<Region>(currentRegion!);
   const [watchId, setWatchId] = useState<number | null>(null);
   const { isDarkMode } = useTheme();
 
@@ -17,15 +19,14 @@ export default function CurrentMarker() {
         (position) => {
           console.log({ position });
           const { latitude, longitude } = position.coords;
-          setCurrentRegion({ latitude, longitude } as Region);
+          setWatchRegion((prev) => {
+            return {
+              ...(prev || {}),
+              ...{ latitude, longitude },
+            } as Region;
+          });
         },
-        (error) => console.log(error),
-        {
-          enableHighAccuracy: true,
-          timeout: 20000,
-          maximumAge: 1000,
-          distanceFilter: 10,
-        }
+        (error) => console.log(error)
       );
       setWatchId(id);
 
@@ -37,11 +38,9 @@ export default function CurrentMarker() {
     }, [])
   );
 
-  if (!currentRegion) return null;
-
   return (
     <Marker
-      coordinate={currentRegion}
+      coordinate={watchRegion}
       title="現在地"
       pinColor={!isDarkMode ? '#3B82F6' : '#60A5FA'}
     />

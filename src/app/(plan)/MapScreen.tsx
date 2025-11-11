@@ -175,6 +175,19 @@ export default function MapScreen() {
   };
 
   /**
+   * 現在地を表示処理
+   * @returns {void}
+   */
+  const handleShowCurrentLocation = () => {
+    setRegion((prev) => {
+      return {
+        ...(prev || {}),
+        ...currentRegion,
+      } as Region;
+    });
+  };
+
+  /**
    * 経路表示ボトムシート 経路モード選択処理
    * @param mode {DirectionMode} 選択した経路モード
    */
@@ -238,6 +251,7 @@ export default function MapScreen() {
           selectedStepIndex={selectedStepIndex}
           isLoading={isLoadingDirection}
           onSelectedMode={handleSelectedDirectionMode}
+          onShowCurrentLocation={handleShowCurrentLocation}
           onStepSelect={handleStepSelect}
           onClose={handleCloseDirectionView}
         />

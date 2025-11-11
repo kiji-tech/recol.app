@@ -14,6 +14,7 @@ type Props = {
   selectedStepIndex?: number | null;
   isLoading?: boolean;
   onSelectedMode: (mode: DirectionMode) => void;
+  onShowCurrentLocation?: () => void;
   onStepSelect?: (index: number) => void;
   onClose: () => void;
 };
@@ -26,6 +27,7 @@ export default function DirectionBottomSheet({
   selectedStepIndex = null,
   isLoading = false,
   onSelectedMode,
+  onShowCurrentLocation = () => void 0,
   onStepSelect = () => void 0,
   onClose,
 }: Props) {
@@ -35,6 +37,7 @@ export default function DirectionBottomSheet({
         <DirectionBottomSheetHeader
           onSelectedMode={onSelectedMode}
           selectedMode={selectedMode}
+          onShowCurrentLocation={onShowCurrentLocation}
           onClose={onClose}
         />
         <DirectionBottomSheetBody
