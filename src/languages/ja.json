@@ -1,0 +1,9 @@
+{
+    "SCREEN": {
+        "HOME": {
+            "TODAY_SCHEDULE": "本日の予定",
+            "RECENT_PLAN": "直近の予定",
+            "NEW_ARTICLE": "新着記事"
+        }
+    }
+}

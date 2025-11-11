@@ -1,0 +1,9 @@
+{
+    "SCREEN": {
+        "HOME": {
+            "TODAY_SCHEDULE": "Today's Schedule",
+            "RECENT_PLAN": "Recent Plan",
+            "NEW_ARTICLE": "New Article"
+        }
+    }
+}
