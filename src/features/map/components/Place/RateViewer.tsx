@@ -11,7 +11,7 @@ export default function RateViewer({ rating }: Props) {
 
   return (
     <View className="flex flex-row items-center">
-      <Text className="text-lg text-light-warn dark:text-dark-warn">{ratingStars}</Text>
+      <Text className="text-lg text-light-text dark:text-dark-text">{ratingStars}</Text>
       <Text className="text-lg text-light-text dark:text-dark-text">（{rating || ' - '}）</Text>
     </View>
   );
