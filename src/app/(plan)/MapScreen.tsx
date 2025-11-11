@@ -208,6 +208,7 @@ export default function MapScreen() {
           isCallout={true}
           isCenterCircle={false}
           routeList={routeList}
+          isRealTimePosition={true}
           selectedStepIndex={selectedStepIndex}
           onRegionChange={handleRegionChange}
           onSelectedPlace={handleSelectedPlace}

@@ -10,9 +10,9 @@ import MapView, {
 } from 'react-native-maps';
 import { Place } from '@/src/features/map/types/Place';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { useLocation } from '@/src/contexts/LocationContext';
 import { Route } from '../types/Direction';
 import { decodePolyline } from '../libs/direction';
+import CurrentMarker from './Marker/CurrentMarker';
 
 /** センターサークル */
 const CenterCircle = ({
@@ -71,23 +71,6 @@ const DefaultMarker = ({
 };
 
 /**
- * 現在地のマーカー
- */
-const CurrentMarker = () => {
-  const { currentRegion } = useLocation();
-  const { isDarkMode } = useTheme();
-  if (!currentRegion) return null;
-
-  return (
-    <Marker
-      coordinate={currentRegion}
-      title="現在地"
-      pinColor={!isDarkMode ? '#3B82F6' : '#60A5FA'}
-    />
-  );
-};
-
-/**
  * マップコンポーネント
  */
 export default function Map({
@@ -100,6 +83,7 @@ export default function Map({
   isCenterCircle = false,
   routeList = [],
   selectedStepIndex = null,
+  isRealTimePosition = false,
   onRegionChange = () => void 0,
   onSelectedPlace = () => void 0,
 }: {
@@ -110,6 +94,7 @@ export default function Map({
   isMarker?: boolean;
   isCallout?: boolean;
   isCenterCircle?: boolean;
+  isRealTimePosition?: boolean;
   routeList?: Route[] | null;
   selectedStepIndex?: number | null;
   onRegionChange?: (region: Region) => void;
@@ -195,8 +180,7 @@ export default function Map({
         })}
 
       {/* 現在地のマーカー */}
-      <CurrentMarker />
-
+      {isRealTimePosition && <CurrentMarker />}
       {/** 選択中の場所マーカー */}
       {isMarker && (
         <>
