@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { Marker, Region } from 'react-native-maps';
 import { useFocusEffect } from 'expo-router';
@@ -10,7 +10,7 @@ import { useLocation } from '@/src/contexts/LocationContext';
 export default function CurrentMarker() {
   const { currentRegion } = useLocation();
   const [watchRegion, setWatchRegion] = useState<Region>(currentRegion!);
-  const [watchId, setWatchId] = useState<number | null>(null);
+  const watchIdRef = useRef<number | null>(null);
   const { isDarkMode } = useTheme();
 
   useFocusEffect(
@@ -28,11 +28,12 @@ export default function CurrentMarker() {
         },
         (error) => console.log(error)
       );
-      setWatchId(id);
+      watchIdRef.current = id;
 
       return () => {
-        if (watchId) {
-          Geolocation.clearWatch(watchId);
+        if (watchIdRef.current !== null) {
+          Geolocation.clearWatch(watchIdRef.current);
+          watchIdRef.current = null;
         }
       };
     }, [])

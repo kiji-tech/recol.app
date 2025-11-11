@@ -32,6 +32,9 @@ export default function PlaceBottomSheetBody({
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [imageModalVisible, setImageModalVisible] = useState(false);
 
+  // === Member ===
+  const placePhotos = (place.photos ?? []).filter((photo) => photo.name).slice(0, 5);
+
   // === Method ===
   /**
    * 写真を選択した時の処理
@@ -53,15 +56,12 @@ export default function PlaceBottomSheetBody({
               <Title text={place.displayName.text} />
             </View>
             {/* 写真一覧 */}
-            {place.photos && (
+            {placePhotos.length > 0 && (
               <ImageScrollView
-                images={place.photos
-                  .filter((photo) => photo.name)
-                  .slice(0, 5)
-                  .map((photo) => ({
-                    src: `${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(photo.name)}`,
-                    alt: place.displayName.text,
-                  }))}
+                images={placePhotos.map((photo) => ({
+                  src: `${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(photo.name)}`,
+                  alt: place.displayName.text,
+                }))}
                 onPress={(photo) => handleSelectedImage(photo.src)}
               />
             )}
@@ -154,13 +154,10 @@ export default function PlaceBottomSheetBody({
       </View>
       {/* 写真拡大モーダル */}
       <MediaDetailModal
-        imageList={place.photos
-          .filter((photo) => photo.name)
-          .slice(0, 5)
-          .map(
-            (photo) =>
-              `${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(photo.name)}`
-          )}
+        imageList={placePhotos.map(
+          (photo) =>
+            `${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(photo.name)}`
+        )}
         visible={imageModalVisible}
         selectedImage={selectedImage}
         onClose={() => {
