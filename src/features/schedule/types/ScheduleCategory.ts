@@ -1,3 +1,5 @@
+import i18n from '@/src/libs/i18n';
+
 export type ScheduleCategory = {
   label: string;
   value: string;
@@ -6,27 +8,27 @@ export type ScheduleCategory = {
 export const ScheduleCategoryList = [
   {
     key: 'movement',
-    label: '移動',
+    label: i18n.t('SCREEN.SCHEDULE.CATEGORY.MOVEMENT'),
     value: 'Movement',
   },
   {
     key: 'meals',
-    label: '食事',
+    label: i18n.t('SCREEN.SCHEDULE.CATEGORY.MEALS'),
     value: 'Meals',
   },
   {
     key: 'cafe',
-    label: 'カフェ',
+    label: i18n.t('SCREEN.SCHEDULE.CATEGORY.CAFE'),
     value: 'Cafe',
   },
   {
     key: 'amusement',
-    label: '観光',
+    label: i18n.t('SCREEN.SCHEDULE.CATEGORY.AMUSEMENT'),
     value: 'Amusement',
   },
   {
     key: 'other',
-    label: 'その他',
+    label: i18n.t('SCREEN.SCHEDULE.CATEGORY.OTHER'),
     value: 'Other',
   },
 ];

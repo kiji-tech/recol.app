@@ -5,7 +5,7 @@ import { Place } from '@/src/features/map/types/Place';
 import RateViewer from '@/src/features/map/components/Place/RateViewer';
 
 type Props = {
-  place: Place | null;
+  place: Place;
   selected: boolean;
   onSelect: (place: Place) => void;
 };

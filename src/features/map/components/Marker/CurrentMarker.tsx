@@ -9,7 +9,7 @@ import { useLocation } from '@/src/contexts/LocationContext';
  */
 export default function CurrentMarker() {
   const { currentRegion } = useLocation();
-  const [watchRegion, setWatchRegion] = useState<Region>(currentRegion!);
+  const [watchRegion, setWatchRegion] = useState<Region | null>(currentRegion || null);
   const watchIdRef = useRef<number | null>(null);
   const { isDarkMode } = useTheme();
 
@@ -39,9 +39,11 @@ export default function CurrentMarker() {
     }, [])
   );
 
+  if (!watchRegion || !currentRegion) return null;
+
   return (
     <Marker
-      coordinate={watchRegion}
+      coordinate={watchRegion || currentRegion}
       title="現在地"
       pinColor={!isDarkMode ? '#3B82F6' : '#60A5FA'}
     />

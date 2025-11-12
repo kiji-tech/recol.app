@@ -3,6 +3,7 @@ import { View, Text, Linking, Platform } from 'react-native';
 import { Modal } from 'react-native';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import Button from '@/src/components/Button';
+import i18n from '@/src/libs/i18n';
 
 interface ForceUpdateModalProps {
   visible: boolean;
@@ -38,7 +39,7 @@ export const ForceUpdateModal: React.FC<ForceUpdateModalProps> = ({ visible }) =
               isDarkMode ? 'text-white' : 'text-black'
             }`}
           >
-            アプリの更新が必要です
+            {i18n.t('COMPONENT.VERSION.UPDATE_REQUIRED')}
           </Text>
 
           <Text
@@ -46,10 +47,10 @@ export const ForceUpdateModal: React.FC<ForceUpdateModalProps> = ({ visible }) =
               isDarkMode ? 'text-gray-300' : 'text-gray-600'
             }`}
           >
-            最新の機能とセキュリティアップデートを利用するために、アプリを更新してください。
+            {i18n.t('COMPONENT.VERSION.UPDATE_MESSAGE')}
           </Text>
 
-          <Button text="ストアで更新する" onPress={handleUpdate} />
+          <Button text={i18n.t('COMPONENT.VERSION.UPDATE_BUTTON')} onPress={handleUpdate} />
         </View>
       </View>
     </Modal>

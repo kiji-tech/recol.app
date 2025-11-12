@@ -13,6 +13,7 @@ import DevelopmentBar from '@/src/features/auth/components/DevelopmentBar';
 import ProfileAvatar from '@/src/features/profile/components/ProfileAvatar';
 import PlanComponent from '@/src/features/plan/components/PlanComponent';
 import Share from 'react-native-share';
+import i18n from '@/src/libs/i18n';
 
 // TODO: 将来的にはDB化
 // const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
@@ -79,22 +80,26 @@ export default function Settings() {
         {/* アカウント設定 */}
         <View className="mb-4">
           <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">
-            アカウント設定
+            {i18n.t('SCREEN.SETTINGS.ACCOUNT_SETTINGS')}
           </Text>
           <SettingItem
             icon="person-outline"
-            title="プロフィール編集"
+            title={i18n.t('SCREEN.SETTINGS.PROFILE_EDIT')}
             onPress={() => router.push('/(settings)/ProfileEditorScreen')}
           />
         </View>
         <View className="pb-4 border-b border-light-border dark:border-dark-border">
-          <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">プラン</Text>
+          <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">
+            {i18n.t('SCREEN.SETTINGS.PLAN')}
+          </Text>
           <PlanComponent />
         </View>
 
         {/* アプリ設定 */}
         <View className="mb-4">
-          <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">アプリ設定</Text>
+          <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">
+            {i18n.t('SCREEN.SETTINGS.APP_SETTINGS')}
+          </Text>
 
           {/* ダークモード設定 */}
           <SettingDarkMode />
@@ -124,7 +129,7 @@ export default function Settings() {
 
           <SettingItem
             icon="information-circle-outline"
-            title="アプリバージョン"
+            title={i18n.t('SCREEN.SETTINGS.APP_VERSION')}
             value={version}
             showArrow={false}
           />
@@ -132,32 +137,34 @@ export default function Settings() {
 
         {/* その他 */}
         <View className="mb-4">
-          <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">その他</Text>
+          <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">
+            {i18n.t('SCREEN.SETTINGS.OTHER')}
+          </Text>
           <SettingItem
             icon="document-text-outline"
-            title="利用規約"
+            title={i18n.t('SCREEN.SETTINGS.TERMS')}
             onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/terms`)}
           />
           <SettingItem
             icon="shield-outline"
-            title="プライバシーポリシー"
+            title={i18n.t('SCREEN.SETTINGS.PRIVACY_POLICY')}
             onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/policy`)}
           />
           <SettingItem
             icon="mail-outline"
-            title="お問い合わせはこちら"
+            title={i18n.t('SCREEN.SETTINGS.CONTACT')}
             onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_CONTACT_PAGE_URL}`)}
           />
           <SettingItem
             icon="logo-twitter"
-            title="Twitterで宣伝する"
+            title={i18n.t('SCREEN.SETTINGS.SHARE_TWITTER')}
             onPress={() => {
               handleShareTwitter();
             }}
           />
           <SettingItem
             icon="trash-outline"
-            title="アカウント削除する"
+            title={i18n.t('SCREEN.SETTINGS.DELETE_ACCOUNT')}
             isDanger={true}
             showArrow={false}
             onPress={() => router.push('/(modal)/RemoveAccount')}
@@ -166,7 +173,7 @@ export default function Settings() {
 
         {/* サインアウト */}
         <View className="p-4 mb-4">
-          <Button theme="danger" text="サインアウト" onPress={handleSignOut} />
+          <Button theme="danger" text={i18n.t('SCREEN.SETTINGS.SIGN_OUT')} onPress={handleSignOut} />
         </View>
       </ScrollView>
     </BackgroundView>

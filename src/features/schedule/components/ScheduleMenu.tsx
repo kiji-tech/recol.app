@@ -9,6 +9,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import { usePlan } from '@/src/contexts/PlanContext';
 import dayjs from 'dayjs';
 import { generateShareMessage } from '@/src/features/schedule/libs/generateShareMessage';
+import i18n from '@/src/libs/i18n';
 
 export default function ScheduleMenu({ plan }: { plan: Plan }) {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
   const handleSharePress = async () => {
     await Share.share({
       message: generateShareMessage(plan),
-      title: 'スケジュールを共有します',
+      title: i18n.t('COMPONENT.SCHEDULE.SHARE_TITLE'),
     });
   };
 
@@ -65,7 +66,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
         }}
       >
         <MenuOption
-          text="予定編集"
+          text={i18n.t('COMPONENT.SCHEDULE.EDIT_PLAN')}
           customStyles={{
             optionText: {
               paddingVertical: 12,
@@ -76,7 +77,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
           onSelect={handleEditPress}
         />
         <MenuOption
-          text="スケジュール追加"
+          text={i18n.t('COMPONENT.SCHEDULE.ADD_SCHEDULE')}
           customStyles={{
             optionText: {
               paddingVertical: 12,
@@ -89,7 +90,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
           }}
         />
         <MenuOption
-          text="時間をまとめて編集"
+          text={i18n.t('COMPONENT.SCHEDULE.EDIT_TIME')}
           customStyles={{
             optionText: {
               paddingVertical: 12,
@@ -102,7 +103,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
           }}
         />
         <MenuOption
-          text="共有する"
+          text={i18n.t('COMPONENT.SCHEDULE.SHARE')}
           customStyles={{
             optionText: {
               paddingVertical: 12,

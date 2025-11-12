@@ -8,12 +8,12 @@ const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
 const FiledMaskValue =
   'id,types,reviews,displayName,formattedAddress,rating,location,photos,websiteUri,editorialSummary,currentOpeningHours.openNow,currentOpeningHours.weekdayDescriptions,googleMapsUri,googleMapsLinks.*';
 
-const searchId = async (placeId: string) => {
+const searchId = async (placeId: string, languageCode: string) => {
   const apiKey = Deno.env.get('GOOGLE_MAPS_API_KEY') || '';
   const url =
     `${GOOGLE_MAPS_API_URL}/${encodeURIComponent(placeId)}` +
     `?fields=${encodeURIComponent(FiledMaskValue)}` +
-    `&languageCode=ja`;
+    `&languageCode=${languageCode}`;
 
   const upstream = await fetch(url, {
     headers: { 'X-Goog-Api-Key': apiKey },
@@ -27,14 +27,14 @@ const searchId = async (placeId: string) => {
 
 const getPlace = async (c: Context) => {
   LogUtil.log('[POST] /cache/place', { level: 'info' });
-  const { placeIdList } = await c.req.json();
+  const { placeIdList, languageCode } = await c.req.json();
   LogUtil.log(JSON.stringify({ placeIdList }), { level: 'info' });
 
   const supabase = generateSupabase(c);
 
   const placeDataList = [];
   for (const placeId of placeIdList) {
-    const key = `google-place/${placeId}`;
+    const key = `google-place/${placeId}/${languageCode}`;
     const { data: cachePlaceData } = await supabase.storage.from('caches').download(key);
     if (cachePlaceData) {
       LogUtil.log(`[getPlace] ${placeId} HIT!!!`, { level: 'info' });
@@ -44,7 +44,7 @@ const getPlace = async (c: Context) => {
     }
 
     LogUtil.log(`[getPlace] ${placeId} MISS!!!`, { level: 'info' });
-    const placeData = await searchId(placeId);
+    const placeData = await searchId(placeId, languageCode);
     if (placeData) {
       // キャッシュに保存
       const { error: storageSaveError } = await supabase.storage

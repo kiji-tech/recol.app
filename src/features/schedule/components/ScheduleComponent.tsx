@@ -13,6 +13,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import dayjs from 'dayjs';
 import MaskLoading from '@/src/components/MaskLoading';
 import ScheduleItem from '@/src/features/schedule/components/ScheduleItem';
+import i18n from '@/src/libs/i18n';
 
 type Props = {
   plan: Plan | null;
@@ -153,7 +154,7 @@ export default function ScheduleComponents({
       </View>
       <View className="my-8">
         <Button
-          text="スケジュールを追加"
+          text={i18n.t('COMPONENT.SCHEDULE.ADD_SCHEDULE')}
           disabled={isLoading}
           onPress={() => handleAddSchedule()}
         />

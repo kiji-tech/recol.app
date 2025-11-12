@@ -7,6 +7,7 @@ import InformationCard from '@/src/features/information/components/InformationCa
 import { Information } from '@/src/features/information/types/Information';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import MaskLoading from '@/src/components/MaskLoading';
+import i18n from '@/src/libs/i18n';
 
 /**
  * お知らせ一覧画面
@@ -69,7 +70,7 @@ export default function InformationList() {
     return (
       <View className="flex-1 justify-center items-center py-20">
         <Text className={`text-lg ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-          お知らせがありません
+          {i18n.t('SCREEN.INFORMATION.NO_INFORMATION')}
         </Text>
       </View>
     );
@@ -85,7 +86,7 @@ export default function InformationList() {
     return (
       <View className="flex-1 justify-center items-center py-20">
         <Text className={`text-lg ${isDarkMode ? 'text-dark-danger' : 'text-light-danger'}`}>
-          エラーが発生しました
+          {i18n.t('SCREEN.INFORMATION.ERROR_OCCURRED')}
         </Text>
         <Text className={`text-sm mt-2 ${isDarkMode ? 'text-dark-text' : 'text-light-text'}`}>
           {error.message}
@@ -101,7 +102,7 @@ export default function InformationList() {
   return (
     <BackgroundView>
       <Header
-        title="お知らせ"
+        title={i18n.t('SCREEN.INFORMATION.TITLE')}
         onBack={() => {
           router.back();
         }}

@@ -11,6 +11,7 @@ import { createPlan } from '@/src/features/plan';
 import { Plan } from '@/src/features/plan/types/Plan';
 import { LogUtil } from '@/src/libs/LogUtil';
 import ToastManager, { Toast } from 'toastify-react-native';
+import i18n from '@/src/libs/i18n';
 
 export default function PlanCreator() {
   // === Member ===
@@ -24,7 +25,7 @@ export default function PlanCreator() {
   // === Method ===
   const verify = () => {
     if (!title) {
-      Toast.warn('予定の題目を入力してください');
+      Toast.warn(i18n.t('SCREEN.PLAN.TITLE_REQUIRED'));
       return false;
     }
     return true;
@@ -36,13 +37,13 @@ export default function PlanCreator() {
     createPlan({ title, memo } as Plan, session)
       .then(async () => {
         await fetchPlan();
-        Toast.success(`${title} を登録しました`);
+        Toast.success(`${title} ${i18n.t('SCREEN.PLAN.REGISTER_SUCCESS')}`);
         router.back();
       })
       .catch((e: ApiErrorResponse) => {
         LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
         if (e && e.message) {
-          Alert.alert('プランの登録に失敗しました', e.message);
+          Alert.alert(i18n.t('SCREEN.PLAN.REGISTER_FAILED'), e.message);
         }
       })
       .finally(() => {
@@ -53,7 +54,7 @@ export default function PlanCreator() {
   return (
     <BackgroundView>
       <Header
-        title="新しい予定を作成する"
+        title={i18n.t('SCREEN.PLAN.CREATE_TITLE')}
         onBack={() => {
           router.back();
         }}
@@ -61,10 +62,10 @@ export default function PlanCreator() {
       {/* タイトル */}
       <View className="w-full flex flex-col justify-start items-start gap-4">
         <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
-          予定の題目を入力してください｡
+          {i18n.t('SCREEN.PLAN.TITLE_LABEL')}
         </Text>
         <TextInput
-          placeholder="◯◯のお茶会..."
+          placeholder={i18n.t('SCREEN.PLAN.TITLE_PLACEHOLDER')}
           placeholderTextColor="gray"
           className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
                 ${borderColor} text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background
@@ -73,10 +74,12 @@ export default function PlanCreator() {
           editable={!isLoading}
         />
         <View className="w-full flex flex-col justify-start items-start">
-          <Text className="text-lg font-bold text-light-text dark:text-dark-text">メモ</Text>
+          <Text className="text-lg font-bold text-light-text dark:text-dark-text">
+            {i18n.t('SCREEN.PLAN.MEMO_LABEL')}
+          </Text>
           <TextInput
             multiline={true}
-            placeholder="メモを入力してください｡"
+            placeholder={i18n.t('SCREEN.PLAN.MEMO_PLACEHOLDER')}
             placeholderTextColor="gray"
             className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
             border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
@@ -87,18 +90,18 @@ export default function PlanCreator() {
         </View>
 
         <Text className="text-lg font-bold text-light-text dark:text-dark-text">
-          友達を追加する
+          {i18n.t('SCREEN.PLAN.ADD_FRIEND')}
         </Text>
         <Button
           theme="info"
-          text="選択"
-          onPress={() => alert('準備中')}
+          text={i18n.t('SCREEN.PLAN.SELECT')}
+          onPress={() => alert(i18n.t('SCREEN.PLAN.PREPARING'))}
           disabled={isLoading}
           loading={isLoading}
         />
         <Button
           theme="theme"
-          text="登録する"
+          text={i18n.t('SCREEN.PLAN.REGISTER')}
           onPress={handlerSubmit}
           disabled={isLoading}
           loading={isLoading}

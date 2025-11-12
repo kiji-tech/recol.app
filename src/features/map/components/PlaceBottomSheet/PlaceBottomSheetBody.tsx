@@ -49,9 +49,9 @@ export default function PlaceBottomSheetBody({
   // === Render ===
   return (
     <>
-      <View className="w-full flex-1 px-4 pb-6">
+      <View className="w-full flex-1 px-4">
         <BottomSheetScrollView className="w-full flex-1">
-          <View className="flex flex-col justify-start items-start gap-4">
+          <View className="flex flex-col justify-start items-start gap-4 pb-8">
             <View className="flex flex-row justify-between items-start gap-4">
               <Title text={place.displayName.text} />
             </View>

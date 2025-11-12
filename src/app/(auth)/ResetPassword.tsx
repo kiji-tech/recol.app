@@ -6,6 +6,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { supabase } from '@/src/libs/supabase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import i18n from '@/src/libs/i18n';
 
 // エラー型の定義
 interface PasswordResetError {
@@ -20,9 +21,9 @@ const handlePasswordResetError = (error: unknown): void => {
   const passwordError = error as PasswordResetError;
 
   if (passwordError?.code === 'same_password') {
-    Alert.alert('新しいパスワードと同じパスワードは使用できません。');
+    Alert.alert(i18n.t('SCREEN.AUTH.SAME_PASSWORD_ERROR'));
   } else {
-    Alert.alert('パスワードを変更できませんでした。');
+    Alert.alert(i18n.t('SCREEN.AUTH.PASSWORD_CHANGE_FAILED'));
   }
 };
 
@@ -61,7 +62,7 @@ export default function ResetPassword() {
 
       if (error) {
         LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-        Alert.alert('無効なリンクです', 'パスワードリセットリンクが無効または期限切れです。');
+        Alert.alert(i18n.t('SCREEN.AUTH.INVALID_LINK'), i18n.t('SCREEN.AUTH.INVALID_LINK_MESSAGE'));
         router.replace('/(auth)/SignIn');
         return;
       }
@@ -70,14 +71,14 @@ export default function ResetPassword() {
       if (data.session) {
         setIsValidToken(true);
       } else {
-        Alert.alert('無効なリンクです', 'パスワードリセットリンクが無効または期限切れです。');
+        Alert.alert(i18n.t('SCREEN.AUTH.INVALID_LINK'), i18n.t('SCREEN.AUTH.INVALID_LINK_MESSAGE'));
         router.replace('/(auth)/SignIn');
       }
     } catch (error) {
       LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
       Alert.alert(
-        'エラーが発生しました',
-        'パスワードリセットリンクの確認中にエラーが発生しました。'
+        i18n.t('SCREEN.AUTH.ERROR_OCCURRED'),
+        i18n.t('SCREEN.AUTH.ERROR_MESSAGE')
       );
       router.replace('/(auth)/SignIn');
     } finally {
@@ -87,12 +88,12 @@ export default function ResetPassword() {
 
   const handleResetPassword = async () => {
     if (!isValidToken) {
-      Alert.alert('無効なリンクです');
+      Alert.alert(i18n.t('SCREEN.AUTH.INVALID_LINK'));
       return;
     }
 
     if (password !== password2) {
-      Alert.alert('パスワードが一致しません');
+      Alert.alert(i18n.t('SCREEN.AUTH.PASSWORD_MISMATCH'));
       return;
     }
 
@@ -107,7 +108,7 @@ export default function ResetPassword() {
       // ローカルストレージからセッション情報を削除
       await AsyncStorage.removeItem('sessionType');
 
-      Alert.alert('パスワードを変更しました');
+      Alert.alert(i18n.t('SCREEN.AUTH.PASSWORD_CHANGED'));
       router.navigate('/(auth)/SignIn');
     } catch (error) {
       handlePasswordResetError(error);
@@ -117,9 +118,9 @@ export default function ResetPassword() {
   if (isLoading) {
     return (
       <BackgroundView>
-        <Header title="パスワードをリセット" />
+        <Header title={i18n.t('SCREEN.AUTH.RESET_PASSWORD_TITLE')} />
         <View className="flex-1 justify-center items-center">
-          <Text className="text-light-text dark:text-dark-text">リンクを確認中...</Text>
+          <Text className="text-light-text dark:text-dark-text">{i18n.t('SCREEN.AUTH.LINK_CHECKING')}</Text>
         </View>
       </BackgroundView>
     );
@@ -128,9 +129,9 @@ export default function ResetPassword() {
   if (!isValidToken) {
     return (
       <BackgroundView>
-        <Header title="パスワードをリセット" />
+        <Header title={i18n.t('SCREEN.AUTH.RESET_PASSWORD_TITLE')} />
         <View className="flex-1 justify-center items-center">
-          <Text className="text-light-text dark:text-dark-text">無効なリンクです</Text>
+          <Text className="text-light-text dark:text-dark-text">{i18n.t('SCREEN.AUTH.INVALID_LINK')}</Text>
         </View>
       </BackgroundView>
     );
@@ -138,10 +139,10 @@ export default function ResetPassword() {
 
   return (
     <BackgroundView>
-      <Header title="パスワードをリセット" />
+      <Header title={i18n.t('SCREEN.AUTH.RESET_PASSWORD_TITLE')} />
       <View className="w-full flex flex-col gap-4">
         <TextInput
-          placeholder="パスワード"
+          placeholder={i18n.t('SCREEN.AUTH.PASSWORD')}
           placeholderTextColor="gray"
           className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
@@ -152,7 +153,7 @@ export default function ResetPassword() {
           autoCapitalize="none"
         />
         <TextInput
-          placeholder="パスワード（確認）"
+          placeholder={i18n.t('SCREEN.AUTH.PASSWORD_CONFIRM')}
           placeholderTextColor="gray"
           className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
@@ -164,7 +165,7 @@ export default function ResetPassword() {
         />
 
         {/* サインイン */}
-        <Button theme={'theme'} text="パスワードを変更する" onPress={handleResetPassword} />
+        <Button theme={'theme'} text={i18n.t('SCREEN.AUTH.CHANGE_PASSWORD')} onPress={handleResetPassword} />
       </View>
     </BackgroundView>
   );

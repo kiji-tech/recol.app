@@ -8,6 +8,7 @@ import { useAuth } from '@/src/features/auth';
 import { updateProfile } from '@/src/features/profile';
 import * as ImagePicker from 'expo-image-picker';
 import { Profile } from '@/src/features/profile/types/Profile';
+import i18n from '@/src/libs/i18n';
 
 export default function ProfileEditorScreen() {
   // === Member ===
@@ -84,7 +85,7 @@ export default function ProfileEditorScreen() {
   // === Render ===
   return (
     <BackgroundView>
-      <Header title="プロフィール編集" onBack={() => router.back()} />
+      <Header title={i18n.t('SCREEN.PROFILE.EDIT_TITLE')} onBack={() => router.back()} />
       <View className="p-4 flex flex-col gap-6">
         <View className="items-center">
           <TouchableOpacity onPress={handlePickImage} className="relative">
@@ -113,24 +114,24 @@ export default function ProfileEditorScreen() {
 
         <View>
           <Text className="text-base font-bold mb-2 text-light-text dark:text-dark-text">
-            メールアドレス
+            {i18n.t('SCREEN.PROFILE.EMAIL_LABEL')}
           </Text>
           <TextInput
             className="border border-light-border dark:border-dark-border rounded-lg p-3 text-base text-light-text dark:text-dark-text bg-light-shadow dark:bg-dark-shadow"
-            value={user?.email || 'not found'}
+            value={user?.email || i18n.t('SCREEN.PROFILE.NOT_FOUND')}
             editable={false}
           />
         </View>
 
         <View>
           <Text className="text-base font-bold mb-2 text-light-text dark:text-dark-text">
-            表示名
+            {i18n.t('SCREEN.PROFILE.DISPLAY_NAME_LABEL')}
           </Text>
           <TextInput
             className="border border-light-border dark:border-dark-border rounded-lg p-3 text-base text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background"
             value={displayName}
             onChangeText={setDisplayName}
-            placeholder="表示名を入力"
+            placeholder={i18n.t('SCREEN.PROFILE.DISPLAY_NAME_PLACEHOLDER')}
             placeholderTextColor="gray"
             editable={!isLoading}
           />
@@ -138,7 +139,7 @@ export default function ProfileEditorScreen() {
 
         <Button
           onPress={handleSave}
-          text="保存"
+          text={i18n.t('SCREEN.PROFILE.SAVE')}
           theme="theme"
           disabled={isLoading}
           loading={isLoading}

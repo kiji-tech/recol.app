@@ -10,6 +10,7 @@ import { Schedule } from '@/src/features/schedule';
 import { Loading } from '@/src/components';
 import dayjs from 'dayjs';
 import RecentPlanItem from './RecentPlanItem';
+import i18n from '@/src/libs/i18n';
 
 /**
  * 直近n日のプランリストコンポーネント
@@ -106,7 +107,8 @@ export default function RecentPlanList() {
                 days === availableDay ? 'text-white' : 'text-light-text dark:text-dark-text'
               }`}
             >
-              {availableDay}日
+              {availableDay}
+              {i18n.t('COMMON.DAYS')}
             </Text>
           </TouchableOpacity>
         ))}
@@ -115,7 +117,7 @@ export default function RecentPlanList() {
       {/* プランリスト */}
       {recentPlanList.length === 0 ? (
         <Text className="text-light-text dark:text-dark-text text-sm">
-          直近{days}日のプランはありません
+          {i18n.t('COMPONENT.PLAN.NO_PLAN_RECENT').replace('#days#', days.toString())}
         </Text>
       ) : (
         <FlatList
