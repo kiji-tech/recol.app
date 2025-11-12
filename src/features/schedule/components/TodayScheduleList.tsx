@@ -57,10 +57,13 @@ const TodayScheduleItem = ({
   );
 };
 
-export default function TodayScheduleList() {
+type Props = {
+  planList: Plan[];
+};
+export default function TodayScheduleList({ planList }: Props) {
   // 直近7日にある予定を取得して表示する
   // === Member ===
-  const { planList, setPlan } = usePlan();
+  const { setPlan } = usePlan();
 
   // === Method ===
   const handlePress = (schedule: Schedule) => {

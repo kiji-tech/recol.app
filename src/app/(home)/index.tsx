@@ -71,7 +71,7 @@ export default function Home() {
             <Title text={i18n.t('SCREEN.HOME.TODAY_SCHEDULE')} />
             {planLoading && <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />}
           </View>
-          <TodayScheduleList />
+          <TodayScheduleList planList={planList} />
 
           {/* 直近n日のプラン */}
           <View className="w-full flex flex-row justify-start items-center gap-2">
