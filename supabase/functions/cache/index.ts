@@ -34,7 +34,7 @@ const getPlace = async (c: Context) => {
 
   const placeDataList = [];
   for (const placeId of placeIdList) {
-    const key = `google-place/${placeId}`;
+    const key = `google-place/${placeId}/${languageCode}`;
     const { data: cachePlaceData } = await supabase.storage.from('caches').download(key);
     if (cachePlaceData) {
       LogUtil.log(`[getPlace] ${placeId} HIT!!!`, { level: 'info' });
