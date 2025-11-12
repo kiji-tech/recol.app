@@ -11,11 +11,7 @@ import NotFoundPlanView from '../../../features/plan/components/NotFoundPlanView
 import PlanCard from '../../../features/plan/components/PlanCard';
 import PlanListMenu from '@/src/features/plan/components/PlanListMenu';
 import PlanSortModal from '@/src/features/plan/components/PlanSortModal';
-import {
-  PlanSortType,
-  DEFAULT_PLAN_SORT_TYPE,
-  PLAN_SORT_TYPE_STORAGE_KEY,
-} from '@/src/features/plan/types/PlanSortType';
+import { PlanSortType, PLAN_SORT_TYPE_STORAGE_KEY } from '@/src/features/plan/types/PlanSortType';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '@/src/libs/i18n';
 
@@ -26,32 +22,12 @@ export default function PlanListScreen() {
 
   // === Method ===
   /**
-   * LocalStorageからソート条件を読み込む
-   * @return {Promise<PlanSortType>} ソート条件
-   */
-  const loadSortType = async (): Promise<PlanSortType> => {
-    try {
-      const savedSortType = await AsyncStorage.getItem(PLAN_SORT_TYPE_STORAGE_KEY);
-      if (savedSortType && (savedSortType === 'created_at' || savedSortType === 'schedule_date')) {
-        return savedSortType as PlanSortType;
-      }
-    } catch (error) {
-      LogUtil.log('Failed to load sort type', {
-        level: 'error',
-        error: error as Error,
-      });
-    }
-    return DEFAULT_PLAN_SORT_TYPE;
-  };
-
-  /**
    * 初期化処理
    * @param {AbortController} ctrl - アボートコントローラー
    * @param {PlanSortType} targetSortType - ソート条件（指定がない場合はLocalStorageから読み込む）
    */
   const init = async (ctrl?: AbortController) => {
-    const loadedSortType = await loadSortType();
-    await fetchPlan(ctrl, loadedSortType).catch((e) => {
+    await fetchPlan(ctrl).catch((e) => {
       if (e.message.includes('Aborted')) {
         LogUtil.log('Aborted', { level: 'warn' });
         return;
@@ -94,7 +70,10 @@ export default function PlanListScreen() {
 
   return (
     <BackgroundView>
-      <Header title={i18n.t('SCREEN.PLAN.LIST_TITLE')} rightComponent={<PlanListMenu onSortPress={handleSortPress} />} />
+      <Header
+        title={i18n.t('SCREEN.PLAN.LIST_TITLE')}
+        rightComponent={<PlanListMenu onSortPress={handleSortPress} />}
+      />
       {/* プラン一覧 */}
       <View className="flex flex-col justify-start items-start bg-light-background dark:bg-dark-background rounded-xl">
         {planList && planList.map((plan: Plan) => <PlanCard key={plan.uid} plan={plan} />)}

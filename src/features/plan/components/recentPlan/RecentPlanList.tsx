@@ -7,7 +7,6 @@ import { useRecentPlanDays, RecentPlanDays } from '../../hooks/useRecentPlanDays
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Plan } from '../../index';
 import { Schedule } from '@/src/features/schedule';
-import { Loading } from '@/src/components';
 import dayjs from 'dayjs';
 import RecentPlanItem from './RecentPlanItem';
 import i18n from '@/src/libs/i18n';
@@ -18,7 +17,7 @@ import i18n from '@/src/libs/i18n';
  */
 export default function RecentPlanList() {
   // === Member ===
-  const { planList, planLoading } = usePlanList();
+  const { planList } = usePlanList();
   const { days, setDays, isLoading: isDaysLoading, availableDays } = useRecentPlanDays();
   const { setPlan } = usePlan();
 
@@ -78,15 +77,6 @@ export default function RecentPlanList() {
       return !minScheduleDate.isBefore(now, 'day') && minScheduleDate.isBefore(cutoffDate);
     });
   }, [planList, days, isDaysLoading]);
-
-  // === Render ===
-  if (planLoading || isDaysLoading) {
-    return (
-      <View className="w-full flex justify-center items-center">
-        <Loading />
-      </View>
-    );
-  }
 
   return (
     <View className="w-full flex flex-col gap-4">
