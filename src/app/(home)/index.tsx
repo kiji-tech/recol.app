@@ -13,13 +13,13 @@ import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { useFocusEffect } from '@react-navigation/native';
-import { usePlan } from '@/src/contexts/PlanContext';
+import { usePlanList } from '@/src/features/plan/hooks/usePlanList';
 import i18n from '@/src/libs/i18n';
 
 export default function Home() {
   // === Member ===
   const { articles, loading } = useArticles();
-  const { fetchPlan, planLoading } = usePlan();
+  const { planList, fetchPlan, planLoading } = usePlanList();
   const { currentInformation, isModalVisible, handleCloseModal } = useInformation();
   const router = useRouter();
   const { isDarkMode } = useTheme();
@@ -78,7 +78,7 @@ export default function Home() {
             <Title text={i18n.t('SCREEN.HOME.RECENT_PLAN')} />
             {planLoading && <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />}
           </View>
-          <RecentPlanList />
+          <RecentPlanList planList={planList} />
 
           {/* 新着・おすすめ・旅行先・グッズ */}
           <Title text={i18n.t('SCREEN.HOME.NEW_ARTICLE')} />

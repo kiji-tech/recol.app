@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { Plan } from '../../index';
 import { Schedule } from '@/src/features/schedule';
 import dayjs from 'dayjs';
+import { RecentPlanDays } from '../../hooks/useRecentPlanDays';
 
 /**
  * 直近プランのカードコンポーネント
@@ -12,11 +13,37 @@ import dayjs from 'dayjs';
  */
 export default function RecentPlanItem({
   plan,
+  days,
   onPress,
 }: {
   plan: Plan;
+  days: RecentPlanDays;
   onPress: (plan: Plan) => void;
 }) {
+  const isFilteredPlan = (plan: Plan): boolean => {
+    const now = dayjs();
+    const cutoffDate = dayjs().add(days, 'day');
+
+    if (!plan.schedule || plan.schedule.length === 0) {
+      return false;
+    }
+    // プランに含まれるスケジュールのfromの最小値を取得
+    const minScheduleDate = plan.schedule.reduce(
+      (min: dayjs.Dayjs | null, schedule: Schedule) => {
+        const scheduleDate = dayjs(schedule.from);
+        return min === null || scheduleDate.isBefore(min) ? scheduleDate : min;
+      },
+      null as dayjs.Dayjs | null
+    );
+
+    if (!minScheduleDate) {
+      return false;
+    }
+
+    // 当日以降で、かつn日以内かどうかを判定
+    return !minScheduleDate.isBefore(now, 'day') && minScheduleDate.isBefore(cutoffDate);
+  };
+
   /**
    * プランの日付範囲を取得
    */
@@ -31,6 +58,10 @@ export default function RecentPlanItem({
     const endDate = dayjs(sortedSchedules[sortedSchedules.length - 1].from).format('MM/DD');
     return sortedSchedules.length > 1 ? `${startDate} ~ ${endDate}` : startDate;
   }, [plan]);
+
+  if (!isFilteredPlan(plan)) {
+    return null;
+  }
 
   return (
     <TouchableOpacity

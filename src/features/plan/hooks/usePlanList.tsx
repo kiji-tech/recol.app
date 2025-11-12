@@ -42,11 +42,11 @@ export const usePlanList = (plan?: Plan | null, setPlan?: (plan: Plan) => void) 
     async (ctrl?: AbortController) => {
       if (!session) return;
       const sortType =
-        (await AsyncStorage.getItem(PLAN_SORT_TYPE_STORAGE_KEY)) || DEFAULT_PLAN_SORT_TYPE ;
+        (await AsyncStorage.getItem(PLAN_SORT_TYPE_STORAGE_KEY)) || DEFAULT_PLAN_SORT_TYPE;
       setPlanLoading(true);
       fetchPlanList(session, ctrl, sortType as PlanSortType)
         .then(async (response) => {
-          setPlanList(response);
+          setPlanList([...response]);
           await setStoragePlan(response);
           if (plan && setPlan) {
             const updatePlan = response.find((p) => p.uid === plan.uid);

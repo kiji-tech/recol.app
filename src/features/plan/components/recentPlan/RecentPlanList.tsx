@@ -1,26 +1,25 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
-import { usePlanList } from '../../hooks/usePlanList';
 import { useRecentPlanDays, RecentPlanDays } from '../../hooks/useRecentPlanDays';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Plan } from '../../index';
-import { Schedule } from '@/src/features/schedule';
-import dayjs from 'dayjs';
 import RecentPlanItem from './RecentPlanItem';
 import i18n from '@/src/libs/i18n';
+
+type Props = {
+  planList?: Plan[];
+};
 
 /**
  * 直近n日のプランリストコンポーネント
  * @returns {React.ReactNode}
  */
-export default function RecentPlanList() {
+export default function RecentPlanList({ planList }: Props) {
   // === Member ===
-  const { planList } = usePlanList();
-  const { days, setDays, isLoading: isDaysLoading, availableDays } = useRecentPlanDays();
+  const { days, setDays, availableDays } = useRecentPlanDays();
   const { setPlan } = usePlan();
-
   // === Method ===
   /**
    * プラン選択処理
@@ -44,39 +43,6 @@ export default function RecentPlanList() {
   const handleDaysSelect = async (selectedDays: RecentPlanDays): Promise<void> => {
     await setDays(selectedDays);
   };
-
-  // === Memo ===
-  /**
-   * 未来n日以内のプランをフィルタリング
-   */
-  const recentPlanList = useMemo(() => {
-    if (isDaysLoading) {
-      return [];
-    }
-
-    const now = dayjs();
-    const cutoffDate = dayjs().add(days, 'day');
-    return planList.filter((plan: Plan) => {
-      if (!plan.schedule || plan.schedule.length === 0) {
-        return false;
-      }
-      // プランに含まれるスケジュールのfromの最小値を取得
-      const minScheduleDate = plan.schedule.reduce(
-        (min: dayjs.Dayjs | null, schedule: Schedule) => {
-          const scheduleDate = dayjs(schedule.from);
-          return min === null || scheduleDate.isBefore(min) ? scheduleDate : min;
-        },
-        null as dayjs.Dayjs | null
-      );
-
-      if (!minScheduleDate) {
-        return false;
-      }
-
-      // 当日以降で、かつn日以内かどうかを判定
-      return !minScheduleDate.isBefore(now, 'day') && minScheduleDate.isBefore(cutoffDate);
-    });
-  }, [planList, days, isDaysLoading]);
 
   return (
     <View className="w-full flex flex-col gap-4">
@@ -105,18 +71,18 @@ export default function RecentPlanList() {
       </View>
 
       {/* プランリスト */}
-      {recentPlanList.length === 0 ? (
+      {planList && planList.length === 0 ? (
         <Text className="text-light-text dark:text-dark-text text-sm">
           {i18n.t('COMPONENT.PLAN.NO_PLAN_RECENT').replace('#days#', days.toString())}
         </Text>
       ) : (
         <FlatList
-          data={recentPlanList}
+          data={planList}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ gap: 8 }}
           renderItem={({ item }: { item: Plan }) => (
-            <RecentPlanItem plan={item} onPress={handlePress} />
+            <RecentPlanItem plan={item} days={days as RecentPlanDays} onPress={handlePress} />
           )}
           keyExtractor={(item: Plan) => item.uid}
         />
