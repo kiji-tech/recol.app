@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Platform, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native';
 import { Region } from 'react-native-maps';
+import i18n from '@/src/libs/i18n';
 
 type Props = {
   centerRegion: Region;
@@ -61,7 +62,7 @@ export default function ResearchButton({ centerRegion, currentRegion, radius, on
         onPress={handlePress}
       >
         <Text className="text-center text-md text-light-text dark:text-dark-text">
-          エリアで再検索する
+          {i18n.t('SCREEN.MAP.RESEARCH')}
         </Text>
       </TouchableOpacity>
     </View>

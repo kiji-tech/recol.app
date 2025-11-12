@@ -5,6 +5,7 @@ import Title from '@/src/components/Title';
 import { Plan } from '@/src/features/plan';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { openUrl } from '../../article/libs/openBrowser';
+import i18n from '@/src/libs/i18n';
 
 type Props = {
   plan: Plan | null;
@@ -41,7 +42,7 @@ export default function PlanInformation({ plan }: Props) {
         />
       ) : (
         <Text className="text-md text-light-text dark:text-dark-text opacity-70">
-          メモはありません.
+          {i18n.t('COMPONENT.PLAN.NO_MEMO')}
         </Text>
       )}
       {/* メンバーリスト */}

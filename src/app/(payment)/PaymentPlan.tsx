@@ -9,6 +9,7 @@ import { PurchasesPackage } from 'react-native-purchases';
 import CurrentPlanBadge from '../../features/payment/components/CurrentPlanBadge';
 import PlanTable from '../../features/payment/components/PlanTable';
 import PlanCard from '../../features/payment/components/PlanCard';
+import i18n from '@/src/libs/i18n';
 
 export default function PaymentPlan() {
   // === Member ===
@@ -34,7 +35,7 @@ export default function PaymentPlan() {
    */
   const handlePayment = async (payment: PurchasesPackage) => {
     if (!session) {
-      Alert.alert('セッション情報がありません｡ログインし直してください｡');
+      Alert.alert(i18n.t('SCREEN.PAYMENT.NO_SESSION'));
       router.push('/(auth)/SignIn');
       return;
     }
@@ -49,7 +50,7 @@ export default function PaymentPlan() {
         level: 'error',
         notify: true,
       });
-      Alert.alert('支払いに失敗しました。お問い合わせからご連絡ください。');
+      Alert.alert(i18n.t('SCREEN.PAYMENT.PAYMENT_FAILED'));
     } finally {
       setIsLoading(false);
     }
@@ -61,14 +62,14 @@ export default function PaymentPlan() {
   const handleCancel = async () => {
     LogUtil.log('handle cancel.');
     if (profile && !profile.isPremiumUser()) {
-      Alert.alert('プレミアムプランには契約していません。');
+      Alert.alert(i18n.t('SCREEN.PAYMENT.NOT_PREMIUM'));
       return;
     }
 
-    Alert.alert('解約の確認', 'プレミアムプランを解約しますか？', [
-      { text: 'キャンセル', style: 'cancel' },
+    Alert.alert(i18n.t('SCREEN.PAYMENT.CANCEL_CONFIRM_TITLE'), i18n.t('SCREEN.PAYMENT.CANCEL_CONFIRM_MESSAGE'), [
+      { text: i18n.t('COMMON.CANCEL'), style: 'cancel' },
       {
-        text: '解約する',
+        text: i18n.t('SCREEN.PAYMENT.CANCEL_PREMIUM'),
         style: 'destructive',
         onPress: async () => {
           Linking.openURL(managementURL || '').then(async () => {
@@ -89,13 +90,13 @@ export default function PaymentPlan() {
           {/* ヘッダーセクション */}
           <View className="items-center py-4">
             <Text className="text-2xl font-bold text-light-text dark:text-dark-text text-center">
-              プレミアムプランで
+              {i18n.t('SCREEN.PAYMENT.PREMIUM_TITLE_1')}
             </Text>
             <Text className="text-2xl font-bold text-light-primary dark:text-dark-primary text-center">
-              より良い休日を体験
+              {i18n.t('SCREEN.PAYMENT.PREMIUM_TITLE_2')}
             </Text>
             <Text className="text-gray-600 dark:text-gray-400 text-center">
-              あなたの旅･休日をより豊かにします
+              {i18n.t('SCREEN.PAYMENT.PREMIUM_SUBTITLE')}
             </Text>
           </View>
           {/* 現在のプラン状況 */}
@@ -103,14 +104,14 @@ export default function PaymentPlan() {
           {/* 比較表 */}
           <View>
             <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-3">
-              プラン比較
+              {i18n.t('SCREEN.PAYMENT.PLAN_COMPARISON')}
             </Text>
             <PlanTable />
           </View>
           {/* プラン選択 */}
           <View>
             <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-3">
-              プランを選択
+              {i18n.t('SCREEN.PAYMENT.SELECT_PLAN')}
             </Text>
             <View className="flex flex-col gap-8">
               {premiumPlanList.length > 0 &&
@@ -135,7 +136,7 @@ export default function PaymentPlan() {
           {profile?.isPremiumUser() && (
             <View className="items-center">
               <Button
-                text="プレミアムプランを解約"
+                text={i18n.t('SCREEN.PAYMENT.CANCEL_PREMIUM_BUTTON')}
                 onPress={handleCancel}
                 disabled={isLoading}
                 loading={isLoading}

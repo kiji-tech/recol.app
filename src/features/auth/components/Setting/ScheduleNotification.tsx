@@ -10,7 +10,7 @@ import { updateProfile } from '@/src/features/profile';
 import { fetchScheduleListForNotification } from '@/src/features/schedule';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-
+import i18n from '@/src/libs/i18n';
 export default function ScheduleNotification() {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
@@ -34,8 +34,8 @@ export default function ScheduleNotification() {
         }
 
         Alert.alert(
-          '通知権限が必要です',
-          'スケジュール通知を使用するには、デバイスの設定から通知権限を許可してください。',
+          i18n.t('COMPONENT.SCHEDULE_NOTIFICATION.NO_PERMISSION_TITLE'),
+          i18n.t('COMPONENT.SCHEDULE_NOTIFICATION.NO_PERMISSION'),
           [
             {
               text: '設定を開く',
@@ -63,8 +63,8 @@ export default function ScheduleNotification() {
         }
 
         Alert.alert(
-          '通知権限の取得に失敗しました',
-          '通知権限を取得できませんでした。後でもう一度お試しください。',
+          i18n.t('COMMON.ERROR'),
+          i18n.t('COMPONENT.SCHEDULE_NOTIFICATION.ERROR_MESSAGE'),
           [{ text: 'OK' }]
         );
         return false;
@@ -119,10 +119,12 @@ export default function ScheduleNotification() {
       <View className="flex-1 pr-16">
         <View className="flex-row items-center">
           <Ionicons name="calendar-outline" size={24} color={isDarkMode ? 'white' : 'black'} />
-          <Text className="ml-3 text-light-text dark:text-dark-text">スケジュールの通知</Text>
+          <Text className="ml-3 text-light-text dark:text-dark-text">
+            {i18n.t('COMPONENT.SCHEDULE_NOTIFICATION.TITLE')}
+          </Text>
         </View>
         <Text className="text-sm text-light-text dark:text-dark-text ml-9 mt-1">
-          スケジュールの開始時刻に通知を受け取ります
+          {i18n.t('COMPONENT.SCHEDULE_NOTIFICATION.MESSAGE')}
         </Text>
       </View>
       <View className="absolute right-4">

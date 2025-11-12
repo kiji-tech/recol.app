@@ -1,9 +1,261 @@
 {
+    "TABBAR": {
+        "HOME": "Home",
+        "PLAN": "Plan",
+        "SCHEDULE": "Schedule",
+        "SETTINGS": "Settings",
+        "MAP": "Map",
+        "MEDIA": "Media",
+        "SAMPLE": "Sample"
+    },
+    "DATA": {
+        "SCHEDULE": {
+            "DATETIME": "Date & Time",
+            "CATEGORY": "Category",
+            "PLACE_LIST": "Candidates",
+            "MEMO": "Memo"
+        }
+    },
     "SCREEN": {
         "HOME": {
             "TODAY_SCHEDULE": "Today's Schedule",
             "RECENT_PLAN": "Recent Plan",
             "NEW_ARTICLE": "New Article"
+        },
+        "PLAN": {
+            "CREATE_TITLE": "Create New Plan",
+            "EDIT_TITLE": "Edit",
+            "NEW_PLAN": "New Plan",
+            "TITLE_LABEL": "Please enter the plan title.",
+            "TITLE_PLACEHOLDER": "Tea party at...",
+            "MEMO_LABEL": "Memo",
+            "MEMO_PLACEHOLDER": "Please enter a memo.",
+            "ADD_FRIEND": "Add Friends",
+            "SELECT": "Select",
+            "REGISTER": "Register",
+            "PREPARING": "Preparing",
+            "TITLE_REQUIRED": "Please enter the plan title",
+            "REGISTER_SUCCESS": "has been registered",
+            "REGISTER_FAILED": "Failed to register plan",
+            "PLAN_NOT_FOUND": "Plan not found",
+            "LIST_TITLE": "Plan List"
+        },
+        "AUTH": {
+            "SIGN_IN": "Sign In",
+            "SIGN_UP": "Sign Up",
+            "FORGOT_PASSWORD": "Forgot Password?",
+            "OR": "or",
+            "EMAIL_PLACEHOLDER": "Email address...",
+            "PASSWORD_PLACEHOLDER": "Password...",
+            "EMAIL_REQUIRED": "Email address is required",
+            "PASSWORD_REQUIRED": "Password is required",
+            "EMAIL_INVALID": "Invalid email format",
+            "PASSWORD_MISMATCH": "Passwords do not match",
+            "SIGN_IN_FAILED": "Sign in failed",
+            "SIGN_UP_FAILED": "Sign up failed",
+            "EMAIL_ALREADY_EXISTS": "This email address is already registered.",
+            "BACK_TO_SIGN_IN": "Back to Sign In",
+            "RESET_PASSWORD_TITLE": "Reset Password",
+            "RESET_PASSWORD_BUTTON": "Reset Password",
+            "RESET_PASSWORD_SUCCESS": "Password reset email has been sent.",
+            "RESET_PASSWORD_FAILED": "Failed to send password reset email.",
+            "CHANGE_PASSWORD": "Change Password",
+            "PASSWORD": "Password",
+            "PASSWORD_CONFIRM": "Password (Confirm)",
+            "LINK_CHECKING": "Checking link...",
+            "INVALID_LINK": "Invalid link",
+            "INVALID_LINK_MESSAGE": "The password reset link is invalid or expired.",
+            "ERROR_OCCURRED": "An error occurred",
+            "ERROR_MESSAGE": "An error occurred while checking the password reset link.",
+            "SAME_PASSWORD_ERROR": "Cannot use the same password as the new password.",
+            "PASSWORD_CHANGE_FAILED": "Failed to change password.",
+            "PASSWORD_CHANGED": "Password changed",
+            "REQUEST_NEW_ACCOUNT_TITLE": "Account creation email has been sent to your email address.",
+            "EMAIL_LABEL": "Entered email address",
+            "CHECK_EMAIL": "Please check your email and create your account.",
+            "RESEND_EMAIL": "Resend Email",
+            "EMAIL_NOT_FOUND": "Could not retrieve email address.",
+            "RESEND_SUCCESS": "Confirmation email has been resent.",
+            "RESEND_FAILED": "Failed to resend email.",
+            "CONGRATULATIONS": "Congratulations!",
+            "WELCOME": "Welcome to Re:CoL",
+            "GREAT_TRIP": "Let's create amazing travel plans together",
+            "REGISTRATION_COMPLETE": "🎊 Registration Complete 🎊",
+            "EXPERIENCE_STARTS": "Your amazing experience starts now",
+            "GET_STARTED": "Get Started!"
+        },
+        "INFORMATION": {
+            "TITLE": "Information",
+            "NO_INFORMATION": "No information available",
+            "ERROR_OCCURRED": "An error occurred"
+        },
+        "ACCOUNT": {
+            "DELETE_TITLE": "Delete Account",
+            "IMPORTANT_NOTICE": "Important Notice",
+            "DELETE_WARNING": "Deleting your account will permanently delete all data and cannot be undone. Please read and agree to the following items before proceeding.",
+            "PREMIUM_CANCEL_GUIDE": "Premium Plan Cancellation Guide",
+            "PREMIUM_NOT_AUTO_CANCEL": "Premium plans are not automatically cancelled.",
+            "CHECK_HERE": "here",
+            "CHECK_PURCHASE": "to check your purchase status.",
+            "DELETE_CONSENT": "Account Deletion Consent",
+            "SUBSCRIPTION_CANCELED": "Subscription has been cancelled.",
+            "NO_REFUND": "Refunds are not available even if there is remaining premium plan period.",
+            "NO_RESTORE": "Plans associated with this account cannot be restored after deletion.",
+            "DELETE_BUTTON": "Delete Account",
+            "DELETE_CONFIRM_TITLE": "Confirm Account Deletion",
+            "DELETE_CONFIRM_MESSAGE": "Are you sure you want to delete your account? This action cannot be undone.",
+            "DELETE_SUCCESS_TITLE": "Account Deletion Complete",
+            "DELETE_SUCCESS_MESSAGE": "Your account has been successfully deleted.",
+            "DELETE_FAILED": "Failed to delete account.",
+            "ENABLE_DELETE": "Check all consent items to enable the delete button"
+        },
+        "PROFILE": {
+            "EDIT_TITLE": "Edit Profile",
+            "EMAIL_LABEL": "Email Address",
+            "DISPLAY_NAME_LABEL": "Display Name",
+            "DISPLAY_NAME_PLACEHOLDER": "Enter display name",
+            "SAVE": "Save",
+            "NOT_FOUND": "not found"
+        },
+        "PAYMENT": {
+            "NO_SESSION": "No session information. Please sign in again.",
+            "PAYMENT_FAILED": "Payment failed. Please contact us.",
+            "NOT_PREMIUM": "You are not subscribed to a premium plan.",
+            "CANCEL_CONFIRM_TITLE": "Confirm Cancellation",
+            "CANCEL_CONFIRM_MESSAGE": "Do you want to cancel your premium plan?",
+            "CANCEL_PREMIUM": "Cancel",
+            "PREMIUM_TITLE_1": "Experience Better",
+            "PREMIUM_TITLE_2": "Holidays with Premium",
+            "PREMIUM_SUBTITLE": "Enrich your travel and holidays",
+            "PLAN_COMPARISON": "Plan Comparison",
+            "SELECT_PLAN": "Select Plan",
+            "CANCEL_PREMIUM_BUTTON": "Cancel Premium Plan",
+            "UPGRADE_COMPLETE": "Upgrade Complete!",
+            "WELCOME_PREMIUM": "Welcome to Premium Plan. Enjoy all features."
+        },
+        "SETTINGS": {
+            "ACCOUNT_SETTINGS": "Account Settings",
+            "PROFILE_EDIT": "Edit Profile",
+            "PLAN": "Plan",
+            "APP_SETTINGS": "App Settings",
+            "APP_VERSION": "App Version",
+            "OTHER": "Other",
+            "TERMS": "Terms of Service",
+            "PRIVACY_POLICY": "Privacy Policy",
+            "CONTACT": "Contact Us",
+            "SHARE_TWITTER": "Share on Twitter",
+            "DELETE_ACCOUNT": "Delete Account",
+            "SIGN_OUT": "Sign Out"
+        },
+        "SCHEDULE": {
+            "TITLE_PLACEHOLDER": "Title...",
+            "NO_LOGIN": "Login information not found",
+            "PLAN_NOT_FOUND": "Could not retrieve plan information",
+            "FETCH_FAILED": "Failed to retrieve plan information",
+            "CANDIDATE_COUNT": "#count# candidates found",
+            "DELETE_SUCCESS": "has been deleted",
+            "SAVE_FAILED": "Failed to save schedule",
+            "ADD_FROM_MAP": "Add from Map",
+            "SELECT_CATEGORY": "Select Category",
+            "CATEGORY": {
+                "MOVEMENT": "Movement",
+                "MEALS": "Meals",
+                "CAFE": "Cafe",
+                "AMUSEMENT": "Amusement",
+                "OTHER": "Other"
+            }
+        },
+        "PLAN_LIST": {
+            "FETCH_FAILED": "Failed to retrieve plans",
+            "SORT_SAVE_FAILED": "Failed to save sort order"
+        },
+        "MAP": {
+            "SELECT_CATEGORY": "Select Category",
+            "NO_RESULT": "No search results",
+            "NO_SELECTED": "No selected candidates",
+            "RESEARCH": "Re-search in area",
+            "CATEGORY": {
+                "SEARCH_RESULT": "Search Result",
+                "SELECTED": "Selected",
+                "CAFE": "Cafe",
+                "MEAL": "Meal",
+                "HOTEL": "Hotel",
+                "SPOT": "Spot"
+            }
         }
+    },
+    "COMPONENT": {
+        "PLAN": {
+            "NOT_FOUND": "No plans found",
+            "ADD_PLAN": "Add Plan",
+            "SUPER_USER": "Super User",
+            "FREE_PLAN": "Free Plan",
+            "PREMIUM_PLAN": "Premium Plan",
+            "EXPIRATION_DATE": "Expiration Date",
+            "SORT_TITLE": "Sort",
+            "SORT_CREATED_AT": "Created Date (Descending)",
+            "SORT_SCHEDULE_DATE": "Schedule Date (Descending)",
+            "NO_MEMO": "No memo.",
+            "NO_SCHEDULE_TODAY": "No schedule today",
+            "NO_PLAN_RECENT": "No plan recent #days# days"
+        },
+        "PAYMENT": {
+            "FEATURE": "Feature",
+            "FREE": "Free",
+            "PREMIUM": "Premium",
+            "ALL_FEATURES": "All features available",
+            "MEDIA_CAPACITY": "Media Capacity",
+            "MEDIA_CAPACITY_FREE": "1GB / Plan",
+            "MEDIA_CAPACITY_PREMIUM": "100GB / Plan",
+            "AD_DISPLAY": "Ad Display",
+            "YES": "○",
+            "NO": "-",
+            "RECOMMENDED": "Recommended",
+            "CURRENT_FREE_PLAN": "Currently using Free Plan",
+            "UPGRADE_MESSAGE": "Upgrade to Premium Plan to enjoy all features",
+            "CURRENT_PLAN": "Current Plan",
+            "POPULAR_PLAN": "Popular Plan",
+            "TRIAL_MESSAGE": "Start with 1 month trial",
+            "TRIAL_MESSAGE_MONTHLY": "is 1 month free!",
+            "TRIAL_MESSAGE_AFTER_END": "After the trial ends, you will be automatically upgraded to the premium plan.",
+            "DISCOUNT_MESSAGE": "#discount#% OFF!"
+        },
+        "INFORMATION": {
+            "DETAIL": "View Details",
+            "CLOSE": "Close",
+            "INVALID_URL": "Invalid URL"
+        },
+        "SCHEDULE": {
+            "EDIT_PLAN": "Edit Plan",
+            "ADD_SCHEDULE": "Add Schedule",
+            "EDIT_TIME": "Edit Time",
+            "SHARE": "Share",
+            "SHARE_TITLE": "Share Schedule"
+        },
+        "VERSION": {
+            "UPDATE_REQUIRED": "App Update Required",
+            "UPDATE_MESSAGE": "Please update the app to use the latest features and security updates.",
+            "UPDATE_BUTTON": "Update in Store"
+        },
+        "SCHEDULE_NOTIFICATION": {
+            "TITLE": "Schedule Notification",
+            "MESSAGE": "Receive notifications when the schedule starts.",
+            "NO_PERMISSION_TITLE": "Notification Permission Required",
+            "NO_PERMISSION": "Notification permission is required to use schedule notifications. Please allow notification permissions in device settings.",
+            "ERROR_MESSAGE": "Failed to get notification permission. Please try again later."
+        }
+    },
+    "COMMON": {
+        "DARK_MODE": "Dark Mode",
+        "ERROR": "Error",
+        "SUCCESS": "Success",
+        "CANCEL": "Cancel",
+        "OK": "OK",
+        "SAVE": "Save",
+        "NOT_FOUND": "not found",
+        "DELETE": "Delete",
+        "DAYS": " days",
+        "SEARCH": "Search",
+        "MONTH": "Month"
     }
 }

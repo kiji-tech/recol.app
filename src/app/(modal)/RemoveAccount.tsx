@@ -9,6 +9,7 @@ import { useAuth } from '@/src/features/auth';
 import { useSlackNotification } from '@/src/features/slack/hooks/useSlackNotification';
 import { usePremiumPlan } from '@/src/features/auth/hooks/usePremiumPlan';
 import { Linking } from 'react-native';
+import i18n from '@/src/libs/i18n';
 
 interface ConsentItem {
   id: string;
@@ -26,17 +27,17 @@ export default function RemoveAccount() {
   const [consentItems, setConsentItems] = useState<ConsentItem[]>([
     {
       id: 'subscription_cancel',
-      text: 'サブスクリプションはキャンセル済みです｡',
+      text: i18n.t('SCREEN.ACCOUNT.SUBSCRIPTION_CANCELED'),
       checked: false,
     },
     {
       id: 'premium_refund',
-      text: 'プレミアムプランの期間が残っていた場合でも返金することはできません。',
+      text: i18n.t('SCREEN.ACCOUNT.NO_REFUND'),
       checked: false,
     },
     {
       id: 'plan_restore',
-      text: 'このアカウントに紐づいている予定は､削除後復元することはできません。',
+      text: i18n.t('SCREEN.ACCOUNT.NO_RESTORE'),
       checked: false,
     },
   ]);
@@ -54,23 +55,23 @@ export default function RemoveAccount() {
   // アカウント削除処理
   const handleDeleteAccount = async () => {
     Alert.alert(
-      'アカウント削除の確認',
-      '本当にアカウントを削除しますか？この操作は取り消すことができません。',
+      i18n.t('SCREEN.ACCOUNT.DELETE_CONFIRM_TITLE'),
+      i18n.t('SCREEN.ACCOUNT.DELETE_CONFIRM_MESSAGE'),
       [
         {
-          text: 'キャンセル',
+          text: i18n.t('COMMON.CANCEL'),
           style: 'cancel',
         },
         {
-          text: '削除する',
+          text: i18n.t('COMMON.DELETE'),
           style: 'destructive',
           onPress: async () => {
             setIsLoading(true);
             try {
               await deleteAccount(session);
-              Alert.alert('アカウント削除完了', 'アカウントが正常に削除されました。', [
+              Alert.alert(i18n.t('SCREEN.ACCOUNT.DELETE_SUCCESS_TITLE'), i18n.t('SCREEN.ACCOUNT.DELETE_SUCCESS_MESSAGE'), [
                 {
-                  text: 'OK',
+                  text: i18n.t('COMMON.OK'),
                   onPress: async () => {
                     await sendNotification({
                       message: `アカウント削除完了: ${session?.user.email}`,
@@ -83,8 +84,8 @@ export default function RemoveAccount() {
               ]);
             } catch (error) {
               Alert.alert(
-                'エラー',
-                error instanceof Error ? error.message : 'アカウント削除に失敗しました。'
+                i18n.t('COMMON.ERROR'),
+                error instanceof Error ? error.message : i18n.t('SCREEN.ACCOUNT.DELETE_FAILED')
               );
             } finally {
               setIsLoading(false);
@@ -97,7 +98,7 @@ export default function RemoveAccount() {
 
   return (
     <BackgroundView>
-      <Header title="アカウント削除" onBack={() => router.back()} />
+      <Header title={i18n.t('SCREEN.ACCOUNT.DELETE_TITLE')} onBack={() => router.back()} />
 
       <View className="flex-1 px-6 py-8">
         {/* 警告メッセージ */}
@@ -105,12 +106,11 @@ export default function RemoveAccount() {
           <View className="flex-row items-center mb-2">
             <Ionicons name="warning" size={20} color={isDarkMode ? '#fca5a5' : '#dc2626'} />
             <Text className="ml-2 text-red-600 dark:text-red-400 font-bold text-base">
-              重要な注意事項
+              {i18n.t('SCREEN.ACCOUNT.IMPORTANT_NOTICE')}
             </Text>
           </View>
           <Text className="text-red-700 dark:text-red-300 text-sm leading-6">
-            アカウントを削除すると、すべてのデータが完全に削除され、復元することはできません。
-            削除を実行する前に、以下の項目をよくお読みになり、同意していただく必要があります。
+            {i18n.t('SCREEN.ACCOUNT.DELETE_WARNING')}
           </Text>
         </View>
 
@@ -118,10 +118,10 @@ export default function RemoveAccount() {
         {activePlanId && (
           <View className="mb-8">
             <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-4">
-              プレミアムプランの解約案内
+              {i18n.t('SCREEN.ACCOUNT.PREMIUM_CANCEL_GUIDE')}
             </Text>
             <Text className="text-sm text-light-text dark:text-dark-text">
-              プレミアムプランは自動で解約されません｡
+              {i18n.t('SCREEN.ACCOUNT.PREMIUM_NOT_AUTO_CANCEL')}
               <Text
                 onPress={() => {
                   Linking.openURL(managementURL || '').then(async () => {
@@ -130,9 +130,9 @@ export default function RemoveAccount() {
                 }}
                 className="text-sm text-blue-500"
               >
-                こちら
+                {i18n.t('SCREEN.ACCOUNT.CHECK_HERE')}
               </Text>
-              で購入状況を確認してください｡
+              {i18n.t('SCREEN.ACCOUNT.CHECK_PURCHASE')}
             </Text>
           </View>
         )}
@@ -140,7 +140,7 @@ export default function RemoveAccount() {
         {/* 同意項目 */}
         <View className="mb-8">
           <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-4">
-            削除に関する同意事項
+            {i18n.t('SCREEN.ACCOUNT.DELETE_CONSENT')}
           </Text>
           {consentItems.map((item) => (
             <TouchableOpacity
@@ -173,7 +173,7 @@ export default function RemoveAccount() {
         {/* 削除ボタン */}
         <View className="mt-auto">
           <Button
-            text="アカウントを削除する"
+            text={i18n.t('SCREEN.ACCOUNT.DELETE_BUTTON')}
             onPress={handleDeleteAccount}
             theme="danger"
             disabled={!allItemsChecked || isLoading}
@@ -181,7 +181,7 @@ export default function RemoveAccount() {
           />
 
           <Text className="text-center text-xs text-light-text dark:text-dark-text mt-4 opacity-70">
-            すべての同意項目にチェックを入れると削除ボタンが有効になります
+            {i18n.t('SCREEN.ACCOUNT.ENABLE_DELETE')}
           </Text>
         </View>
       </View>

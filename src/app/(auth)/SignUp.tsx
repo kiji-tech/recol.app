@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { ExternalSignInButton, BackHomeLink, ReCoLTop, Bar } from '@/src/features/auth';
+import i18n from '@/src/libs/i18n';
 
 export default function SignUpScreen() {
   // ==== Member ===
@@ -18,21 +19,21 @@ export default function SignUpScreen() {
   // ==== Method ===
   const verify = (): boolean => {
     if (!email) {
-      Alert.alert('メールアドレスが入力されていません');
+      Alert.alert(i18n.t('SCREEN.AUTH.EMAIL_REQUIRED'));
       return false;
     }
     if (!password || !password2) {
-      Alert.alert('パスワードが入力されていません');
+      Alert.alert(i18n.t('SCREEN.AUTH.PASSWORD_REQUIRED'));
       return false;
     }
 
     if (!email.includes('@')) {
-      Alert.alert('メールアドレスの形式が正しくありません');
+      Alert.alert(i18n.t('SCREEN.AUTH.EMAIL_INVALID'));
       return false;
     }
 
     if (password != password2) {
-      Alert.alert('パスワードが一致しません');
+      Alert.alert(i18n.t('SCREEN.AUTH.PASSWORD_MISMATCH'));
       return false;
     }
 
@@ -59,11 +60,11 @@ export default function SignUpScreen() {
           switch (error.code) {
             case 'user_already_exists':
               LogUtil.log(`すでに登録されているメールアドレス: ${email}`);
-              Alert.alert('新規登録に失敗しました', 'すでに登録されているメールアドレスです｡');
+              Alert.alert(i18n.t('SCREEN.AUTH.SIGN_UP_FAILED'), i18n.t('SCREEN.AUTH.EMAIL_ALREADY_EXISTS'));
               break;
             default:
               LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-              Alert.alert('新規登録に失敗しました', error.message);
+              Alert.alert(i18n.t('SCREEN.AUTH.SIGN_UP_FAILED'), error.message);
           }
         }
       })
@@ -79,7 +80,7 @@ export default function SignUpScreen() {
         {/* form */}
         <View className="w-full flex flex-col gap-4">
           <TextInput
-            placeholder="メールアドレス"
+            placeholder={i18n.t('SCREEN.AUTH.EMAIL_PLACEHOLDER')}
             placeholderTextColor="gray"
             className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
@@ -90,7 +91,7 @@ export default function SignUpScreen() {
             autoCapitalize="none"
           />
           <TextInput
-            placeholder="パスワード"
+            placeholder={i18n.t('SCREEN.AUTH.PASSWORD_PLACEHOLDER')}
             placeholderTextColor="gray"
             className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border`}
@@ -101,7 +102,7 @@ export default function SignUpScreen() {
             autoCapitalize="none"
           />
           <TextInput
-            placeholder="パスワード（確認）"
+            placeholder={i18n.t('SCREEN.AUTH.PASSWORD_CONFIRM')}
             placeholderTextColor="gray"
             className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
@@ -116,17 +117,17 @@ export default function SignUpScreen() {
           {/* サインイン */}
           <Button
             theme={'theme'}
-            text="新規登録"
+            text={i18n.t('SCREEN.AUTH.SIGN_UP')}
             onPress={signUpWithPassword}
             disabled={isLoading}
             loading={isLoading}
           />
           <TouchableOpacity onPress={() => router.back()} disabled={isLoading}>
             <Text className="text-sm text-light-text dark:text-dark-text ml-4">
-              ログイン画面に戻る
+              {i18n.t('SCREEN.AUTH.BACK_TO_SIGN_IN')}
             </Text>
           </TouchableOpacity>
-          <Bar text="または" />
+          <Bar text={i18n.t('SCREEN.AUTH.OR')} />
           <ExternalSignInButton isLoading={isLoading} />
           <BackHomeLink />
         </View>

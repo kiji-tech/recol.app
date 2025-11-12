@@ -17,6 +17,7 @@ import {
   PLAN_SORT_TYPE_STORAGE_KEY,
 } from '@/src/features/plan/types/PlanSortType';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import i18n from '@/src/libs/i18n';
 
 export default function PlanListScreen() {
   // === Member ===
@@ -56,7 +57,7 @@ export default function PlanListScreen() {
         return;
       }
       LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
-      Toast.warn('プランの取得に失敗しました');
+      Toast.warn(i18n.t('SCREEN.PLAN_LIST.FETCH_FAILED'));
     });
   };
 
@@ -85,7 +86,7 @@ export default function PlanListScreen() {
    */
   const handleSaveSortType = async (savedSortType: PlanSortType) => {
     await AsyncStorage.setItem(PLAN_SORT_TYPE_STORAGE_KEY, savedSortType).catch(() => {
-      Toast.warn('並び替えを保存に失敗しました');
+      Toast.warn(i18n.t('SCREEN.PLAN_LIST.SORT_SAVE_FAILED'));
     });
     setIsSortModalVisible(false);
     await init();
@@ -93,7 +94,7 @@ export default function PlanListScreen() {
 
   return (
     <BackgroundView>
-      <Header title="予定一覧" rightComponent={<PlanListMenu onSortPress={handleSortPress} />} />
+      <Header title={i18n.t('SCREEN.PLAN.LIST_TITLE')} rightComponent={<PlanListMenu onSortPress={handleSortPress} />} />
       {/* プラン一覧 */}
       <View className="flex flex-col justify-start items-start bg-light-background dark:bg-dark-background rounded-xl">
         {planList && planList.map((plan: Plan) => <PlanCard key={plan.uid} plan={plan} />)}

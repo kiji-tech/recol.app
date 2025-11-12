@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Alert, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LogUtil } from '@/src/libs/LogUtil';
+import i18n from '@/src/libs/i18n';
 
 export default function ForgetPassword() {
   const router = useRouter();
@@ -12,22 +13,22 @@ export default function ForgetPassword() {
   const handleResetPassword = () => {
     resetPassword(email)
       .then(() => {
-        Alert.alert('パスワードをリセットするためのメールを送信しました。');
+        Alert.alert(i18n.t('SCREEN.AUTH.RESET_PASSWORD_SUCCESS'));
         router.navigate('/(auth)/SignIn');
       })
       .catch((error) => {
         LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-        Alert.alert('パスワードをリセットするためのメールを送信できませんでした。');
+        Alert.alert(i18n.t('SCREEN.AUTH.RESET_PASSWORD_FAILED'));
       });
   };
 
   return (
     <BackgroundView>
-      <Header title="パスワードをリセット" onBack={() => router.back()} />
+      <Header title={i18n.t('SCREEN.AUTH.RESET_PASSWORD_TITLE')} onBack={() => router.back()} />
       <View className="w-full flex flex-col gap-4">
         <TextInput
           keyboardType="email-address"
-          placeholder="メールアドレス..."
+          placeholder={i18n.t('SCREEN.AUTH.EMAIL_PLACEHOLDER')}
           placeholderTextColor="gray"
           className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
             text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
@@ -36,7 +37,7 @@ export default function ForgetPassword() {
           onChangeText={(text) => setEmail(text)}
           autoCapitalize="none"
         />
-        <Button theme="theme" text="パスワードをリセットする" onPress={handleResetPassword} />
+        <Button theme="theme" text={i18n.t('SCREEN.AUTH.RESET_PASSWORD_BUTTON')} onPress={handleResetPassword} />
       </View>
     </BackgroundView>
   );

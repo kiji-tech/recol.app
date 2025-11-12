@@ -4,6 +4,7 @@ import { Alert, Text, View } from 'react-native';
 import { Link, useLocalSearchParams } from 'expo-router';
 import { resendConfirmationEmailLib } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
+import i18n from '@/src/libs/i18n';
 
 /**
  * 新しいアカウントを作成するメールを送信した後の画面
@@ -14,7 +15,7 @@ export default function RequestNewAccount() {
 
   const resendEmail = async () => {
     if (!email) {
-      Alert.alert('エラー', 'メールアドレスが取得できませんでした。');
+      Alert.alert(i18n.t('COMMON.ERROR'), i18n.t('SCREEN.AUTH.EMAIL_NOT_FOUND'));
       return;
     }
 
@@ -23,10 +24,10 @@ export default function RequestNewAccount() {
 
     try {
       await resendConfirmationEmailLib(email);
-      Alert.alert('成功', '確認メールを再送信しました。');
+      Alert.alert(i18n.t('COMMON.SUCCESS'), i18n.t('SCREEN.AUTH.RESEND_SUCCESS'));
     } catch (error: unknown) {
       LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-      Alert.alert('エラー', 'メールの再送信に失敗しました。');
+      Alert.alert(i18n.t('COMMON.ERROR'), i18n.t('SCREEN.AUTH.RESEND_FAILED'));
     } finally {
       setIsLoading(false);
     }
@@ -36,12 +37,12 @@ export default function RequestNewAccount() {
     <BackgroundView>
       <View className="flex flex-col items-center w-full gap-8 ">
         <Text className="text-4xl font-bold text-light-text dark:text-dark-text">
-          メールアドレスに新しいアカウントを作成するメールを送信しました。
+          {i18n.t('SCREEN.AUTH.REQUEST_NEW_ACCOUNT_TITLE')}
         </Text>
         {email && (
           <View className="w-full">
             <Text className="text-sm font-medium text-light-text dark:text-dark-text mb-2">
-              入力されたメールアドレス
+              {i18n.t('SCREEN.AUTH.EMAIL_LABEL')}
             </Text>
             <View className="bg-light-background dark:bg-dark-background border border-light-border dark:border-dark-border rounded-xl p-4 w-full">
               <Text className="text-lg text-light-text dark:text-dark-text">{email}</Text>
@@ -49,17 +50,19 @@ export default function RequestNewAccount() {
           </View>
         )}
         <Text className="text-lg text-light-text dark:text-dark-text">
-          メールを確認して、アカウントを作成してください。
+          {i18n.t('SCREEN.AUTH.CHECK_EMAIL')}
         </Text>
         <Button
           theme="theme"
-          text="メールを再送信する"
+          text={i18n.t('SCREEN.AUTH.RESEND_EMAIL')}
           onPress={resendEmail}
           disabled={isLoading}
           loading={isLoading}
         />
         <Link href="/(auth)/SignIn">
-          <Text className="text-lg text-light-text dark:text-dark-text">ログイン画面に戻る</Text>
+          <Text className="text-lg text-light-text dark:text-dark-text">
+            {i18n.t('SCREEN.AUTH.BACK_TO_SIGN_IN')}
+          </Text>
         </Link>
       </View>
     </BackgroundView>

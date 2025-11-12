@@ -1,9 +1,261 @@
 {
+    "TABBAR": {
+        "HOME": "ホーム",
+        "PLAN": "予定",
+        "SCHEDULE": "スケジュール",
+        "SETTINGS": "設定",
+        "MAP": "マップ",
+        "MEDIA": "メディア",
+        "SAMPLE": "サンプル"
+    },
+    "DATA": {
+        "SCHEDULE": {
+            "DATETIME": "日時",
+            "CATEGORY": "カテゴリ",
+            "PLACE_LIST": "候補",
+            "MEMO": "メモ"
+        }
+    },
     "SCREEN": {
         "HOME": {
             "TODAY_SCHEDULE": "本日の予定",
             "RECENT_PLAN": "直近の予定",
             "NEW_ARTICLE": "新着記事"
+        },
+        "PLAN": {
+            "CREATE_TITLE": "新しい予定を作成する",
+            "EDIT_TITLE": "を編集する",
+            "NEW_PLAN": "新しい予定",
+            "TITLE_LABEL": "予定の題目を入力してください｡",
+            "TITLE_PLACEHOLDER": "◯◯のお茶会...",
+            "MEMO_LABEL": "メモ",
+            "MEMO_PLACEHOLDER": "メモを入力してください｡",
+            "ADD_FRIEND": "友達を追加する",
+            "SELECT": "選択",
+            "REGISTER": "登録する",
+            "PREPARING": "準備中",
+            "TITLE_REQUIRED": "予定の題目を入力してください",
+            "REGISTER_SUCCESS": "を登録しました",
+            "REGISTER_FAILED": "プランの登録に失敗しました",
+            "PLAN_NOT_FOUND": "プランが見つかりません",
+            "LIST_TITLE": "予定一覧"
+        },
+        "AUTH": {
+            "SIGN_IN": "サインイン",
+            "SIGN_UP": "新規登録",
+            "FORGOT_PASSWORD": "パスワードを忘れた方はこちら",
+            "OR": "または",
+            "EMAIL_PLACEHOLDER": "メールアドレス...",
+            "PASSWORD_PLACEHOLDER": "パスワード...",
+            "EMAIL_REQUIRED": "メールアドレスが入力されていません",
+            "PASSWORD_REQUIRED": "パスワードが入力されていません",
+            "EMAIL_INVALID": "メールアドレスの形式が正しくありません",
+            "PASSWORD_MISMATCH": "パスワードが一致しません",
+            "SIGN_IN_FAILED": "ログインに失敗しました",
+            "SIGN_UP_FAILED": "新規登録に失敗しました",
+            "EMAIL_ALREADY_EXISTS": "すでに登録されているメールアドレスです｡",
+            "BACK_TO_SIGN_IN": "ログイン画面に戻る",
+            "RESET_PASSWORD_TITLE": "パスワードをリセット",
+            "RESET_PASSWORD_BUTTON": "パスワードをリセットする",
+            "RESET_PASSWORD_SUCCESS": "パスワードをリセットするためのメールを送信しました。",
+            "RESET_PASSWORD_FAILED": "パスワードをリセットするためのメールを送信できませんでした。",
+            "CHANGE_PASSWORD": "パスワードを変更する",
+            "PASSWORD": "パスワード",
+            "PASSWORD_CONFIRM": "パスワード（確認）",
+            "LINK_CHECKING": "リンクを確認中...",
+            "INVALID_LINK": "無効なリンクです",
+            "INVALID_LINK_MESSAGE": "パスワードリセットリンクが無効または期限切れです。",
+            "ERROR_OCCURRED": "エラーが発生しました",
+            "ERROR_MESSAGE": "パスワードリセットリンクの確認中にエラーが発生しました。",
+            "SAME_PASSWORD_ERROR": "新しいパスワードと同じパスワードは使用できません。",
+            "PASSWORD_CHANGE_FAILED": "パスワードを変更できませんでした。",
+            "PASSWORD_CHANGED": "パスワードを変更しました",
+            "REQUEST_NEW_ACCOUNT_TITLE": "メールアドレスに新しいアカウントを作成するメールを送信しました。",
+            "EMAIL_LABEL": "入力されたメールアドレス",
+            "CHECK_EMAIL": "メールを確認して、アカウントを作成してください。",
+            "RESEND_EMAIL": "メールを再送信する",
+            "EMAIL_NOT_FOUND": "メールアドレスが取得できませんでした。",
+            "RESEND_SUCCESS": "確認メールを再送信しました。",
+            "RESEND_FAILED": "メールの再送信に失敗しました。",
+            "CONGRATULATIONS": "おめでとうございます！",
+            "WELCOME": "Re:CoLへようこそ",
+            "GREAT_TRIP": "素晴らしい旅の予定を一緒に作りましょう",
+            "REGISTRATION_COMPLETE": "🎊 新規登録完了 🎊",
+            "EXPERIENCE_STARTS": "これで素晴らしい体験が始まります",
+            "GET_STARTED": "始めましょう！"
+        },
+        "INFORMATION": {
+            "TITLE": "お知らせ",
+            "NO_INFORMATION": "お知らせがありません",
+            "ERROR_OCCURRED": "エラーが発生しました"
+        },
+        "ACCOUNT": {
+            "DELETE_TITLE": "アカウント削除",
+            "IMPORTANT_NOTICE": "重要な注意事項",
+            "DELETE_WARNING": "アカウントを削除すると、すべてのデータが完全に削除され、復元することはできません。削除を実行する前に、以下の項目をよくお読みになり、同意していただく必要があります。",
+            "PREMIUM_CANCEL_GUIDE": "プレミアムプランの解約案内",
+            "PREMIUM_NOT_AUTO_CANCEL": "プレミアムプランは自動で解約されません｡",
+            "CHECK_HERE": "こちら",
+            "CHECK_PURCHASE": "で購入状況を確認してください｡",
+            "DELETE_CONSENT": "削除に関する同意事項",
+            "SUBSCRIPTION_CANCELED": "サブスクリプションはキャンセル済みです｡",
+            "NO_REFUND": "プレミアムプランの期間が残っていた場合でも返金することはできません。",
+            "NO_RESTORE": "このアカウントに紐づいている予定は､削除後復元することはできません。",
+            "DELETE_BUTTON": "アカウントを削除する",
+            "DELETE_CONFIRM_TITLE": "アカウント削除の確認",
+            "DELETE_CONFIRM_MESSAGE": "本当にアカウントを削除しますか？この操作は取り消すことができません。",
+            "DELETE_SUCCESS_TITLE": "アカウント削除完了",
+            "DELETE_SUCCESS_MESSAGE": "アカウントが正常に削除されました。",
+            "DELETE_FAILED": "アカウント削除に失敗しました。",
+            "ENABLE_DELETE": "すべての同意項目にチェックを入れると削除ボタンが有効になります"
+        },
+        "PROFILE": {
+            "EDIT_TITLE": "プロフィール編集",
+            "EMAIL_LABEL": "メールアドレス",
+            "DISPLAY_NAME_LABEL": "表示名",
+            "DISPLAY_NAME_PLACEHOLDER": "表示名を入力",
+            "SAVE": "保存",
+            "NOT_FOUND": "not found"
+        },
+        "PAYMENT": {
+            "NO_SESSION": "セッション情報がありません｡ログインし直してください｡",
+            "PAYMENT_FAILED": "支払いに失敗しました。お問い合わせからご連絡ください。",
+            "NOT_PREMIUM": "プレミアムプランには契約していません。",
+            "CANCEL_CONFIRM_TITLE": "解約の確認",
+            "CANCEL_CONFIRM_MESSAGE": "プレミアムプランを解約しますか？",
+            "CANCEL_PREMIUM": "解約する",
+            "PREMIUM_TITLE_1": "プレミアムプランで",
+            "PREMIUM_TITLE_2": "より良い休日を体験",
+            "PREMIUM_SUBTITLE": "あなたの旅･休日をより豊かにします",
+            "PLAN_COMPARISON": "プラン比較",
+            "SELECT_PLAN": "プランを選択",
+            "CANCEL_PREMIUM_BUTTON": "プレミアムプランを解約",
+            "UPGRADE_COMPLETE": "アップグレードが完了しました！",
+            "WELCOME_PREMIUM": "プレミアムプランへようこそ。全ての機能をお楽しみいただけます。"
+        },
+        "SETTINGS": {
+            "ACCOUNT_SETTINGS": "アカウント設定",
+            "PROFILE_EDIT": "プロフィール編集",
+            "PLAN": "プラン",
+            "APP_SETTINGS": "アプリ設定",
+            "APP_VERSION": "アプリバージョン",
+            "OTHER": "その他",
+            "TERMS": "利用規約",
+            "PRIVACY_POLICY": "プライバシーポリシー",
+            "CONTACT": "お問い合わせはこちら",
+            "SHARE_TWITTER": "Twitterで宣伝する",
+            "DELETE_ACCOUNT": "アカウント削除する",
+            "SIGN_OUT": "サインアウト"
+        },
+        "SCHEDULE": {
+            "TITLE_PLACEHOLDER": "タイトル...",
+            "NO_LOGIN": "ログイン情報が見つかりませんでした",
+            "PLAN_NOT_FOUND": "プランの情報が取得できませんでした",
+            "FETCH_FAILED": "プランの情報が取得に失敗しました",
+            "CANDIDATE_COUNT": "#count# 件候補があります",
+            "DELETE_SUCCESS": "を削除しました",
+            "SAVE_FAILED": "スケジュールの保存に失敗しました",
+            "ADD_FROM_MAP": "マップから確認・追加",
+            "SELECT_CATEGORY": "カテゴリを選んでください…",
+            "CATEGORY": {
+                "MOVEMENT": "移動",
+                "MEALS": "食事",
+                "CAFE": "カフェ",
+                "AMUSEMENT": "観光",
+                "OTHER": "その他"
+            }
+        },
+        "PLAN_LIST": {
+            "FETCH_FAILED": "プランの取得に失敗しました",
+            "SORT_SAVE_FAILED": "並び替えを保存に失敗しました"
+        },
+        "MAP": {
+            "SELECT_CATEGORY": "カテゴリを選んでください…",
+            "NO_RESULT": "検索結果がありません",
+            "NO_SELECTED": "候補が選択されていません",
+            "RESEARCH": "エリアで再検索する",
+            "CATEGORY": {
+                "SEARCH_RESULT": "検索結果",
+                "SELECTED": "選択中",
+                "CAFE": "カフェ",
+                "MEAL": "食事",
+                "HOTEL": "ホテル・旅館",
+                "SPOT": "観光スポット"
+            }
         }
+    },
+    "COMPONENT": {
+        "PLAN": {
+            "NOT_FOUND": "プランがありません",
+            "ADD_PLAN": "プランを追加する",
+            "SUPER_USER": "スーパーユーザー",
+            "FREE_PLAN": "無料プラン",
+            "PREMIUM_PLAN": "プレミアムプラン",
+            "EXPIRATION_DATE": "有効期限",
+            "SORT_TITLE": "並び替え",
+            "SORT_CREATED_AT": "作成日順（降順）",
+            "SORT_SCHEDULE_DATE": "スケジュールの日付順（降順）",
+            "NO_MEMO": "メモはありません.",
+            "NO_SCHEDULE_TODAY": "本日の予定はありません",
+            "NO_PLAN_RECENT": "直近#days#日のプランはありません"
+        },
+        "PAYMENT": {
+            "FEATURE": "機能",
+            "FREE": "フリー",
+            "PREMIUM": "プレミアム",
+            "ALL_FEATURES": "すべての機能が使える",
+            "MEDIA_CAPACITY": "メディア容量",
+            "MEDIA_CAPACITY_FREE": "1GB / プラン",
+            "MEDIA_CAPACITY_PREMIUM": "100GB / プラン",
+            "AD_DISPLAY": "広告表示",
+            "YES": "○",
+            "NO": "-",
+            "RECOMMENDED": "おすすめ",
+            "CURRENT_FREE_PLAN": "現在フリープランをご利用中です",
+            "UPGRADE_MESSAGE": "プレミアムプランにアップグレードして、すべての機能をお楽しみください",
+            "CURRENT_PLAN": "現在のプラン",
+            "POPULAR_PLAN": "人気のプラン",
+            "TRIAL_MESSAGE": "1ヶ月お試しで始められます",
+            "TRIAL_MESSAGE_MONTHLY": "が1ヶ月無料です！!",
+            "TRIAL_MESSAGE_AFTER_END": "トライアル終了後プレミアムプランに自動的にアップグレードされます。",
+            "DISCOUNT_MESSAGE": "#discount#% OFF!"
+        },
+        "INFORMATION": {
+            "DETAIL": "詳細はこちら",
+            "CLOSE": "閉じる",
+            "INVALID_URL": "無効なURLです"
+        },
+        "SCHEDULE": {
+            "EDIT_PLAN": "予定編集",
+            "ADD_SCHEDULE": "スケジュールを追加する",
+            "EDIT_TIME": "時間をまとめて編集",
+            "SHARE": "共有する",
+            "SHARE_TITLE": "スケジュールを共有します"
+        },
+        "VERSION": {
+            "UPDATE_REQUIRED": "アプリの更新が必要です",
+            "UPDATE_MESSAGE": "最新の機能とセキュリティアップデートを利用するために、アプリを更新してください。",
+            "UPDATE_BUTTON": "ストアで更新する"
+        },
+        "SCHEDULE_NOTIFICATION": {
+            "TITLE": "スケジュールの通知",
+            "MESSAGE": "スケジュールの開始時刻に通知を受け取ります",
+            "NO_PERMISSION_TITLE": "通知権限が必要です",
+            "NO_PERMISSION": "スケジュール通知を使用するには、デバイスの設定から通知権限を許可してください。",
+            "ERROR_MESSAGE": "通知権限を取得できませんでした。後でもう一度お試しください。"
+        }
+    },
+    "COMMON": {
+        "DARK_MODE": "ダークモード",
+        "ERROR": "エラー",
+        "SUCCESS": "成功",
+        "CANCEL": "キャンセル",
+        "OK": "OK",
+        "SAVE": "保存",
+        "NOT_FOUND": "見つかりませんでした",
+        "DELETE": "削除する",
+        "DAYS": " 日",
+        "SEARCH": "検索",
+        "MONTH": "月"
     }
 }

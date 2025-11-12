@@ -5,6 +5,7 @@ import { PlanSortType, DEFAULT_PLAN_SORT_TYPE } from '../types/PlanSortType';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PLAN_SORT_TYPE_STORAGE_KEY } from '../types/PlanSortType';
 import { LogUtil } from '@/src/libs/LogUtil';
+import i18n from '@/src/libs/i18n';
 
 interface PlanSortModalProps {
   visible: boolean;
@@ -66,7 +67,7 @@ export default function PlanSortModal({ visible, onClose, onSave }: PlanSortModa
           <View className="rounded-xl p-6 w-full max-w-sm bg-light-background dark:bg-dark-background">
             {/* タイトル */}
             <Text className="text-xl font-bold mb-6 text-light-text dark:text-dark-text">
-              並び替え
+              {i18n.t('COMPONENT.PLAN.SORT_TITLE')}
             </Text>
 
             {/* 選択肢 */}
@@ -87,7 +88,7 @@ export default function PlanSortModal({ visible, onClose, onSave }: PlanSortModa
                       : 'text-light-text dark:text-dark-text'
                   }`}
                 >
-                  作成日順（降順）
+                  {i18n.t('COMPONENT.PLAN.SORT_CREATED_AT')}
                 </Text>
               </TouchableOpacity>
 
@@ -107,7 +108,7 @@ export default function PlanSortModal({ visible, onClose, onSave }: PlanSortModa
                       : 'text-light-text dark:text-dark-text'
                   }`}
                 >
-                  スケジュールの日付順（降順）
+                  {i18n.t('COMPONENT.PLAN.SORT_SCHEDULE_DATE')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -115,10 +116,10 @@ export default function PlanSortModal({ visible, onClose, onSave }: PlanSortModa
             {/* ボタン */}
             <View className="flex flex-row gap-4">
               <View className="flex-1">
-                <Button text="キャンセル" theme="background" onPress={onClose} />
+                <Button text={i18n.t('COMMON.CANCEL')} theme="background" onPress={onClose} />
               </View>
               <View className="flex-1">
-                <Button text="OK" theme="info" onPress={handleSave} />
+                <Button text={i18n.t('COMMON.OK')} theme="info" onPress={handleSave} />
               </View>
             </View>
           </View>
