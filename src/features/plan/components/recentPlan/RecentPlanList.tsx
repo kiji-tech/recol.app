@@ -7,7 +7,7 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { Plan } from '../../index';
 import RecentPlanItem from './RecentPlanItem';
 import i18n from '@/src/libs/i18n';
-
+import dayjs from 'dayjs';
 type Props = {
   planList?: Plan[];
 };
@@ -77,7 +77,9 @@ export default function RecentPlanList({ planList }: Props) {
         </Text>
       ) : (
         <FlatList
-          data={planList}
+          data={planList?.sort((a: Plan, b: Plan) =>
+            dayjs(a.schedule[0]?.from).diff(dayjs(b.schedule[0]?.from))
+          )}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ gap: 8 }}
