@@ -2,7 +2,7 @@ import { Place } from '@/src/features/map/types/Place';
 import { Session } from '@supabase/supabase-js';
 import { fetchCachePlace } from '../apis/fetchCachePlace';
 import { MapCategory } from '../types/MapCategory';
-
+import i18n from '@/src/libs/i18n';
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
 // スポットは50個以下にする必要がある
 const INCLUDED_TYPES: Record<MapCategory, string[]> = {
@@ -138,7 +138,7 @@ export const searchNearby = async (
     }),
     body: JSON.stringify({
       maxResultCount: process.env.EXPO_PUBLIC_GOOGLE_MAPS_MAX_RESULT_COUNT || 3,
-      languageCode: 'ja',
+      languageCode: i18n.locale || 'en',
       includedTypes: INCLUDED_TYPES[category],
       locationRestriction: {
         circle: {

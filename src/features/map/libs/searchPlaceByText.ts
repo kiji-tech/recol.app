@@ -2,6 +2,7 @@ import { Session } from '@supabase/supabase-js';
 import { Place } from '@/src/features/map/types/Place';
 import { fetchCachePlace } from '../apis/fetchCachePlace';
 import { LogUtil } from '../../../libs/LogUtil';
+import i18n from '@/src/libs/i18n';
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
 const FiledMaskValue = 'places.id';
 
@@ -22,7 +23,7 @@ export const searchPlaceByText = async (
     body: JSON.stringify({
       textQuery: text,
       maxResultCount: process.env.EXPO_PUBLIC_GOOGLE_MAPS_MAX_RESULT_COUNT || 3,
-      languageCode: 'ja',
+      languageCode: i18n.locale || 'en',
       locationBias: {
         circle: {
           center: {
