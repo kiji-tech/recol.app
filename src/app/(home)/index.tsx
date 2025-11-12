@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { BackgroundView, Header, IconButton } from '@/src/components';
-import { FlatList, ScrollView, View } from 'react-native';
+import { ActivityIndicator, FlatList, ScrollView, View } from 'react-native';
 import { Article } from '@/src/features/article';
 import { ArticleCard } from '../../features/article/components/ArticleCard';
 import { TodayScheduleList } from '@/src/features/schedule';
@@ -19,7 +19,7 @@ import i18n from '@/src/libs/i18n';
 export default function Home() {
   // === Member ===
   const { articles, loading } = useArticles();
-  const { fetchPlan } = usePlan();
+  const { fetchPlan, planLoading } = usePlan();
   const { currentInformation, isModalVisible, handleCloseModal } = useInformation();
   const router = useRouter();
   const { isDarkMode } = useTheme();
@@ -67,11 +67,17 @@ export default function Home() {
       <ScrollView>
         <View className="flex flex-col justify-start items-start gap-2">
           {/* 登録されているスケジ ュールで予定が近いものを5つくらい表示する */}
-          <Title text={i18n.t('SCREEN.HOME.TODAY_SCHEDULE')} />
+          <View className="w-full flex flex-row justify-start items-center gap-2">
+            <Title text={i18n.t('SCREEN.HOME.TODAY_SCHEDULE')} />
+            {planLoading && <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />}
+          </View>
           <TodayScheduleList />
 
           {/* 直近n日のプラン */}
-          <Title text={i18n.t('SCREEN.HOME.RECENT_PLAN')} />
+          <View className="w-full flex flex-row justify-start items-center gap-2">
+            <Title text={i18n.t('SCREEN.HOME.RECENT_PLAN')} />
+            {planLoading && <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />}
+          </View>
           <RecentPlanList />
 
           {/* 新着・おすすめ・旅行先・グッズ */}
