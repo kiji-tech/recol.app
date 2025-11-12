@@ -3,6 +3,7 @@ import { View, Text, TextInput, Platform } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import BackButton from './BackButton';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import i18n from '@/src/libs/i18n';
 
 type Props = {
   title?: string;
@@ -44,7 +45,7 @@ export default function Header({
           <TextInput
             defaultValue={searchText}
             onChangeText={(n) => setSearchText(n)}
-            placeholder="検索"
+            placeholder={i18n.t('COMMON.SEARCH')}
             onBlur={() => onSearch(searchText)}
             returnKeyType="search"
             placeholderTextColor={'gray'}

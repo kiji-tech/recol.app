@@ -3,6 +3,7 @@ import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import React, { useCallback } from 'react';
 import { View } from 'react-native';
 import BottomSheetHeaderButton from './BottomSheetHeaderButton';
+import i18n from '@/src/libs/i18n';
 
 type SearchSelectedButtonProps = {
   id: MapCategory;
@@ -26,12 +27,12 @@ export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }
   );
 
   const categoryButtonList: SearchSelectedButtonProps[] = [
-    { id: 'text', label: '検索結果', onPress: () => {} },
-    { id: 'selected', label: '選択中', onPress: handleOnSelectedCategory },
-    { id: 'cafe', label: 'カフェ', onPress: handleOnSelectedCategory },
-    { id: 'meal', label: '食事', onPress: handleOnSelectedCategory },
-    { id: 'hotel', label: 'ホテル・旅館', onPress: handleOnSelectedCategory },
-    { id: 'spot', label: '観光スポット', onPress: handleOnSelectedCategory },
+    { id: 'text', label: i18n.t('SCREEN.MAP.CATEGORY.SEARCH_RESULT'), onPress: () => {} },
+    { id: 'selected', label: i18n.t('SCREEN.MAP.CATEGORY.SELECTED'), onPress: handleOnSelectedCategory },
+    { id: 'cafe', label: i18n.t('SCREEN.MAP.CATEGORY.CAFE'), onPress: handleOnSelectedCategory },
+    { id: 'meal', label: i18n.t('SCREEN.MAP.CATEGORY.MEAL'), onPress: handleOnSelectedCategory },
+    { id: 'hotel', label: i18n.t('SCREEN.MAP.CATEGORY.HOTEL'), onPress: handleOnSelectedCategory },
+    { id: 'spot', label: i18n.t('SCREEN.MAP.CATEGORY.SPOT'), onPress: handleOnSelectedCategory },
   ];
 
   // === Render ====

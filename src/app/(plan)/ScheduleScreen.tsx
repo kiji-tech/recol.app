@@ -14,6 +14,7 @@ import PlanInformation from '../../features/schedule/components/PlanInformation'
 import ScheduleMenu from '../../features/schedule/components/ScheduleMenu';
 import { ScrollView } from 'react-native-gesture-handler';
 import { BackHandler } from 'react-native';
+import i18n from '@/src/libs/i18n';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
@@ -27,13 +28,13 @@ export default function ScheduleScreen(): ReactNode {
    */
   const initView = () => {
     if (!session) {
-      Toast.warn('ログイン情報が見つかりませんでした');
+      Toast.warn(i18n.t('SCREEN.SCHEDULE.NO_LOGIN'));
       router.navigate('/(auth)/SignIn');
       return;
     }
 
     if (!plan?.uid) {
-      Toast.warn('プランの情報が取得できませんでした');
+      Toast.warn(i18n.t('SCREEN.SCHEDULE.PLAN_NOT_FOUND'));
       router.back();
       return;
     }
@@ -44,7 +45,7 @@ export default function ScheduleScreen(): ReactNode {
     fetchPlan(plan.uid, session, ctrl)
       .then((data) => {
         if (!data) {
-          Toast.warn('プランの情報が取得できませんでした');
+          Toast.warn(i18n.t('SCREEN.SCHEDULE.PLAN_NOT_FOUND'));
         }
         setPlan({ ...data } as Plan);
       })
@@ -55,7 +56,7 @@ export default function ScheduleScreen(): ReactNode {
         }
         LogUtil.log(JSON.stringify({ fetchPlan: e }), { level: 'error', notify: true });
         if (e && e.message) {
-          Toast.warn('プランの情報が取得に失敗しました');
+          Toast.warn(i18n.t('SCREEN.SCHEDULE.FETCH_FAILED'));
         }
       })
       .finally(() => {
@@ -73,7 +74,7 @@ export default function ScheduleScreen(): ReactNode {
   const handleDeleteSchedule = async (schedule: Schedule) => {
     deleteSchedule(schedule, session)
       .then(() => {
-        Toast.success(`${schedule.title} を削除しました`);
+        Toast.success(`${schedule.title} ${i18n.t('SCREEN.SCHEDULE.DELETE_SUCCESS')}`);
         initView();
       })
       .catch((e) => {

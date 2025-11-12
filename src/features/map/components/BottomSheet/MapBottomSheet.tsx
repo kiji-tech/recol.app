@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Place } from '@/src/features/map/types/Place';
 import { MapCategory } from '@/src/features/map/types/MapCategory';
 import MapBottomSheetHeader from './MapBottomSheetHeader';
 import MapBottomSheetBody from './MapBottomSheetBody';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import BottomSheetLayout from '@/src/components/BottomSheetLayout';
-import PlaceDetailModal from '@/src/features/map/components/Place/PlaceDetailModal';
 
 type Props = {
   placeList: Place[];
@@ -14,8 +13,6 @@ type Props = {
   isSelected: boolean;
   isLoading: boolean;
   selectedCategory: MapCategory;
-  onAdd: (place: Place) => void;
-  onRemove: (place: Place) => void;
   onSelectedPlace: (place: Place) => void;
   onSelectedCategory: (id: MapCategory) => void;
   bottomSheetRef?: React.RefObject<BottomSheet>;
@@ -28,30 +25,11 @@ export default function MapBottomSheet({
   selectedCategory,
   isSelected = false,
   isLoading = false,
-  onAdd,
-  onRemove,
   onSelectedPlace,
   onSelectedCategory,
   bottomSheetRef,
   scrollRef,
 }: Props) {
-  // ==== Member ====
-  const [detailPlace, setDetailPlace] = useState<Place | null>(null);
-  const [isDetailPlace, setIsDetailPlace] = useState(false);
-
-  // ==== Method ====
-  const handleSelect = (place: Place) => {
-    onSelectedPlace(place);
-    setDetailPlace(place);
-    setIsDetailPlace(true);
-  };
-
-  // ==== Effect ====
-  useEffect(() => {
-    setDetailPlace(selectedPlace);
-  }, [selectedPlace]);
-
-  // ==== Render ====
   return (
     <>
       <BottomSheetLayout ref={bottomSheetRef}>
@@ -64,20 +42,10 @@ export default function MapBottomSheet({
           selectedPlace={selectedPlace}
           selectedCategory={selectedCategory}
           isLoading={isLoading}
-          onSelect={handleSelect}
+          onSelect={onSelectedPlace}
           ref={scrollRef}
         />
       </BottomSheetLayout>
-      {isDetailPlace && detailPlace && (
-        <PlaceDetailModal
-          place={detailPlace}
-          isEdit={true}
-          selected={selectedPlaceList.findIndex((place) => place.id === detailPlace.id) >= 0}
-          onAdd={onAdd}
-          onRemove={onRemove}
-          onClose={() => setIsDetailPlace(false)}
-        />
-      )}
     </>
   );
 }

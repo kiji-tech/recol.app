@@ -5,6 +5,7 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import Button from '@/src/components/Button';
 import { Information } from '../types/Information';
 import { LogUtil } from '@/src/libs/LogUtil';
+import i18n from '@/src/libs/i18n';
 
 interface InformationModalProps {
   information: Information | null;
@@ -54,7 +55,7 @@ export default function InformationModal({ information, visible, onClose }: Info
       // エラーメッセージの統一
       if (error instanceof Error) {
         if (error.message.includes('Invalid URL')) {
-          throw new Error('無効なURLです');
+          throw new Error(i18n.t('COMPONENT.INFORMATION.INVALID_URL'));
         }
       }
 
@@ -107,7 +108,7 @@ export default function InformationModal({ information, visible, onClose }: Info
             {information.detailUrl && (
               <View className="mb-4">
                 <Button
-                  text="詳細はこちら"
+                  text={i18n.t('COMPONENT.INFORMATION.DETAIL')}
                   theme="info"
                   onPress={() => {
                     if (information.detailUrl) {
@@ -124,7 +125,7 @@ export default function InformationModal({ information, visible, onClose }: Info
             )}
 
             {/* 閉じるボタン */}
-            <Button text="閉じる" theme="background" onPress={onClose} />
+            <Button text={i18n.t('COMPONENT.INFORMATION.CLOSE')} theme="background" onPress={onClose} />
           </ScrollView>
         </View>
       </View>

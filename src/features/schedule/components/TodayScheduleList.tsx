@@ -6,9 +6,10 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { Plan } from '@/src/features/plan';
 import { Schedule } from '../types/Schedule';
 import { Loading } from '@/src/components';
-import dayjs from 'dayjs';
-import CategoryIcon from './CategoryIcon';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import dayjs from 'dayjs';
+import i18n from '@/src/libs/i18n';
+import CategoryIcon from './CategoryIcon';
 
 /**
  * 本日の予定を表示するコンポーネント
@@ -88,7 +89,9 @@ export default function TodayScheduleList() {
 
   if (scheduleList.length === 0) {
     return (
-      <Text className="text-light-text dark:text-dark-text text-sm">本日の予定はありません</Text>
+      <Text className="text-light-text dark:text-dark-text text-sm">
+        {i18n.t('COMPONENT.PLAN.NO_SCHEDULE_TODAY')}
+      </Text>
     );
   }
 

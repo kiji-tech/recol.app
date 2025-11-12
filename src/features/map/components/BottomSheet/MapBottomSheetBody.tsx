@@ -7,6 +7,7 @@ import { ScrollResponderMixin } from 'react-native';
 import { MapCategory } from '@/src/features/map/types/MapCategory';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { Platform } from 'react-native';
+import i18n from '@/src/libs/i18n';
 
 type Props = {
   placeList: Place[];
@@ -56,7 +57,7 @@ const MapBottomSheetBody = forwardRef(
         {!isLoading && placeList && placeList.length == 0 && (
           <View className="w-full p-8">
             <Text className="text-center text-light-text dark:text-dark-text">
-              {selectedCategory == 'selected' ? '候補が選択されていません' : '検索結果がありません'}
+              {selectedCategory == 'selected' ? i18n.t('SCREEN.MAP.NO_SELECTED') : i18n.t('SCREEN.MAP.NO_RESULT')}
             </Text>
           </View>
         )}

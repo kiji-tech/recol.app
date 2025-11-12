@@ -7,6 +7,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { MyBannerAd } from './Ad/BannerAd';
 import { useAuth } from '../features/auth';
 import { router } from 'expo-router';
+import i18n from '@/src/libs/i18n';
 
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   // === Member ===
@@ -50,7 +51,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
           };
 
           // === Render ===
-          if (label == 'サンプル' && process.env.EXPO_PUBLIC_APP_ENV != 'development') return;
+          if (label == 'SAMPLE' && process.env.EXPO_PUBLIC_APP_ENV != 'development') return;
           // サンプルコンポーネントは非表示
           if (
             label.toString().indexOf('Components') >= 0 ||
@@ -68,7 +69,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
               accessibilityLabel={options.tabBarAccessibilityLabel}
               onPress={onPress}
             >
-              {label == 'ホーム' && (
+              {label == 'HOME' && (
                 <>
                   {isFocused ? (
                     <Ionicons
@@ -85,7 +86,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
                   )}
                 </>
               )}
-              {(label == '予定' || label == 'スケジュール') && (
+              {(label == 'PLAN' || label == 'SCHEDULE') && (
                 <>
                   {isFocused ? (
                     <Ionicons
@@ -102,7 +103,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
                   )}
                 </>
               )}
-              {label == '設定' && (
+              {label == 'SETTINGS' && (
                 <>
                   {isFocused ? (
                     <Ionicons
@@ -119,7 +120,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
                   )}
                 </>
               )}
-              {label == 'マップ' && (
+              {label == 'MAP' && (
                 <>
                   {isFocused ? (
                     <MaterialCommunityIcons
@@ -136,7 +137,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
                   )}
                 </>
               )}
-              {label == 'メディア' && (
+              {label == 'MEDIA' && (
                 <>
                   {isFocused ? (
                     <Ionicons
@@ -156,7 +157,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
               <Text
                 className={`text-light-text dark:text-dark-text  ${isFocused ? 'text-md' : 'text-sm'}`}
               >
-                {label as string}
+                {i18n.t(`TABBAR.${label}`) as string}
               </Text>
             </TouchableOpacity>
           );

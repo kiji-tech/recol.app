@@ -5,7 +5,7 @@ import { Place } from '@/src/features/map/types/Place';
 import RateViewer from '@/src/features/map/components/Place/RateViewer';
 
 type Props = {
-  place: Place | null;
+  place: Place;
   selected: boolean;
   onSelect: (place: Place) => void;
 };
@@ -47,7 +47,6 @@ export default function PlaceCard({ place, selected = false, onSelect }: Props) 
             >
               {place.displayName.text}
             </Text>
-            <View className="flex-1 flex-row justify-end items-center"></View>
           </View>
           {/* 評価 */}
           <RateViewer rating={place.rating} />

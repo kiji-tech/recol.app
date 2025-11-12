@@ -2,7 +2,7 @@ export default {
   scheme: 'recol',
   name: 'Re:CoL',
   slug: 'yuru-tabi',
-  version: '1.4.0',
+  version: '1.5.0',
   deepLinking: true,
   icon: './assets/images/icon.png',
   owner: 'shinji5761',
@@ -29,6 +29,7 @@ export default {
       NSUserTrackingUsageDescription:
         '広告表示の最適化のため、他社アプリとの横断的な計測を許可するか確認します',
       ITSAppUsesNonExemptEncryption: false,
+      CFBundleAllowMixedLocalizations: true,
     },
     userInterfaceStyle: 'automatic',
     deploymentTarget: '15.1',
@@ -56,6 +57,10 @@ export default {
         apiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY ?? '',
       },
     },
+  },
+  locales: {
+    ja: './languages/ja.json',
+    en: './languages/en.json',
   },
   web: {
     favicon: './assets/favicon.png',

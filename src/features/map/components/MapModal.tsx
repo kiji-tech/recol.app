@@ -10,12 +10,12 @@ import { MapCategory } from '@/src/features/map/types/MapCategory';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { useFocusEffect } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { Tables } from '@/src/libs/database.types';
 import { useAuth } from '@/src/features/auth';
 import ResearchButton from './ResearchButton';
 import { SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
 import { Header } from '@/src/components';
 import { Schedule } from '@/src/features/schedule';
+import PlaceBottomSheet from './PlaceBottomSheet/PlaceBottomSheet';
 
 type Props = {
   isOpen: boolean;
@@ -36,6 +36,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
   const [selectedCategory, setSelectedCategory] = useState<MapCategory>('selected');
   const [region, setRegion] = useState<Region | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDetailPlace, setIsDetailPlace] = useState(false);
   const isIOS = Platform.OS === 'ios';
 
   // === Method ===
@@ -91,6 +92,13 @@ export default function MapModal({ isOpen, onClose }: Props) {
       } as Region;
     });
     setSelectedPlace(place);
+    setIsDetailPlace(true);
+  };
+
+  /** 場所詳細ボトムシート 閉じる処理 */
+  const handleCloseDetailPlace = () => {
+    setIsDetailPlace(false);
+    setSelectedPlace(null);
   };
 
   /** テキスト検索 実行処理 */
@@ -122,17 +130,15 @@ export default function MapModal({ isOpen, onClose }: Props) {
     setEditSchedule({
       ...editSchedule,
       place_list: [...(editSchedule?.place_list || []), place],
-    } as unknown as Tables<'schedule'> & { place_list: Place[] });
+    } as Schedule & { place_list: Place[] });
   };
 
   /** スケジュールに対する場所の削除 */
   const handleRemove = (place: Place) => {
     setEditSchedule({
       ...editSchedule,
-      place_list: (editSchedule?.place_list || []).filter(
-        (p: unknown) => (p as Place).id !== place.id
-      ),
-    } as unknown as Schedule);
+      place_list: (editSchedule?.place_list || []).filter((p: Place) => p.id !== place.id),
+    } as Schedule & { place_list: Place[] });
   };
 
   /** モーダルを閉じる */
@@ -237,20 +243,31 @@ export default function MapModal({ isOpen, onClose }: Props) {
       </View>
 
       {/* マップボトムシート */}
-      <MapBottomSheet
-        placeList={searchPlaceList}
-        selectedPlace={selectedPlace}
-        selectedPlaceList={selectedPlaceList || []}
-        selectedCategory={selectedCategory}
-        isSelected={selectedCategory === 'selected'}
-        isLoading={isLoading}
-        onAdd={handleAdd}
-        onRemove={handleRemove}
-        onSelectedPlace={handleSelectedPlace}
-        onSelectedCategory={handleSelectedCategory}
-        bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
-        scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
-      />
+      {!isDetailPlace && (
+        <MapBottomSheet
+          placeList={searchPlaceList}
+          selectedPlace={selectedPlace}
+          selectedPlaceList={selectedPlaceList || []}
+          selectedCategory={selectedCategory}
+          isSelected={selectedCategory === 'selected'}
+          isLoading={isLoading}
+          onSelectedPlace={handleSelectedPlace}
+          onSelectedCategory={handleSelectedCategory}
+          bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
+          scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
+        />
+      )}
+      {isDetailPlace && (
+        <PlaceBottomSheet
+          bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
+          selectedPlace={selectedPlace!}
+          isEdit={true}
+          selected={selectedPlaceList.findIndex((place) => place.id === selectedPlace?.id) >= 0}
+          onAdd={handleAdd}
+          onRemove={handleRemove}
+          onClose={handleCloseDetailPlace}
+        />
+      )}
     </View>
   );
 }

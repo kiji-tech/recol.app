@@ -14,6 +14,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { usePlan } from '@/src/contexts/PlanContext';
+import i18n from '@/src/libs/i18n';
 
 export default function Home() {
   // === Member ===
@@ -22,7 +23,6 @@ export default function Home() {
   const { currentInformation, isModalVisible, handleCloseModal } = useInformation();
   const router = useRouter();
   const { isDarkMode } = useTheme();
-
   // === Method ===
   /**
    * 通知一覧画面へ遷移
@@ -67,15 +67,15 @@ export default function Home() {
       <ScrollView>
         <View className="flex flex-col justify-start items-start gap-2">
           {/* 登録されているスケジ ュールで予定が近いものを5つくらい表示する */}
-          <Title text="本日の予定" />
+          <Title text={i18n.t('SCREEN.HOME.TODAY_SCHEDULE')} />
           <TodayScheduleList />
 
           {/* 直近n日のプラン */}
-          <Title text="直近の予定" />
+          <Title text={i18n.t('SCREEN.HOME.RECENT_PLAN')} />
           <RecentPlanList />
 
           {/* 新着・おすすめ・旅行先・グッズ */}
-          <Title text="新着記事" />
+          <Title text={i18n.t('SCREEN.HOME.NEW_ARTICLE')} />
           {/* 新着記事 */}
           <View className="w-full mb-8">
             <FlatList

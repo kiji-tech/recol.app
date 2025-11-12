@@ -76,18 +76,14 @@ export default function DirectionBottomSheetBody({
       </Text>
       <View className="flex flex-row items-center justify-between mt-4 mb-6 rounded-lg bg-light-backgroundSecondary dark:bg-dark-backgroundSecondary px-4 py-3">
         <View className="flex flex-col">
-          <Text className="text-xs text-light-placeholder dark:text-dark-placeholder">
-            合計距離
-          </Text>
+          <Text className="text-xs text-light-text dark:text-dark-text">合計距離</Text>
           <Text className="text-base font-semibold text-light-text dark:text-dark-text">
             {totalDistanceText}
           </Text>
         </View>
         <View className="h-8 w-[1px] bg-light-border dark:bg-dark-border" />
         <View className="flex flex-col items-end">
-          <Text className="text-xs text-light-placeholder dark:text-dark-placeholder">
-            所要時間
-          </Text>
+          <Text className="text-xs text-light-text dark:text-dark-text">所要時間</Text>
           <Text className="text-base font-semibold text-light-text dark:text-dark-text">
             {totalDurationText}
           </Text>
@@ -100,7 +96,7 @@ export default function DirectionBottomSheetBody({
           </View>
         )}
         {!isLoading && stepList.length === 0 && (
-          <Text className="text-center text-light-placeholder dark:text-dark-placeholder">
+          <Text className="text-center text-light-text dark:text-dark-text">
             経路情報がありません｡
           </Text>
         )}
@@ -122,10 +118,10 @@ export default function DirectionBottomSheetBody({
                   {instruction.length > 0 ? instruction : '経路情報なし'}
                 </Text>
                 <View className="flex flex-row items-center justify-between">
-                  <Text className="text-xs text-light-placeholder dark:text-dark-placeholder">
+                  <Text className="text-xs text-gray-500 dark:text-gray-300">
                     {step.distance?.text || formatDistance(step.distance?.value || 0)}
                   </Text>
-                  <Text className="text-xs text-light-placeholder dark:text-dark-placeholder">
+                  <Text className="text-xs text-gray-500 dark:text-gray-300">
                     {step.duration?.text || formatDuration(step.duration?.value || 0)}
                   </Text>
                 </View>
