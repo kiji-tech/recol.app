@@ -40,7 +40,6 @@ export default function PlanListScreen() {
   // === Effect ===
   useFocusEffect(
     useCallback(() => {
-      LogUtil.log('plan list init');
       const ctrl = new AbortController();
       init(ctrl);
       return () => {

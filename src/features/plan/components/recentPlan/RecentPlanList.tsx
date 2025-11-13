@@ -45,7 +45,7 @@ export default function RecentPlanList({ planList }: Props) {
   };
 
   return (
-    <View className="w-full flex flex-col gap-4">
+    <View className="w-full flex flex-col gap-4 justify-start items-start">
       {/* 日数選択UI */}
       <View className="flex flex-row gap-2">
         {availableDays.map((availableDay) => (
@@ -82,7 +82,6 @@ export default function RecentPlanList({ planList }: Props) {
           )}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 8 }}
           renderItem={({ item }: { item: Plan }) => (
             <RecentPlanItem plan={item} days={days as RecentPlanDays} onPress={handlePress} />
           )}
