@@ -7,6 +7,7 @@ import { ScrollResponderMixin } from 'react-native';
 import { MapCategory } from '@/src/features/map/types/MapCategory';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import i18n from '@/src/libs/i18n';
+import { isIOS } from 'toastify-react-native/utils/helpers';
 
 type Props = {
   placeList: Place[];
@@ -71,6 +72,8 @@ const MapBottomSheetBody = forwardRef(
               onSelect={onSelect}
             />
           ))}
+        {/* iOSの場合、ボトムシートの下部に余白を追加 ここだけモーダルなので余白が必要 */}
+        {isIOS && <View className="w-full h-8" />}
       </BottomSheetScrollView>
     );
   }
