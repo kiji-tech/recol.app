@@ -50,8 +50,8 @@ export default function ScheduleBottomSheetHeader({
         data={scheduleList}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        scrollToOverflowEnabled={false}
-        contentContainerStyle={{ gap: 8 }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ gap: 4, marginHorizontal: 4 }}
         renderItem={({ item }) => renderHeaderItem(item)}
       />
     </View>

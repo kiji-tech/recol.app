@@ -71,7 +71,7 @@ const MapBottomSheetBody = forwardRef(
               onSelect={onSelect}
             />
           ))}
-      </BottomSheetScrollView>  
+      </BottomSheetScrollView>
     );
   }
 );
