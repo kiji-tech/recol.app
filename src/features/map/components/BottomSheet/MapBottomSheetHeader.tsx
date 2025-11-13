@@ -27,7 +27,6 @@ export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }
   );
 
   const categoryButtonList: SearchSelectedButtonProps[] = [
-    { id: 'text', label: i18n.t('SCREEN.MAP.CATEGORY.SEARCH_RESULT'), onPress: () => {} },
     {
       id: 'selected',
       label: i18n.t('SCREEN.MAP.CATEGORY.SELECTED'),
@@ -38,7 +37,13 @@ export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }
     { id: 'hotel', label: i18n.t('SCREEN.MAP.CATEGORY.HOTEL'), onPress: handleOnSelectedCategory },
     { id: 'spot', label: i18n.t('SCREEN.MAP.CATEGORY.SPOT'), onPress: handleOnSelectedCategory },
   ];
-
+  if (selectedCategory == 'text') {
+    categoryButtonList.unshift({
+      id: 'text',
+      label: i18n.t('SCREEN.MAP.CATEGORY.SEARCH_RESULT'),
+      onPress: () => {},
+    });
+  }
   // === Render ====
 
   return (
