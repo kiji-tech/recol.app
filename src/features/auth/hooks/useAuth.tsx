@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
 import { Session, User } from '@supabase/supabase-js';
-import { Alert } from 'react-native';
+import { Alert, AppState, AppStateStatus } from 'react-native';
 import { supabase } from '../../../libs/supabase';
 import { useRouter } from 'expo-router';
 import { LogUtil } from '../../../libs/LogUtil';
@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
   const { isPremium, endAt, customerInfo } = usePremiumPlan();
+  const appState = useRef(AppState.currentState);
 
   // delete_flagチェック関数
   const checkDeleteFlag = async () => {
@@ -202,6 +203,77 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  /**
+   * セッションを再検証する
+   * セッションが期限切れの場合はリフレッシュを試みる
+   */
+  const revalidateSession = useCallback(async () => {
+    try {
+      // 最新のセッションを取得
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        LogUtil.log(`セッション再検証エラー: ${JSON.stringify(sessionError)}`, { level: 'error' });
+        return;
+      }
+
+      const latestSession = sessionData.session;
+      
+      if (!latestSession) {
+        LogUtil.log('セッションが存在しません', { level: 'info' });
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+        return;
+      }
+
+      // セッションの有効期限をチェック
+      const expirationTime = latestSession.expires_at ? latestSession.expires_at * 1000 : null;
+      const thresholdTime = Date.now() + 5 * 60 * 1000; // 5分前
+      
+      // セッションが期限切れまたは期限切れが近い場合はリフレッシュ
+      if (!expirationTime || expirationTime <= thresholdTime) {
+        LogUtil.log('セッションが期限切れのためリフレッシュを試みます', { level: 'info' });
+        const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+        
+        if (refreshError) {
+          LogUtil.log(`セッションリフレッシュエラー: ${JSON.stringify(refreshError)}`, { level: 'error' });
+          // リフレッシュに失敗した場合はセッションをクリア
+          setSession(null);
+          setUser(null);
+          setProfile(null);
+          return;
+        }
+
+        if (refreshData.session) {
+          setSession(refreshData.session);
+          setUser(refreshData.session.user);
+          
+          // リカバリーセッションかどうかチェック
+          const isRecovery = await isRecoverySession();
+          if (isRecovery) {
+            await logout();
+            return;
+          }
+
+          // プロフィールを取得
+          try {
+            const profileData = await getProfile(refreshData.session);
+            setProfile(profileData);
+          } catch {
+            setProfile(null);
+          }
+        }
+      } else {
+        // セッションが有効な場合は更新
+        setSession(latestSession);
+        setUser(latestSession.user);
+      }
+    } catch (error) {
+      LogUtil.log(`セッション再検証中にエラーが発生しました: ${JSON.stringify(error)}`, { level: 'error' });
+    }
+  }, []);
+
   // 初回マウント時にセッション取得
   useEffect(() => {
     const getSessionAndProfile = async () => {
@@ -256,6 +328,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     checkDeleteFlag();
   }, [profile]);
+
+  // アプリ状態の監視（フォアグラウンド復帰時にセッションを再検証）
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
+      if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+        LogUtil.log('アプリがフォアグラウンドに復帰しました。セッションを再検証します', { level: 'info' });
+        revalidateSession();
+      }
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [revalidateSession]);
 
   return (
     <AuthContext.Provider

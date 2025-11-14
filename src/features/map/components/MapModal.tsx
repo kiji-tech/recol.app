@@ -213,7 +213,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
   // === Render ===
   if (!isOpen || !currentRegion) return null;
   return (
-    <View className=" w-screen h-screen absolute top-0 left-0">
+    <View className="w-full h-full absolute top-0 left-0">
       {/* 検索ヘッダー */}
       <View className={`w-full h-12 absolute z-50 px-2 ${isIOS ? 'top-20' : 'top-4'}`}>
         <Header onBack={handleClose} onSearch={handleTextSearch} />

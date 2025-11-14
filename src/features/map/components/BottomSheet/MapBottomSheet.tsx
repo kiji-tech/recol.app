@@ -18,7 +18,7 @@ type Props = {
   bottomSheetRef?: React.RefObject<BottomSheet>;
   scrollRef?: React.RefObject<BottomSheetScrollViewMethods>;
 };
-export default function MapBottomSheet({
+const MapBottomSheet = ({
   placeList,
   selectedPlace,
   selectedPlaceList,
@@ -29,23 +29,23 @@ export default function MapBottomSheet({
   onSelectedCategory,
   bottomSheetRef,
   scrollRef,
-}: Props) {
+}: Props) => {
   return (
-    <>
-      <BottomSheetLayout ref={bottomSheetRef}>
-        <MapBottomSheetHeader
-          selectedCategory={selectedCategory}
-          onSelectedCategory={onSelectedCategory}
-        />
-        <MapBottomSheetBody
-          placeList={isSelected ? selectedPlaceList : placeList}
-          selectedPlace={selectedPlace}
-          selectedCategory={selectedCategory}
-          isLoading={isLoading}
-          onSelect={onSelectedPlace}
-          ref={scrollRef}
-        />
-      </BottomSheetLayout>
-    </>
+    <BottomSheetLayout ref={bottomSheetRef}>
+      <MapBottomSheetHeader
+        selectedCategory={selectedCategory}
+        onSelectedCategory={onSelectedCategory}
+      />
+      <MapBottomSheetBody
+        placeList={isSelected ? selectedPlaceList : placeList}
+        selectedPlace={selectedPlace}
+        selectedCategory={selectedCategory}
+        isLoading={isLoading}
+        onSelect={onSelectedPlace}
+        ref={scrollRef}
+      />
+    </BottomSheetLayout>
   );
-}
+};
+MapBottomSheet.displayName = 'MapBottomSheet';
+export default MapBottomSheet;

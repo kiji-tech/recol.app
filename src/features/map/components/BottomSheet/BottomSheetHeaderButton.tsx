@@ -17,7 +17,7 @@ export default function BottomSheetHeaderButton({
   return (
     <TouchableOpacity key={id} onPress={() => onPress(id)}>
       <View
-        className={`px-4 py-2 mr-2 rounded-xl ${selected ? 'bg-light-info dark:bg-dark-info' : 'bg-light-background dark:bg-dark-background'}`}
+        className={`px-4 py-4 mr-2 rounded-xl ${selected ? 'bg-light-info dark:bg-dark-info' : 'bg-light-background dark:bg-dark-background'}`}
       >
         <Text className={`text-light-text dark:text-dark-text`}>{label}</Text>
       </View>

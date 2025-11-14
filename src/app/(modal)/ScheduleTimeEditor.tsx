@@ -17,6 +17,7 @@ import {
 import { LogUtil } from '@/src/libs/LogUtil';
 import ToastManager, { Toast } from 'toastify-react-native';
 import MaskLoading from '@/src/components/MaskLoading';
+import i18n from '@/src/libs/i18n';
 
 const ScheduleTimeEditorItem = ({
   item,
@@ -55,7 +56,7 @@ const ScheduleTimeEditorItem = ({
             }}
           >
             <Text className="text-light-text dark:text-dark-text text-sm px-2 py-1">
-              前から開始時刻を設定
+              {i18n.t('SCREEN.SCHEDULE.TIME_EDITOR.PREVIOUS_START_TIME')}
             </Text>
           </TouchableOpacity>
         )}
@@ -73,7 +74,7 @@ const ScheduleTimeEditorItem = ({
             }}
           >
             <Text className="text-light-text dark:text-dark-text text-sm px-2 py-1">
-              次の開始時刻を設定
+              {i18n.t('SCREEN.SCHEDULE.TIME_EDITOR.NEXT_START_TIME')}
             </Text>
           </TouchableOpacity>
         )}
@@ -184,7 +185,7 @@ export default function ScheduleTimeEditor() {
         </View>
         <View className="my-4">
           <Button
-            text="保存"
+            text={i18n.t('COMMON.SAVE')}
             onPress={() => handleSave()}
             disabled={isLoading}
             loading={isLoading}

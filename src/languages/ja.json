@@ -163,6 +163,10 @@
                 "CAFE": "カフェ",
                 "AMUSEMENT": "観光",
                 "OTHER": "その他"
+            },
+            "TIME_EDITOR": {
+                "PREVIOUS_START_TIME": "前から開始時刻を設定",
+                "NEXT_START_TIME": "次の開始時刻を設定"
             }
         },
         "PLAN_LIST": {

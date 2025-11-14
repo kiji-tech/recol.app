@@ -5,7 +5,6 @@ import { router } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Plan } from '@/src/features/plan';
 import { Schedule } from '../types/Schedule';
-import { Loading } from '@/src/components';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import dayjs from 'dayjs';
 import i18n from '@/src/libs/i18n';
@@ -58,10 +57,13 @@ const TodayScheduleItem = ({
   );
 };
 
-export default function TodayScheduleList() {
+type Props = {
+  planList: Plan[];
+};
+export default function TodayScheduleList({ planList }: Props) {
   // 直近7日にある予定を取得して表示する
   // === Member ===
-  const { planList, setPlan, planLoading } = usePlan();
+  const { setPlan } = usePlan();
 
   // === Method ===
   const handlePress = (schedule: Schedule) => {
@@ -78,14 +80,6 @@ export default function TodayScheduleList() {
       .sort((a: Schedule, b: Schedule) => dayjs(a.from).diff(dayjs(b.from)))
       .filter((s: Schedule) => dayjs(s.from).isSame(dayjs(), 'day'));
   }, [planList]);
-
-  if (planLoading) {
-    return (
-      <View className="w-full flex justify-center items-center">
-        <Loading />
-      </View>
-    );
-  }
 
   if (scheduleList.length === 0) {
     return (
