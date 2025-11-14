@@ -6,8 +6,8 @@ import { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bot
 import { ScrollResponderMixin } from 'react-native';
 import { MapCategory } from '@/src/features/map/types/MapCategory';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { Platform } from 'react-native';
 import i18n from '@/src/libs/i18n';
+import { isIOS } from 'toastify-react-native/utils/helpers';
 
 type Props = {
   placeList: Place[];
@@ -57,7 +57,9 @@ const MapBottomSheetBody = forwardRef(
         {!isLoading && placeList && placeList.length == 0 && (
           <View className="w-full p-8">
             <Text className="text-center text-light-text dark:text-dark-text">
-              {selectedCategory == 'selected' ? i18n.t('SCREEN.MAP.NO_SELECTED') : i18n.t('SCREEN.MAP.NO_RESULT')}
+              {selectedCategory == 'selected'
+                ? i18n.t('SCREEN.MAP.NO_SELECTED')
+                : i18n.t('SCREEN.MAP.NO_RESULT')}
             </Text>
           </View>
         )}
@@ -70,8 +72,8 @@ const MapBottomSheetBody = forwardRef(
               onSelect={onSelect}
             />
           ))}
-        {/* アクションバーで隠れるため高くする */}
-        <View className={Platform.OS === 'ios' ? 'h-[32px]' : 'h-[100px]'}></View>
+        {/* iOSの場合、ボトムシートの下部に余白を追加 ここだけモーダルなので余白が必要 */}
+        {isIOS && <View className="w-full h-8" />}
       </BottomSheetScrollView>
     );
   }

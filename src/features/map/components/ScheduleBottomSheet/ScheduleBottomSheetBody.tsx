@@ -4,7 +4,8 @@ import PlaceCard from '../Place/PlaceCard';
 import { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { Schedule } from '@/src/features/schedule';
 import { Place } from '@/src/features/map/types/Place';
-import { ScrollResponderMixin } from 'react-native';
+import { ScrollResponderMixin, Text, View } from 'react-native';
+import i18n from '@/src/libs/i18n';
 
 type Props = {
   selectedPlace: Place | null;
@@ -41,6 +42,13 @@ const ScheduleBottomSheetBody = forwardRef(
 
     return (
       <BottomSheetScrollView ref={scrollRef} className="w-full flex-1">
+        {!selectedSchedule && (
+          <View className="w-full p-8">
+            <Text className="text-center text-light-text dark:text-dark-text">
+              {i18n.t('SCREEN.MAP.NO_SELECTED')}
+            </Text>
+          </View>
+        )}
         {selectedSchedule?.place_list?.map((place: Place) => (
           <PlaceCard
             key={place.id}
