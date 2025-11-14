@@ -1,0 +1,265 @@
+{
+    "TABBAR": {
+        "HOME": "Startseite",
+        "PLAN": "Plan",
+        "SCHEDULE": "Zeitplan",
+        "SETTINGS": "Einstellungen",
+        "MAP": "Karte",
+        "MEDIA": "Medien",
+        "SAMPLE": "Beispiel"
+    },
+    "DATA": {
+        "SCHEDULE": {
+            "DATETIME": "Datum und Uhrzeit",
+            "CATEGORY": "Kategorie",
+            "PLACE_LIST": "Kandidaten",
+            "MEMO": "Notiz"
+        }
+    },
+    "SCREEN": {
+        "HOME": {
+            "TODAY_SCHEDULE": "Heutiger Zeitplan",
+            "RECENT_PLAN": "Kürzlicher Plan",
+            "NEW_ARTICLE": "Neuer Artikel"
+        },
+        "PLAN": {
+            "CREATE_TITLE": "Neuen Plan erstellen",
+            "EDIT_TITLE": "Bearbeiten",
+            "NEW_PLAN": "Neuer Plan",
+            "TITLE_LABEL": "Bitte geben Sie den Plantitel ein.",
+            "TITLE_PLACEHOLDER": "Teeparty bei...",
+            "MEMO_LABEL": "Notiz",
+            "MEMO_PLACEHOLDER": "Bitte geben Sie eine Notiz ein.",
+            "ADD_FRIEND": "Freunde hinzufügen",
+            "SELECT": "Auswählen",
+            "REGISTER": "Registrieren",
+            "PREPARING": "Vorbereitung",
+            "TITLE_REQUIRED": "Bitte geben Sie den Plantitel ein",
+            "REGISTER_SUCCESS": "wurde registriert",
+            "REGISTER_FAILED": "Plan konnte nicht registriert werden",
+            "PLAN_NOT_FOUND": "Plan nicht gefunden",
+            "LIST_TITLE": "Planliste"
+        },
+        "AUTH": {
+            "SIGN_IN": "Anmelden",
+            "SIGN_UP": "Registrieren",
+            "FORGOT_PASSWORD": "Passwort vergessen?",
+            "OR": "oder",
+            "EMAIL_PLACEHOLDER": "E-Mail-Adresse...",
+            "PASSWORD_PLACEHOLDER": "Passwort...",
+            "EMAIL_REQUIRED": "E-Mail-Adresse ist erforderlich",
+            "PASSWORD_REQUIRED": "Passwort ist erforderlich",
+            "EMAIL_INVALID": "Ungültiges E-Mail-Format",
+            "PASSWORD_MISMATCH": "Passwörter stimmen nicht überein",
+            "SIGN_IN_FAILED": "Anmeldung fehlgeschlagen",
+            "SIGN_UP_FAILED": "Registrierung fehlgeschlagen",
+            "EMAIL_ALREADY_EXISTS": "Diese E-Mail-Adresse ist bereits registriert.",
+            "BACK_TO_SIGN_IN": "Zurück zur Anmeldung",
+            "RESET_PASSWORD_TITLE": "Passwort zurücksetzen",
+            "RESET_PASSWORD_BUTTON": "Passwort zurücksetzen",
+            "RESET_PASSWORD_SUCCESS": "E-Mail zum Zurücksetzen des Passworts wurde gesendet.",
+            "RESET_PASSWORD_FAILED": "E-Mail zum Zurücksetzen des Passworts konnte nicht gesendet werden.",
+            "CHANGE_PASSWORD": "Passwort ändern",
+            "PASSWORD": "Passwort",
+            "PASSWORD_CONFIRM": "Passwort (Bestätigung)",
+            "LINK_CHECKING": "Link wird überprüft...",
+            "INVALID_LINK": "Ungültiger Link",
+            "INVALID_LINK_MESSAGE": "Der Link zum Zurücksetzen des Passworts ist ungültig oder abgelaufen.",
+            "ERROR_OCCURRED": "Ein Fehler ist aufgetreten",
+            "ERROR_MESSAGE": "Beim Überprüfen des Links zum Zurücksetzen des Passworts ist ein Fehler aufgetreten.",
+            "SAME_PASSWORD_ERROR": "Das gleiche Passwort wie das neue Passwort kann nicht verwendet werden.",
+            "PASSWORD_CHANGE_FAILED": "Passwort konnte nicht geändert werden.",
+            "PASSWORD_CHANGED": "Passwort geändert",
+            "REQUEST_NEW_ACCOUNT_TITLE": "E-Mail zur Kontenerstellung wurde an Ihre E-Mail-Adresse gesendet.",
+            "EMAIL_LABEL": "Eingegebene E-Mail-Adresse",
+            "CHECK_EMAIL": "Bitte überprüfen Sie Ihre E-Mail und erstellen Sie Ihr Konto.",
+            "RESEND_EMAIL": "E-Mail erneut senden",
+            "EMAIL_NOT_FOUND": "E-Mail-Adresse konnte nicht abgerufen werden.",
+            "RESEND_SUCCESS": "Bestätigungs-E-Mail wurde erneut gesendet.",
+            "RESEND_FAILED": "E-Mail konnte nicht erneut gesendet werden.",
+            "CONGRATULATIONS": "Herzlichen Glückwunsch!",
+            "WELCOME": "Willkommen bei Re:CoL",
+            "GREAT_TRIP": "Lassen Sie uns gemeinsam großartige Reisepläne erstellen",
+            "REGISTRATION_COMPLETE": "🎊 Registrierung abgeschlossen 🎊",
+            "EXPERIENCE_STARTS": "Ihre großartige Erfahrung beginnt jetzt",
+            "GET_STARTED": "Loslegen!"
+        },
+        "INFORMATION": {
+            "TITLE": "Informationen",
+            "NO_INFORMATION": "Keine Informationen verfügbar",
+            "ERROR_OCCURRED": "Ein Fehler ist aufgetreten"
+        },
+        "ACCOUNT": {
+            "DELETE_TITLE": "Konto löschen",
+            "IMPORTANT_NOTICE": "Wichtiger Hinweis",
+            "DELETE_WARNING": "Das Löschen Ihres Kontos löscht alle Daten dauerhaft und kann nicht rückgängig gemacht werden. Bitte lesen Sie die folgenden Punkte und stimmen Sie ihnen zu, bevor Sie fortfahren.",
+            "PREMIUM_CANCEL_GUIDE": "Anleitung zur Kündigung des Premium-Plans",
+            "PREMIUM_NOT_AUTO_CANCEL": "Premium-Pläne werden nicht automatisch gekündigt.",
+            "CHECK_HERE": "hier",
+            "CHECK_PURCHASE": "um Ihren Kaufstatus zu überprüfen.",
+            "DELETE_CONSENT": "Einverständnis zur Kontolöschung",
+            "SUBSCRIPTION_CANCELED": "Abonnement wurde gekündigt.",
+            "NO_REFUND": "Rückerstattungen sind nicht verfügbar, auch wenn noch eine Premium-Plan-Periode vorhanden ist.",
+            "NO_RESTORE": "Mit diesem Konto verknüpfte Pläne können nach dem Löschen nicht wiederhergestellt werden.",
+            "DELETE_BUTTON": "Konto löschen",
+            "DELETE_CONFIRM_TITLE": "Kontolöschung bestätigen",
+            "DELETE_CONFIRM_MESSAGE": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+            "DELETE_SUCCESS_TITLE": "Kontolöschung abgeschlossen",
+            "DELETE_SUCCESS_MESSAGE": "Ihr Konto wurde erfolgreich gelöscht.",
+            "DELETE_FAILED": "Konto konnte nicht gelöscht werden.",
+            "ENABLE_DELETE": "Aktivieren Sie alle Zustimmungspunkte, um die Löschtaste zu aktivieren"
+        },
+        "PROFILE": {
+            "EDIT_TITLE": "Profil bearbeiten",
+            "EMAIL_LABEL": "E-Mail-Adresse",
+            "DISPLAY_NAME_LABEL": "Anzeigename",
+            "DISPLAY_NAME_PLACEHOLDER": "Anzeigename eingeben",
+            "SAVE": "Speichern",
+            "NOT_FOUND": "nicht gefunden"
+        },
+        "PAYMENT": {
+            "NO_SESSION": "Keine Sitzungsinformationen. Bitte melden Sie sich erneut an.",
+            "PAYMENT_FAILED": "Zahlung fehlgeschlagen. Bitte kontaktieren Sie uns.",
+            "NOT_PREMIUM": "Sie haben keinen Premium-Plan abonniert.",
+            "CANCEL_CONFIRM_TITLE": "Kündigung bestätigen",
+            "CANCEL_CONFIRM_MESSAGE": "Möchten Sie Ihren Premium-Plan kündigen?",
+            "CANCEL_PREMIUM": "Kündigen",
+            "PREMIUM_TITLE_1": "Erleben Sie bessere",
+            "PREMIUM_TITLE_2": "Ferien mit Premium",
+            "PREMIUM_SUBTITLE": "Bereichern Sie Ihre Reisen und Ferien",
+            "PLAN_COMPARISON": "Planvergleich",
+            "SELECT_PLAN": "Plan auswählen",
+            "CANCEL_PREMIUM_BUTTON": "Premium-Plan kündigen",
+            "UPGRADE_COMPLETE": "Upgrade abgeschlossen!",
+            "WELCOME_PREMIUM": "Willkommen beim Premium-Plan. Genießen Sie alle Funktionen."
+        },
+        "SETTINGS": {
+            "ACCOUNT_SETTINGS": "Kontoeinstellungen",
+            "PROFILE_EDIT": "Profil bearbeiten",
+            "PLAN": "Plan",
+            "APP_SETTINGS": "App-Einstellungen",
+            "APP_VERSION": "App-Version",
+            "OTHER": "Andere",
+            "TERMS": "Nutzungsbedingungen",
+            "PRIVACY_POLICY": "Datenschutzrichtlinie",
+            "CONTACT": "Kontaktieren Sie uns",
+            "SHARE_TWITTER": "Auf Twitter teilen",
+            "DELETE_ACCOUNT": "Konto löschen",
+            "SIGN_OUT": "Abmelden"
+        },
+        "SCHEDULE": {
+            "TITLE_PLACEHOLDER": "Titel...",
+            "NO_LOGIN": "Anmeldeinformationen nicht gefunden",
+            "PLAN_NOT_FOUND": "Planinformationen konnten nicht abgerufen werden",
+            "FETCH_FAILED": "Planinformationen konnten nicht abgerufen werden",
+            "CANDIDATE_COUNT": "#count# Kandidaten gefunden",
+            "DELETE_SUCCESS": "wurde gelöscht",
+            "SAVE_FAILED": "Zeitplan konnte nicht gespeichert werden",
+            "ADD_FROM_MAP": "Von Karte hinzufügen",
+            "SELECT_CATEGORY": "Kategorie auswählen",
+            "CATEGORY": {
+                "MOVEMENT": "Bewegung",
+                "MEALS": "Mahlzeiten",
+                "CAFE": "Café",
+                "AMUSEMENT": "Unterhaltung",
+                "OTHER": "Andere"
+            },
+            "TIME_EDITOR": {
+                "PREVIOUS_START_TIME": "Startzeit vom vorherigen festlegen",
+                "NEXT_START_TIME": "Startzeit des nächsten festlegen"
+            }
+        },
+        "PLAN_LIST": {
+            "FETCH_FAILED": "Pläne konnten nicht abgerufen werden",
+            "SORT_SAVE_FAILED": "Sortierreihenfolge konnte nicht gespeichert werden"
+        },
+        "MAP": {
+            "SELECT_CATEGORY": "Kategorie auswählen",
+            "NO_RESULT": "Keine Suchergebnisse",
+            "NO_SELECTED": "Keine ausgewählten Kandidaten",
+            "RESEARCH": "Erneut im Bereich suchen",
+            "CATEGORY": {
+                "SEARCH_RESULT": "Suchergebnis",
+                "SELECTED": "Ausgewählt",
+                "CAFE": "Café",
+                "MEAL": "Mahlzeit",
+                "HOTEL": "Hotel",
+                "SPOT": "Ort"
+            }
+        }
+    },
+    "COMPONENT": {
+        "PLAN": {
+            "NOT_FOUND": "Keine Pläne gefunden",
+            "ADD_PLAN": "Plan hinzufügen",
+            "SUPER_USER": "Super-Benutzer",
+            "FREE_PLAN": "Kostenloser Plan",
+            "PREMIUM_PLAN": "Premium-Plan",
+            "EXPIRATION_DATE": "Ablaufdatum",
+            "SORT_TITLE": "Sortieren",
+            "SORT_CREATED_AT": "Erstellungsdatum (Absteigend)",
+            "SORT_SCHEDULE_DATE": "Zeitplandatum (Absteigend)",
+            "NO_MEMO": "Keine Notiz.",
+            "NO_SCHEDULE_TODAY": "Kein Zeitplan heute",
+            "NO_PLAN_RECENT": "Kein Plan in den letzten #days# Tagen"
+        },
+        "PAYMENT": {
+            "FEATURE": "Funktion",
+            "FREE": "Kostenlos",
+            "PREMIUM": "Premium",
+            "ALL_FEATURES": "Alle Funktionen verfügbar",
+            "MEDIA_CAPACITY": "Medienkapazität",
+            "MEDIA_CAPACITY_FREE": "1 GB / Plan",
+            "MEDIA_CAPACITY_PREMIUM": "100 GB / Plan",
+            "AD_DISPLAY": "Werbeanzeige",
+            "YES": "○",
+            "NO": "-",
+            "RECOMMENDED": "Empfohlen",
+            "CURRENT_FREE_PLAN": "Aktuell kostenloser Plan in Verwendung",
+            "UPGRADE_MESSAGE": "Upgrade auf Premium-Plan, um alle Funktionen zu nutzen",
+            "CURRENT_PLAN": "Aktueller Plan",
+            "POPULAR_PLAN": "Beliebter Plan",
+            "TRIAL_MESSAGE": "Starten Sie mit 1 Monat Testversion",
+            "TRIAL_MESSAGE_MONTHLY": "ist 1 Monat kostenlos!",
+            "TRIAL_MESSAGE_AFTER_END": "Nach Ende der Testversion werden Sie automatisch auf den Premium-Plan aktualisiert.",
+            "DISCOUNT_MESSAGE": "#discount#% RABATT!"
+        },
+        "INFORMATION": {
+            "DETAIL": "Details anzeigen",
+            "CLOSE": "Schließen",
+            "INVALID_URL": "Ungültige URL"
+        },
+        "SCHEDULE": {
+            "EDIT_PLAN": "Plan bearbeiten",
+            "ADD_SCHEDULE": "Zeitplan hinzufügen",
+            "EDIT_TIME": "Zeit bearbeiten",
+            "SHARE": "Teilen",
+            "SHARE_TITLE": "Zeitplan teilen"
+        },
+        "VERSION": {
+            "UPDATE_REQUIRED": "App-Update erforderlich",
+            "UPDATE_MESSAGE": "Bitte aktualisieren Sie die App, um die neuesten Funktionen und Sicherheitsupdates zu nutzen.",
+            "UPDATE_BUTTON": "Im Store aktualisieren"
+        },
+        "SCHEDULE_NOTIFICATION": {
+            "TITLE": "Zeitplan-Benachrichtigung",
+            "MESSAGE": "Erhalten Sie Benachrichtigungen, wenn der Zeitplan beginnt.",
+            "NO_PERMISSION_TITLE": "Benachrichtigungsberechtigung erforderlich",
+            "NO_PERMISSION": "Die Benachrichtigungsberechtigung ist erforderlich, um Zeitplan-Benachrichtigungen zu verwenden. Bitte erlauben Sie Benachrichtigungsberechtigungen in den Geräteeinstellungen.",
+            "ERROR_MESSAGE": "Benachrichtigungsberechtigung konnte nicht abgerufen werden. Bitte versuchen Sie es später erneut."
+        }
+    },
+    "COMMON": {
+        "DARK_MODE": "Dunkler Modus",
+        "ERROR": "Fehler",
+        "SUCCESS": "Erfolg",
+        "CANCEL": "Abbrechen",
+        "OK": "OK",
+        "SAVE": "Speichern",
+        "NOT_FOUND": "nicht gefunden",
+        "DELETE": "Löschen",
+        "DAYS": " Tage",
+        "SEARCH": "Suchen",
+        "MONTH": "Monat"
+    }
+}
