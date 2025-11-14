@@ -15,7 +15,7 @@ import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { FontAwesome5 } from '@expo/vector-icons';
 import CategorySelector from '../../features/schedule/components/CategorySelector';
-import ToastManager, { Toast } from 'toastify-react-native';
+import { Toast } from 'toastify-react-native';
 import {
   adjustEndAtWhenReversed,
   adjustStartAtWhenNormal,
@@ -120,7 +120,9 @@ export default function ScheduleEditor() {
             />
             {/* 日程 */}
             <View className="w-full flex flex-col justify-start items-start">
-              <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>{i18n.t('DATA.SCHEDULE.DATETIME')}</Text>
+              <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
+                {i18n.t('DATA.SCHEDULE.DATETIME')}
+              </Text>
               <View className={`flex flex-row justify-center items-center gap-4`}>
                 <DatePicker
                   mode="datetime"
@@ -172,9 +174,15 @@ export default function ScheduleEditor() {
             />
             {/* マップから追加する */}
             <View className="w-full flex flex-col justify-start items-start gap-4">
-              <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>{i18n.t('DATA.SCHEDULE.PLACE_LIST')}</Text>
+              <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
+                {i18n.t('DATA.SCHEDULE.PLACE_LIST')}
+              </Text>
               {/* 追加ボタン */}
-              <Button theme={'info'} onPress={handleMapModal} text={i18n.t('SCREEN.SCHEDULE.ADD_FROM_MAP')} />
+              <Button
+                theme={'info'}
+                onPress={handleMapModal}
+                text={i18n.t('SCREEN.SCHEDULE.ADD_FROM_MAP')}
+              />
 
               {/* 候補数 */}
               <View className="flex flex-row gap-2 items-center">
@@ -192,7 +200,9 @@ export default function ScheduleEditor() {
 
             {/* メモ */}
             <View className="w-full flex flex-col justify-start items-start">
-              <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>{i18n.t('DATA.SCHEDULE.MEMO')}</Text>
+              <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
+                {i18n.t('DATA.SCHEDULE.MEMO')}
+              </Text>
               <TextInput
                 value={editSchedule.description!}
                 multiline={true}
@@ -221,7 +231,6 @@ export default function ScheduleEditor() {
       </BackgroundView>
       {/* マップモーダル */}
       {openMapModal && <MapModal isOpen={openMapModal} onClose={handleSelectedPlaceList} />}
-      <ToastManager />
     </>
   );
 }

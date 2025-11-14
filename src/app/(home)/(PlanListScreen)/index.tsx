@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { LogUtil } from '@/src/libs/LogUtil';
-import ToastManager, { Toast } from 'toastify-react-native';
+import { Toast } from 'toastify-react-native';
 import { Plan } from '@/src/features/plan/types/Plan';
 import NotFoundPlanView from '../../../features/plan/components/NotFoundPlanView';
 import PlanCard from '../../../features/plan/components/PlanCard';
@@ -85,7 +85,6 @@ export default function PlanListScreen() {
       />
       {/* プランがない場合 */}
       {!planLoading && planList.length === 0 && <NotFoundPlanView />}
-      <ToastManager />
     </BackgroundView>
   );
 }

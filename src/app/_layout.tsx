@@ -24,6 +24,7 @@ import { PremiumPlanProvider } from '../features/auth/hooks/usePremiumPlan';
 import { isUpdateRequired, checkVersion as checkVersionApi } from '../features/version';
 import { ForceUpdateModal } from '../features/version/components/ForceUpdateModal';
 import Constants from 'expo-constants';
+import ToastManager from 'toastify-react-native';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -182,6 +183,7 @@ const RouteLayout = () => {
               <GestureHandlerRootView style={{ flex: 1 }}>
                 <ThemeProvider>
                   <Layout />
+                  <ToastManager />
                 </ThemeProvider>
               </GestureHandlerRootView>
             </LocationProvider>
