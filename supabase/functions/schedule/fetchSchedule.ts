@@ -19,7 +19,7 @@ const fetchScheduleById = async (
   const { data: schedule, error } = await supabase
     .from('schedule')
     .select('*')
-    .eq('id', scheduleId)
+    .eq('uid', scheduleId)
     .maybeSingle();
 
   if (error) {

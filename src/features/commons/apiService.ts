@@ -103,7 +103,7 @@ export async function apiRequest<T, B = Record<string, unknown>>(
 
   const data = await res.json();
   // ユーザー認証に失敗した場合は最新セッションを取得してリトライ
-  if (data.code == 'C001') {
+  if (data && data.code == 'C001') {
     LogUtil.log('C001エラー: 最新セッションを取得してリトライします', { level: 'warn' });
     const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
 
