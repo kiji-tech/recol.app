@@ -85,10 +85,11 @@ export default function ScheduleComponents({
   const handleScheduleLongPress = (schedule: Schedule) => {
     if (!onDelete) return;
     // 削除アラート
-    Alert.alert(schedule.title!, 'このスケジュールを削除しますか？', [
-      { text: 'キャンセル', style: 'cancel' },
+    const text = i18n.t('SCREEN.SCHEDULE.DELETE_SUCCESS').replace('#title#', schedule.title || '');
+    Alert.alert(text, i18n.t('SCREEN.SCHEDULE.DELETE_CONFIRM'), [
+      { text: i18n.t('COMMON.CANCEL'), style: 'cancel' },
       {
-        text: '削除',
+        text: i18n.t('COMMON.DELETE'),
         style: 'destructive',
         onPress: () => {
           // 削除処理

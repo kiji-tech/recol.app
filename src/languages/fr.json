@@ -153,7 +153,8 @@
             "PLAN_NOT_FOUND": "Impossible de récupérer les informations du plan",
             "FETCH_FAILED": "Échec de la récupération des informations du plan",
             "CANDIDATE_COUNT": "#count# candidats trouvés",
-            "DELETE_SUCCESS": "a été supprimé",
+            "DELETE_CONFIRM": "Supprimer le calendrier",
+            "DELETE_SUCCESS": "#title# a été supprimé",
             "SAVE_FAILED": "Échec de l'enregistrement du calendrier",
             "ADD_FROM_MAP": "Ajouter depuis la carte",
             "SELECT_CATEGORY": "Sélectionner une catégorie",
@@ -201,7 +202,9 @@
             "SORT_SCHEDULE_DATE": "Date du calendrier (Décroissant)",
             "NO_MEMO": "Aucun mémo.",
             "NO_SCHEDULE_TODAY": "Aucun calendrier aujourd'hui",
-            "NO_PLAN_RECENT": "Aucun plan récent #days# jours"
+            "NO_PLAN_RECENT": "Aucun plan récent #days# jours",
+            "DELETE_CONFIRM": "#title# à supprimer",
+            "DELETE_CONFIRM_MESSAGE": "Une fois supprimé, il ne peut pas être restauré. Êtes-vous sûr de vouloir le supprimer ?"
         },
         "PAYMENT": {
             "FEATURE": "Fonctionnalité",

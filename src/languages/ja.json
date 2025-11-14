@@ -153,7 +153,8 @@
             "PLAN_NOT_FOUND": "プランの情報が取得できませんでした",
             "FETCH_FAILED": "プランの情報が取得に失敗しました",
             "CANDIDATE_COUNT": "#count# 件候補があります",
-            "DELETE_SUCCESS": "を削除しました",
+            "DELETE_CONFIRM": "スケジュールを削除します",
+            "DELETE_SUCCESS": "#title#を削除しました",
             "SAVE_FAILED": "スケジュールの保存に失敗しました",
             "ADD_FROM_MAP": "マップから確認・追加",
             "SELECT_CATEGORY": "カテゴリを選んでください…",
@@ -201,7 +202,9 @@
             "SORT_SCHEDULE_DATE": "スケジュールの日付順（降順）",
             "NO_MEMO": "メモはありません.",
             "NO_SCHEDULE_TODAY": "本日の予定はありません",
-            "NO_PLAN_RECENT": "直近#days#日のプランはありません"
+            "NO_PLAN_RECENT": "直近#days#日のプランはありません",
+            "DELETE_CONFIRM": "#title#を削除します",
+            "DELETE_CONFIRM_MESSAGE": "一度削除すると復元することはできません。削除してもよろしいですか？"
         },
         "PAYMENT": {
             "FEATURE": "機能",
@@ -257,7 +260,7 @@
         "OK": "OK",
         "SAVE": "保存",
         "NOT_FOUND": "見つかりませんでした",
-        "DELETE": "削除する",
+        "DELETE": "削除",
         "DAYS": " 日",
         "SEARCH": "検索",
         "MONTH": "月"
