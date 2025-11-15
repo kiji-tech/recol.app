@@ -99,7 +99,7 @@ export default function ScheduleScreen(): ReactNode {
             <PlanInformation plan={plan} />
             {/* Schedule */}
             <ScheduleComponents
-              isLoading={isLoading || isLoading}
+              isLoading={isLoading}
               plan={plan || ({ schedule: [] } as unknown as Plan)}
               onDelete={handleDeleteSchedule}
             />

@@ -16,6 +16,7 @@ import Share from 'react-native-share';
 import i18n from '@/src/libs/i18n';
 import { useQuery } from 'react-query';
 import { fetchProfile } from '@/src/features/profile';
+import MaskLoading from '@/src/components/MaskLoading';
 
 // TODO: 将来的にはDB化
 // const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
@@ -27,9 +28,14 @@ export default function Settings() {
   const version = Constants.expoConfig?.version || '1.0.0';
 
   const { user, session } = useAuth();
-  const { data: profile, refetch } = useQuery({
+  const {
+    data: profile,
+    refetch,
+    isLoading: isProfileLoading,
+  } = useQuery({
     queryKey: ['profile'],
     queryFn: () => fetchProfile(session),
+    enabled: !!session, // セッションがある場合のみ実行
   });
 
   // === チャット関係 ===
@@ -74,12 +80,18 @@ export default function Settings() {
   );
 
   // === Render ===
+  {
+    /* プロフィールセクション */
+  }
+  if (isProfileLoading) {
+    return <MaskLoading />;
+  }
+
   return (
     <BackgroundView>
       <DevelopmentBar />
       <ScrollView className="gap-8 flex flex-col" showsVerticalScrollIndicator={false}>
-        {/* プロフィールセクション */}
-        <ProfileAvatar profile={profile!} user={user!} />
+        <ProfileAvatar profile={profile} user={user} />
 
         {/* アカウント設定 */}
         <View className="mb-4">

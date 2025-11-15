@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { TouchableOpacity, View, Text, Dimensions, Platform, BackHandler } from 'react-native';
 import { Image } from 'expo-image';
-import { IconButton, Loading } from '@/src/components';
+import { IconButton } from '@/src/components';
 import { router, useFocusEffect, useGlobalSearchParams } from 'expo-router';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { FlatList } from 'react-native-gesture-handler';
@@ -16,6 +16,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Progress from 'react-native-progress';
 import { useMutation, useQuery } from 'react-query';
 import { Toast } from 'toastify-react-native';
+import MaskLoading from '@/src/components/MaskLoading';
 
 export default function MediaScreen() {
   // === Member ===
@@ -38,11 +39,11 @@ export default function MediaScreen() {
 
   const imageUploadMutation = useMutation({
     mutationFn: (images: string[]) => uploadPlanMediaList(planId!, images, session),
-    onSuccess: () => {
-      refetch();
-    },
     onError: (error) => {
       LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+      if (error && error instanceof Error && error.message) {
+        Toast.warn(error.message);
+      }
     },
   });
 
@@ -150,14 +151,21 @@ export default function MediaScreen() {
             })
         : null;
       if (base64Image) {
-        // データのアップロード
-        await imageUploadMutation.mutate([base64Image]);
-        setUploadedImage((prev) => [...prev, base64Image]);
+        try {
+          // データのアップロード
+          await imageUploadMutation.mutateAsync([base64Image]);
+          setUploadedImage((prev) => [...prev, base64Image]);
+        } catch (error) {
+          // エラーはmutationのonErrorで処理されるため、ここではログのみ
+          LogUtil.log(`Upload failed for image: ${error}`, { level: 'error' });
+        }
       }
     }
     // アップロード完了後､アップロード中の画像リストをクリア
     setUploadedImage([]);
     setAddImage([]);
+    // すべてのアップロード完了後にリフレッシュ
+    refetch();
   };
 
   /**
@@ -185,7 +193,7 @@ export default function MediaScreen() {
   // === Render ===
 
   if (isLoading) {
-    return <Loading />;
+    return <MaskLoading />;
   }
 
   /**  画像が選択された場合 */

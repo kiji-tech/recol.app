@@ -5,8 +5,8 @@ import { Profile } from '../types/Profile';
 import { User } from '@supabase/supabase-js';
 
 type Props = {
-  profile: Profile | null;
-  user: User;
+  profile?: Profile | null;
+  user?: User | null;
 };
 export default function ProfileAvatar({ profile, user }: Props) {
   return (
@@ -31,7 +31,7 @@ export default function ProfileAvatar({ profile, user }: Props) {
       <Text className="text-xl font-bold text-light-text dark:text-dark-text">
         {profile?.display_name || 'ユーザー名未設定'}
       </Text>
-      <Text className="text-light-text dark:text-dark-text">{user.email}</Text>
+      <Text className="text-light-text dark:text-dark-text">{user?.email}</Text>
     </View>
   );
 }
