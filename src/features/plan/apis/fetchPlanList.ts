@@ -12,13 +12,16 @@ import { LogUtil } from '../../../libs/LogUtil';
  * プラン一覧の取得
  * @param {Session | null} session - セッション情報
  * @param {AbortController} ctrl - アボートコントローラー
+ * @param {PlanSortType} sortType - ソート条件（オプショナル、提供されない場合はAsyncStorageから読み取る）
  * @return {Promise<Plan[]>} プラン一覧
  */
 export async function fetchPlanList(
   session: Session | null,
-  ctrl?: AbortController
+  ctrl?: AbortController,
+  sortType?: PlanSortType
 ): Promise<Plan[]> {
   const validSortType: PlanSortType =
+    sortType ||
     ((await AsyncStorage.getItem(PLAN_SORT_TYPE_STORAGE_KEY)) as PlanSortType) ||
     DEFAULT_PLAN_SORT_TYPE;
   LogUtil.log(JSON.stringify({ validSortType }), { level: 'info' });

@@ -32,7 +32,7 @@ export default function PlanListScreen() {
     refetch: refetchPlanList,
   } = useQuery({
     queryKey: ['planList', sortType],
-    queryFn: () => fetchPlanList(session),
+    queryFn: () => fetchPlanList(session, undefined, sortType),
   });
 
   /**
