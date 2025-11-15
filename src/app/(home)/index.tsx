@@ -1,10 +1,9 @@
 import React, { useCallback } from 'react';
 import { BackgroundView, Header, IconButton } from '@/src/components';
 import { ActivityIndicator, FlatList, ScrollView, View } from 'react-native';
-import { Article } from '@/src/features/article';
+import { Article, fetchArticleList } from '@/src/features/article';
 import { ArticleCard } from '../../features/article/components/ArticleCard';
 import { TodayScheduleList } from '@/src/features/schedule';
-import { useArticles } from '@/src/features/article/hooks/useArticles';
 import { useInformation, InformationModal } from '@/src/features/information';
 import RecentPlanList from '@/src/features/plan/components/recentPlan/RecentPlanList';
 import MaskLoading from '@/src/components/MaskLoading';
@@ -15,14 +14,19 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { usePlanList } from '@/src/features/plan/hooks/usePlanList';
 import i18n from '@/src/libs/i18n';
+import { useQuery } from 'react-query';
 
 export default function Home() {
   // === Member ===
-  const { articles, loading } = useArticles();
-  const { planList, fetchPlan, planLoading } = usePlanList();
-  const { currentInformation, isModalVisible, handleCloseModal } = useInformation();
   const router = useRouter();
   const { isDarkMode } = useTheme();
+  const { planList, fetchPlan, planLoading } = usePlanList();
+  const { currentInformation, isModalVisible, handleCloseModal } = useInformation();
+
+  const { data: articles, isLoading: articleLoading } = useQuery({
+    queryKey: ['articles'],
+    queryFn: fetchArticleList,
+  });
   // === Method ===
   /**
    * 通知一覧画面へ遷移
@@ -42,7 +46,7 @@ export default function Home() {
     }, [])
   );
 
-  if (loading) {
+  if (articleLoading) {
     return <MaskLoading />;
   }
 
@@ -85,7 +89,7 @@ export default function Home() {
           {/* 新着記事 */}
           <View className="w-full mb-8">
             <FlatList
-              data={articles}
+              data={articles || []}
               horizontal={true}
               contentContainerStyle={{ gap: 16 }}
               showsHorizontalScrollIndicator={false}
