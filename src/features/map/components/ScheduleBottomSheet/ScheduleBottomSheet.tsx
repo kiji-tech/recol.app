@@ -13,6 +13,7 @@ type Props = {
   scheduleList: Schedule[];
   selectedPlace: Place | null;
   selectedSchedule: Schedule | null;
+  selectedSchedulePlaceList: Place[];
   onSelectedSchedule: (schedule: Schedule) => void;
   onSelectedPlace: (place: Place) => void;
 };
@@ -24,6 +25,7 @@ const ScheduleBottomSheet = forwardRef(
       scheduleList,
       selectedPlace,
       selectedSchedule,
+      selectedSchedulePlaceList,
       onSelectedSchedule,
       onSelectedPlace,
     }: Props,
@@ -44,8 +46,7 @@ const ScheduleBottomSheet = forwardRef(
     const calcScrollHeight = (selectedPlace: Place) => {
       const PLACE_HEIGHT = 113;
       const index =
-        selectedSchedule?.place_list?.findIndex((place: Place) => place.id === selectedPlace.id) ||
-        0;
+        selectedSchedule?.place_list?.findIndex((place) => place === selectedPlace.id) || 0;
       return index * PLACE_HEIGHT;
     };
 
@@ -73,10 +74,11 @@ const ScheduleBottomSheet = forwardRef(
           onSelectedSchedule={handleSelectSchedule}
         />
         {/* コンテンツ */}
-        <SelectedMapBottomSheetBody
+        <SelectedMapBottomSheetBody 
           ref={scrollRef}
           selectedPlace={selectedPlace}
           selectedSchedule={selectedSchedule}
+          selectedSchedulePlaceList={selectedSchedulePlaceList}
           onSelectedPlace={onSelectedPlace}
         />
       </BottomSheetLayout>

@@ -3,7 +3,6 @@ import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { Schedule, DatabaseResult } from '../libs/types.ts';
-import { enrichScheduleWithPlaceData, enrichScheduleListWithPlaceData } from './scheduleUtils.ts';
 import dayjs from 'dayjs';
 
 /**
@@ -124,12 +123,6 @@ export const get = async (c: Context, supabase: SupabaseClient) => {
     return c.json({ message: getMessage('C005', ['スケジュール']), code: 'C005' }, 400);
   }
 
-  if (schedule) {
-    const enrichedSchedule = await enrichScheduleWithPlaceData(supabase, schedule);
-    LogUtil.log('[GET] schedule/:id 完了', { level: 'info' });
-    return c.json(enrichedSchedule);
-  }
-
   LogUtil.log('[GET] schedule/:id 完了', { level: 'info' });
   return c.json(schedule);
 };
@@ -148,10 +141,8 @@ export const list = async (c: Context, supabase: SupabaseClient) => {
     return c.json({ message: getMessage('C005', ['スケジュール']), code: 'C005' }, 400);
   }
 
-  const enrichedScheduleList = await enrichScheduleListWithPlaceData(supabase, scheduleList || []);
-
   LogUtil.log('[POST] schedule/list 完了', { level: 'info' });
-  return c.json(enrichedScheduleList);
+  return c.json(scheduleList);
 };
 
 /**

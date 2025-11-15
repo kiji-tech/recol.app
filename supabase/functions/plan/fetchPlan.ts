@@ -2,8 +2,8 @@ import { Context } from 'jsr:@hono/hono';
 import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
-import { enrichScheduleWithPlaceData, enrichPlanListWithPlaceData } from './placeUtils.ts';
-import { Plan, Schedule, DatabaseResult, PlanWithEnrichedSchedule } from '../libs/types.ts';
+import { enrichPlanListWithPlaceData } from './placeUtils.ts';
+import { Plan, Schedule, DatabaseResult } from '../libs/types.ts';
 import dayjs from 'dayjs';
 
 const fetchPlanWithSchedule = async (
@@ -118,17 +118,6 @@ export const get = async (c: Context, supabase: SupabaseClient, user: User) => {
   const { data: plan, error } = await fetchPlanWithSchedule(supabase, uid, user.id);
   if (error) {
     return c.json({ message: getMessage('C005', ['プラン']), code: 'C005' }, 500);
-  }
-
-  if (plan && plan.schedule) {
-    const enrichedSchedule = await enrichScheduleWithPlaceData(supabase, plan.schedule);
-    const enrichedPlan: PlanWithEnrichedSchedule = {
-      ...plan,
-      schedule: enrichedSchedule,
-    };
-
-    LogUtil.log('[GET] plan/:uid 完了', { level: 'info' });
-    return c.json(enrichedPlan);
   }
 
   LogUtil.log('[GET] plan/:uid 完了', { level: 'info' });

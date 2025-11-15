@@ -18,9 +18,6 @@ export const upsertSchedule = async (c: Context, supabase: SupabaseClient) => {
     .upsert(
       {
         ...schedule,
-        place_list: schedule.place_list
-          ? schedule.place_list.map((place: { id: string }) => place.id)
-          : [],
       },
       { onConflict: 'uid' }
     )

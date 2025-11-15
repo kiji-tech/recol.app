@@ -4,17 +4,16 @@ import { Plan } from '../features/plan';
 import { Schedule } from '../features/schedule';
 import { usePlanList } from '../features/plan/hooks/usePlanList';
 import { usePlan as usePlanHook } from '../features/plan/hooks/usePlan';
-import { PlanSortType } from '../features/plan/types/PlanSortType';
+import { useStoragePlanList } from '../features/plan/hooks/useStoragePlanList';
 
 type PlanContextType = {
-  planList: Plan[];
-  setPlanList: (planList: Plan[]) => void;
+  planList: Plan[] | undefined;
+  storagePlanList: Plan[] | undefined;
   plan: Plan | null;
   setPlan: (plan: Plan) => void;
   editSchedule: Schedule | null;
   setEditSchedule: (schedule: Schedule) => void;
   planLoading: boolean;
-  fetchPlan: (ctrl?: AbortController, sortType?: PlanSortType) => Promise<void>;
   clearStoragePlan: () => void;
 };
 
@@ -23,22 +22,19 @@ const PlanContext = createContext<PlanContextType | null>(null);
 const PlanProvider = ({ children }: { children: React.ReactNode }) => {
   const { plan, setPlan, editSchedule, setEditSchedule } = usePlanHook();
 
-  const { planList, setPlanList, planLoading, fetchPlan, clearStoragePlan } = usePlanList(
-    plan,
-    setPlan
-  );
+  const { data: planList, isLoading: planLoading } = usePlanList(plan, setPlan);
+  const { data: storagePlanList, clearStoragePlan } = useStoragePlanList();
 
   return (
     <PlanContext.Provider
       value={{
         planList,
-        setPlanList,
+        storagePlanList,
         plan,
         setPlan,
         editSchedule,
         setEditSchedule,
         planLoading,
-        fetchPlan,
         clearStoragePlan,
       }}
     >

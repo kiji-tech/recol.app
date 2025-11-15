@@ -11,10 +11,10 @@ async function fetchCachePlace(
   session: Session | null,
   ctrl?: AbortController
 ) {
-  const response = await apiRequest<Place>(`/cache/place`, {
+  const response = await apiRequest<Place[]>(`/cache/place`, {
     method: 'POST',
     session,
-    body: { placeIdList, languageCode: i18n.locale || 'ja' },
+    body: { placeIdList, languageCode: i18n.locale || 'en' },
     ctrl,
   });
   return response.data!;

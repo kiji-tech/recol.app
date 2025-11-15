@@ -1,10 +1,9 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { BackHandler, View } from 'react-native';
-import { router, useFocusEffect } from 'expo-router';
-import { usePlan } from '@/src/contexts/PlanContext';
+import { router, useFocusEffect, useGlobalSearchParams } from 'expo-router';
 import { Region } from 'react-native-maps';
 import { useLocation } from '@/src/contexts/LocationContext';
-import { Place, Direction, Route, Step } from '@/src/features/map';
+import { Place, Direction, Route, Step, fetchCachePlace } from '@/src/features/map';
 import { DEFAULT_RADIUS } from '@/src/libs/ConstValue';
 import Map from '@/src/features/map/components/Map';
 import { fetchDirection } from '@/src/features/map/libs/direction';
@@ -17,6 +16,9 @@ import ScheduleBottomSheet from '@/src/features/map/components/ScheduleBottomShe
 import DirectionBottomSheet from '@/src/features/map/components/DirectionBottomSheet/DirectionBottomSheet';
 import { DirectionMode } from '@/src/features/map/types/Direction';
 import PlaceBottomSheet from '@/src/features/map/components/PlaceBottomSheet/PlaceBottomSheet';
+import { useAuth } from '@/src/features/auth';
+import { fetchPlan } from '@/src/features/plan';
+import { useQuery } from 'react-query';
 
 /**
  * 初期表示
@@ -25,16 +27,20 @@ export default function MapScreen() {
   // === Member ===
   const bottomSheetRef = useRef<BottomSheet>(null);
   const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
-  const { plan } = usePlan();
+  const { uid: planId } = useGlobalSearchParams();
+  const { data: plan } = useQuery({
+    queryKey: ['plan', planId],
+    queryFn: () => fetchPlan(planId as string, session),
+    enabled: !planId,
+  });
+  const { session } = useAuth();
+  const [selectedSchedulePlaceList, setSelectedSchedulePlaceList] = useState<Place[]>([]);
+
   const { currentRegion } = useLocation();
   const [region, setRegion] = useState<Region | null>(
-    plan &&
-      plan.schedule &&
-      plan.schedule.length > 0 &&
-      plan.schedule[0].place_list &&
-      plan.schedule[0].place_list.length > 0
+    selectedSchedulePlaceList.length > 0
       ? {
-          ...(plan!.schedule[0].place_list[0] as unknown as Place).location,
+          ...selectedSchedulePlaceList[0].location,
           latitudeDelta: 0.025,
           longitudeDelta: 0.025,
         }
@@ -53,7 +59,7 @@ export default function MapScreen() {
   const viewScheduleList: Schedule[] = useMemo(() => {
     return (
       plan?.schedule
-        .filter((schedule) => schedule.place_list?.length > 0)
+        .filter((schedule) => schedule.place_list && schedule.place_list?.length > 0)
         .sort((a, b) => dayjs(a.from).diff(dayjs(b.from))) || []
     );
   }, [plan]);
@@ -63,6 +69,7 @@ export default function MapScreen() {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [selectedMode, setSelectedMode] = useState<DirectionMode>('walking');
   const [selectedStepIndex, setSelectedStepIndex] = useState<number | null>(null);
+
   const stepList: Step[] = useMemo(() => {
     if (!routeList || routeList.length === 0) return [];
     const [firstRoute] = routeList;
@@ -218,6 +225,15 @@ export default function MapScreen() {
     }, [])
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      if (!selectedSchedule || !selectedSchedule.place_list) return;
+      fetchCachePlace(selectedSchedule.place_list || [], session).then((placeList) => {
+        setSelectedSchedulePlaceList(placeList || []);
+      });
+    }, [selectedSchedule, session])
+  );
+
   // === Render ===
   return (
     <>
@@ -225,12 +241,8 @@ export default function MapScreen() {
         <Map
           radius={radius}
           region={region || currentRegion}
-          placeList={selectedSchedule?.place_list || []}
-          selectedPlaceList={
-            selectedSchedule?.place_list?.filter(
-              (place: Place) => place.id === selectedPlace?.id
-            ) || []
-          }
+          placeList={selectedSchedulePlaceList || []}
+          selectedPlaceList={selectedSchedulePlaceList || []}
           isMarker={true}
           isCallout={true}
           isCenterCircle={false}
@@ -274,11 +286,11 @@ export default function MapScreen() {
           scheduleList={viewScheduleList}
           selectedSchedule={selectedSchedule}
           selectedPlace={selectedPlace}
+          selectedSchedulePlaceList={selectedSchedulePlaceList}
           onSelectedSchedule={handleSelectedSchedule}
           onSelectedPlace={handleSelectedPlace}
         />
       )}
-
     </>
   );
 }

@@ -1,9 +1,9 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
 import Map from '@/src/features/map/components/Map';
 import { Place } from '@/src/features/map/types/Place';
 import { BackHandler, Platform, View } from 'react-native';
 import { Region } from 'react-native-maps';
-import { searchNearby, searchPlaceByText } from '@/src/features/map';
+import { fetchCachePlace, searchNearby, searchPlaceByText } from '@/src/features/map';
 import MapBottomSheet from './BottomSheet/MapBottomSheet';
 import { useLocation } from '@/src/contexts/LocationContext';
 import { MapCategory } from '@/src/features/map/types/MapCategory';
@@ -14,8 +14,9 @@ import { useAuth } from '@/src/features/auth';
 import ResearchButton from './ResearchButton';
 import { SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
 import { Header } from '@/src/components';
-import { Schedule } from '@/src/features/schedule';
 import PlaceBottomSheet from './PlaceBottomSheet/PlaceBottomSheet';
+import { Schedule } from '@/supabase/functions/libs/types';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 type Props = {
   isOpen: boolean;
@@ -32,12 +33,14 @@ export default function MapModal({ isOpen, onClose }: Props) {
   const { editSchedule, setEditSchedule } = usePlan();
   const [searchPlaceList, setSearchPlaceList] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-  const [selectedPlaceList, setSelectedPlaceList] = useState<Place[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<MapCategory>('selected');
   const [region, setRegion] = useState<Region | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isDetailPlace, setIsDetailPlace] = useState(false);
   const isIOS = Platform.OS === 'ios';
+
+  // 選択したスケジュールの場所リスト
+  const [selectedSchedulePlaceList, setSelectedSchedulePlaceList] = useState<Place[]>([]);
 
   // === Method ===
   /** ロケーション情報設定処理 */
@@ -64,26 +67,31 @@ export default function MapModal({ isOpen, onClose }: Props) {
   };
 
   /** マップ選択時のスクロール位置計算 */
-  const calcScrollHeight = (selectedPlace: Place) => {
-    const PLACE_HEIGHT = 113;
-    const index = searchPlaceList.findIndex((place) => place.id === selectedPlace.id);
-    const selectedIndex = selectedPlaceList
-      ? selectedPlaceList.findIndex((place) => place.id === selectedPlace.id)
-      : -1;
-    if (selectedIndex !== -1) {
-      setSelectedCategory('selected');
-      return selectedIndex * PLACE_HEIGHT;
-    }
-    return index * PLACE_HEIGHT;
-  };
+  const calcScrollHeight = useCallback(
+    (selectedPlace: Place) => {
+      const PLACE_HEIGHT = 113;
+      const index = searchPlaceList.findIndex((place) => place.id === selectedPlace.id);
+      const selectedIndex = selectedSchedulePlaceList
+        ? selectedSchedulePlaceList.findIndex((place: Place) => place.id === selectedPlace.id)
+        : -1;
+      if (selectedIndex !== -1) {
+        setSelectedCategory('selected');
+        return selectedIndex * PLACE_HEIGHT;
+      }
+      return index * PLACE_HEIGHT;
+    },
+    [searchPlaceList, selectedSchedulePlaceList]
+  );
 
   /** カテゴリ選択 */
   const handleSelectedCategory = (category: MapCategory) => {
+    LogUtil.log('handleSelectedCategory', { level: 'info' });
     setSelectedCategory(category);
   };
 
   /** 場所選択 */
   const handleSelectedPlace = (place: Place) => {
+    LogUtil.log('handleSelectedPlace', { level: 'info' });
     setRegion((prev) => {
       return {
         ...(prev || {}),
@@ -97,6 +105,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
 
   /** 場所詳細ボトムシート 閉じる処理 */
   const handleCloseDetailPlace = () => {
+    LogUtil.log('handleCloseDetailPlace', { level: 'info' });
     setIsDetailPlace(false);
     setSelectedPlace(null);
   };
@@ -126,43 +135,61 @@ export default function MapModal({ isOpen, onClose }: Props) {
   };
 
   /** スケジュールに対する場所の追加 */
-  const handleAdd = (place: Place) => {
-    setEditSchedule({
-      ...editSchedule,
-      place_list: [...(editSchedule?.place_list || []), place],
-    } as Schedule & { place_list: Place[] });
-  };
+  const handleAdd = useCallback(
+    (place: Place) => {
+      LogUtil.log('handleAdd', { level: 'info' });
+      setSelectedSchedulePlaceList((prev: Place[]) => [...prev, place]);
+    },
+    [selectedSchedulePlaceList]
+  );
 
   /** スケジュールに対する場所の削除 */
-  const handleRemove = (place: Place) => {
-    setEditSchedule({
-      ...editSchedule,
-      place_list: (editSchedule?.place_list || []).filter((p: Place) => p.id !== place.id),
-    } as Schedule & { place_list: Place[] });
-  };
+  const handleRemove = useCallback(
+    (place: Place) => {
+      LogUtil.log('handleRemove', { level: 'info' });
+      setSelectedSchedulePlaceList((prev: Place[]) => prev.filter((p: Place) => p.id !== place.id));
+    },
+    [selectedSchedulePlaceList]
+  );
 
   /** モーダルを閉じる */
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
+    LogUtil.log('handleClose', { level: 'info' });
+    const updateSchedule = {
+      ...editSchedule,
+      place_list: selectedSchedulePlaceList.map((p: Place) => p.id),
+    } as Schedule;
+    console.log('updateSchedule', updateSchedule);
+    setEditSchedule(updateSchedule);
     onClose();
-  };
+  }, [selectedSchedulePlaceList]);
 
   // === Effect ===
 
   /**
    * バックボタンを押した場合は､モーダルを閉じるイベントハンドラを追加
    */
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      handleClose();
-      return true;
-    });
-    return () => backHandler.remove();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        handleClose();
+        return true;
+      });
+      return () => backHandler.remove();
+    }, [])
+  );
 
   useFocusEffect(
     useCallback(() => {
-      setSelectedPlaceList((editSchedule?.place_list as unknown as Place[]) || []);
-    }, [editSchedule?.place_list])
+      LogUtil.log('useFocusEffect', { level: 'info' });
+
+      if (!editSchedule || !editSchedule.place_list) return;
+      console.log('editSchedule.place_list', editSchedule.place_list);
+      fetchCachePlace(editSchedule.place_list || [], session).then((placeList) => {
+        console.log('placeList', placeList);
+        setSelectedSchedulePlaceList(placeList || []);
+      });
+    }, [editSchedule, session])
   );
 
   /** 初回ロケーション情報取得処理 */
@@ -170,9 +197,9 @@ export default function MapModal({ isOpen, onClose }: Props) {
     useCallback(() => {
       if (currentRegion) {
         setRegion(
-          editSchedule?.place_list && editSchedule?.place_list.length > 0
+          selectedSchedulePlaceList.length > 0
             ? {
-                ...(editSchedule?.place_list[0] as unknown as Place).location,
+                ...selectedSchedulePlaceList[0].location,
                 latitudeDelta: 0.025,
                 longitudeDelta: 0.025,
               }
@@ -211,6 +238,40 @@ export default function MapModal({ isOpen, onClose }: Props) {
   }, [region]);
 
   // === Render ===
+
+  const mapBottomSheet = useMemo(() => {
+    return (
+      <MapBottomSheet
+        placeList={searchPlaceList}
+        selectedPlace={selectedPlace}
+        selectedPlaceList={selectedSchedulePlaceList || []}
+        selectedCategory={selectedCategory}
+        isSelected={selectedCategory === 'selected'}
+        isLoading={isLoading}
+        onSelectedPlace={handleSelectedPlace}
+        onSelectedCategory={handleSelectedCategory}
+        bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
+        scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
+      />
+    );
+  }, [searchPlaceList, selectedPlace, selectedSchedulePlaceList, selectedCategory, isLoading]);
+
+  const placeBottomSheet = useMemo(() => {
+    return (
+      <PlaceBottomSheet
+        bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
+        selectedPlace={selectedPlace!}
+        isEdit={true}
+        selected={
+          selectedSchedulePlaceList.findIndex((place: Place) => place.id === selectedPlace?.id) >= 0
+        }
+        onAdd={handleAdd}
+        onRemove={handleRemove}
+        onClose={handleCloseDetailPlace}
+      />
+    );
+  }, [selectedPlace, selectedSchedulePlaceList]);
+
   if (!isOpen || !currentRegion) return null;
   return (
     <View className="w-full h-full absolute top-0 left-0">
@@ -233,7 +294,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
           radius={radius}
           region={region || currentRegion}
           placeList={searchPlaceList}
-          selectedPlaceList={selectedPlaceList || []}
+          selectedPlaceList={selectedSchedulePlaceList || []}
           isMarker={true}
           isCallout={true}
           isCenterCircle={true}
@@ -243,31 +304,8 @@ export default function MapModal({ isOpen, onClose }: Props) {
       </View>
 
       {/* マップボトムシート */}
-      {!isDetailPlace && (
-        <MapBottomSheet
-          placeList={searchPlaceList}
-          selectedPlace={selectedPlace}
-          selectedPlaceList={selectedPlaceList || []}
-          selectedCategory={selectedCategory}
-          isSelected={selectedCategory === 'selected'}
-          isLoading={isLoading}
-          onSelectedPlace={handleSelectedPlace}
-          onSelectedCategory={handleSelectedCategory}
-          bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
-          scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
-        />
-      )}
-      {isDetailPlace && (
-        <PlaceBottomSheet
-          bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
-          selectedPlace={selectedPlace!}
-          isEdit={true}
-          selected={selectedPlaceList.findIndex((place) => place.id === selectedPlace?.id) >= 0}
-          onAdd={handleAdd}
-          onRemove={handleRemove}
-          onClose={handleCloseDetailPlace}
-        />
-      )}
+      {!isDetailPlace && mapBottomSheet}
+      {isDetailPlace && selectedPlace && placeBottomSheet}
     </View>
   );
 }

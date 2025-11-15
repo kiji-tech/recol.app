@@ -10,12 +10,13 @@ import i18n from '@/src/libs/i18n';
 type Props = {
   selectedPlace: Place | null;
   selectedSchedule: Schedule | null;
+  selectedSchedulePlaceList: Place[];
   onSelectedPlace: (place: Place) => void;
 };
 
 const ScheduleBottomSheetBody = forwardRef(
   (
-    { selectedSchedule, selectedPlace, onSelectedPlace }: Props,
+    { selectedSchedule, selectedPlace, onSelectedPlace, selectedSchedulePlaceList }: Props,
     ref: ForwardedRef<BottomSheetScrollViewMethods>
   ) => {
     // === Member ===
@@ -49,7 +50,7 @@ const ScheduleBottomSheetBody = forwardRef(
             </Text>
           </View>
         )}
-        {selectedSchedule?.place_list?.map((place: Place) => (
+        {selectedSchedulePlaceList.map((place: Place) => (
           <PlaceCard
             key={place.id}
             place={place}
