@@ -20,7 +20,11 @@ export default function ScheduleScreen(): ReactNode {
   const { session } = useAuth();
   const { uid: planId } = useLocalSearchParams<{ uid: string }>();
 
-  const { data: plan, isLoading } = useQuery({
+  const {
+    data: plan,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ['plan', planId],
     queryFn: () => fetchPlan(planId, session),
   });
@@ -41,6 +45,7 @@ export default function ScheduleScreen(): ReactNode {
       router.back();
       return;
     }
+    refetch();
   };
 
   /**
@@ -56,7 +61,6 @@ export default function ScheduleScreen(): ReactNode {
       throw new Error(e.message);
     });
 
-    LogUtil.log(text, { level: 'info' });
     Toast.info(text);
     initView();
   };

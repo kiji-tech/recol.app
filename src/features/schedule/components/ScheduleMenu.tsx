@@ -6,7 +6,6 @@ import { useRouter } from 'expo-router';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import { Share, View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
-import { usePlan } from '@/src/contexts/PlanContext';
 import dayjs from 'dayjs';
 import { generateShareMessage } from '@/src/features/schedule/libs/generateShareMessage';
 import i18n from '@/src/libs/i18n';
@@ -14,12 +13,16 @@ import i18n from '@/src/libs/i18n';
 export default function ScheduleMenu({ plan }: { plan: Plan }) {
   const router = useRouter();
   const { isDarkMode } = useTheme();
-  const { setEditSchedule } = usePlan();
 
   // === Method ===
   /** プランの編集 */
   const handleEditPress = () => {
-    router.push(`/(modal)/PlanEditor`);
+    router.push({
+      pathname: '/(modal)/PlanEditor',
+      params: {
+        uid: plan.uid,
+      },
+    });
   };
 
   /** スケジュールの追加 */
@@ -29,8 +32,12 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
       from: dayjs().set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
       to: dayjs().add(1, 'hour').set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
     } as Schedule;
-    setEditSchedule(schedule);
-    router.push(`/(scheduleEditor)/ScheduleEditor`);
+    router.push({
+      pathname: '/(scheduleEditor)/ScheduleEditor',
+      params: {
+        uid: schedule.uid,
+      },
+    });
   };
 
   const handleEditTimePress = () => {

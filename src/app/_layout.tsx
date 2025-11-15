@@ -117,7 +117,7 @@ const Layout = () => {
         <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
         <Stack.Screen name="(plan)" options={{ title: '予定表示', headerShown: false }} />
         <Stack.Screen name="(settings)" options={{ title: '設定', headerShown: false }} />
-        <Stack.Screen name="(modal)" options={{ title: '', headerShown: false }} />
+        <Stack.Screen name="(modal)" options={{ title: 'モーダル', headerShown: false }} />
         <Stack.Screen
           name="(scheduleEditor)"
           options={{ title: 'スケジュール編集', headerShown: false }}
