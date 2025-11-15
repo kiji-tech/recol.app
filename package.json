@@ -49,7 +49,7 @@
         "@testing-library/user-event": "^14.6.1",
         "@types/jest": "^30.0.0",
         "@types/react-native-maps": "^0.24.2",
-        "axios": "^1.10.0",
+        "axios": "^1.13.1",
         "chalk": "^5.4.1",
         "dayjs": "^1.11.13",
         "dom-to-image": "^2.6.0",
@@ -105,6 +105,7 @@
         "react-native-vector-icons": "^10.2.0",
         "react-native-view-shot": "~4.0.3",
         "react-native-web": "~0.20.0",
+        "react-query": "^3.39.3",
         "toastify-react-native": "^7.2.0",
         "zod": "^3.25.71"
     },
