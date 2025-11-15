@@ -6,24 +6,32 @@ import { ArticleCard } from '../../features/article/components/ArticleCard';
 import { TodayScheduleList } from '@/src/features/schedule';
 import { useInformation, InformationModal } from '@/src/features/information';
 import RecentPlanList from '@/src/features/plan/components/recentPlan/RecentPlanList';
-import MaskLoading from '@/src/components/MaskLoading';
 import Title from '@/src/components/Title';
 import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { useFocusEffect } from '@react-navigation/native';
-import { usePlanList } from '@/src/features/plan/hooks/usePlanList';
 import i18n from '@/src/libs/i18n';
 import { useQuery } from 'react-query';
-
+import { useAuth } from '@/src/features/auth';
+import { fetchPlanList } from '@/src/features/plan/apis/fetchPlanList';
 export default function Home() {
   // === Member ===
   const router = useRouter();
   const { isDarkMode } = useTheme();
-  const { planList, fetchPlan, planLoading } = usePlanList();
+  const { session } = useAuth();
   const { currentInformation, isModalVisible, handleCloseModal } = useInformation();
 
-  const { data: articles, isLoading: articleLoading } = useQuery({
+  const {
+    data: planList,
+    isLoading: planLoading,
+    refetch: refetchPlanList,
+  } = useQuery({
+    queryKey: ['planList'],
+    queryFn: () => fetchPlanList(session),
+  });
+
+  const { data: articles } = useQuery({
     queryKey: ['articles'],
     queryFn: fetchArticleList,
   });
@@ -38,17 +46,9 @@ export default function Home() {
   // === Effect ===
   useFocusEffect(
     useCallback(() => {
-      const ctrl = new AbortController();
-      fetchPlan(ctrl);
-      return () => {
-        ctrl.abort();
-      };
+      refetchPlanList();
     }, [])
   );
-
-  if (articleLoading) {
-    return <MaskLoading />;
-  }
 
   return (
     <BackgroundView>
@@ -75,14 +75,14 @@ export default function Home() {
             <Title text={i18n.t('SCREEN.HOME.TODAY_SCHEDULE')} />
             {planLoading && <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />}
           </View>
-          <TodayScheduleList planList={planList} />
+          <TodayScheduleList planList={planList ?? []} />
 
           {/* 直近n日のプラン */}
           <View className="w-full flex flex-row justify-start items-center gap-2">
             <Title text={i18n.t('SCREEN.HOME.RECENT_PLAN')} />
             {planLoading && <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />}
           </View>
-          <RecentPlanList planList={planList} />
+          <RecentPlanList planList={planList ?? []} />
 
           {/* 新着・おすすめ・旅行先・グッズ */}
           <Title text={i18n.t('SCREEN.HOME.NEW_ARTICLE')} />
