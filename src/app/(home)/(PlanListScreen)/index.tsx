@@ -14,11 +14,27 @@ import PlanSortModal from '@/src/features/plan/components/PlanSortModal';
 import { PlanSortType, PLAN_SORT_TYPE_STORAGE_KEY } from '@/src/features/plan/types/PlanSortType';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '@/src/libs/i18n';
+import { deletePlan } from '@/src/features/plan';
+import { useMutation } from 'react-query';
+import { useAuth } from '@/src/features/auth';
 
 export default function PlanListScreen() {
   // === Member ===
+  const { session } = useAuth();
   const { planList, fetchPlan, planLoading } = usePlan();
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
+
+  const deletePlanMutation = useMutation({
+    mutationFn: (planId: string) => deletePlan(planId, session),
+    onSuccess: () => {
+      init();
+    },
+    onError: (error) => {
+      if (error && error instanceof Error && error.message) {
+        Toast.warn(error.message);
+      }
+    },
+  });
 
   // === Method ===
   /**
@@ -75,7 +91,10 @@ export default function PlanListScreen() {
       />
       {/* プラン一覧 */}
       <View className="flex flex-col justify-start items-start bg-light-background dark:bg-dark-background rounded-xl">
-        {planList && planList.map((plan: Plan) => <PlanCard key={plan.uid} plan={plan} />)}
+        {planList &&
+          planList.map((plan: Plan) => (
+            <PlanCard key={plan.uid} plan={plan} onDelete={deletePlanMutation.mutate} />
+          ))}
       </View>
       {/* プランソートモーダル */}
       <PlanSortModal
