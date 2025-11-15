@@ -11,10 +11,21 @@ import { fetchScheduleListForNotification } from '@/src/features/schedule';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import i18n from '@/src/libs/i18n';
+import { Toast } from 'toastify-react-native';
+import { useMutation } from 'react-query';
 export default function ScheduleNotification() {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
   const { profile, setProfile, session } = useAuth();
+
+  const updateProfileMutation = useMutation({
+    mutationFn: (profile: Profile) => updateProfile(profile, session),
+    onError: (error) => {
+      if (error && error instanceof Error && error.message) {
+        Toast.error(error.message);
+      }
+    },
+  });
 
   // 通知権限のチェックとエラーハンドリング
   const checkNotificationPermission = async (): Promise<boolean> => {
@@ -74,7 +85,10 @@ export default function ScheduleNotification() {
     return true;
   };
 
-  // スケジュール通知設定の変更
+  /**
+   * スケジュール通知設定の変更
+   * @param value {boolean} スケジュール通知設定の値
+   */
   const handleScheduleNotificationChange = async (value: boolean) => {
     if (!profile) return;
     profile.enabled_schedule_notification = value;
@@ -105,8 +119,7 @@ export default function ScheduleNotification() {
     profile.enabled_schedule_notification = value;
     profile.notification_token = token;
     setProfile(new Profile(profile));
-    await updateProfile(profile, session);
-
+    await updateProfileMutation.mutate(profile);
     // ONになった場合は､今あるスケジュールに対してすべての通知を設定する
     const scheduleList = await fetchScheduleListForNotification(session);
     for (const schedule of scheduleList) {

@@ -14,6 +14,8 @@ import ProfileAvatar from '@/src/features/profile/components/ProfileAvatar';
 import PlanComponent from '@/src/features/plan/components/PlanComponent';
 import Share from 'react-native-share';
 import i18n from '@/src/libs/i18n';
+import { useQuery } from 'react-query';
+import { fetchProfile } from '@/src/features/profile';
 
 // TODO: 将来的にはDB化
 // const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
@@ -23,6 +25,12 @@ export default function Settings() {
   const { logout } = useAuth();
   const { clearStoragePlan } = usePlan();
   const version = Constants.expoConfig?.version || '1.0.0';
+
+  const { user, session } = useAuth();
+  const { data: profile, refetch } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => fetchProfile(session),
+  });
 
   // === チャット関係 ===
   // チャット通知設定の変更
@@ -61,11 +69,7 @@ export default function Settings() {
   // 通知設定の読み込み
   useFocusEffect(
     useCallback(() => {
-      const loadSettings = async () => {
-        // const [chatEnabled] = await Promise.all([AsyncStorage.getItem(CHAT_NOTIFICATION_KEY)]);
-        // setChatNotification(chatEnabled !== 'false');
-      };
-      loadSettings();
+      refetch();
     }, [])
   );
 
@@ -75,7 +79,7 @@ export default function Settings() {
       <DevelopmentBar />
       <ScrollView className="gap-8 flex flex-col" showsVerticalScrollIndicator={false}>
         {/* プロフィールセクション */}
-        <ProfileAvatar />
+        <ProfileAvatar profile={profile!} user={user!} />
 
         {/* アカウント設定 */}
         <View className="mb-4">
@@ -173,7 +177,11 @@ export default function Settings() {
 
         {/* サインアウト */}
         <View className="p-4 mb-4">
-          <Button theme="danger" text={i18n.t('SCREEN.SETTINGS.SIGN_OUT')} onPress={handleSignOut} />
+          <Button
+            theme="danger"
+            text={i18n.t('SCREEN.SETTINGS.SIGN_OUT')}
+            onPress={handleSignOut}
+          />
         </View>
       </ScrollView>
     </BackgroundView>

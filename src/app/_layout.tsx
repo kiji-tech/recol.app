@@ -25,6 +25,7 @@ import { isUpdateRequired, checkVersion as checkVersionApi } from '../features/v
 import { ForceUpdateModal } from '../features/version/components/ForceUpdateModal';
 import Constants from 'expo-constants';
 import ToastManager from 'toastify-react-native';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -39,6 +40,9 @@ SplashScreen.setOptions({
   duration: 1000,
   fade: true,
 });
+
+// === QueryClient ===
+const queryClient = new QueryClient();
 
 const Layout = () => {
   const [ready, setReady] = useState(false);
@@ -113,7 +117,7 @@ const Layout = () => {
         <Stack.Screen name="(home)" options={{ title: 'ホーム', headerShown: false }} />
         <Stack.Screen name="(plan)" options={{ title: '予定表示', headerShown: false }} />
         <Stack.Screen name="(settings)" options={{ title: '設定', headerShown: false }} />
-        <Stack.Screen name="(modal)" options={{ title: '', headerShown: false }} />
+        <Stack.Screen name="(modal)" options={{ title: 'モーダル', headerShown: false }} />
         <Stack.Screen
           name="(scheduleEditor)"
           options={{ title: 'スケジュール編集', headerShown: false }}
@@ -176,20 +180,22 @@ const RouteLayout = () => {
 
   return (
     <PremiumPlanProvider>
-      <AuthProvider>
-        <MenuProvider>
-          <PlanProvider>
-            <LocationProvider>
-              <GestureHandlerRootView style={{ flex: 1 }}>
-                <ThemeProvider>
-                  <Layout />
-                  <ToastManager />
-                </ThemeProvider>
-              </GestureHandlerRootView>
-            </LocationProvider>
-          </PlanProvider>
-        </MenuProvider>
-      </AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <MenuProvider>
+            <PlanProvider>
+              <LocationProvider>
+                <GestureHandlerRootView style={{ flex: 1 }}>
+                  <ThemeProvider>
+                    <Layout />
+                    <ToastManager />
+                  </ThemeProvider>
+                </GestureHandlerRootView>
+              </LocationProvider>
+            </PlanProvider>
+          </MenuProvider>
+        </AuthProvider>
+      </QueryClientProvider>
     </PremiumPlanProvider>
   );
 };

@@ -2,21 +2,25 @@ import React from 'react';
 import { Plan } from '@/src/features/plan';
 import { Schedule } from '@/src/features/schedule';
 import { useRouter } from 'expo-router';
-import { useAuth } from '@/src/features/auth';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
-import { deletePlan } from '@/src/features/plan';
 import i18n from '@/src/libs/i18n';
-export default function PlanCard({ plan }: { plan: Plan }) {
+
+type PlanCardProps = {
+  plan: Plan;
+  onDelete: (planId: string) => void;
+};
+export default function PlanCard({ plan, onDelete }: PlanCardProps) {
   // === Member ===
   const router = useRouter();
-  const { session } = useAuth();
-  const { setPlan, fetchPlan } = usePlan();
+  const { setPlan } = usePlan();
 
   // === Method ===
-  /** プラン選択処理 */
+  /**
+   * プラン選択処理
+   */
   const handleSelectPlan = (plan: Plan) => {
     // スケジュールを取得して設定
     setPlan(plan);
@@ -28,7 +32,10 @@ export default function PlanCard({ plan }: { plan: Plan }) {
     });
   };
 
-  /** プランの削除 */
+  /**
+   * プランの削除
+   * @param plan {Plan} 削除するプラン
+   */
   const handleDeletePlan = (plan: Plan) => {
     Alert.alert(
       i18n.t('COMPONENT.PLAN.DELETE_CONFIRM').replace('#title#', plan.title || ''),
@@ -41,15 +48,7 @@ export default function PlanCard({ plan }: { plan: Plan }) {
         {
           text: i18n.t('COMMON.DELETE'),
           onPress: async () => {
-            deletePlan(plan.uid, session)
-              .then(() => {
-                fetchPlan();
-              })
-              .catch((e) => {
-                if (e && e.message) {
-                  Alert.alert(e.message);
-                }
-              });
+            onDelete(plan.uid);
           },
         },
       ]

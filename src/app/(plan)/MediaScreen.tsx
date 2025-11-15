@@ -1,17 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-  TouchableOpacity,
-  View,
-  Text,
-  Alert,
-  Dimensions,
-  Platform,
-  BackHandler,
-} from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { TouchableOpacity, View, Text, Dimensions, Platform, BackHandler } from 'react-native';
 import { Image } from 'expo-image';
-import { IconButton } from '@/src/components';
-import { router, useFocusEffect } from 'expo-router';
-import { usePlan } from '@/src/contexts/PlanContext';
+import { IconButton, Loading } from '@/src/components';
+import { router, useFocusEffect, useGlobalSearchParams } from 'expo-router';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { FlatList } from 'react-native-gesture-handler';
 import { deletePlanMediaList, fetchPlanMediaList, uploadPlanMediaList } from '@/src/features/media';
@@ -23,39 +14,65 @@ import BackgroundView from '@/src/components/BackgroundView';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import * as ImagePicker from 'expo-image-picker';
 import * as Progress from 'react-native-progress';
+import { useMutation, useQuery } from 'react-query';
+import { Toast } from 'toastify-react-native';
 
 export default function MediaScreen() {
   // === Member ===
-  const [images, setImages] = useState<Media[]>([]);
   const [selectedImages, setSelectedImages] = useState<Media[]>([]);
   const [mode, setMode] = useState<'normal' | 'select'>('normal');
   const [visibleImage, setVisibleImage] = useState<Media | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [uploadedImage, setUploadedImage] = useState<string[]>([]);
   const [addImage, setAddImage] = useState<string[]>([]);
   const { isDarkMode } = useTheme();
-  const { plan } = usePlan();
   const { session } = useAuth();
+  const { uid: planId } = useGlobalSearchParams<{ uid: string }>();
+  const {
+    data: images,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ['images', planId!],
+    queryFn: () => fetchPlanMediaList(planId, session),
+  });
+
+  const imageUploadMutation = useMutation({
+    mutationFn: (images: string[]) => uploadPlanMediaList(planId!, images, session),
+    onSuccess: () => {
+      refetch();
+    },
+    onError: (error) => {
+      LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+    },
+  });
+
+  const imageDeleteMutation = useMutation({
+    mutationFn: (mediaIdList: string[]) => deletePlanMediaList(planId!, mediaIdList, session),
+    onSuccess: () => {
+      setSelectedImages([]);
+      setMode('normal');
+      refetch();
+    },
+    onError: (error) => {
+      if (error && error instanceof Error && error.message) {
+        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+        Toast.warn(error.message);
+      }
+    },
+  });
 
   // === Method ===
-  const fetchImages = useCallback(async () => {
-    if (plan) {
-      fetchPlanMediaList(plan.uid!, session)
-        .then((data) => {
-          setImages(data);
-        })
-        .catch((e) => {
-          if (e && e.message) {
-            Alert.alert(e.message);
-          }
-        });
-    }
-  }, [plan, session]);
-
+  /**
+   * 画像ビューを閉じる
+   */
   const handleCloseImageView = () => {
     setVisibleImage(null);
   };
 
+  /**
+   * 画像を押した場合の処理
+   * @param item {Media} 選択された画像
+   */
   const handlePressImage = (item: Media) => {
     if (mode === 'normal') {
       // ポップアップ（全画面表示）
@@ -79,6 +96,7 @@ export default function MediaScreen() {
 
   /**
    * 画像を長押しした場合 選択モードに切り替える
+   * @param item {Media} 選択された画像
    */
   const handleLongPressImage = (item: Media) => {
     // 選択モード → 削除
@@ -92,7 +110,6 @@ export default function MediaScreen() {
    * 画像を追加・アップロード
    */
   const handleAddImages = async () => {
-    setIsLoading(true);
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
@@ -107,13 +124,13 @@ export default function MediaScreen() {
     });
     if (result.canceled) {
       LogUtil.log('canceled', { level: 'info' });
-      setIsLoading(false);
       return;
     }
-    const images = result.assets.map((a) => a.uri);
-    setAddImage(images);
+    // 選択された画像のURIを取得
+    const addImageList = result.assets.map((a) => a.uri);
+    setAddImage(addImageList);
     setUploadedImage([]);
-    for (const image of images) {
+    for (const image of addImageList) {
       const base64Image = image
         ? await fetch(image)
             .then((response) => response.blob())
@@ -134,64 +151,43 @@ export default function MediaScreen() {
         : null;
       if (base64Image) {
         // データのアップロード
-        await uploadPlanMediaList(plan!.uid!, [base64Image], session)
-          .then(() => {
-            // 画像一覧を更新
-            fetchImages();
-            setUploadedImage((prev) => [...prev, base64Image]);
-          })
-          .catch((e) => {
-            if (e && e.message) {
-              LogUtil.log(`upload image error ${e.message}`, { level: 'error', notify: true });
-            }
-          });
+        await imageUploadMutation.mutate([base64Image]);
+        setUploadedImage((prev) => [...prev, base64Image]);
       }
     }
+    // アップロード完了後､アップロード中の画像リストをクリア
     setUploadedImage([]);
     setAddImage([]);
-    setIsLoading(false);
   };
 
+  /**
+   * 画像を削除
+   */
   const handleDeleteImages = () => {
-    deletePlanMediaList(
-      plan!.uid!,
-      selectedImages.map((item) => item.uid!),
-      session
-    )
-      .then(() => {
-        // 画像一覧を更新
-        fetchImages();
-        setSelectedImages([]);
-        setMode('normal');
-      })
-      .catch((e) => {
-        if (e && e.message) {
-          Alert.alert(e.message);
-        }
-      });
+    imageDeleteMutation.mutate(selectedImages.map((item) => item.uid!));
   };
 
   // === Effect ===
-  useFocusEffect(
-    useCallback(() => {
-      if (plan) {
-        fetchImages();
-      }
-    }, [plan, session])
-  );
 
   /**
    * バックボタンを押した場合は､モーダルを閉じるイベントハンドラを追加
    */
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      router.back();
-      return true;
-    });
-    return () => backHandler.remove();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        router.back();
+        return true;
+      });
+      return () => backHandler.remove();
+    }, [])
+  );
 
   // === Render ===
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   /**  画像が選択された場合 */
   return (
     <BackgroundView>
@@ -199,7 +195,7 @@ export default function MediaScreen() {
       <MediaDetailModal
         visible={visibleImage !== null}
         imageList={
-          images.map(
+          images?.map(
             (item) =>
               `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${item.url}`
           ) || []
@@ -211,7 +207,7 @@ export default function MediaScreen() {
         }
         onClose={handleCloseImageView}
       />
-      {images.length === 0 && (
+      {images?.length === 0 && (
         <View className="flex justify-center items-center h-full">
           <Text className="text-light-text dark:text-dark-text text-xl">
             メディアは登録されていません

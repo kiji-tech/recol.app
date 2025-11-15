@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { useRouter } from 'expo-router';
-import { View, Text, TextInput, Alert, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/src/features/auth';
@@ -9,20 +9,44 @@ import { updateProfile } from '@/src/features/profile';
 import * as ImagePicker from 'expo-image-picker';
 import { Profile } from '@/src/features/profile/types/Profile';
 import i18n from '@/src/libs/i18n';
+import { useMutation, useQuery } from 'react-query';
+import { Toast } from 'toastify-react-native';
+import { fetchProfile } from '@/src/features/profile';
 
 export default function ProfileEditorScreen() {
   // === Member ===
-  const { session, user, profile, setProfile } = useAuth();
   const router = useRouter();
-  const [avatar, setAvatar] = useState<string | null>(
-    profile?.avatar_url
-      ? `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`
-      : null
-  );
+  const { session, user, setProfile } = useAuth();
+  const { data: profile } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => fetchProfile(session),
+  });
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (profile: Profile) => updateProfile(profile, session),
+    onSuccess: () => {
+      router.back();
+    },
+    onError: (error) => {
+      if (error && error instanceof Error && error.message) {
+        Toast.warn(error.message);
+      }
+    },
+  });
   const [displayName, setDisplayName] = useState(profile?.display_name ?? '');
-  const [isLoading, setIsLoading] = useState(false);
+  const avatarUrl = useMemo(
+    () =>
+      profile?.avatar_url
+        ? `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`
+        : null,
+    [profile]
+  );
+  const [avatar, setAvatar] = useState<string | null>(avatarUrl);
 
   // === Method ===
+  /**
+   * 画像選択処理
+   * @returns void
+   */
   const handlePickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -43,12 +67,13 @@ export default function ProfileEditorScreen() {
 
   /**
    * プロフィールを保存する
+   * @returns void
    */
   const handleSave = async () => {
     if (!profile) return;
-    setIsLoading(true);
-    try {
-      const base64Image = avatar
+    let base64Image: string | null = avatarUrl;
+    if (base64Image != avatar) {
+      base64Image = avatar
         ? await fetch(avatar)
             .then((response) => response.blob())
             .then((blob) => {
@@ -63,23 +88,11 @@ export default function ProfileEditorScreen() {
               return null;
             })
         : null;
-      profile.display_name = displayName;
-      profile.avatar_url = base64Image || null;
-      setProfile(new Profile(profile));
-
-      updateProfile(profile, session)
-        .then((p: Profile) => {
-          setProfile(new Profile(p));
-          router.back();
-        })
-        .catch((e) => {
-          if (e && e.message) {
-            Alert.alert(e.message);
-          }
-        });
-    } finally {
-      setIsLoading(false);
     }
+    profile.display_name = displayName;
+    profile.avatar_url = base64Image || null;
+    setProfile(new Profile(profile));
+    mutate(profile);
   };
 
   // === Render ===
