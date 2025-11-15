@@ -1,8 +1,7 @@
-import React, { ReactNode, useCallback, useState } from 'react';
+import React, { ReactNode, useCallback } from 'react';
 import ScheduleComponents from '../../features/schedule/components/ScheduleComponent';
 import { BackgroundView, Header } from '@/src/components';
-import { usePlan } from '@/src/contexts/PlanContext';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Plan, fetchPlan } from '@/src/features/plan';
 import { useFocusEffect } from '@react-navigation/native';
 import { deleteSchedule, Schedule } from '@/src/features/schedule';
@@ -14,12 +13,18 @@ import PlanInformation from '../../features/schedule/components/PlanInformation'
 import ScheduleMenu from '../../features/schedule/components/ScheduleMenu';
 import { Toast } from 'toastify-react-native';
 import i18n from '@/src/libs/i18n';
+import { useQuery } from 'react-query';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
-  const { plan, setPlan, planLoading } = usePlan();
   const { session } = useAuth();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { uid: planId } = useLocalSearchParams<{ uid: string }>();
+
+  const { data: plan, isLoading } = useQuery({
+    queryKey: ['plan', planId],
+    queryFn: () => fetchPlan(planId, session),
+  });
+
   // === Method ===
   /**
    * 初期表示処理
@@ -31,39 +36,11 @@ export default function ScheduleScreen(): ReactNode {
       return;
     }
 
-    if (!plan?.uid) {
+    if (!planId) {
       Toast.warn(i18n.t('SCREEN.SCHEDULE.PLAN_NOT_FOUND'));
       router.back();
       return;
     }
-
-    const ctrl = new AbortController();
-    setIsLoading(true);
-
-    fetchPlan(plan.uid, session, ctrl)
-      .then((data) => {
-        if (!data) {
-          Toast.warn(i18n.t('SCREEN.SCHEDULE.PLAN_NOT_FOUND'));
-        }
-        setPlan({ ...data } as Plan);
-      })
-      .catch((e) => {
-        if (e && e.message.includes('Aborted')) {
-          LogUtil.log('Aborted', { level: 'info' });
-          return;
-        }
-        LogUtil.log(JSON.stringify({ fetchPlan: e }), { level: 'error', notify: true });
-        if (e && e.message) {
-          Toast.warn(i18n.t('SCREEN.SCHEDULE.FETCH_FAILED'));
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-
-    return () => {
-      ctrl.abort();
-    };
   };
 
   /**
@@ -118,8 +95,8 @@ export default function ScheduleScreen(): ReactNode {
             <PlanInformation plan={plan} />
             {/* Schedule */}
             <ScheduleComponents
-              isLoading={planLoading || isLoading}
-              plan={plan}
+              isLoading={isLoading || isLoading}
+              plan={plan || ({ schedule: [] } as unknown as Plan)}
               onDelete={handleDeleteSchedule}
             />
           </>
