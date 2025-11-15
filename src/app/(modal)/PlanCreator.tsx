@@ -10,7 +10,7 @@ import { ApiErrorResponse } from '@/src/features/commons/apiService';
 import { createPlan } from '@/src/features/plan';
 import { Plan } from '@/src/features/plan/types/Plan';
 import { LogUtil } from '@/src/libs/LogUtil';
-import ToastManager, { Toast } from 'toastify-react-native';
+import { Toast } from 'toastify-react-native';
 import i18n from '@/src/libs/i18n';
 
 export default function PlanCreator() {
@@ -107,7 +107,6 @@ export default function PlanCreator() {
           loading={isLoading}
         />
       </View>
-      <ToastManager />
     </BackgroundView>
   );
 }

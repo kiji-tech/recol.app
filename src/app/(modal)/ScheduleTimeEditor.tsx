@@ -15,7 +15,7 @@ import {
   adjustStartAtWhenNormal,
 } from '@/src/features/schedule/libs/scheduleTime';
 import { LogUtil } from '@/src/libs/LogUtil';
-import ToastManager, { Toast } from 'toastify-react-native';
+import { Toast } from 'toastify-react-native';
 import MaskLoading from '@/src/components/MaskLoading';
 import i18n from '@/src/libs/i18n';
 
@@ -193,7 +193,6 @@ export default function ScheduleTimeEditor() {
           />
         </View>
       </BackgroundView>
-      <ToastManager />
     </>
   );
 }
