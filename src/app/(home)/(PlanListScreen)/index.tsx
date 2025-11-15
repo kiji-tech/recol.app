@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { BackgroundView, Header } from '@/src/components';
 import { useFocusEffect } from 'expo-router';
-import { useCallback } from 'react';
 import { View } from 'react-native';
 import { Toast } from 'toastify-react-native';
 import { Plan } from '@/src/features/plan/types/Plan';
@@ -9,31 +8,30 @@ import NotFoundPlanView from '../../../features/plan/components/NotFoundPlanView
 import PlanCard from '../../../features/plan/components/PlanCard';
 import PlanListMenu from '@/src/features/plan/components/PlanListMenu';
 import PlanSortModal from '@/src/features/plan/components/PlanSortModal';
-import {
-  PlanSortType,
-  PLAN_SORT_TYPE_STORAGE_KEY,
-  DEFAULT_PLAN_SORT_TYPE,
-} from '@/src/features/plan/types/PlanSortType';
+import { PlanSortType, PLAN_SORT_TYPE_STORAGE_KEY } from '@/src/features/plan/types/PlanSortType';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '@/src/libs/i18n';
 import { deletePlan } from '@/src/features/plan';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import { useAuth } from '@/src/features/auth';
-import { fetchPlanList } from '@/src/features/plan/apis/fetchPlanList';
+import { usePlanList } from '@/src/features/plan/hooks/usePlanList';
+import { useStoragePlanList } from '@/src/features/plan/hooks/useStoragePlanList';
 
 export default function PlanListScreen() {
   // === Member ===
   const { session } = useAuth();
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
-  const [sortType, setSortType] = useState<PlanSortType>(DEFAULT_PLAN_SORT_TYPE);
+  const { data: storagePlanList } = useStoragePlanList();
   const {
     data: planList,
     isLoading: planLoading,
     refetch: refetchPlanList,
-  } = useQuery({
-    queryKey: ['planList', sortType],
-    queryFn: () => fetchPlanList(session, undefined, sortType),
-  });
+    setSortType,
+  } = usePlanList();
+  const viewPlanList = useMemo<Plan[]>(() => {
+    if (planLoading) return storagePlanList || [];
+    return planList || [];
+  }, [planLoading, planList, storagePlanList]);
 
   /**
    * プランの削除
@@ -57,16 +55,6 @@ export default function PlanListScreen() {
   // === Effect ===
   useFocusEffect(
     useCallback(() => {
-      // ソート条件を取得してstateに設定
-      AsyncStorage.getItem(PLAN_SORT_TYPE_STORAGE_KEY)
-        .then((storedSortType) => {
-          const validSortType: PlanSortType =
-            (storedSortType as PlanSortType) || DEFAULT_PLAN_SORT_TYPE;
-          setSortType(validSortType);
-        })
-        .catch(() => {
-          setSortType(DEFAULT_PLAN_SORT_TYPE);
-        });
       refetchPlanList();
     }, [])
   );
@@ -99,10 +87,9 @@ export default function PlanListScreen() {
       />
       {/* プラン一覧 */}
       <View className="flex flex-col justify-start items-start bg-light-background dark:bg-dark-background rounded-xl">
-        {planList &&
-          planList.map((plan: Plan) => (
-            <PlanCard key={plan.uid} plan={plan} onDelete={deletePlanMutation.mutate} />
-          ))}
+        {viewPlanList.map((plan: Plan) => (
+          <PlanCard key={plan.uid} plan={plan} onDelete={deletePlanMutation.mutate} />
+        ))}
       </View>
       {/* プランソートモーダル */}
       <PlanSortModal
@@ -111,7 +98,7 @@ export default function PlanListScreen() {
         onSave={handleSaveSortType}
       />
       {/* プランがない場合 */}
-      {!planLoading && planList && planList.length === 0 && <NotFoundPlanView />}
+      {!planLoading && storagePlanList?.length === 0 && <NotFoundPlanView />}
     </BackgroundView>
   );
 }

@@ -1,75 +1,53 @@
-import { useCallback, useEffect, useState } from 'react';
 import { fetchPlanList } from '../index';
 import { useAuth } from '../../auth';
 import { LogUtil } from '../../../libs/LogUtil';
 import { Plan } from '../index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useQuery } from 'react-query';
+import { PLAN_SORT_TYPE_STORAGE_KEY } from '../types/PlanSortType';
+import { PlanSortType } from '../types/PlanSortType';
+import { useStoragePlanList } from './useStoragePlanList';
+import { useEffect, useState } from 'react';
+import { DEFAULT_PLAN_SORT_TYPE } from '../types/PlanSortType';
 
-const PLAN_LIST_STORAGE_KEY = '@plan_list';
+export const PLAN_LIST_STORAGE_KEY = '@plan_list';
 
 export const usePlanList = (plan?: Plan | null, setPlan?: (plan: Plan) => void) => {
-  const [planList, setPlanList] = useState<Plan[]>([]);
-  const [planLoading, setPlanLoading] = useState(false);
   const { session } = useAuth();
+  const { setStoragePlan, refetch: refetchStoragePlanList } = useStoragePlanList();
+  const [sortType, setSortType] = useState<PlanSortType>(DEFAULT_PLAN_SORT_TYPE);
+
+  const fetchPlan = async (sortType?: PlanSortType, ctrl?: AbortController) => {
+    const response = await fetchPlanList(session, ctrl, sortType).catch((e) => {
+      LogUtil.log('Failed to fetch plan list.', { level: 'error', error: e });
+      return [];
+    });
+
+    await setStoragePlan(response);
+    refetchStoragePlanList();
+    if (plan && setPlan) {
+      const updatePlan = response.find((p) => p.uid === plan.uid);
+      if (updatePlan) setPlan(updatePlan);
+    }
+    LogUtil.log(JSON.stringify({ response: response.map((p: Plan) => p.title) }), {
+      level: 'info',
+    });
+    return response;
+  };
 
   useEffect(() => {
-    const ctrl = new AbortController();
-    fetchStoragePlan();
-    fetchPlan(ctrl);
-    return () => {
-      ctrl.abort();
+    const sortType = async () => {
+      const savedSortType = await AsyncStorage.getItem(PLAN_SORT_TYPE_STORAGE_KEY);
+      setSortType((savedSortType as PlanSortType) || DEFAULT_PLAN_SORT_TYPE);
     };
-  }, [session]);
-
-  const fetchStoragePlan = async () => {
-    const list = JSON.parse((await AsyncStorage.getItem(PLAN_LIST_STORAGE_KEY)) || '[]');
-    if (list && list.length > 0) {
-      LogUtil.log('Hit! plan storage.', { level: 'info' });
-      setPlanList(list);
-    }
-  };
-
-  const setStoragePlan = async (planList: Plan[]) => {
-    await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(planList));
-  };
-
-  const fetchPlan = useCallback(
-    async (ctrl?: AbortController) => {
-      if (!session) return;
-      setPlanLoading(true);
-      fetchPlanList(session, ctrl)
-        .then(async (response) => {
-          setPlanList([...response]);
-          await setStoragePlan(response);
-          if (plan && setPlan) {
-            const updatePlan = response.find((p) => p.uid === plan.uid);
-            if (updatePlan) setPlan(updatePlan);
-          }
-        })
-        .catch((e) => {
-          if (e && e.message.includes('Aborted')) {
-            LogUtil.log('Aborted', { level: 'info' });
-            return;
-          }
-          LogUtil.log(JSON.stringify({ fetchPlanList: e }), { level: 'error', notify: true });
-          throw e;
-        })
-        .finally(() => {
-          setPlanLoading(false);
-        });
-    },
-    [session, setPlan]
-  );
-
-  const clearStoragePlan = async () => {
-    await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, '[]');
-  };
+    sortType();
+  }, []);
 
   return {
-    planList,
-    setPlanList,
-    planLoading,
-    fetchPlan,
-    clearStoragePlan,
+    ...useQuery({
+      queryKey: ['planList', sortType],
+      queryFn: () => fetchPlan(sortType),
+    }),
+    setSortType,
   };
 };

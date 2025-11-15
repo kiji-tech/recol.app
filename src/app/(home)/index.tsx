@@ -13,23 +13,16 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import { useFocusEffect } from '@react-navigation/native';
 import i18n from '@/src/libs/i18n';
 import { useQuery } from 'react-query';
-import { useAuth } from '@/src/features/auth';
-import { fetchPlanList } from '@/src/features/plan/apis/fetchPlanList';
+import { usePlanList } from '@/src/features/plan/hooks/usePlanList';
+import { useStoragePlanList } from '@/src/features/plan/hooks/useStoragePlanList';
+
 export default function Home() {
   // === Member ===
   const router = useRouter();
   const { isDarkMode } = useTheme();
-  const { session } = useAuth();
   const { currentInformation, isModalVisible, handleCloseModal } = useInformation();
-
-  const {
-    data: planList,
-    isLoading: planLoading,
-    refetch: refetchPlanList,
-  } = useQuery({
-    queryKey: ['planList'],
-    queryFn: () => fetchPlanList(session),
-  });
+  const { isLoading: planLoading, refetch: refetchPlanList } = usePlanList();
+  const { data: storagePlanList } = useStoragePlanList();
 
   const { data: articles } = useQuery({
     queryKey: ['articles'],
@@ -75,14 +68,14 @@ export default function Home() {
             <Title text={i18n.t('SCREEN.HOME.TODAY_SCHEDULE')} />
             {planLoading && <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />}
           </View>
-          <TodayScheduleList planList={planList ?? []} />
+          <TodayScheduleList planList={storagePlanList || []} />
 
           {/* 直近n日のプラン */}
           <View className="w-full flex flex-row justify-start items-center gap-2">
             <Title text={i18n.t('SCREEN.HOME.RECENT_PLAN')} />
             {planLoading && <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />}
           </View>
-          <RecentPlanList planList={planList ?? []} />
+          <RecentPlanList planList={storagePlanList || []} />
 
           {/* 新着・おすすめ・旅行先・グッズ */}
           <Title text={i18n.t('SCREEN.HOME.NEW_ARTICLE')} />
