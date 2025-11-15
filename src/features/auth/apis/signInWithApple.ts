@@ -3,7 +3,6 @@ import { fetchProfile } from '../../profile/apis/fetchProfile';
 import { LogUtil } from '../../../libs/LogUtil';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { Profile } from '../../profile/types/Profile';
-import { Subscription } from '../../payment/types/Subscription';
 import { AuthResult } from '../types/Auth';
 
 /**
@@ -39,7 +38,7 @@ export const signInWithApple = async (): Promise<AuthResult> => {
 
   const session = data.session;
   const user = data.session?.user ?? null;
-  let profile: (Profile & { subscription: Subscription[] }) | null = null;
+  let profile: Profile | null = null;
 
   if (session) {
     try {
