@@ -2,7 +2,6 @@
 export * from './types/Article';
 
 // API
-export { fetchArticle } from './apis/fetchArticle';
 export { fetchArticleList } from './apis/fetchArticleList';
 
 // ライブラリ
