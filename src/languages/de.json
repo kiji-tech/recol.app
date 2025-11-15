@@ -153,7 +153,8 @@
             "PLAN_NOT_FOUND": "Planinformationen konnten nicht abgerufen werden",
             "FETCH_FAILED": "Planinformationen konnten nicht abgerufen werden",
             "CANDIDATE_COUNT": "#count# Kandidaten gefunden",
-            "DELETE_SUCCESS": "wurde gelöscht",
+            "DELETE_CONFIRM": "Zeitplan löschen",
+            "DELETE_SUCCESS": "#title# wurde gelöscht",
             "SAVE_FAILED": "Zeitplan konnte nicht gespeichert werden",
             "ADD_FROM_MAP": "Von Karte hinzufügen",
             "SELECT_CATEGORY": "Kategorie auswählen",
@@ -201,7 +202,9 @@
             "SORT_SCHEDULE_DATE": "Zeitplandatum (Absteigend)",
             "NO_MEMO": "Keine Notiz.",
             "NO_SCHEDULE_TODAY": "Kein Zeitplan heute",
-            "NO_PLAN_RECENT": "Kein Plan in den letzten #days# Tagen"
+            "NO_PLAN_RECENT": "Kein Plan in den letzten #days# Tagen",
+            "DELETE_CONFIRM": "Plan löschen",
+            "DELETE_CONFIRM_MESSAGE": "Einmal gelöscht, kann nicht wiederhergestellt werden. Sind Sie sicher, dass Sie den Plan löschen möchten?"
         },
         "PAYMENT": {
             "FEATURE": "Funktion",

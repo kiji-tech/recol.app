@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { deletePlan } from '@/src/features/plan';
-
+import i18n from '@/src/libs/i18n';
 export default function PlanCard({ plan }: { plan: Plan }) {
   // === Member ===
   const router = useRouter();
@@ -31,15 +31,15 @@ export default function PlanCard({ plan }: { plan: Plan }) {
   /** プランの削除 */
   const handleDeletePlan = (plan: Plan) => {
     Alert.alert(
-      '削除しますか？',
-      '年間プラン消費量は戻りません。\nそれでも削除してもよろしいですか？',
+      i18n.t('COMPONENT.PLAN.DELETE_CONFIRM').replace('#title#', plan.title || ''),
+      i18n.t('COMPONENT.PLAN.DELETE_CONFIRM_MESSAGE'),
       [
         {
-          text: 'キャンセル',
+          text: i18n.t('COMMON.CANCEL'),
           style: 'cancel',
         },
         {
-          text: '削除',
+          text: i18n.t('COMMON.DELETE'),
           onPress: async () => {
             deletePlan(plan.uid, session)
               .then(() => {
@@ -86,7 +86,7 @@ export default function PlanCard({ plan }: { plan: Plan }) {
               </Text>
             ) : (
               <Text className="text-light-text dark:text-dark-text text-sm line-clamp-2 opacity-70">
-                メモがありません
+                {i18n.t('COMPONENT.PLAN.NO_MEMO')}
               </Text>
             )}
           </View>
