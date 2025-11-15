@@ -8,7 +8,7 @@ import { Place, Direction, Route, Step } from '@/src/features/map';
 import { DEFAULT_RADIUS } from '@/src/libs/ConstValue';
 import Map from '@/src/features/map/components/Map';
 import { fetchDirection } from '@/src/features/map/libs/direction';
-import ToastManager, { Toast } from 'toastify-react-native';
+import { Toast } from 'toastify-react-native';
 import { NativeEventSubscription } from 'react-native';
 import { Schedule } from '@/src/features/schedule';
 import dayjs from 'dayjs';
@@ -279,7 +279,6 @@ export default function MapScreen() {
         />
       )}
 
-      <ToastManager />
     </>
   );
 }

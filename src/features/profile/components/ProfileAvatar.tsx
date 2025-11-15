@@ -1,11 +1,14 @@
 import React from 'react';
-import { useAuth } from '@/src/features/auth';
 import { View, Text, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Profile } from '../types/Profile';
+import { User } from '@supabase/supabase-js';
 
-export default function ProfileAvatar() {
-  const { profile, user } = useAuth();
-
+type Props = {
+  profile?: Profile | null;
+  user?: User | null;
+};
+export default function ProfileAvatar({ profile, user }: Props) {
   return (
     <View className="items-center p-6 border-b border-light-border dark:border-dark-border">
       <View className="w-24 h-24 rounded-full overflow-hidden border-2 border-light-border dark:border-dark-border">

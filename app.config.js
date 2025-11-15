@@ -2,7 +2,7 @@ export default {
   scheme: 'recol',
   name: 'Re:CoL',
   slug: 'yuru-tabi',
-  version: '1.5.1',
+  version: '1.5.2',
   deepLinking: true,
   icon: './assets/images/icon.png',
   owner: 'shinji5761',
@@ -10,12 +10,21 @@ export default {
   userInterfaceStyle: 'automatic',
   jsEngine: 'hermes',
   newArchEnabled: false,
+  locales: {
+    ja: './src/languages/ja.json',
+    en: './src/languages/en.json',
+    fr: './src/languages/fr.json',
+    de: './src/languages/de.json',
+  },
   ios: {
     icon: './assets/images/icon.png',
     supportsTablet: true,
     usesAppleSignIn: true,
     bundleIdentifier: 'com.libetech.recol',
     infoPlist: {
+      CFBundleAllowMixedLocalizations: true,
+      CFBundleLocalizations: ['ja', 'en', 'fr', 'de'],
+      CFBundleDevelopmentRegion: 'ja',
       NSCameraUsageDescription: 'カメラを使ってプロフィール画像を設定します',
       NSPhotoLibraryUsageDescription: 'アカウントのアイコン､予定ごとに画像の登録します',
       NSPhotoLibraryAddUsageDescription: 'アカウントのアイコン、予定ごとに画像の登録します',
@@ -29,7 +38,6 @@ export default {
       NSUserTrackingUsageDescription:
         '広告表示の最適化のため、他社アプリとの横断的な計測を許可するか確認します',
       ITSAppUsesNonExemptEncryption: false,
-      CFBundleAllowMixedLocalizations: true,
     },
     userInterfaceStyle: 'automatic',
     deploymentTarget: '15.1',
@@ -57,10 +65,6 @@ export default {
         apiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY ?? '',
       },
     },
-  },
-  locales: {
-    ja: './languages/ja.json',
-    en: './languages/en.json',
   },
   web: {
     favicon: './assets/favicon.png',
@@ -202,15 +206,7 @@ export default {
         enableBase64ShareAndroid: true,
       },
     ],
-    [
-      'expo-localization',
-      {
-        supportedLocales: {
-          ios: ['en', 'ja'],
-          android: ['en', 'ja'],
-        },
-      },
-    ],
+    'expo-localization',
   ],
   experiments: {
     typedRoutes: true,

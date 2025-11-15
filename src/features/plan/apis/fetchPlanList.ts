@@ -1,13 +1,18 @@
 import { apiRequest } from '../../commons/apiService';
 import { Plan } from '../types/Plan';
 import { Session } from '@supabase/supabase-js';
-import { PlanSortType } from '../types/PlanSortType';
-
+import {
+  DEFAULT_PLAN_SORT_TYPE,
+  PLAN_SORT_TYPE_STORAGE_KEY,
+  PlanSortType,
+} from '../types/PlanSortType';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LogUtil } from '../../../libs/LogUtil';
 /**
  * プラン一覧の取得
  * @param {Session | null} session - セッション情報
  * @param {AbortController} ctrl - アボートコントローラー
- * @param {PlanSortType} sortType - ソート条件（オプショナル、デフォルトはcreated_at）
+ * @param {PlanSortType} sortType - ソート条件（オプショナル、提供されない場合はAsyncStorageから読み取る）
  * @return {Promise<Plan[]>} プラン一覧
  */
 export async function fetchPlanList(
@@ -15,11 +20,16 @@ export async function fetchPlanList(
   ctrl?: AbortController,
   sortType?: PlanSortType
 ): Promise<Plan[]> {
+  const validSortType: PlanSortType =
+    sortType ||
+    ((await AsyncStorage.getItem(PLAN_SORT_TYPE_STORAGE_KEY)) as PlanSortType) ||
+    DEFAULT_PLAN_SORT_TYPE;
+  LogUtil.log(JSON.stringify({ validSortType }), { level: 'info' });
   const response = await apiRequest<Plan[]>('/plan/list', {
     method: 'POST',
     session,
     ctrl,
-    body: sortType ? { sortType } : undefined,
+    body: validSortType ? { sortType: validSortType } : undefined,
   });
   return response.data!;
 }

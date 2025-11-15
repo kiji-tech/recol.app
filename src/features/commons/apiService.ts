@@ -19,62 +19,6 @@ const createHeaders = (session: Session | null) => ({
   Authorization: `Bearer ${session?.access_token}`,
 });
 
-/**
- * セッションの有効期限をチェックする
- * @param session {Session | null} チェックするセッション
- * @returns {boolean} セッションが有効な場合true
- */
-const isSessionValid = (session: Session | null): boolean => {
-  if (!session || !session.expires_at) {
-    return false;
-  }
-  // 有効期限の5分前を閾値として、期限切れが近い場合は無効とみなす
-  const expirationTime = session.expires_at * 1000; // 秒をミリ秒に変換
-  const thresholdTime = Date.now() + 5 * 60 * 1000; // 5分前
-  return expirationTime > thresholdTime;
-};
-
-/**
- * 有効なセッションを取得する
- * セッションが期限切れまたは無効な場合はリフレッシュを試みる
- * @param currentSession {Session | null} 現在のセッション
- * @returns {Promise<Session | null>} 有効なセッション
- */
-const getValidSession = async (): Promise<Session | null> => {
-  // 最新のセッションを取得
-  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-
-  if (sessionError) {
-    LogUtil.log(`セッション取得エラー: ${JSON.stringify(sessionError)}`, { level: 'error' });
-    return null;
-  }
-
-  const latestSession = sessionData.session;
-
-  // セッションが存在しない場合はnullを返す
-  if (!latestSession) {
-    return null;
-  }
-
-  // セッションが有効な場合はそのまま返す
-  if (isSessionValid(latestSession)) {
-    return latestSession;
-  }
-
-  // セッションが期限切れの場合はリフレッシュを試みる
-  LogUtil.log('セッションが期限切れのためリフレッシュを試みます', { level: 'info' });
-  const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
-
-  if (refreshError) {
-    LogUtil.log(`セッションリフレッシュエラー: ${JSON.stringify(refreshError)}`, {
-      level: 'error',
-    });
-    return null;
-  }
-
-  return refreshData.session;
-};
-
 export async function apiRequest<T, B = Record<string, unknown>>(
   endpoint: string,
   options: {
@@ -84,19 +28,11 @@ export async function apiRequest<T, B = Record<string, unknown>>(
     ctrl?: AbortController;
   }
 ): Promise<ApiResponse<T>> {
-  const { method, body, ctrl } = options;
-
-  // リクエスト前に有効なセッションを取得
-  const validSession = await getValidSession();
-
-  if (!validSession) {
-    LogUtil.log('有効なセッションが取得できませんでした', { level: 'error' });
-    throw new Error('認証セッションが無効です。再度ログインしてください。');
-  }
+  const { method, body, ctrl, session } = options;
 
   const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     method,
-    headers: createHeaders(validSession),
+    headers: createHeaders(session),
     body: body ? JSON.stringify(body) : undefined,
     signal: ctrl?.signal,
   });

@@ -1,26 +1,33 @@
-import React, { ReactNode, useCallback, useState } from 'react';
+import React, { ReactNode, useCallback } from 'react';
 import ScheduleComponents from '../../features/schedule/components/ScheduleComponent';
 import { BackgroundView, Header } from '@/src/components';
-import { usePlan } from '@/src/contexts/PlanContext';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Plan, fetchPlan } from '@/src/features/plan';
 import { useFocusEffect } from '@react-navigation/native';
 import { deleteSchedule, Schedule } from '@/src/features/schedule';
-
 import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
-import ToastManager, { Toast } from 'toastify-react-native';
-import PlanInformation from '../../features/schedule/components/PlanInformation';
-import ScheduleMenu from '../../features/schedule/components/ScheduleMenu';
 import { ScrollView } from 'react-native-gesture-handler';
 import { BackHandler } from 'react-native';
+import PlanInformation from '../../features/schedule/components/PlanInformation';
+import ScheduleMenu from '../../features/schedule/components/ScheduleMenu';
+import { Toast } from 'toastify-react-native';
 import i18n from '@/src/libs/i18n';
+import { useQuery } from 'react-query';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
-  const { plan, setPlan, planLoading } = usePlan();
   const { session } = useAuth();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { uid: planId } = useLocalSearchParams<{ uid: string }>();
+
+  const {
+    data: plan,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ['plan', planId],
+    queryFn: () => fetchPlan(planId, session),
+  });
 
   // === Method ===
   /**
@@ -33,56 +40,29 @@ export default function ScheduleScreen(): ReactNode {
       return;
     }
 
-    if (!plan?.uid) {
+    if (!planId) {
       Toast.warn(i18n.t('SCREEN.SCHEDULE.PLAN_NOT_FOUND'));
       router.back();
       return;
     }
-
-    const ctrl = new AbortController();
-    setIsLoading(true);
-
-    fetchPlan(plan.uid, session, ctrl)
-      .then((data) => {
-        if (!data) {
-          Toast.warn(i18n.t('SCREEN.SCHEDULE.PLAN_NOT_FOUND'));
-        }
-        setPlan({ ...data } as Plan);
-      })
-      .catch((e) => {
-        if (e && e.message.includes('Aborted')) {
-          LogUtil.log('Aborted', { level: 'info' });
-          return;
-        }
-        LogUtil.log(JSON.stringify({ fetchPlan: e }), { level: 'error', notify: true });
-        if (e && e.message) {
-          Toast.warn(i18n.t('SCREEN.SCHEDULE.FETCH_FAILED'));
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-
-    return () => {
-      ctrl.abort();
-    };
+    refetch();
   };
 
   /**
    * 予定の削除処理
    */
   const handleDeleteSchedule = async (schedule: Schedule) => {
-    deleteSchedule(schedule, session)
-      .then(() => {
-        Toast.success(`${schedule.title} ${i18n.t('SCREEN.SCHEDULE.DELETE_SUCCESS')}`);
-        initView();
-      })
-      .catch((e) => {
-        LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
-        if (e && e.message) {
-          Toast.warn(e.message);
-        }
-      });
+    const text = i18n.t('SCREEN.SCHEDULE.DELETE_SUCCESS').replace('#title#', schedule.title || '');
+    await deleteSchedule(schedule, session).catch((e) => {
+      LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+      if (e && e.message) {
+        Toast.warn(e.message);
+      }
+      throw new Error(e.message);
+    });
+
+    Toast.info(text);
+    initView();
   };
 
   // === Effect ===
@@ -119,14 +99,13 @@ export default function ScheduleScreen(): ReactNode {
             <PlanInformation plan={plan} />
             {/* Schedule */}
             <ScheduleComponents
-              isLoading={planLoading || isLoading}
-              plan={plan}
+              isLoading={isLoading}
+              plan={plan || ({ schedule: [] } as unknown as Plan)}
               onDelete={handleDeleteSchedule}
             />
           </>
         )}
       </ScrollView>
-      <ToastManager />
     </BackgroundView>
   );
 }

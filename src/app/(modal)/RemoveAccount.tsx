@@ -10,6 +10,8 @@ import { useSlackNotification } from '@/src/features/slack/hooks/useSlackNotific
 import { usePremiumPlan } from '@/src/features/auth/hooks/usePremiumPlan';
 import { Linking } from 'react-native';
 import i18n from '@/src/libs/i18n';
+import { useMutation } from 'react-query';
+import { Toast } from 'toastify-react-native';
 
 interface ConsentItem {
   id: string;
@@ -23,7 +25,6 @@ export default function RemoveAccount() {
   const { sendNotification } = useSlackNotification();
   const { theme } = useTheme();
   const { logout, session } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
   const [consentItems, setConsentItems] = useState<ConsentItem[]>([
     {
       id: 'subscription_cancel',
@@ -41,6 +42,34 @@ export default function RemoveAccount() {
       checked: false,
     },
   ]);
+
+  const { mutate, isLoading } = useMutation({
+    mutationFn: () => deleteAccount(session),
+    onSuccess: () => {
+      Alert.alert(
+        i18n.t('SCREEN.ACCOUNT.DELETE_SUCCESS_TITLE'),
+        i18n.t('SCREEN.ACCOUNT.DELETE_SUCCESS_MESSAGE'),
+        [
+          {
+            text: i18n.t('COMMON.OK'),
+            onPress: async () => {
+              await sendNotification({
+                message: `アカウント削除完了: ${session?.user.email}`,
+                type: 'delete-account',
+              });
+              await logout();
+              router.replace('/(auth)/SignIn');
+            },
+          },
+        ]
+      );
+    },
+    onError: (error) => {
+      if (error && error instanceof Error && error.message) {
+        Toast.error(error.message);
+      }
+    },
+  });
 
   const isDarkMode = theme === 'dark';
   const allItemsChecked = consentItems.every((item) => item.checked);
@@ -66,29 +95,13 @@ export default function RemoveAccount() {
           text: i18n.t('COMMON.DELETE'),
           style: 'destructive',
           onPress: async () => {
-            setIsLoading(true);
             try {
-              await deleteAccount(session);
-              Alert.alert(i18n.t('SCREEN.ACCOUNT.DELETE_SUCCESS_TITLE'), i18n.t('SCREEN.ACCOUNT.DELETE_SUCCESS_MESSAGE'), [
-                {
-                  text: i18n.t('COMMON.OK'),
-                  onPress: async () => {
-                    await sendNotification({
-                      message: `アカウント削除完了: ${session?.user.email}`,
-                      type: 'delete-account',
-                    });
-                    await logout();
-                    router.replace('/(auth)/SignIn');
-                  },
-                },
-              ]);
+              mutate();
             } catch (error) {
               Alert.alert(
                 i18n.t('COMMON.ERROR'),
                 error instanceof Error ? error.message : i18n.t('SCREEN.ACCOUNT.DELETE_FAILED')
               );
-            } finally {
-              setIsLoading(false);
             }
           },
         },

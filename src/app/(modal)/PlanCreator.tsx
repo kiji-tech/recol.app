@@ -1,26 +1,34 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Alert } from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Button, Header } from '@/src/components';
 import { BackgroundView } from '@/src/components';
 import { borderColor } from '@/src/themes/ColorUtil';
 import { useAuth } from '@/src/features/auth';
-import { usePlan } from '@/src/contexts/PlanContext';
-import { ApiErrorResponse } from '@/src/features/commons/apiService';
 import { createPlan } from '@/src/features/plan';
 import { Plan } from '@/src/features/plan/types/Plan';
-import { LogUtil } from '@/src/libs/LogUtil';
-import ToastManager, { Toast } from 'toastify-react-native';
+import { Toast } from 'toastify-react-native';
 import i18n from '@/src/libs/i18n';
+import { useMutation } from 'react-query';
 
 export default function PlanCreator() {
   // === Member ===
   const [title, setTitle] = useState<string>('');
   const [memo, setMemo] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { session } = useAuth();
-  const { fetchPlan } = usePlan();
   const router = useRouter();
+
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (newPlan: Plan) => createPlan(newPlan, session),
+    onSuccess: () => {
+      router.back();
+    },
+    onError: (error) => {
+      if (error && error instanceof Error && error.message) {
+        Toast.warn(error.message);
+      }
+    },
+  });
 
   // === Method ===
   const verify = () => {
@@ -30,25 +38,11 @@ export default function PlanCreator() {
     }
     return true;
   };
+
   /** 登録 */
   const handlerSubmit = async () => {
     if (!verify()) return;
-    setIsLoading(true);
-    createPlan({ title, memo } as Plan, session)
-      .then(async () => {
-        await fetchPlan();
-        Toast.success(`${title} ${i18n.t('SCREEN.PLAN.REGISTER_SUCCESS')}`);
-        router.back();
-      })
-      .catch((e: ApiErrorResponse) => {
-        LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
-        if (e && e.message) {
-          Alert.alert(i18n.t('SCREEN.PLAN.REGISTER_FAILED'), e.message);
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    mutate({ title, memo } as Plan);
   };
 
   return (
@@ -107,7 +101,6 @@ export default function PlanCreator() {
           loading={isLoading}
         />
       </View>
-      <ToastManager />
     </BackgroundView>
   );
 }
