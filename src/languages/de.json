@@ -175,7 +175,7 @@
             "SORT_SAVE_FAILED": "Sortierreihenfolge konnte nicht gespeichert werden"
         },
         "MAP": {
-            "SELECT_CATEGORY": "Kategorie auswählen",
+            "SELECT_SCHEDULE": "Kalender auswählen...",
             "NO_RESULT": "Keine Suchergebnisse",
             "NO_SELECTED": "Keine ausgewählten Kandidaten",
             "RESEARCH": "Erneut im Bereich suchen",

@@ -175,7 +175,7 @@
             "SORT_SAVE_FAILED": "並び替えを保存に失敗しました"
         },
         "MAP": {
-            "SELECT_CATEGORY": "カテゴリを選んでください…",
+            "SELECT_SCHEDULE": "スケジュールを選んでください...",
             "NO_RESULT": "検索結果がありません",
             "NO_SELECTED": "候補が選択されていません",
             "RESEARCH": "エリアで再検索する",

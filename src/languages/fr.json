@@ -175,7 +175,7 @@
             "SORT_SAVE_FAILED": "Échec de l'enregistrement de l'ordre de tri"
         },
         "MAP": {
-            "SELECT_CATEGORY": "Sélectionner une catégorie",
+            "SELECT_SCHEDULE": "Sélectionner un calendrier",
             "NO_RESULT": "Aucun résultat de recherche",
             "NO_SELECTED": "Aucun candidat sélectionné",
             "RESEARCH": "Rechercher à nouveau dans la zone",

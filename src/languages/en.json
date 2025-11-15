@@ -175,7 +175,7 @@
             "SORT_SAVE_FAILED": "Failed to save sort order"
         },
         "MAP": {
-            "SELECT_CATEGORY": "Select Category",
+            "SELECT_SCHEDULE": "Select Schedule",
             "NO_RESULT": "No search results",
             "NO_SELECTED": "No selected candidates",
             "RESEARCH": "Re-search in area",

@@ -1,9 +1,10 @@
 import React from 'react';
 import { View } from 'react-native';
-import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { Schedule } from '@/src/features/schedule';
-import BottomSheetHeaderButton from '../BottomSheet/BottomSheetHeaderButton';
 import dayjs from 'dayjs';
+import i18n from '@/src/libs/i18n';
+import RNPickerSelect from 'react-native-picker-select';
+import { useTheme } from '@/src/contexts/ThemeContext';
 
 type Props = {
   scheduleList: Schedule[];
@@ -17,6 +18,8 @@ export default function ScheduleBottomSheetHeader({
   onSelectedSchedule,
 }: Props) {
   // === Member ===
+  const { isDarkMode } = useTheme();
+
   // === Method ===
   /**
    * スケジュールを選択 イベントハンドラ
@@ -31,28 +34,35 @@ export default function ScheduleBottomSheetHeader({
    * @param schedule {Schedule} スケジュール
    * @returns {React.ReactNode} スケジュールヘッダーコンポーネント
    */
-  const renderHeaderItem = (schedule: Schedule) => {
-    if (schedule.place_list.length == 0) return <></>;
-    return (
-      <BottomSheetHeaderButton
-        id={schedule.uid}
-        label={`${dayjs(schedule.from).format('HH:mm')} ~ ${dayjs(schedule.to).format('HH:mm')}  ${schedule.title || 'No Title'}`}
-        selected={selectedSchedule?.uid === schedule.uid}
-        onPress={() => handleSelectSchedule(schedule)}
-      />
-    );
-  };
-
   return (
-    <View className="px-2 py-4">
-      <BottomSheetFlatList
-        className="w-screen"
-        data={scheduleList}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ gap: 4, marginHorizontal: 4 }}
-        renderItem={({ item }) => renderHeaderItem(item)}
+    <View className="m-2 p-2 border border-light-border dark:border-dark-border rounded-xl">
+      {/* セレクタ */}
+      <RNPickerSelect
+        items={scheduleList.map((s) => ({
+          key: s.uid,
+          label: `${dayjs(s.from).format('M/D HH:mm')} ~ ${s.title || 'No Title'}`,
+          value: s.uid,
+        }))}
+        placeholder={{
+          key: 'placeholder',
+          label: i18n.t('SCREEN.MAP.SELECT_SCHEDULE'),
+          value: 'placeholder',
+          color: isDarkMode ? '#5A5A5A' : '#D7D7D7',
+        }}
+        style={{
+          inputIOS: {
+            fontSize: 12,
+          },
+          inputAndroid: {
+            fontSize: 12,
+          },
+        }}
+        value={selectedSchedule?.uid}
+        onValueChange={(value: string) => {
+          handleSelectSchedule(
+            scheduleList.find((schedule) => schedule.uid === value) || scheduleList[0]
+          );
+        }}
       />
     </View>
   );
