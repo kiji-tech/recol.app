@@ -35,7 +35,7 @@ export const checkVersion = async (): Promise<VersionInfo> => {
 
     // エラーの場合は更新不要として扱う
     return {
-      minVersion: '99.0.0',
+      minVersion: '1.0.0',
     };
   }
 };

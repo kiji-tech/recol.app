@@ -9,6 +9,10 @@ import { AuthResult } from '../types/Auth';
  * Googleサインイン
  */
 export const signInWithGoogle = async (): Promise<AuthResult> => {
+  GoogleSignin.configure({
+    // scopes: ['https://www.googleapis.com/auth/drive.readonly'],
+    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '',
+  });
   await GoogleSignin.hasPlayServices();
   const userInfo = await GoogleSignin.signIn();
   LogUtil.log('userInfo: ' + JSON.stringify(userInfo), { level: 'info' });
@@ -20,10 +24,9 @@ export const signInWithGoogle = async (): Promise<AuthResult> => {
     });
     throw new Error('no ID token present!');
   }
-
   const { data, error } = await supabase.auth.signInWithIdToken({
     provider: 'google',
-    token: userInfo?.data?.idToken,
+    token: userInfo.data.idToken,
   });
 
   if (error) {

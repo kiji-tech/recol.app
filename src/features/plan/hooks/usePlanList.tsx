@@ -18,6 +18,7 @@ export const usePlanList = (plan?: Plan | null, setPlan?: (plan: Plan) => void) 
   const [sortType, setSortType] = useState<PlanSortType>(DEFAULT_PLAN_SORT_TYPE);
 
   const fetchPlan = async (sortType?: PlanSortType, ctrl?: AbortController) => {
+    if (!session) return [];
     const response = await fetchPlanList(session, ctrl, sortType).catch((e) => {
       LogUtil.log('Failed to fetch plan list.', { level: 'error', error: e });
       return [];

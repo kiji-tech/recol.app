@@ -92,7 +92,6 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
    */
   const setupOfferings = async () => {
     const offerings: PurchasesOfferings = await Purchases.getOfferings();
-    console.log({ offerings: JSON.stringify(offerings) });
     setPremiumPlanList(offerings.current?.availablePackages || []);
   };
 

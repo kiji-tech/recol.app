@@ -1,6 +1,5 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useAuth } from '@/src/features/auth';
@@ -8,11 +7,6 @@ import { useAuth } from '@/src/features/auth';
 export default function GoogleSignInButton({ disabled }: { disabled: boolean }) {
   const { isDarkMode } = useTheme();
   const { signInWithGoogle } = useAuth();
-
-  GoogleSignin.configure({
-    scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '',
-  });
 
   return (
     <TouchableOpacity
