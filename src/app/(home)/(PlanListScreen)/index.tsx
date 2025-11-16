@@ -15,12 +15,14 @@ import { deletePlan } from '@/src/features/plan';
 import { useMutation } from 'react-query';
 import { useAuth } from '@/src/features/auth';
 import { usePlan } from '@/src/contexts/PlanContext';
+import { sortPlanSchedule } from '@/src/features/plan/libs/sortPlanSchedule';
 
 export default function PlanListScreen() {
   // === Member ===
   const { session } = useAuth();
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
-  const { storagePlanList, planLoading, refetchPlanList, setSortType } = usePlan();
+  const { planList, storagePlanList, planLoading, refetchPlanList, setSortType, sortType } =
+    usePlan();
 
   /**
    * プランの削除
@@ -75,10 +77,9 @@ export default function PlanListScreen() {
       />
       {/* プラン一覧 */}
       <View className="flex flex-col justify-start items-start bg-light-background dark:bg-dark-background rounded-xl">
-        {storagePlanList &&
-          storagePlanList.map((plan: Plan) => {
-            return <PlanCard key={plan.uid} plan={plan} onDelete={deletePlanMutation.mutate} />;
-          })}
+        {sortPlanSchedule(planList || storagePlanList || [], sortType).map((plan: Plan) => {
+          return <PlanCard key={plan.uid} plan={plan} onDelete={deletePlanMutation.mutate} />;
+        })}
       </View>
       {/* プランソートモーダル */}
       <PlanSortModal
