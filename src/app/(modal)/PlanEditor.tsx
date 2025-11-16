@@ -22,6 +22,8 @@ export default function PlanEditor() {
     queryFn: () => fetchPlan(planId, session),
   });
   const [editPlan, setEditPlan] = useState<Plan | null>(plan!);
+  const [title, setTitle] = useState<string>(plan?.title || '');
+  const [memo, setMemo] = useState<string>(plan?.memo || '');
   const mutation = useMutation({
     mutationFn: (newPlan: Plan) => updatePlan(newPlan, session),
     onSuccess: () => {
@@ -37,7 +39,12 @@ export default function PlanEditor() {
   // === Method ===
   /** 登録 */
   const handlerSubmit = async () => {
-    mutation.mutate(editPlan!);
+    console.log('handlerSubmit', title, memo);
+    mutation.mutate({
+      ...editPlan,
+      title,
+      memo,
+    } as Plan);
   };
 
   // Location Permissions
@@ -73,26 +80,26 @@ export default function PlanEditor() {
           {i18n.t('SCREEN.PLAN.TITLE_LABEL')}
         </Text>
         <TextInput
-          value={editPlan?.title || ''}
+          value={title}
           placeholder={i18n.t('SCREEN.PLAN.TITLE_PLACEHOLDER')}
           placeholderTextColor="gray"
           className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
                 ${borderColor} text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background
                 `}
-          onChangeText={(text) => setEditPlan({ ...editPlan, title: text } as Plan)}
+          onChangeText={(text) => setTitle(text)}
         />
         <View className="w-full flex flex-col justify-start items-start">
           <Text className="text-lg font-bold text-light-text dark:text-dark-text">
             {i18n.t('SCREEN.PLAN.MEMO_LABEL')}
           </Text>
           <TextInput
-            value={editPlan?.memo || ''}
+            value={memo}
             multiline={true}
             placeholder={i18n.t('SCREEN.PLAN.MEMO_PLACEHOLDER')}
             placeholderTextColor="gray"
             className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
             border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
-            onChangeText={(text) => setEditPlan({ ...editPlan, memo: text } as Plan)}
+            onChangeText={(text) => setMemo(text)}
             autoCapitalize="none"
           />
         </View>

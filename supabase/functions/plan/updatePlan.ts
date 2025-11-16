@@ -71,16 +71,14 @@ const updatePlanRecord = async (
  */
 const updateScheduleRecord = async (
   supabase: SupabaseClient,
-  scheduleList: (Schedule & { place_list: { id: string }[] })[]
+  scheduleList: Schedule[]
 ): Promise<DatabaseResult<Schedule[]>> => {
   if (!scheduleList || scheduleList.length === 0) return { data: null, error: null };
 
   const updateData = scheduleList.map((schedule) => {
     return {
       ...schedule,
-      place_list: schedule.place_list
-        ? schedule.place_list.map((place: { id: string }) => place.id)
-        : [],
+      place_list: schedule.place_list || [],
     } as Schedule;
   });
 

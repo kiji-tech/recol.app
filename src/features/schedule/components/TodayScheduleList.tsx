@@ -63,13 +63,15 @@ type Props = {
 export default function TodayScheduleList({ planList }: Props) {
   // 直近7日にある予定を取得して表示する
   // === Member ===
-  const { setPlan } = usePlan();
 
   // === Method ===
   const handlePress = (schedule: Schedule) => {
-    const selectedPlan = planList.find((p: Plan) => p.uid === schedule.plan_id!);
-    setPlan(selectedPlan!);
-    router.push('/(plan)/ScheduleScreen');
+    router.push({
+      pathname: '/(plan)/ScheduleScreen',
+      params: {
+        uid: schedule.plan_id!,
+      },
+    });
   };
 
   // === Memo ===

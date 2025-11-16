@@ -171,13 +171,13 @@ export default function MapModal({ isOpen, onClose }: Props) {
 
   // === Effect ===
 
-  /**
-   * バックボタンを押した場合は､モーダルを閉じるイベントハンドラを追加
-   */
   useFocusEffect(
     useCallback(() => {
       // === PlaceListの取得 ===
-      if (!editSchedule || !editSchedule.place_list) return;
+      if (!editSchedule || editSchedule.place_list?.length === 0) {
+        setIsFetchPlaceLoading(false);
+        return;
+      }
       setIsFetchPlaceLoading(true);
       fetchCachePlace(editSchedule.place_list || [], session)
         .then((placeList) => {
@@ -188,6 +188,10 @@ export default function MapModal({ isOpen, onClose }: Props) {
         });
     }, [])
   );
+
+  /**
+   * バックボタンを押した場合は､モーダルを閉じるイベントハンドラを追加
+   */
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', function () {
       LogUtil.log('MapModal hardwareBackPress', { level: 'info' });
@@ -195,7 +199,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
       return true;
     });
     return () => backHandler.remove();
-  }, [selectedSchedulePlaceList]);
+  }, []);
 
   /** 初回ロケーション情報取得処理 */
   useFocusEffect(
@@ -270,6 +274,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
         selected={
           selectedSchedulePlaceList.findIndex((place: Place) => place.id === selectedPlace?.id) >= 0
         }
+        idLoading={isLoading}
         onAdd={handleAdd}
         onRemove={handleRemove}
         onClose={handleCloseDetailPlace}

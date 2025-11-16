@@ -10,10 +10,12 @@ import { FontAwesome5, FontAwesome6, MaterialCommunityIcons } from '@expo/vector
 import { Linking } from 'react-native';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import MediaDetailModal from '@/src/features/media/components/MediaDetailModal';
+import MaskLoading from '@/src/components/MaskLoading';
 type Props = {
   place: Place;
   isEdit?: boolean;
   selected?: boolean;
+  idLoading?: boolean;
   onAdd?: (place: Place) => void;
   onRemove?: (place: Place) => void;
   onDirection?: () => void;
@@ -23,6 +25,7 @@ export default function PlaceBottomSheetBody({
   place,
   isEdit = false,
   selected,
+  idLoading,
   onAdd,
   onRemove,
   onDirection,
@@ -52,6 +55,7 @@ export default function PlaceBottomSheetBody({
       <View className="w-full flex-1 px-4">
         <BottomSheetScrollView className="w-full flex-1">
           <View className="flex flex-col justify-start items-start gap-4 pb-8">
+            {idLoading && <MaskLoading />}
             <View className="flex flex-row justify-between items-start gap-4">
               <Title text={place.displayName.text} />
             </View>

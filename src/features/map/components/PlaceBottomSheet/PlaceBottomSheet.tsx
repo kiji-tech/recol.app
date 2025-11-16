@@ -12,6 +12,7 @@ type Props = {
   selectedPlace: Place;
   isEdit?: boolean;
   selected?: boolean;
+  idLoading?: boolean;
   onAdd?: (place: Place) => void;
   onRemove?: (place: Place) => void;
   onDirection?: () => void;
@@ -22,6 +23,7 @@ export default function PlaceBottomSheet({
   selectedPlace,
   isEdit = false,
   selected = false,
+  idLoading = false,
   onAdd,
   onRemove,
   onDirection,
@@ -48,6 +50,7 @@ export default function PlaceBottomSheet({
           place={selectedPlace}
           isEdit={isEdit}
           selected={selected}
+          idLoading={idLoading}
           onAdd={onAdd}
           onRemove={onRemove}
           onDirection={onDirection}
