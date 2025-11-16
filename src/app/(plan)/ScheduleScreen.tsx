@@ -14,6 +14,7 @@ import ScheduleMenu from '../../features/schedule/components/ScheduleMenu';
 import { Toast } from 'toastify-react-native';
 import i18n from '@/src/libs/i18n';
 import { useQuery } from 'react-query';
+import MaskLoading from '@/src/components/MaskLoading';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
@@ -77,6 +78,7 @@ export default function ScheduleScreen(): ReactNode {
   useFocusEffect(
     useCallback(() => {
       const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        LogUtil.log('ScheduleScreen hardwareBackPress', { level: 'info' });
         router.back();
         return true;
       });
@@ -92,6 +94,7 @@ export default function ScheduleScreen(): ReactNode {
         onBack={() => router.back()}
         rightComponent={plan ? <ScheduleMenu plan={plan} /> : undefined}
       />
+      {isLoading && <MaskLoading />}
       {/* Plan Information */}
       <ScrollView showsVerticalScrollIndicator={false}>
         {plan && (

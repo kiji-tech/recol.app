@@ -19,6 +19,7 @@ import PlaceBottomSheet from '@/src/features/map/components/PlaceBottomSheet/Pla
 import { useAuth } from '@/src/features/auth';
 import { fetchPlan } from '@/src/features/plan';
 import { useQuery } from 'react-query';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 /**
  * 初期表示
@@ -211,6 +212,7 @@ export default function MapScreen() {
    */
   const setupBackPress = () => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      LogUtil.log('MapScreen hardwareBackPress', { level: 'info' });
       router.back();
       return true;
     });

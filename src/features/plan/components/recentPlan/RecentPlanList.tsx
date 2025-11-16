@@ -71,13 +71,13 @@ export default function RecentPlanList({ planList }: Props) {
       </View>
 
       {/* プランリスト */}
-      {planList && planList.length === 0 ? (
+      {!planList || planList.length === 0 ? (
         <Text className="text-light-text dark:text-dark-text text-sm">
           {i18n.t('COMPONENT.PLAN.NO_PLAN_RECENT').replace('#days#', days.toString())}
         </Text>
       ) : (
         <FlatList
-          data={planList?.sort((a: Plan, b: Plan) =>
+          data={planList.sort((a: Plan, b: Plan) =>
             dayjs(a.schedule[0]?.from).diff(dayjs(b.schedule[0]?.from))
           )}
           horizontal={true}

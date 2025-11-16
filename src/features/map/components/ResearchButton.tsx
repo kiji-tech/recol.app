@@ -5,13 +5,14 @@ import { Region } from 'react-native-maps';
 import i18n from '@/src/libs/i18n';
 
 type Props = {
-  centerRegion: Region;
-  currentRegion: Region;
+  centerRegion: Region | null;
+  currentRegion: Region | null;
   radius: number;
   onPress: () => void;
 };
 
 export default function ResearchButton({ centerRegion, currentRegion, radius, onPress }: Props) {
+  if (!centerRegion || !currentRegion) return <></>;
   // ==== Member ====
   const IS_RESEARCHED = true;
   const RESEARCH_TIMER = 5000;
@@ -53,7 +54,7 @@ export default function ResearchButton({ centerRegion, currentRegion, radius, on
   }, [centerRegion, currentRegion]);
 
   // ==== Render ====
-  if (!(isView === IS_RESEARCHED || isResearched === IS_RESEARCHED)) return null;
+  if (!(isView === IS_RESEARCHED || isResearched === IS_RESEARCHED)) return <></>;
 
   return (
     <View className={`w-full absolute ${platform === 'ios' ? 'top-36' : 'top-20'} z-50`}>

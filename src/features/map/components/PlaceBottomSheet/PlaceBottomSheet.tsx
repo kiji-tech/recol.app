@@ -5,6 +5,7 @@ import { Place } from '../../types/Place';
 import PlaceBottomSheetHeader from './PlaceBottomSheetHeader';
 import PlaceBottomSheetBody from './PlaceBottomSheetBody';
 import { BackHandler } from 'react-native';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 type Props = {
   bottomSheetRef: React.RefObject<BottomSheet>;
@@ -32,6 +33,7 @@ export default function PlaceBottomSheet({
    */
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      LogUtil.log('PlaceBottomSheet hardwareBackPress', { level: 'info' });
       onClose();
       return true;
     });

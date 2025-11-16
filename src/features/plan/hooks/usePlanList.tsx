@@ -6,9 +6,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQuery } from 'react-query';
 import { PLAN_SORT_TYPE_STORAGE_KEY } from '../types/PlanSortType';
 import { PlanSortType } from '../types/PlanSortType';
-import { useStoragePlanList } from './useStoragePlanList';
 import { useEffect, useState } from 'react';
 import { DEFAULT_PLAN_SORT_TYPE } from '../types/PlanSortType';
+import { useStoragePlanList } from './useStoragePlanList';
 
 export const PLAN_LIST_STORAGE_KEY = '@plan_list';
 
@@ -19,20 +19,20 @@ export const usePlanList = (plan?: Plan | null, setPlan?: (plan: Plan) => void) 
 
   const fetchPlan = async (sortType?: PlanSortType, ctrl?: AbortController) => {
     if (!session) return [];
+    LogUtil.log('Fetch plan list.', { level: 'info' });
     const response = await fetchPlanList(session, ctrl, sortType).catch((e) => {
       LogUtil.log('Failed to fetch plan list.', { level: 'error', error: e });
       return [];
     });
 
-    await setStoragePlan(response);
+    setStoragePlan(response);
     refetchStoragePlanList();
+
     if (plan && setPlan) {
       const updatePlan = response.find((p) => p.uid === plan.uid);
       if (updatePlan) setPlan(updatePlan);
     }
-    LogUtil.log(JSON.stringify({ response: response.map((p: Plan) => p.title) }), {
-      level: 'info',
-    });
+    console.log('response', JSON.stringify(response.map((p) => p.title)));
     return response;
   };
 
@@ -46,9 +46,10 @@ export const usePlanList = (plan?: Plan | null, setPlan?: (plan: Plan) => void) 
 
   return {
     ...useQuery({
-      queryKey: ['planList', sortType],
+      queryKey: ['planList', session, sortType],
       queryFn: () => fetchPlan(sortType),
     }),
+    sortType,
     setSortType,
   };
 };

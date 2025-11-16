@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import Map from '@/src/features/map/components/Map';
 import { Place } from '@/src/features/map/types/Place';
 import { BackHandler, Platform, View } from 'react-native';
@@ -41,6 +41,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
 
   // 選択したスケジュールの場所リスト
   const [selectedSchedulePlaceList, setSelectedSchedulePlaceList] = useState<Place[]>([]);
+  const [isFetchPlaceLoading, setIsFetchPlaceLoading] = useState(true);
 
   // === Method ===
   /** ロケーション情報設定処理 */
@@ -82,6 +83,11 @@ export default function MapModal({ isOpen, onClose }: Props) {
     },
     [searchPlaceList, selectedSchedulePlaceList]
   );
+
+  /** 選択したスケジュールの場所IDリストを取得 */
+  const getSelectedPlaceIdList = useCallback(() => {
+    return selectedSchedulePlaceList.map((p: Place) => p.id);
+  }, [selectedSchedulePlaceList]);
 
   /** カテゴリ選択 */
   const handleSelectedCategory = (category: MapCategory) => {
@@ -153,16 +159,15 @@ export default function MapModal({ isOpen, onClose }: Props) {
   );
 
   /** モーダルを閉じる */
-  const handleClose = useCallback(() => {
+  const handleClose = (placeList: string[]): undefined => {
     LogUtil.log('handleClose', { level: 'info' });
     const updateSchedule = {
       ...editSchedule,
-      place_list: selectedSchedulePlaceList.map((p: Place) => p.id),
+      place_list: placeList,
     } as Schedule;
-    console.log('updateSchedule', updateSchedule);
     setEditSchedule(updateSchedule);
     onClose();
-  }, [selectedSchedulePlaceList]);
+  };
 
   // === Effect ===
 
@@ -171,26 +176,26 @@ export default function MapModal({ isOpen, onClose }: Props) {
    */
   useFocusEffect(
     useCallback(() => {
-      const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-        handleClose();
-        return true;
-      });
-      return () => backHandler.remove();
+      // === PlaceListの取得 ===
+      if (!editSchedule || !editSchedule.place_list) return;
+      setIsFetchPlaceLoading(true);
+      fetchCachePlace(editSchedule.place_list || [], session)
+        .then((placeList) => {
+          setSelectedSchedulePlaceList(placeList || []);
+        })
+        .finally(() => {
+          setIsFetchPlaceLoading(false);
+        });
     }, [])
   );
-
-  useFocusEffect(
-    useCallback(() => {
-      LogUtil.log('useFocusEffect', { level: 'info' });
-
-      if (!editSchedule || !editSchedule.place_list) return;
-      console.log('editSchedule.place_list', editSchedule.place_list);
-      fetchCachePlace(editSchedule.place_list || [], session).then((placeList) => {
-        console.log('placeList', placeList);
-        setSelectedSchedulePlaceList(placeList || []);
-      });
-    }, [editSchedule, session])
-  );
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', function () {
+      LogUtil.log('MapModal hardwareBackPress', { level: 'info' });
+      handleClose(getSelectedPlaceIdList());
+      return true;
+    });
+    return () => backHandler.remove();
+  }, [selectedSchedulePlaceList]);
 
   /** 初回ロケーション情報取得処理 */
   useFocusEffect(
@@ -239,7 +244,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
 
   // === Render ===
 
-  const mapBottomSheet = useMemo(() => {
+  const mapBottomSheet = useCallback(() => {
     return (
       <MapBottomSheet
         placeList={searchPlaceList}
@@ -256,7 +261,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
     );
   }, [searchPlaceList, selectedPlace, selectedSchedulePlaceList, selectedCategory, isLoading]);
 
-  const placeBottomSheet = useMemo(() => {
+  const placeBottomSheet = useCallback(() => {
     return (
       <PlaceBottomSheet
         bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
@@ -272,18 +277,18 @@ export default function MapModal({ isOpen, onClose }: Props) {
     );
   }, [selectedPlace, selectedSchedulePlaceList]);
 
-  if (!isOpen || !currentRegion) return null;
+  if (!isOpen || isFetchPlaceLoading) return null;
   return (
     <View className="w-full h-full absolute top-0 left-0">
       {/* 検索ヘッダー */}
       <View className={`w-full h-12 absolute z-50 px-2 ${isIOS ? 'top-20' : 'top-4'}`}>
-        <Header onBack={handleClose} onSearch={handleTextSearch} />
+        <Header onBack={() => handleClose(getSelectedPlaceIdList())} onSearch={handleTextSearch} />
       </View>
 
       {/* 再検索 */}
       <ResearchButton
-        centerRegion={region || currentRegion}
-        currentRegion={currentRegion}
+        centerRegion={region || currentRegion || null}
+        currentRegion={currentRegion || null}
         radius={radius}
         onPress={handleResearch}
       />
@@ -304,8 +309,8 @@ export default function MapModal({ isOpen, onClose }: Props) {
       </View>
 
       {/* マップボトムシート */}
-      {!isDetailPlace && mapBottomSheet}
-      {isDetailPlace && selectedPlace && placeBottomSheet}
+      {!isDetailPlace && mapBottomSheet()}
+      {isDetailPlace && selectedPlace && placeBottomSheet()}
     </View>
   );
 }

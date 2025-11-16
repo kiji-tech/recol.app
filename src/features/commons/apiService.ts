@@ -75,7 +75,7 @@ export async function apiRequest<T, B = Record<string, unknown>>(
     }
     throw new Error(`Other API error: ${res.status} ${res.statusText}`);
   }
-  LogUtil.log(`=== apiRequest ${endpoint} ===`);
+  LogUtil.log(`=== completed apiRequest ${endpoint} ===`);
 
   return { data: data, error: null };
 }

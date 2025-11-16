@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import { BackgroundView, Header } from '@/src/components';
 import { useFocusEffect } from 'expo-router';
 import { View } from 'react-native';
@@ -14,24 +14,13 @@ import i18n from '@/src/libs/i18n';
 import { deletePlan } from '@/src/features/plan';
 import { useMutation } from 'react-query';
 import { useAuth } from '@/src/features/auth';
-import { usePlanList } from '@/src/features/plan/hooks/usePlanList';
-import { useStoragePlanList } from '@/src/features/plan/hooks/useStoragePlanList';
+import { usePlan } from '@/src/contexts/PlanContext';
 
 export default function PlanListScreen() {
   // === Member ===
   const { session } = useAuth();
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
-  const { data: storagePlanList } = useStoragePlanList();
-  const {
-    data: planList,
-    isLoading: planLoading,
-    refetch: refetchPlanList,
-    setSortType,
-  } = usePlanList();
-  const viewPlanList = useMemo<Plan[]>(() => {
-    if (planLoading) return storagePlanList || [];
-    return planList || [];
-  }, [planLoading, planList, storagePlanList]);
+  const { storagePlanList, planLoading, refetchPlanList, setSortType } = usePlan();
 
   /**
    * プランの削除
@@ -50,22 +39,7 @@ export default function PlanListScreen() {
     },
   });
 
-  // === Method ===
-
-  // === Effect ===
-  useFocusEffect(
-    useCallback(() => {
-      refetchPlanList();
-    }, [])
-  );
-
-  /**
-   * 並び替えボタン イベントハンドラ
-   */
-  const handleSortPress = () => {
-    setIsSortModalVisible(true);
-  };
-
+  // === Method ===s
   /**
    * ソート条件を保存する
    * @param {PlanSortType} savedSortType - 保存されたソート条件
@@ -79,6 +53,20 @@ export default function PlanListScreen() {
     refetchPlanList();
   };
 
+  /**
+   * 並び替えボタン イベントハンドラ
+   */
+  const handleSortPress = () => {
+    setIsSortModalVisible(true);
+  };
+
+  // === Effect ===
+  useFocusEffect(
+    useCallback(() => {
+      refetchPlanList();
+    }, [])
+  );
+
   return (
     <BackgroundView>
       <Header
@@ -87,9 +75,10 @@ export default function PlanListScreen() {
       />
       {/* プラン一覧 */}
       <View className="flex flex-col justify-start items-start bg-light-background dark:bg-dark-background rounded-xl">
-        {viewPlanList.map((plan: Plan) => (
-          <PlanCard key={plan.uid} plan={plan} onDelete={deletePlanMutation.mutate} />
-        ))}
+        {storagePlanList &&
+          storagePlanList.map((plan: Plan) => {
+            return <PlanCard key={plan.uid} plan={plan} onDelete={deletePlanMutation.mutate} />;
+          })}
       </View>
       {/* プランソートモーダル */}
       <PlanSortModal

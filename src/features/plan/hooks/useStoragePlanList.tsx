@@ -9,13 +9,18 @@ export const useStoragePlanList = () => {
   const fetchStoragePlan = async () => {
     const list = JSON.parse((await AsyncStorage.getItem(PLAN_LIST_STORAGE_KEY)) || '[]');
     if (list && list.length > 0) {
-      LogUtil.log('Hit! plan storage.', { level: 'info' });
+      LogUtil.log('Hit! plan storage => ' + JSON.stringify(list.map((p: Plan) => p.title)), {
+        level: 'info',
+      });
       return list;
     }
     return [];
   };
 
   const setStoragePlan = async (planList: Plan[]) => {
+    LogUtil.log('Set plan storage => ' + JSON.stringify(planList.map((p) => p.title)), {
+      level: 'info',
+    });
     await AsyncStorage.setItem(PLAN_LIST_STORAGE_KEY, JSON.stringify(planList));
   };
 

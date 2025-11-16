@@ -6,6 +6,7 @@ import DirectionBottomSheetHeader from './DirectionBottomSheetHeader';
 import DirectionBottomSheetBody from './DirectionBottomSheetBody';
 import { DirectionMode, Step } from '../../types/Direction';
 import { BackHandler } from 'react-native';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 type Props = {
   bottomSheetRef: React.RefObject<BottomSheet>;
@@ -38,6 +39,7 @@ export default function DirectionBottomSheet({
    */
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      LogUtil.log('DirectionBottomSheet hardwareBackPress', { level: 'info' });
       onClose();
       return true;
     });
