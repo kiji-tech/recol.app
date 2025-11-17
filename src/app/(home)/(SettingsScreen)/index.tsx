@@ -149,11 +149,13 @@ export default function Settings() {
             value={version}
             showArrow={false}
           />
-          <SettingItem
-            icon="bug-outline"
-            title={i18n.t('SCREEN.SETTINGS.TESTER_SETTINGS')}
-            onPress={() => router.push('/(modal)/TesterSettings')}
-          />
+          {profile && (profile.isTester() || profile.isSuperUser() || profile.isAdmin()) && (
+            <SettingItem
+              icon="bug-outline"
+              title={i18n.t('SCREEN.SETTINGS.TESTER_SETTINGS')}
+              onPress={() => router.push('/(modal)/TesterSettings')}
+            />
+          )}
         </View>
 
         {/* その他 */}
