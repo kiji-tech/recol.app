@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
-import { usePlan } from '@/src/contexts/PlanContext';
 import { Plan } from '@/src/features/plan';
 import { Schedule } from '../types/Schedule';
 import { useTheme } from '@/src/contexts/ThemeContext';
