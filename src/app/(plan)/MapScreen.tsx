@@ -25,8 +25,15 @@ export default function MapScreen() {
   const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
 
   const { plan, editSchedule, setEditSchedule } = usePlan();
-  const { region, setRegion, selectedPlace, selectedPlaceList, handleSelectedPlace, radius } =
-    useMap();
+  const {
+    region,
+    setRegion,
+    selectedPlace,
+    selectedPlaceList,
+    handleSelectedPlace,
+    radius,
+    handleSelectedCategory,
+  } = useMap();
 
   const { currentRegion } = useLocation();
 
@@ -168,6 +175,7 @@ export default function MapScreen() {
   useFocusEffect(
     useCallback(() => {
       setupBackPress();
+      handleSelectedCategory('selected');
       setEditSchedule(viewScheduleList[0] || null);
       return () => handleBackPress?.remove();
     }, [])
