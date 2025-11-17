@@ -4,25 +4,21 @@ import { ActivityIndicator, Text, View } from 'react-native';
 import { Place } from '@/src/features/map/types/Place';
 import { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { ScrollResponderMixin } from 'react-native';
-import { MapCategory } from '@/src/features/map/types/MapCategory';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import i18n from '@/src/libs/i18n';
+import { useMap } from '../../hooks/useMap';
 import { isIOS } from 'toastify-react-native/utils/helpers';
+import i18n from '@/src/libs/i18n';
 
 type Props = {
-  placeList: Place[];
-  selectedPlace: Place | null;
-  selectedCategory: MapCategory;
-  isLoading: boolean;
-  onSelect: (place: Place) => void;
+  onSelectedPlace: (place: Place) => void;
 };
 const MapBottomSheetBody = forwardRef(
-  (
-    { placeList, selectedPlace, onSelect, selectedCategory, isLoading }: Props,
-    ref: ForwardedRef<BottomSheetScrollViewMethods>
-  ) => {
+  ({ onSelectedPlace }: Props, ref: ForwardedRef<BottomSheetScrollViewMethods>) => {
     // ==== Member ====
     const { isDarkMode } = useTheme();
+    const { searchPlaceList, isSearchLoading, selectedPlace, selectedPlaceList, selectedCategory } =
+      useMap();
+    console.log({ isSearchLoading });
     const scrollRef = useRef<BottomSheetScrollViewMethods>(null);
     if (ref) {
       useImperativeHandle(ref, () => ({
@@ -49,12 +45,12 @@ const MapBottomSheetBody = forwardRef(
     // ==== Render ====
     return (
       <BottomSheetScrollView className="w-full flex-1" ref={scrollRef}>
-        {isLoading && (
+        {isSearchLoading && (
           <View className="w-full p-8">
             <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />
           </View>
         )}
-        {!isLoading && placeList && placeList.length == 0 && (
+        {!isSearchLoading && searchPlaceList && searchPlaceList.length == 0 && (
           <View className="w-full p-8">
             <Text className="text-center text-light-text dark:text-dark-text">
               {selectedCategory == 'selected'
@@ -63,13 +59,23 @@ const MapBottomSheetBody = forwardRef(
             </Text>
           </View>
         )}
-        {placeList &&
-          placeList.map((place: Place) => (
+        {selectedCategory != 'selected' &&
+          searchPlaceList &&
+          searchPlaceList.map((place: Place) => (
             <PlaceCard
               key={place.id}
               place={place}
               selected={selectedPlace ? selectedPlace.id === place.id : false}
-              onSelect={onSelect}
+              onSelect={() => onSelectedPlace(place)}
+            />
+          ))}
+        {selectedCategory == 'selected' &&
+          selectedPlaceList.map((place: Place) => (
+            <PlaceCard
+              key={place.id}
+              place={place}
+              selected={selectedPlace ? selectedPlace.id === place.id : false}
+              onSelect={() => onSelectedPlace(place)}
             />
           ))}
         {/* iOSの場合、ボトムシートの下部に余白を追加 ここだけモーダルなので余白が必要 */}

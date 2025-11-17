@@ -11,32 +11,27 @@ import { Linking } from 'react-native';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import MediaDetailModal from '@/src/features/media/components/MediaDetailModal';
 import MaskLoading from '@/src/components/MaskLoading';
+import { useMap } from '../../hooks/useMap';
 type Props = {
-  place: Place;
   isEdit?: boolean;
-  selected?: boolean;
-  idLoading?: boolean;
-  onAdd?: (place: Place) => void;
-  onRemove?: (place: Place) => void;
   onDirection?: () => void;
 };
 
-export default function PlaceBottomSheetBody({
-  place,
-  isEdit = false,
-  selected,
-  idLoading,
-  onAdd,
-  onRemove,
-  onDirection,
-}: Props) {
+export default function PlaceBottomSheetBody({ isEdit = false, onDirection }: Props) {
   // === Member ===
   const { isDarkMode } = useTheme();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const {
+    isSearchLoading,
+    selectedPlace,
+    selectedPlaceList,
+    handleAddSelectedPlace,
+    handleRemoveSelectedPlace,
+  } = useMap();
   const [imageModalVisible, setImageModalVisible] = useState(false);
 
   // === Member ===
-  const placePhotos = (place.photos ?? []).filter((photo) => photo.name).slice(0, 5);
+  const placePhotos = (selectedPlace?.photos ?? []).filter((photo) => photo.name).slice(0, 5);
 
   // === Method ===
   /**
@@ -55,39 +50,39 @@ export default function PlaceBottomSheetBody({
       <View className="w-full flex-1 px-4">
         <BottomSheetScrollView className="w-full flex-1">
           <View className="flex flex-col justify-start items-start gap-4 pb-8">
-            {idLoading && <MaskLoading />}
+            {isSearchLoading && <MaskLoading />}
             <View className="flex flex-row justify-between items-start gap-4">
-              <Title text={place.displayName.text} />
+              <Title text={selectedPlace?.displayName.text || ''} />
             </View>
             {/* 写真一覧 */}
             {placePhotos.length > 0 && (
               <ImageScrollView
                 images={placePhotos.map((photo) => ({
                   src: `${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/cache/google-place/photo/${encodeURIComponent(photo.name)}`,
-                  alt: place.displayName.text,
+                  alt: selectedPlace?.displayName.text || '',
                 }))}
                 onPress={(photo) => handleSelectedImage(photo.src)}
               />
             )}
             <View className="flex flex-row justify-between items-center gap-4">
               {/* 評価 */}
-              <RateViewer rating={place.rating} />
+              <RateViewer rating={selectedPlace?.rating || 0} />
               {/* ボタングループ */}
               <View className="flex-1 flex flex-row justify-end items-center gap-4">
-                {place.websiteUri && (
+                {selectedPlace?.websiteUri && (
                   <IconButton
                     icon={
                       <MaterialCommunityIcons
-                        name={place.websiteUri.includes('instagram') ? 'instagram' : 'web'}
+                        name={selectedPlace?.websiteUri.includes('instagram') ? 'instagram' : 'web'}
                         size={18}
                         color={isDarkMode ? 'white' : 'black'}
                       />
                     }
                     theme="theme"
-                    onPress={() => Linking.openURL(place.websiteUri)}
+                    onPress={() => Linking.openURL(selectedPlace?.websiteUri || '')}
                   />
                 )}
-                {place.googleMapsUri && (
+                {selectedPlace?.googleMapsUri && (
                   <IconButton
                     icon={
                       <FontAwesome5
@@ -97,7 +92,7 @@ export default function PlaceBottomSheetBody({
                       />
                     }
                     theme="theme"
-                    onPress={() => Linking.openURL(place.googleMapsUri)}
+                    onPress={() => Linking.openURL(selectedPlace?.googleMapsUri || '')}
                   />
                 )}
                 {onDirection && (
@@ -114,40 +109,48 @@ export default function PlaceBottomSheetBody({
                   />
                 )}
 
-                {onRemove && isEdit && selected && (
-                  <IconButton
-                    icon={
-                      <FontAwesome5 name="trash" size={16} color={isDarkMode ? 'white' : 'black'} />
-                    }
-                    theme="danger"
-                    onPress={() => onRemove(place)}
-                  />
-                )}
-                {onAdd && isEdit && !selected && (
-                  <IconButton
-                    icon={
-                      <FontAwesome6 name="add" size={16} color={isDarkMode ? 'white' : 'black'} />
-                    }
-                    theme="info"
-                    onPress={() => onAdd(place)}
-                  />
-                )}
+                {isEdit &&
+                  selectedPlaceList.findIndex((place: Place) => place.id === selectedPlace?.id) >=
+                    0 && (
+                    <IconButton
+                      icon={
+                        <FontAwesome5
+                          name="trash"
+                          size={16}
+                          color={isDarkMode ? 'white' : 'black'}
+                        />
+                      }
+                      theme="danger"
+                      onPress={() => handleRemoveSelectedPlace(selectedPlace!)}
+                    />
+                  )}
+                {isEdit &&
+                  selectedPlaceList.findIndex((place: Place) => place.id === selectedPlace?.id) ===
+                    -1 && (
+                    <IconButton
+                      icon={
+                        <FontAwesome6 name="add" size={16} color={isDarkMode ? 'white' : 'black'} />
+                      }
+                      theme="info"
+                      onPress={() => handleAddSelectedPlace(selectedPlace!)}
+                    />
+                  )}
               </View>
             </View>
 
             {/* 詳細 */}
             <Text className="text-ellipsis text-light-text dark:text-dark-text text-lg">
-              {place.editorialSummary?.text || ''}
+              {selectedPlace?.editorialSummary?.text || ''}
             </Text>
 
             {/* 営業時間 */}
-            {place.currentOpeningHours && (
+            {selectedPlace?.currentOpeningHours && (
               <Text className="text-xl font-semibold text-light-text dark:text-dark-text">
                 営業時間
               </Text>
             )}
-            {place.currentOpeningHours &&
-              place.currentOpeningHours.weekdayDescriptions.map((weekday) => (
+            {selectedPlace?.currentOpeningHours &&
+              selectedPlace?.currentOpeningHours.weekdayDescriptions.map((weekday: string) => (
                 <Text key={weekday} className="text-nowrap text-light-text dark:text-dark-text">
                   {weekday}
                 </Text>

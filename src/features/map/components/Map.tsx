@@ -7,12 +7,12 @@ import MapView, {
   PROVIDER_GOOGLE,
   Region,
 } from 'react-native-maps';
-import { Place } from '@/src/features/map/types/Place';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { Route } from '../types/Direction';
 import { decodePolyline } from '../libs/direction';
 import { CurrentMarker, DefaultMarker, SelectedMarker } from './Marker';
-
+import { Place } from '../types/Place';
+import { useMap } from '../hooks/useMap';
 /** センターサークル */
 const CenterCircle = ({
   region,
@@ -45,36 +45,34 @@ const CenterCircle = ({
 export default function Map({
   radius,
   region,
-  placeList = [],
-  selectedPlaceList = [],
   isMarker = false,
   isCallout = false,
   isCenterCircle = false,
   routeList = [],
   selectedStepIndex = null,
   isRealTimePosition = false,
-  onRegionChange = () => void 0,
   onSelectedPlace = () => void 0,
+  onRegionChange = () => void 0,
 }: {
   radius: number;
   region: Region | null;
-  placeList?: Place[];
-  selectedPlaceList?: Place[];
   isMarker?: boolean;
   isCallout?: boolean;
   isCenterCircle?: boolean;
   isRealTimePosition?: boolean;
   routeList?: Route[] | null;
   selectedStepIndex?: number | null;
+  onSelectedPlace: (place: Place) => void;
   onRegionChange?: (region: Region) => void;
-  onSelectedPlace?: (place: Place) => void;
 }) {
   // === Member ===
+
   const { isDarkMode } = useTheme();
+  const { searchPlaceList, selectedPlaceList } = useMap();
   const filterPlaceList = useMemo(() => {
-    if (!selectedPlaceList || !placeList) return placeList;
-    return placeList.filter((place) => !selectedPlaceList.some((p) => p.id === place.id));
-  }, [placeList, selectedPlaceList]);
+    if (!selectedPlaceList || !searchPlaceList) return searchPlaceList;
+    return searchPlaceList.filter((place) => !selectedPlaceList.some((p) => p.id === place.id));
+  }, [searchPlaceList, selectedPlaceList]);
 
   // === Method ===
   /** マップ移動 */
