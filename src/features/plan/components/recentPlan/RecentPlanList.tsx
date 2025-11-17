@@ -19,7 +19,7 @@ type Props = {
 export default function RecentPlanList({ planList }: Props) {
   // === Member ===
   const { days, setDays, availableDays } = useRecentPlanDays();
-  const { setPlan } = usePlan();
+  const { setPlanId } = usePlan();
   // === Method ===
   /**
    * プラン選択処理
@@ -27,12 +27,9 @@ export default function RecentPlanList({ planList }: Props) {
    */
   const handlePress = (plan: Plan): void => {
     // スケジュールを取得して設定
-    setPlan(plan);
+    setPlanId(plan.uid);
     router.push({
       pathname: '/(plan)/ScheduleScreen',
-      params: {
-        uid: plan.uid,
-      },
     });
   };
 

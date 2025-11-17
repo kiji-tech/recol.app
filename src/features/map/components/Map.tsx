@@ -12,7 +12,6 @@ import { Route } from '../types/Direction';
 import { decodePolyline } from '../libs/direction';
 import { CurrentMarker, DefaultMarker, SelectedMarker } from './Marker';
 import { Place } from '../types/Place';
-import { useMap } from '../hooks/useMap';
 /** センターサークル */
 const CenterCircle = ({
   region,
@@ -43,6 +42,8 @@ const CenterCircle = ({
  * マップコンポーネント
  */
 export default function Map({
+  selectedPlaceList = [],
+  placeList = [],
   radius,
   region,
   isMarker = false,
@@ -54,6 +55,8 @@ export default function Map({
   onSelectedPlace = () => void 0,
   onRegionChange = () => void 0,
 }: {
+  selectedPlaceList: Place[];
+  placeList: Place[];
   radius: number;
   region: Region | null;
   isMarker?: boolean;
@@ -68,11 +71,10 @@ export default function Map({
   // === Member ===
 
   const { isDarkMode } = useTheme();
-  const { searchPlaceList, selectedPlaceList } = useMap();
   const filterPlaceList = useMemo(() => {
-    if (!selectedPlaceList || !searchPlaceList) return searchPlaceList;
-    return searchPlaceList.filter((place) => !selectedPlaceList.some((p) => p.id === place.id));
-  }, [searchPlaceList, selectedPlaceList]);
+    if (!selectedPlaceList || !placeList) return placeList;
+    return placeList.filter((place) => !selectedPlaceList.some((p) => p.id === place.id));
+  }, [placeList, selectedPlaceList]);
 
   // === Method ===
   /** マップ移動 */

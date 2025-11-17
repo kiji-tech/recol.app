@@ -9,19 +9,19 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 import { generateShareMessage } from '@/src/features/schedule/libs/generateShareMessage';
 import i18n from '@/src/libs/i18n';
+import { usePlan } from '@/src/contexts/PlanContext';
 
 export default function ScheduleMenu({ plan }: { plan: Plan }) {
   const router = useRouter();
+  const { setPlanId, setEditSchedule } = usePlan();
   const { isDarkMode } = useTheme();
 
   // === Method ===
   /** プランの編集 */
   const handleEditPress = () => {
+    setPlanId(plan.uid);
     router.push({
       pathname: '/(modal)/PlanEditor',
-      params: {
-        uid: plan.uid,
-      },
     });
   };
 
@@ -32,12 +32,8 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
       from: dayjs().set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
       to: dayjs().add(1, 'hour').set('minute', 0).format('YYYY-MM-DDTHH:mm:00.000Z'),
     } as Schedule;
-    router.push({
-      pathname: '/(scheduleEditor)/ScheduleEditor',
-      params: {
-        uid: schedule.uid,
-      },
-    });
+    setEditSchedule(schedule);
+    router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
 
   const handleEditTimePress = () => {

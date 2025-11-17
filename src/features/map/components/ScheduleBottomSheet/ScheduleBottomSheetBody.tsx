@@ -6,6 +6,8 @@ import { Schedule } from '@/src/features/schedule';
 import { Place } from '@/src/features/map/types/Place';
 import { ScrollResponderMixin, Text, View } from 'react-native';
 import i18n from '@/src/libs/i18n';
+import { useMap } from '../../hooks/useMap';
+import { Loading } from '@/src/components';
 
 type Props = {
   selectedPlace: Place | null;
@@ -20,6 +22,7 @@ const ScheduleBottomSheetBody = forwardRef(
     ref: ForwardedRef<BottomSheetScrollViewMethods>
   ) => {
     // === Member ===
+    const { isSearchLoading } = useMap();
     const scrollRef = useRef<BottomSheetScrollViewMethods>(null);
     if (ref) {
       useImperativeHandle(ref, () => ({
@@ -41,6 +44,7 @@ const ScheduleBottomSheetBody = forwardRef(
       }));
     }
 
+    if (isSearchLoading) return <Loading />;
     return (
       <BottomSheetScrollView ref={scrollRef} className="w-full flex-1">
         {!selectedSchedule && (

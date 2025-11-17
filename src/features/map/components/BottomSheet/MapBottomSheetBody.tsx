@@ -1,13 +1,13 @@
 import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef } from 'react';
 import PlaceCard from '@/src/features/map/components/Place/PlaceCard';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Place } from '@/src/features/map/types/Place';
 import { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { ScrollResponderMixin } from 'react-native';
-import { useTheme } from '@/src/contexts/ThemeContext';
 import { useMap } from '../../hooks/useMap';
 import { isIOS } from 'toastify-react-native/utils/helpers';
 import i18n from '@/src/libs/i18n';
+import { Loading } from '@/src/components';
 
 type Props = {
   onSelectedPlace: (place: Place) => void;
@@ -15,7 +15,6 @@ type Props = {
 const MapBottomSheetBody = forwardRef(
   ({ onSelectedPlace }: Props, ref: ForwardedRef<BottomSheetScrollViewMethods>) => {
     // ==== Member ====
-    const { isDarkMode } = useTheme();
     const { searchPlaceList, isSearchLoading, selectedPlace, selectedPlaceList, selectedCategory } =
       useMap();
     console.log({ isSearchLoading });
@@ -43,13 +42,9 @@ const MapBottomSheetBody = forwardRef(
     // ==== Method ====
 
     // ==== Render ====
+    if (isSearchLoading) return <Loading />;
     return (
       <BottomSheetScrollView className="w-full flex-1" ref={scrollRef}>
-        {isSearchLoading && (
-          <View className="w-full p-8">
-            <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />
-          </View>
-        )}
         {!isSearchLoading && searchPlaceList && searchPlaceList.length == 0 && (
           <View className="w-full p-8">
             <Text className="text-center text-light-text dark:text-dark-text">

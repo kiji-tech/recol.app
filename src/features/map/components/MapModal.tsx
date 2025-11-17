@@ -118,6 +118,8 @@ export default function MapModal({ isOpen, onClose }: Props) {
       {/* マップ */}
       <View style={{ height: '70%' }} className="w-screen absolute top-0 left-0">
         <Map
+          placeList={searchPlaceList}
+          selectedPlaceList={selectedPlaceList}
           radius={radius}
           region={region || currentRegion}
           isMarker={true}

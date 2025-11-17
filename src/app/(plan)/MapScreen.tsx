@@ -24,6 +24,7 @@ export default function MapScreen() {
   // === Member ===
   const bottomSheetRef = useRef<BottomSheet>(null);
   const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
+
   const { plan, editSchedule, setEditSchedule } = usePlan();
   const { region, setRegion, selectedPlace, selectedPlaceList, handleSelectedPlace, radius } =
     useMap();
@@ -179,6 +180,8 @@ export default function MapScreen() {
     <>
       <View className="w-screen absolute top-0 left-0 h-[70%]">
         <Map
+          placeList={[]}
+          selectedPlaceList={selectedPlaceList}
           radius={radius}
           region={region || currentRegion}
           isMarker={true}

@@ -31,6 +31,7 @@ type MapContextType = {
   setRegion: (region: Region) => void;
   radius: number;
   refetchSearchPlaceList: () => void;
+  isLoadingSelectedPlaceList: boolean;
 };
 
 const MapContext = createContext<MapContextType | null>(null);
@@ -45,6 +46,7 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   const [region, setRegion] = useState<Region | null>(null);
   const { currentRegion } = useLocation();
   const { editSchedule, setEditSchedule } = usePlan();
+  const [isLoadingSelectedPlaceList, setIsLoadingSelectedPlaceList] = useState<boolean>(false);
 
   /** Map上の半径の計算 */
   const radius = useMemo(() => {
@@ -72,29 +74,36 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
     LogUtil.log(`radius: ${radius}`, { level: 'info' });
     LogUtil.log(`isSearchLoading: ${isSearchLoading}`, { level: 'info' });
     // searchNearby or searchPlaceByText
+    let placeList: Place[] = [];
     if (selectedCategory === 'selected') {
       if (editSchedule && editSchedule?.place_list) {
-        return await fetchCachePlace(editSchedule?.place_list || [], session);
-      } else {
-        return [];
+        setIsLoadingSelectedPlaceList(true);
+        placeList = await fetchCachePlace(editSchedule?.place_list || [], session).finally(() => {
+          setIsLoadingSelectedPlaceList(false);
+        });
       }
     }
     if (selectedCategory === 'text') {
-      return await searchPlaceByText(
+      placeList = await searchPlaceByText(
         session,
         region?.latitude || 0,
         region?.longitude || 0,
         searchText,
         radius
       );
+    } else {
+      placeList = await searchNearby(
+        session,
+        region?.latitude || 0,
+        region?.longitude || 0,
+        selectedCategory,
+        radius
+      );
     }
-    return await searchNearby(
-      session,
-      region?.latitude || 0,
-      region?.longitude || 0,
-      selectedCategory,
-      radius
-    );
+    if (placeList.length > 0) {
+      handleSelectedPlace(placeList[0]);
+    }
+    return placeList;
   };
 
   /**
@@ -221,6 +230,7 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
         setRegion,
         radius,
         refetchSearchPlaceList,
+        isLoadingSelectedPlaceList,
       }}
     >
       {children}

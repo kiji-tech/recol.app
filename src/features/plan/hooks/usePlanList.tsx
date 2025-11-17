@@ -1,7 +1,6 @@
 import { fetchPlanList } from '../index';
 import { useAuth } from '../../auth';
 import { LogUtil } from '../../../libs/LogUtil';
-import { Plan } from '../index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQuery } from 'react-query';
 import { PLAN_SORT_TYPE_STORAGE_KEY } from '../types/PlanSortType';
@@ -12,7 +11,7 @@ import { useStoragePlanList } from './useStoragePlanList';
 
 export const PLAN_LIST_STORAGE_KEY = '@plan_list';
 
-export const usePlanList = (plan?: Plan | null, setPlan?: (plan: Plan) => void) => {
+export const usePlanList = (planId?: string | null, setPlanId?: (planId: string) => void) => {
   const { session } = useAuth();
   const { setStoragePlan, refetch: refetchStoragePlanList } = useStoragePlanList();
   const [sortType, setSortType] = useState<PlanSortType>(DEFAULT_PLAN_SORT_TYPE);
@@ -28,9 +27,9 @@ export const usePlanList = (plan?: Plan | null, setPlan?: (plan: Plan) => void) 
     setStoragePlan(response);
     refetchStoragePlanList();
 
-    if (plan && setPlan) {
-      const updatePlan = response.find((p) => p.uid === plan.uid);
-      if (updatePlan) setPlan(updatePlan);
+    if (planId && setPlanId) {
+      const updatePlan = response.find((p) => p.uid === planId);
+      if (updatePlan) setPlanId(updatePlan.uid);
     }
     console.log('response', JSON.stringify(response.map((p) => p.title)));
     return response;

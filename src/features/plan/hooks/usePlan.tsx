@@ -1,14 +1,29 @@
 import { useState } from 'react';
-import { Plan } from '../index';
+import { fetchPlan } from '../index';
 import { Schedule } from '../../schedule';
+import { useQuery } from 'react-query';
+import { useAuth } from '../../auth';
 
 export const usePlan = () => {
-  const [plan, setPlan] = useState<Plan | null>(null);
+  const { session } = useAuth();
   const [editSchedule, setEditSchedule] = useState<Schedule | null>(null);
+  const [planId, setPlanId] = useState<string | null>(null);
+  const {
+    data: plan,
+    refetch: refetchPlan,
+    isLoading: planLoading,
+  } = useQuery({
+    queryKey: ['plan', planId],
+    queryFn: () => fetchPlan(planId as string, session),
+    enabled: !!planId,
+  });
 
   return {
     plan,
-    setPlan,
+    planId,
+    planLoading,
+    refetchPlan,
+    setPlanId,
     editSchedule,
     setEditSchedule,
   };
