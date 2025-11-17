@@ -3,7 +3,6 @@ import { View, Text, Switch, Alert, Linking, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { useAuth } from '@/src/features/auth';
-import { LogUtil } from '@/src/libs/LogUtil';
 import { Profile } from '@/src/features/profile/types/Profile';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { updateProfile } from '@/src/features/profile';
@@ -29,13 +28,10 @@ export default function ScheduleNotification() {
 
   // 通知権限のチェックとエラーハンドリング
   const checkNotificationPermission = async (): Promise<boolean> => {
-    LogUtil.log('Permission check', { level: 'info' });
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
 
     if (existingStatus !== 'granted') {
-      LogUtil.log('Permission Request', { level: 'info' });
       const { status } = await Notifications.requestPermissionsAsync();
-      LogUtil.log(JSON.stringify(status), { level: 'info' });
 
       if (status === 'denied') {
         // 権限が拒否された場合の処理
@@ -97,7 +93,6 @@ export default function ScheduleNotification() {
 
     // スケジュール通知を無効にした場合は､既存のスケジュールを全削除
     if (!value) {
-      LogUtil.log('removeAllScheduleNotification', { level: 'info' });
       await NotificationUtil.removeAllScheduleNotification();
     }
 
@@ -109,7 +104,6 @@ export default function ScheduleNotification() {
       }
     }
     if (!token) {
-      LogUtil.log('トークンを取得する', { level: 'info' });
       const expoToken = await Notifications.getExpoPushTokenAsync({
         projectId: Constants?.expoConfig?.extra?.eas?.projectId,
       });

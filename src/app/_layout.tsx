@@ -27,6 +27,7 @@ import Constants from 'expo-constants';
 import ToastManager from 'toastify-react-native';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { MapProvider } from '@/src/features/map';
+import { LogUtil } from '../libs/LogUtil';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -88,7 +89,7 @@ const Layout = () => {
         setShowForceUpdate(true);
       }
     } catch (error) {
-      console.error('バージョンチェックエラー:', error);
+      LogUtil.log('バージョンチェックエラー', { level: 'warn', error: error as Error });
     }
   }, []);
 
@@ -181,9 +182,9 @@ const RouteLayout = () => {
 
   return (
     <PremiumPlanProvider>
-      <QueryClientProvider client={queryClient}>
-        <LocationProvider>
-          <AuthProvider>
+      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <LocationProvider>
             <MenuProvider>
               <PlanProvider>
                 <MapProvider>
@@ -196,9 +197,9 @@ const RouteLayout = () => {
                 </MapProvider>
               </PlanProvider>
             </MenuProvider>
-          </AuthProvider>
-        </LocationProvider>
-      </QueryClientProvider>
+          </LocationProvider>
+        </QueryClientProvider>
+      </AuthProvider>
     </PremiumPlanProvider>
   );
 };

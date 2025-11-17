@@ -4,6 +4,7 @@ import { Marker, Region } from 'react-native-maps';
 import { useFocusEffect } from 'expo-router';
 import Geolocation from '@react-native-community/geolocation';
 import { useLocation } from '@/src/contexts/LocationContext';
+import { LogUtil } from '@/src/libs/LogUtil';
 /**
  * 現在地のマーカー
  */
@@ -17,7 +18,6 @@ export default function CurrentMarker() {
     useCallback(() => {
       const id = Geolocation.watchPosition(
         (position) => {
-          console.log({ position });
           const { latitude, longitude } = position.coords;
           setWatchRegion((prev) => {
             return {
@@ -26,7 +26,7 @@ export default function CurrentMarker() {
             } as Region;
           });
         },
-        (error) => console.log(error)
+        (error) => LogUtil.log(JSON.stringify({ error }), { level: 'warn' })
       );
       watchIdRef.current = id;
 

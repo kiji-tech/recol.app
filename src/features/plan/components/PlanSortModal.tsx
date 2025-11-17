@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PLAN_SORT_TYPE_STORAGE_KEY } from '../types/PlanSortType';
 import { LogUtil } from '@/src/libs/LogUtil';
 import i18n from '@/src/libs/i18n';
+import { useAuth } from '../../auth/hooks/useAuth';
 
 interface PlanSortModalProps {
   visible: boolean;
@@ -21,7 +22,7 @@ interface PlanSortModalProps {
  */
 export default function PlanSortModal({ visible, onClose, onSave }: PlanSortModalProps) {
   const [selectedSortType, setSelectedSortType] = useState<PlanSortType>(DEFAULT_PLAN_SORT_TYPE);
-
+  const { user } = useAuth();
   /**
    * LocalStorageからソート条件を読み込む
    */
@@ -32,9 +33,10 @@ export default function PlanSortModal({ visible, onClose, onSave }: PlanSortModa
         setSelectedSortType(savedSortType as PlanSortType);
       }
     } catch (error) {
-      LogUtil.log('Failed to load sort type', {
+      LogUtil.log(JSON.stringify({ loadSortTypeError: error }), {
         level: 'error',
-        error: error as Error,
+        notify: true,
+        user,
       });
     }
   };

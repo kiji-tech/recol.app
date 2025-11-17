@@ -6,6 +6,7 @@ import Button from '@/src/components/Button';
 import { Information } from '../types/Information';
 import { LogUtil } from '@/src/libs/LogUtil';
 import i18n from '@/src/libs/i18n';
+import { useAuth } from '../../auth/hooks/useAuth';
 
 interface InformationModalProps {
   information: Information | null;
@@ -21,6 +22,7 @@ interface InformationModalProps {
  */
 export default function InformationModal({ information, visible, onClose }: InformationModalProps) {
   const { isDarkMode } = useTheme();
+  const { user } = useAuth();
 
   /**
    * 詳細ページをブラウザで開く
@@ -28,28 +30,18 @@ export default function InformationModal({ information, visible, onClose }: Info
    */
   const handleOpenDetail = async (detailUrl: string): Promise<void> => {
     try {
-      LogUtil.log('Opening browser for information detail', {
-        level: 'info',
-        additionalInfo: { informationId: information?.id },
-      });
-
       const supported = await Linking.canOpenURL(detailUrl);
 
       if (supported) {
         await Linking.openURL(detailUrl);
-
-        LogUtil.log('Browser opened successfully', {
-          level: 'info',
-          additionalInfo: { informationId: information?.id },
-        });
       } else {
         throw new Error('Invalid URL');
       }
     } catch (error) {
-      LogUtil.log('Failed to open browser', {
+      LogUtil.log(JSON.stringify({ openDetailError: error }), {
         level: 'error',
-        additionalInfo: { informationId: information?.id },
-        error: error as Error,
+        notify: true,
+        user,
       });
 
       // エラーメッセージの統一
@@ -125,7 +117,11 @@ export default function InformationModal({ information, visible, onClose }: Info
             )}
 
             {/* 閉じるボタン */}
-            <Button text={i18n.t('COMPONENT.INFORMATION.CLOSE')} theme="background" onPress={onClose} />
+            <Button
+              text={i18n.t('COMPONENT.INFORMATION.CLOSE')}
+              theme="background"
+              onPress={onClose}
+            />
           </ScrollView>
         </View>
       </View>

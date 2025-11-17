@@ -12,15 +12,14 @@ import { useStoragePlanList } from './useStoragePlanList';
 export const PLAN_LIST_STORAGE_KEY = '@plan_list';
 
 export const usePlanList = (planId?: string | null, setPlanId?: (planId: string) => void) => {
-  const { session } = useAuth();
+  const { session, user } = useAuth();
   const { setStoragePlan, refetch: refetchStoragePlanList } = useStoragePlanList();
   const [sortType, setSortType] = useState<PlanSortType>(DEFAULT_PLAN_SORT_TYPE);
 
   const fetchPlan = async (sortType?: PlanSortType, ctrl?: AbortController) => {
     if (!session) return [];
-    LogUtil.log('Fetch plan list.', { level: 'info' });
     const response = await fetchPlanList(session, ctrl, sortType).catch((e) => {
-      LogUtil.log('Failed to fetch plan list.', { level: 'error', error: e });
+      LogUtil.log(JSON.stringify({ fetchPlanListError: e }), { level: 'error', user });
       return [];
     });
 
@@ -31,7 +30,6 @@ export const usePlanList = (planId?: string | null, setPlanId?: (planId: string)
       const updatePlan = response.find((p) => p.uid === planId);
       if (updatePlan) setPlanId(updatePlan.uid);
     }
-    console.log('response', JSON.stringify(response.map((p) => p.title)));
     return response;
   };
 

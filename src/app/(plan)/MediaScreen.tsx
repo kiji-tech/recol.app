@@ -27,9 +27,8 @@ export default function MediaScreen() {
   const [uploadedImage, setUploadedImage] = useState<string[]>([]);
   const [addImage, setAddImage] = useState<string[]>([]);
   const { isDarkMode } = useTheme();
-  const { session } = useAuth();
+  const { session, user } = useAuth();
   const { planId } = usePlan();
-  console.log('planId', planId);
   const {
     data: images,
     isLoading,
@@ -42,7 +41,7 @@ export default function MediaScreen() {
   const imageUploadMutation = useMutation({
     mutationFn: (images: string[]) => uploadPlanMediaList(planId!, images, session),
     onError: (error) => {
-      LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+      LogUtil.log(JSON.stringify(error), { level: 'error', notify: true, user });
       if (error && error instanceof Error && error.message) {
         Toast.warn(error.message);
       }
@@ -58,7 +57,7 @@ export default function MediaScreen() {
     },
     onError: (error) => {
       if (error && error instanceof Error && error.message) {
-        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true, user });
         Toast.warn(error.message);
       }
     },
@@ -126,7 +125,6 @@ export default function MediaScreen() {
           : undefined,
     });
     if (result.canceled) {
-      LogUtil.log('canceled', { level: 'info' });
       return;
     }
     // 選択された画像のURIを取得
@@ -147,7 +145,11 @@ export default function MediaScreen() {
             })
             .catch((e) => {
               if (e && e.message) {
-                LogUtil.log(`fetch image error ${e.message}`, { level: 'error', notify: true });
+                LogUtil.log(`fetch image error ${e.message}`, {
+                  level: 'error',
+                  notify: true,
+                  user,
+                });
               }
               return null;
             })
@@ -159,7 +161,7 @@ export default function MediaScreen() {
           setUploadedImage((prev) => [...prev, base64Image]);
         } catch (error) {
           // エラーはmutationのonErrorで処理されるため、ここではログのみ
-          LogUtil.log(`Upload failed for image: ${error}`, { level: 'error' });
+          LogUtil.log(`Upload failed for image: ${error}`, { level: 'error', user });
         }
       }
     }
@@ -185,7 +187,6 @@ export default function MediaScreen() {
   useFocusEffect(
     useCallback(() => {
       const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-        LogUtil.log('MediaScreen hardwareBackPress', { level: 'info' });
         router.back();
         return true;
       });

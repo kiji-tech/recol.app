@@ -17,7 +17,7 @@ import { usePlan } from '@/src/contexts/PlanContext';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
-  const { session } = useAuth();
+  const { session, user } = useAuth();
   const { plan, planId, refetchPlan } = usePlan();
 
   // === Method ===
@@ -44,7 +44,11 @@ export default function ScheduleScreen(): ReactNode {
   const handleDeleteSchedule = async (schedule: Schedule) => {
     const text = i18n.t('SCREEN.SCHEDULE.DELETE_SUCCESS').replace('#title#', schedule.title || '');
     await deleteSchedule(schedule, session).catch((e) => {
-      LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+      LogUtil.log(JSON.stringify({ deleteScheduleError: e }), {
+        level: 'error',
+        notify: true,
+        user,
+      });
       if (e && e.message) {
         Toast.warn(e.message);
       }
@@ -68,7 +72,6 @@ export default function ScheduleScreen(): ReactNode {
   useFocusEffect(
     useCallback(() => {
       const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-        LogUtil.log('ScheduleScreen hardwareBackPress', { level: 'info' });
         router.back();
         return true;
       });

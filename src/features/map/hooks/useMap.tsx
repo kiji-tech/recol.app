@@ -38,7 +38,7 @@ const MapContext = createContext<MapContextType | null>(null);
 const DEFAULT_RADIUS = 4200;
 
 const MapProvider = ({ children }: { children: React.ReactNode }) => {
-  const { session } = useAuth();
+  const { session, user } = useAuth();
   const [searchText, setSearchText] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<MapCategory>('selected');
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
@@ -67,12 +67,12 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
    * 検索処理
    */
   const fetchPlaceList = async (): Promise<Place[]> => {
-    LogUtil.log('fetchPlaceList', { level: 'info' });
-    LogUtil.log(`selectedCategory: ${selectedCategory}`, { level: 'info' });
-    LogUtil.log(`region: ${JSON.stringify(region)}`, { level: 'info' });
-    LogUtil.log(`searchText: ${searchText}`, { level: 'info' });
-    LogUtil.log(`radius: ${radius}`, { level: 'info' });
-    LogUtil.log(`isSearchLoading: ${isSearchLoading}`, { level: 'info' });
+    LogUtil.log('fetchPlaceList', { level: 'info', user });
+    LogUtil.log(JSON.stringify({ selectedCategory: selectedCategory }), { level: 'info', user });
+    LogUtil.log(JSON.stringify({ region: region }), { level: 'info', user });
+    LogUtil.log(JSON.stringify({ searchText: searchText }), { level: 'info', user });
+    LogUtil.log(JSON.stringify({ radius: radius }), { level: 'info', user });
+    LogUtil.log(JSON.stringify({ isSearchLoading: isSearchLoading }), { level: 'info', user });
     // searchNearby or searchPlaceByText
     let placeList: Place[] = [];
     if (selectedCategory === 'selected') {
@@ -83,7 +83,7 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
         });
       }
     }
-    if (selectedCategory === 'text') {
+    else if (selectedCategory === 'text') {
       placeList = await searchPlaceByText(
         session,
         region?.latitude || 0,
@@ -127,7 +127,6 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
    * @returns {void}
    */
   const handleSelectedCategory = (category: MapCategory) => {
-    LogUtil.log(`handleSelectedCategory: ${category}`, { level: 'info' });
     setSelectedCategory(category);
   };
   /**
@@ -136,7 +135,6 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
    * @returns {void}
    */
   const handleSelectedPlace = (place: Place) => {
-    LogUtil.log('handleSelectedPlace', { level: 'info' });
     setRegion((prev) => {
       return {
         ...(prev || {}),
@@ -150,7 +148,6 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   /** スケジュールに対する場所の追加 */
   const handleAddSelectedPlace = useCallback(
     (place: Place) => {
-      LogUtil.log('handleAddSelectedPlace', { level: 'info' });
       setSelectedPlaceList((prev) => [...prev, place]);
       setEditSchedule({
         ...editSchedule,
@@ -162,7 +159,6 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
 
   /** スケジュールに対する場所の削除 */
   const handleRemoveSelectedPlace = (place: Place) => {
-    LogUtil.log('handleRemoveSelectedPlace', { level: 'info' });
     setSelectedPlaceList((prev) => prev.filter((p) => p.id !== place.id));
     setEditSchedule({
       ...editSchedule,

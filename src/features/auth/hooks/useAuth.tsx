@@ -32,7 +32,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // delete_flagチェック関数
   const checkDeleteFlag = async () => {
     if (profile && profile.delete_flag) {
-      LogUtil.log('User account has delete_flag set to true, forcing logout', { level: 'info' });
       try {
         await logout();
         setSession(null);
@@ -48,8 +47,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 const contactUrl = process.env.EXPO_PUBLIC_CONTACT_PAGE_URL;
                 if (contactUrl) {
                   CommonUtil.openBrowser(contactUrl).catch((error) => {
-                    LogUtil.log(`Error opening contact page: ${JSON.stringify(error)}`, {
+                    LogUtil.log(JSON.stringify({ openContactPageError: error }), {
                       level: 'error',
+                      user,
                     });
                   });
                 }
@@ -59,7 +59,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           ]
         );
       } catch (error) {
-        LogUtil.log(`Error during forced logout: ${JSON.stringify(error)}`, { level: 'error' });
+        LogUtil.log(JSON.stringify({ checkDeleteFlagError: error }), {
+          level: 'error',
+          notify: true,
+          user,
+        });
       }
     }
   };
@@ -73,6 +77,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(result.user);
       setProfile(result.profile);
     } catch (error) {
+      LogUtil.log(JSON.stringify({ loginError: error }), {
+        level: 'error',
+        notify: true,
+        user,
+      });
       throw error;
     } finally {
       setLoading(false);
@@ -88,6 +97,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(result.user);
       setProfile(result.profile);
     } catch (error) {
+      LogUtil.log(JSON.stringify({ signupError: error }), {
+        level: 'error',
+        notify: true,
+        user,
+      });
       throw error;
     } finally {
       setLoading(false);
@@ -100,6 +114,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await resetPassword(email);
     } catch (error) {
+      LogUtil.log(JSON.stringify({ resetPasswordError: error }), {
+        level: 'error',
+        notify: true,
+        user,
+      });
       throw error;
     } finally {
       setLoading(false);
@@ -116,6 +135,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setSession({ ...session, user: updatedUser });
       }
     } catch (error) {
+      LogUtil.log(JSON.stringify({ updateUserPasswordError: error }), {
+        level: 'error',
+        notify: true,
+        user,
+      });
       throw error;
     } finally {
       setLoading(false);
@@ -131,6 +155,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(null);
       setProfile(null);
     } catch (error) {
+      LogUtil.log(JSON.stringify({ logoutError: error }), {
+        level: 'error',
+        notify: true,
+        user,
+      });
       throw error;
     } finally {
       setLoading(false);
@@ -147,7 +176,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       router.navigate('/(home)');
     } catch (error: unknown) {
       if (error instanceof Error) {
-        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+        LogUtil.log(JSON.stringify({ signInWithGoogleError: error }), {
+          level: 'error',
+          notify: true,
+          user,
+        });
       }
       if (typeof error === 'object' && error !== null && 'code' in error) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -173,7 +206,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       router.navigate('/(home)');
     } catch (error: unknown) {
       if (error instanceof Error) {
-        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+        LogUtil.log(JSON.stringify({ signInWithAppleError: error }), {
+          level: 'error',
+          notify: true,
+          user,
+        });
       }
       if (typeof error === 'object' && error !== null && 'code' in error) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -192,13 +229,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   /** プロフィール取得 */
   const getProfileHandler = async () => {
     if (!session || !customerInfo) return;
-    LogUtil.log('getProfileHandler', { level: 'info' });
     try {
       const profileData = await syncPremiumPlan(isPremium, endAt, session);
       setProfile(profileData);
     } catch (e) {
-      LogUtil.log('getProfileHandler error', { level: 'error' });
-      LogUtil.log(JSON.stringify(e), { level: 'error' });
+      LogUtil.log(JSON.stringify({ getProfileHandlerError: e }), {
+        level: 'error',
+        notify: true,
+        user,
+      });
       setProfile(null);
     }
   };
@@ -213,14 +252,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
 
       if (sessionError) {
-        LogUtil.log(`セッション再検証エラー: ${JSON.stringify(sessionError)}`, { level: 'error' });
+        LogUtil.log(JSON.stringify({ revalidateSessionError: sessionError }), {
+          level: 'error',
+          notify: true,
+          user,
+        });
         return;
       }
 
       const latestSession = sessionData.session;
 
       if (!latestSession) {
-        LogUtil.log('セッションが存在しません', { level: 'info' });
+        LogUtil.log(JSON.stringify({ revalidateSessionError: 'セッションが存在しません' }), {
+          level: 'error',
+          notify: true,
+          user,
+        });
         setSession(null);
         setUser(null);
         setProfile(null);
@@ -233,12 +280,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       // セッションが期限切れまたは期限切れが近い場合はリフレッシュ
       if (!expirationTime || expirationTime <= thresholdTime) {
-        LogUtil.log('セッションが期限切れのためリフレッシュを試みます', { level: 'info' });
         const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
 
         if (refreshError) {
-          LogUtil.log(`セッションリフレッシュエラー: ${JSON.stringify(refreshError)}`, {
+          LogUtil.log(JSON.stringify({ revalidateSessionError: refreshError }), {
             level: 'error',
+            user,
           });
           // リフレッシュに失敗した場合はセッションをクリア
           setSession(null);
@@ -272,8 +319,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(latestSession.user);
       }
     } catch (error) {
-      LogUtil.log(`セッション再検証中にエラーが発生しました: ${JSON.stringify(error)}`, {
+      LogUtil.log(JSON.stringify({ revalidateSessionError: error }), {
         level: 'error',
+        notify: true,
+        user,
       });
     }
   }, []);
@@ -302,7 +351,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // 認証状態の変化を監視
     const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      LogUtil.log({ _event }, { level: 'info' });
       if (_event == 'PASSWORD_RECOVERY') {
         router.navigate('/(auth)/ResetPassword');
       }
@@ -337,9 +385,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
       if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-        LogUtil.log('アプリがフォアグラウンドに復帰しました。セッションを再検証します', {
-          level: 'info',
-        });
         revalidateSession();
       }
       appState.current = nextAppState;

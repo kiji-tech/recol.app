@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, useRef } from 'react';
 import { Information } from '../types/Information';
 import { fetchInformationListPaginated } from '../apis/fetchInformationListPaginated';
 import { LogUtil } from '../../../libs/LogUtil';
+import { useAuth } from '../../auth/hooks/useAuth';
 
 const LIMIT = process.env.EXPO_PUBLIC_INFORMATION_LIST_LIMIT
   ? parseInt(process.env.EXPO_PUBLIC_INFORMATION_LIST_LIMIT)
@@ -18,7 +19,7 @@ export const useInformationList = () => {
   const [error, setError] = useState<Error | null>(null);
   const [totalCount, setTotalCount] = useState<number>(0);
   const informationListRef = useRef<Information[]>([]);
-
+  const { user } = useAuth();
   /**
    * お知らせ一覧を初期取得
    */
@@ -34,9 +35,10 @@ export const useInformationList = () => {
     } catch (err) {
       const error = err instanceof Error ? err : new Error('Failed to fetch information list');
       setError(error);
-      LogUtil.log('Failed to fetch initial information list', {
+      LogUtil.log(JSON.stringify({ fetchInitialInformationListError: error }), {
         level: 'error',
-        error,
+        notify: true,
+        user,
       });
     } finally {
       setLoading(false);
@@ -72,9 +74,10 @@ export const useInformationList = () => {
     } catch (err) {
       const error = err instanceof Error ? err : new Error('Failed to fetch more information list');
       setError(error);
-      LogUtil.log('Failed to fetch more information list', {
+      LogUtil.log(JSON.stringify({ fetchMoreInformationListError: error }), {
         level: 'error',
-        error,
+        notify: true,
+        user,
       });
     } finally {
       setLoadingMore(false);

@@ -27,14 +27,14 @@ export const signInWithApple = async (): Promise<AuthResult> => {
   });
 
   if (error) {
-    LogUtil.log('signInWithApple error: ' + JSON.stringify(error), {
+    LogUtil.log(JSON.stringify({ signInWithAppleError: error }), {
       level: 'error',
       notify: true,
     });
     throw error;
   }
 
-  LogUtil.log('signInWithApple data: ' + JSON.stringify(data), { level: 'info' });
+  LogUtil.log(JSON.stringify({ signInWithAppleData: data }), { level: 'info' });
 
   const session = data.session;
   const user = data.session?.user ?? null;

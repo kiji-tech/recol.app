@@ -3,6 +3,7 @@ import { Information } from '../types/Information';
 import { fetchInformationList } from '../apis/fetchInformationList';
 import { LogUtil } from '../../../libs/LogUtil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../../auth/hooks/useAuth';
 
 const INFORMATION_VIEWED_IDS_KEY = '@information_viewed_ids';
 
@@ -10,6 +11,7 @@ const INFORMATION_VIEWED_IDS_KEY = '@information_viewed_ids';
  * お知らせ管理用のカスタムフック
  */
 export const useInformation = () => {
+  const { user } = useAuth();
   const [informationList, setInformationList] = useState<Information[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
@@ -27,9 +29,10 @@ export const useInformation = () => {
       }
       return [];
     } catch (error) {
-      LogUtil.log('Failed to get viewed information IDs', {
+      LogUtil.log(JSON.stringify({ getViewedIdListError: error }), {
         level: 'error',
-        error: error as Error,
+        notify: true,
+        user,
       });
       return [];
     }
@@ -43,9 +46,10 @@ export const useInformation = () => {
     try {
       await AsyncStorage.setItem(INFORMATION_VIEWED_IDS_KEY, JSON.stringify(viewedIdList));
     } catch (error) {
-      LogUtil.log('Failed to save viewed information IDs', {
+      LogUtil.log(JSON.stringify({ setViewedIdListError: error }), {
         level: 'error',
-        error: error as Error,
+        notify: true,
+        user,
       });
     }
   };
@@ -112,9 +116,10 @@ export const useInformation = () => {
         setIsModalVisible(true);
       }
     } catch (error) {
-      LogUtil.log('Failed to fetch informations', {
+      LogUtil.log(JSON.stringify({ fetchInformationsError: error }), {
         level: 'error',
-        error: error as Error,
+        notify: true,
+        user,
       });
     } finally {
       setLoading(false);
@@ -170,4 +175,3 @@ export const useInformation = () => {
     fetchInformations,
   };
 };
- 
