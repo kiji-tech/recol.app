@@ -10,13 +10,16 @@ import { PlanSortType } from '../features/plan/types/PlanSortType';
 type PlanContextType = {
   planList: Plan[] | undefined;
   storagePlanList: Plan[] | undefined;
-  plan: Plan | null;
-  setPlan: (plan: Plan) => void;
+  plan: Plan | undefined;
+  planId: string | null;
+  setPlanId: (planId: string) => void;
   setStoragePlan: (planList: Plan[]) => Promise<void>;
   editSchedule: Schedule | null;
   setEditSchedule: (schedule: Schedule) => void;
   planLoading: boolean;
+  planListLoading: boolean;
   clearStoragePlan: () => Promise<void>;
+  refetchPlan: () => void;
   refetchPlanList: () => void;
   refetchStoragePlanList: () => void;
   sortType: PlanSortType;
@@ -26,15 +29,19 @@ type PlanContextType = {
 const PlanContext = createContext<PlanContextType | null>(null);
 
 const PlanProvider = ({ children }: { children: React.ReactNode }) => {
-  const { plan, setPlan, editSchedule, setEditSchedule } = usePlanHook();
+  // === Plan ===
+  const { plan, planId, setPlanId, editSchedule, setEditSchedule, refetchPlan, planLoading } =
+    usePlanHook();
 
+  // === Plan List ===
   const {
     data: planList,
-    isLoading: planLoading,
+    isLoading: planListLoading,
     refetch: refetchPlanList,
     sortType,
     setSortType,
-  } = usePlanList(plan, setPlan);
+  } = usePlanList(planId, setPlanId);
+  // === Storage Plan List ===
   const {
     data: storagePlanList,
     refetch: refetchStoragePlanList,
@@ -48,11 +55,14 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
         planList,
         storagePlanList,
         plan,
-        setPlan,
+        planId,
+        setPlanId,
         setStoragePlan,
         editSchedule,
         setEditSchedule,
         planLoading,
+        planListLoading,
+        refetchPlan,
         refetchPlanList,
         refetchStoragePlanList,
         clearStoragePlan,

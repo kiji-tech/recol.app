@@ -4,6 +4,7 @@ import React, { useCallback } from 'react';
 import { View } from 'react-native';
 import BottomSheetHeaderButton from './BottomSheetHeaderButton';
 import i18n from '@/src/libs/i18n';
+import { useMap } from '../../hooks/useMap';
 
 type SearchSelectedButtonProps = {
   id: MapCategory;
@@ -11,15 +12,12 @@ type SearchSelectedButtonProps = {
   onPress: (id: MapCategory) => void;
 };
 
-type Props = {
-  selectedCategory: MapCategory;
-  onSelectedCategory: (id: MapCategory) => void;
-};
-export default function PlaceCardHeader({ selectedCategory, onSelectedCategory }: Props) {
+export default function PlaceCardHeader() {
   // === Member ====
+  const { selectedCategory, handleSelectedCategory } = useMap();
   // === Method ====
   const handleOnSelectedCategory = (id: MapCategory) => {
-    onSelectedCategory(id);
+    handleSelectedCategory(id);
   };
   const checkSelectedCategory = useCallback(
     (id: string) => selectedCategory === id,

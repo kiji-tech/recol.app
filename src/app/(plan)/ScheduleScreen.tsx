@@ -1,8 +1,8 @@
 import React, { ReactNode, useCallback } from 'react';
 import ScheduleComponents from '../../features/schedule/components/ScheduleComponent';
 import { BackgroundView, Header } from '@/src/components';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Plan, fetchPlan } from '@/src/features/plan';
+import { useRouter } from 'expo-router';
+import { Plan } from '@/src/features/plan';
 import { useFocusEffect } from '@react-navigation/native';
 import { deleteSchedule, Schedule } from '@/src/features/schedule';
 import { useAuth } from '@/src/features/auth';
@@ -13,22 +13,12 @@ import PlanInformation from '../../features/schedule/components/PlanInformation'
 import ScheduleMenu from '../../features/schedule/components/ScheduleMenu';
 import { Toast } from 'toastify-react-native';
 import i18n from '@/src/libs/i18n';
-import { useQuery } from 'react-query';
-import MaskLoading from '@/src/components/MaskLoading';
+import { usePlan } from '@/src/contexts/PlanContext';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
   const { session } = useAuth();
-  const { uid: planId } = useLocalSearchParams<{ uid: string }>();
-
-  const {
-    data: plan,
-    isLoading,
-    refetch,
-  } = useQuery({
-    queryKey: ['plan', planId],
-    queryFn: () => fetchPlan(planId, session),
-  });
+  const { plan, planId, refetchPlan } = usePlan();
 
   // === Method ===
   /**
@@ -46,7 +36,6 @@ export default function ScheduleScreen(): ReactNode {
       router.back();
       return;
     }
-    refetch();
   };
 
   /**
@@ -62,6 +51,7 @@ export default function ScheduleScreen(): ReactNode {
       throw new Error(e.message);
     });
 
+    refetchPlan();
     Toast.info(text);
     initView();
   };
@@ -94,7 +84,6 @@ export default function ScheduleScreen(): ReactNode {
         onBack={() => router.back()}
         rightComponent={plan ? <ScheduleMenu plan={plan} /> : undefined}
       />
-      {isLoading && <MaskLoading />}
       {/* Plan Information */}
       <ScrollView showsVerticalScrollIndicator={false}>
         {plan && (
@@ -102,7 +91,6 @@ export default function ScheduleScreen(): ReactNode {
             <PlanInformation plan={plan} />
             {/* Schedule */}
             <ScheduleComponents
-              isLoading={isLoading}
               plan={plan || ({ schedule: [] } as unknown as Plan)}
               onDelete={handleDeleteSchedule}
             />

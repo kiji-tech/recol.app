@@ -5,6 +5,9 @@ export * from './apis/fetchCachePlace';
 export * from './libs/searchNearby';
 export * from './libs/searchPlaceByText';
 
+// === Hooks ===
+export * from './hooks/useMap';
+
 // === Components ===
 export * from './components/BottomSheet/MapBottomSheet';
 export * from './components/BottomSheet/MapBottomSheetHeader';

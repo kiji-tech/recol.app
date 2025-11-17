@@ -15,7 +15,7 @@ type PlanCardProps = {
 export default function PlanCard({ plan, onDelete }: PlanCardProps) {
   // === Member ===
   const router = useRouter();
-  const { setPlan } = usePlan();
+  const { setPlanId } = usePlan();
 
   // === Method ===
   /**
@@ -23,12 +23,9 @@ export default function PlanCard({ plan, onDelete }: PlanCardProps) {
    */
   const handleSelectPlan = (plan: Plan) => {
     // スケジュールを取得して設定
-    setPlan(plan);
+    setPlanId(plan.uid);
     router.push({
       pathname: '/(plan)/ScheduleScreen',
-      params: {
-        uid: plan.uid,
-      },
     });
   };
 

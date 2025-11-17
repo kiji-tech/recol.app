@@ -1,10 +1,9 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { BackHandler, View } from 'react-native';
-import { router, useFocusEffect, useGlobalSearchParams } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Region } from 'react-native-maps';
 import { useLocation } from '@/src/contexts/LocationContext';
-import { Place, Direction, Route, Step, fetchCachePlace } from '@/src/features/map';
-import { DEFAULT_RADIUS } from '@/src/libs/ConstValue';
+import { Place, Direction, Route, Step, useMap } from '@/src/features/map';
 import Map from '@/src/features/map/components/Map';
 import { fetchDirection } from '@/src/features/map/libs/direction';
 import { Toast } from 'toastify-react-native';
@@ -16,11 +15,8 @@ import ScheduleBottomSheet from '@/src/features/map/components/ScheduleBottomShe
 import DirectionBottomSheet from '@/src/features/map/components/DirectionBottomSheet/DirectionBottomSheet';
 import { DirectionMode } from '@/src/features/map/types/Direction';
 import PlaceBottomSheet from '@/src/features/map/components/PlaceBottomSheet/PlaceBottomSheet';
-import { useAuth } from '@/src/features/auth';
-import { fetchPlan } from '@/src/features/plan';
-import { useQuery } from 'react-query';
 import { LogUtil } from '@/src/libs/LogUtil';
-
+import { usePlan } from '@/src/contexts/PlanContext';
 /**
  * 初期表示
  */
@@ -28,29 +24,12 @@ export default function MapScreen() {
   // === Member ===
   const bottomSheetRef = useRef<BottomSheet>(null);
   const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
-  const { uid: planId } = useGlobalSearchParams();
-  const { data: plan } = useQuery({
-    queryKey: ['plan', planId],
-    queryFn: () => fetchPlan(planId as string, session),
-    enabled: !planId,
-  });
-  const { session } = useAuth();
-  const [selectedSchedulePlaceList, setSelectedSchedulePlaceList] = useState<Place[]>([]);
+
+  const { plan, editSchedule, setEditSchedule } = usePlan();
+  const { region, setRegion, selectedPlace, selectedPlaceList, handleSelectedPlace, radius } =
+    useMap();
 
   const { currentRegion } = useLocation();
-  const [region, setRegion] = useState<Region | null>(
-    selectedSchedulePlaceList.length > 0
-      ? {
-          ...selectedSchedulePlaceList[0].location,
-          latitudeDelta: 0.025,
-          longitudeDelta: 0.025,
-        }
-      : currentRegion
-  );
-  const radius = useMemo(() => {
-    if (!region) return 0;
-    return DEFAULT_RADIUS * region!.longitudeDelta * 10;
-  }, [region]);
 
   const [viewMode, setViewMode] = useState<'list' | 'detail' | 'direction'>('list');
   const [routeList, setRouteList] = useState<Route[]>([]);
@@ -64,10 +43,6 @@ export default function MapScreen() {
         .sort((a, b) => dayjs(a.from).diff(dayjs(b.from))) || []
     );
   }, [plan]);
-  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
-    viewScheduleList[0] || null
-  );
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [selectedMode, setSelectedMode] = useState<DirectionMode>('walking');
   const [selectedStepIndex, setSelectedStepIndex] = useState<number | null>(null);
 
@@ -118,29 +93,7 @@ export default function MapScreen() {
    * @returns {void}
    */
   const handleSelectedSchedule = (schedule: Schedule) => {
-    setSelectedSchedule(schedule);
-  };
-
-  /**
-   * 場所選択処理
-   * @param place {Place} 選択した場所
-   */
-  const handleSelectedPlace = async (place: Place) => {
-    setRegion((prev) => {
-      return {
-        ...(prev || {}),
-        ...place.location,
-        latitude: place.location.latitude,
-      } as Region;
-    });
-    setSelectedPlace(place);
-
-    /** 経路表示ボトムシートなら経路を取得 */
-    if (viewMode === 'direction') {
-      await setupDirections(place, selectedMode);
-      return;
-    }
-    setViewMode('detail');
+    setEditSchedule(schedule);
   };
 
   /**
@@ -173,12 +126,11 @@ export default function MapScreen() {
     // 経路マーカーを選択したStepのマーカーに移動
     const step = stepList[index];
     if (step) {
-      setRegion((prev) => {
-        return {
-          ...(prev || {}),
-          ...{ latitude: step.start_location.lat, longitude: step.start_location.lng },
-        } as Region;
-      });
+      setRegion({
+        ...region,
+        latitude: step.start_location.lat,
+        longitude: step.start_location.lng,
+      } as Region);
     }
   };
 
@@ -187,12 +139,7 @@ export default function MapScreen() {
    * @returns {void}
    */
   const handleShowCurrentLocation = () => {
-    setRegion((prev) => {
-      return {
-        ...(prev || {}),
-        ...currentRegion,
-      } as Region;
-    });
+    setRegion(currentRegion as Region);
   };
 
   /**
@@ -223,17 +170,9 @@ export default function MapScreen() {
   useFocusEffect(
     useCallback(() => {
       setupBackPress();
+      setEditSchedule(viewScheduleList[0] || null);
       return () => handleBackPress?.remove();
     }, [])
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      if (!selectedSchedule || !selectedSchedule.place_list) return;
-      fetchCachePlace(selectedSchedule.place_list || [], session).then((placeList) => {
-        setSelectedSchedulePlaceList(placeList || []);
-      });
-    }, [selectedSchedule, session])
   );
 
   // === Render ===
@@ -241,18 +180,25 @@ export default function MapScreen() {
     <>
       <View className="w-screen absolute top-0 left-0 h-[70%]">
         <Map
+          placeList={[]}
+          selectedPlaceList={selectedPlaceList}
           radius={radius}
           region={region || currentRegion}
-          placeList={selectedSchedulePlaceList || []}
-          selectedPlaceList={selectedSchedulePlaceList || []}
           isMarker={true}
           isCallout={true}
           isCenterCircle={false}
           routeList={routeList}
           isRealTimePosition={true}
           selectedStepIndex={selectedStepIndex}
+          onSelectedPlace={async (place: Place) => {
+            handleSelectedPlace(place);
+            /** 経路表示ボトムシートなら経路を取得 */
+            if (viewMode === 'direction') {
+              await setupDirections(place, selectedMode);
+              return;
+            }
+          }}
           onRegionChange={handleRegionChange}
-          onSelectedPlace={handleSelectedPlace}
         />
       </View>
       {/* 経路表示ボトムシート */}
@@ -274,8 +220,7 @@ export default function MapScreen() {
       {viewMode === 'detail' && (
         <PlaceBottomSheet
           bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
-          isEdit={true}
-          selectedPlace={selectedPlace!}
+          isEdit={false}
           onDirection={handleDirectionView}
           onClose={() => setViewMode('list')}
         />
@@ -286,11 +231,14 @@ export default function MapScreen() {
           ref={bottomSheetRef}
           scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
           scheduleList={viewScheduleList}
-          selectedSchedule={selectedSchedule}
+          selectedSchedule={editSchedule}
           selectedPlace={selectedPlace}
-          selectedSchedulePlaceList={selectedSchedulePlaceList}
+          selectedPlaceList={selectedPlaceList || []}
           onSelectedSchedule={handleSelectedSchedule}
-          onSelectedPlace={handleSelectedPlace}
+          onSelectedPlace={async (place: Place) => {
+            handleSelectedPlace(place);
+            setViewMode('detail');
+          }}
         />
       )}
     </>

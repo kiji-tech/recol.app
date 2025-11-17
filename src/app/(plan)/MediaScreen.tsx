@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { TouchableOpacity, View, Text, Dimensions, Platform, BackHandler } from 'react-native';
 import { Image } from 'expo-image';
 import { IconButton } from '@/src/components';
-import { router, useFocusEffect, useGlobalSearchParams } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { FlatList } from 'react-native-gesture-handler';
 import { deletePlanMediaList, fetchPlanMediaList, uploadPlanMediaList } from '@/src/features/media';
@@ -17,6 +17,7 @@ import * as Progress from 'react-native-progress';
 import { useMutation, useQuery } from 'react-query';
 import { Toast } from 'toastify-react-native';
 import MaskLoading from '@/src/components/MaskLoading';
+import { usePlan } from '@/src/contexts/PlanContext';
 
 export default function MediaScreen() {
   // === Member ===
@@ -27,14 +28,15 @@ export default function MediaScreen() {
   const [addImage, setAddImage] = useState<string[]>([]);
   const { isDarkMode } = useTheme();
   const { session } = useAuth();
-  const { uid: planId } = useGlobalSearchParams<{ uid: string }>();
+  const { planId } = usePlan();
+  console.log('planId', planId);
   const {
     data: images,
     isLoading,
     refetch,
   } = useQuery({
     queryKey: ['images', planId!],
-    queryFn: () => fetchPlanMediaList(planId, session),
+    queryFn: () => fetchPlanMediaList(planId!, session),
   });
 
   const imageUploadMutation = useMutation({

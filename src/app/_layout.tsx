@@ -26,6 +26,7 @@ import { ForceUpdateModal } from '../features/version/components/ForceUpdateModa
 import Constants from 'expo-constants';
 import ToastManager from 'toastify-react-native';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { MapProvider } from '@/src/features/map';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -181,20 +182,22 @@ const RouteLayout = () => {
   return (
     <PremiumPlanProvider>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <MenuProvider>
-            <PlanProvider>
-              <LocationProvider>
-                <GestureHandlerRootView style={{ flex: 1 }}>
-                  <ThemeProvider>
-                    <Layout />
-                    <ToastManager />
-                  </ThemeProvider>
-                </GestureHandlerRootView>
-              </LocationProvider>
-            </PlanProvider>
-          </MenuProvider>
-        </AuthProvider>
+        <LocationProvider>
+          <AuthProvider>
+            <MenuProvider>
+              <PlanProvider>
+                <MapProvider>
+                  <GestureHandlerRootView style={{ flex: 1 }}>
+                    <ThemeProvider>
+                      <Layout />
+                      <ToastManager />
+                    </ThemeProvider>
+                  </GestureHandlerRootView>
+                </MapProvider>
+              </PlanProvider>
+            </MenuProvider>
+          </AuthProvider>
+        </LocationProvider>
       </QueryClientProvider>
     </PremiumPlanProvider>
   );
