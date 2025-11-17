@@ -4,6 +4,7 @@ import { createContext, useState } from 'react';
 import { Region } from 'react-native-maps';
 import { useFocusEffect } from 'expo-router';
 import { LogUtil } from '../libs/LogUtil';
+import { useAuth } from '../features/auth';
 
 type LocationContextType = {
   currentRegion: Region | null;
@@ -13,6 +14,7 @@ type LocationContextType = {
 const LocationContext = createContext<LocationContextType | null>(null);
 
 const LocationProvider = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAuth();
   const [permission, requestPermission] = Location.useForegroundPermissions();
   if (permission == null) {
     requestPermission();
@@ -24,9 +26,8 @@ const LocationProvider = ({ children }: { children: React.ReactNode }) => {
    * 現在位置を取得
    */
   const getCurrentPosition = async () => {
-    LogUtil.log('current location get', { level: 'info' });
     const location = await Location.getCurrentPositionAsync({}).catch((error) => {
-      LogUtil.log(`current location get error: ${error}`, { level: 'error' });
+      LogUtil.log(JSON.stringify({ getCurrentPositionError: error }), { level: 'error', user });
     });
     if (!location) return;
     setCurrentRegion({

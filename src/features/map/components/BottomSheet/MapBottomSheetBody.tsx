@@ -17,7 +17,6 @@ const MapBottomSheetBody = forwardRef(
     // ==== Member ====
     const { searchPlaceList, isSearchLoading, selectedPlace, selectedPlaceList, selectedCategory } =
       useMap();
-    console.log({ isSearchLoading });
     const scrollRef = useRef<BottomSheetScrollViewMethods>(null);
     if (ref) {
       useImperativeHandle(ref, () => ({

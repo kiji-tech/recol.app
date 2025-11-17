@@ -16,18 +16,12 @@ export const login = async (email: string, password: string): Promise<AuthResult
   }
 
   try {
-    LogUtil.log('Login attempt', { level: 'info', additionalInfo: { email } });
-
     const result = await loginWithEmail(email, password);
-
-    LogUtil.log('Login successful', { level: 'info', additionalInfo: { email } });
-
     return result;
   } catch (error) {
-    LogUtil.log('Login failed', {
+    LogUtil.log(JSON.stringify({ loginError: error }), {
       level: 'error',
-      additionalInfo: { email },
-      error: error as Error,
+      notify: true,
     });
 
     // エラーメッセージの統一

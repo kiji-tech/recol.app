@@ -259,7 +259,7 @@ export type Database = {
     }
     Enums: {
       PaymentPlan: "Free" | "Basic" | "Premium"
-      Role: "Admin" | "SuperUser" | "User"
+      Role: "Admin" | "SuperUser" | "Tester" | "User"
       schedule_category: "movement" | "meals" | "sightseeing" | "other"
       ScheduleCategory:
         | "Movement"
@@ -396,7 +396,7 @@ export const Constants = {
   public: {
     Enums: {
       PaymentPlan: ["Free", "Basic", "Premium"],
-      Role: ["Admin", "SuperUser", "User"],
+      Role: ["Admin", "SuperUser", "Tester", "User"],
       schedule_category: ["movement", "meals", "sightseeing", "other"],
       ScheduleCategory: [
         "Movement",

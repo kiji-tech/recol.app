@@ -117,7 +117,7 @@ const ScheduleTimeEditorItem = ({
 export default function ScheduleTimeEditor() {
   // === Member ===
   const { plan } = usePlan();
-  const { session } = useAuth();
+  const { session, user } = useAuth();
   const [currentPlan, setCurrentPlan] = useState<Plan | null>({
     ...plan,
     schedule: plan?.schedule
@@ -150,7 +150,7 @@ export default function ScheduleTimeEditor() {
       })
       .catch((e) => {
         if (e && e.message) {
-          LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+          LogUtil.log(JSON.stringify(e), { user, level: 'error', notify: true });
           Toast.warn(e.message);
         }
       })

@@ -1,5 +1,6 @@
 import { SlackMessage, SlackNotificationType } from '../types/Slack';
 import { SlackConfigUtil } from '../libs/slackConfig';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 export const sendSlackNotification = async (
   message: SlackMessage,
@@ -18,6 +19,6 @@ export const sendSlackNotification = async (
     },
     body: JSON.stringify(message),
   }).catch((error) => {
-    console.error(`Slack notification failed for type ${type}:`, error);
+    LogUtil.log(JSON.stringify({ slackWebHookError: error }), { level: 'error' });
   });
 };

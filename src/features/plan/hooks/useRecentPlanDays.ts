@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LogUtil } from '../../../libs/LogUtil';
+import { useAuth } from '../../auth/hooks/useAuth';
 
 const RECENT_PLAN_DAYS_STORAGE_KEY = '@recent_plan_days';
 const DEFAULT_DAYS = 7;
@@ -15,7 +16,7 @@ export type RecentPlanDays = (typeof AVAILABLE_DAYS)[number];
 export const useRecentPlanDays = () => {
   const [days, setDaysState] = useState<RecentPlanDays>(DEFAULT_DAYS);
   const [isLoading, setIsLoading] = useState(true);
-
+  const { user } = useAuth();
   /**
    * ローカルストレージから日数設定を読み込む
    */
@@ -29,9 +30,10 @@ export const useRecentPlanDays = () => {
         }
       }
     } catch (error) {
-      LogUtil.log('Failed to load recent plan days', {
+      LogUtil.log(JSON.stringify({ loadRecentPlanDaysError: error }), {
         level: 'error',
-        error: error as Error,
+        notify: true,
+        user,
       });
     } finally {
       setIsLoading(false);
@@ -47,9 +49,10 @@ export const useRecentPlanDays = () => {
       await AsyncStorage.setItem(RECENT_PLAN_DAYS_STORAGE_KEY, newDays.toString());
       setDaysState(newDays);
     } catch (error) {
-      LogUtil.log('Failed to save recent plan days', {
+      LogUtil.log(JSON.stringify({ saveRecentPlanDaysError: error }), {
         level: 'error',
-        error: error as Error,
+        notify: true,
+        user,
       });
     }
   };
@@ -65,4 +68,3 @@ export const useRecentPlanDays = () => {
     availableDays: AVAILABLE_DAYS,
   };
 };
-

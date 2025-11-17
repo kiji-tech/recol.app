@@ -15,7 +15,6 @@ import ScheduleBottomSheet from '@/src/features/map/components/ScheduleBottomShe
 import DirectionBottomSheet from '@/src/features/map/components/DirectionBottomSheet/DirectionBottomSheet';
 import { DirectionMode } from '@/src/features/map/types/Direction';
 import PlaceBottomSheet from '@/src/features/map/components/PlaceBottomSheet/PlaceBottomSheet';
-import { LogUtil } from '@/src/libs/LogUtil';
 import { usePlan } from '@/src/contexts/PlanContext';
 /**
  * 初期表示
@@ -26,8 +25,15 @@ export default function MapScreen() {
   const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
 
   const { plan, editSchedule, setEditSchedule } = usePlan();
-  const { region, setRegion, selectedPlace, selectedPlaceList, handleSelectedPlace, radius } =
-    useMap();
+  const {
+    region,
+    setRegion,
+    selectedPlace,
+    selectedPlaceList,
+    handleSelectedPlace,
+    radius,
+    handleSelectedCategory,
+  } = useMap();
 
   const { currentRegion } = useLocation();
 
@@ -159,7 +165,6 @@ export default function MapScreen() {
    */
   const setupBackPress = () => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      LogUtil.log('MapScreen hardwareBackPress', { level: 'info' });
       router.back();
       return true;
     });
@@ -170,6 +175,7 @@ export default function MapScreen() {
   useFocusEffect(
     useCallback(() => {
       setupBackPress();
+      handleSelectedCategory('selected');
       setEditSchedule(viewScheduleList[0] || null);
       return () => handleBackPress?.remove();
     }, [])

@@ -5,6 +5,7 @@ import { Information } from '../types/Information';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { LogUtil } from '@/src/libs/LogUtil';
 import dayjs from 'dayjs';
+import { useAuth } from '../../auth/hooks/useAuth';
 
 interface InformationCardProps {
   information: Information;
@@ -17,35 +18,25 @@ interface InformationCardProps {
  */
 export default function InformationCard({ information, onPress }: InformationCardProps) {
   const { isDarkMode } = useTheme();
-
+  const { user } = useAuth();
   /**
    * 詳細ページをブラウザで開く
    * @param {string} detailUrl - 詳細ページのURL
    */
   const handleOpenDetail = async (detailUrl: string): Promise<void> => {
     try {
-      LogUtil.log('Opening browser for information detail', {
-        level: 'info',
-        additionalInfo: { informationId: information.id },
-      });
-
       const supported = await Linking.canOpenURL(detailUrl);
 
       if (supported) {
         await Linking.openURL(detailUrl);
-
-        LogUtil.log('Browser opened successfully', {
-          level: 'info',
-          additionalInfo: { informationId: information.id },
-        });
       } else {
         throw new Error('Invalid URL');
       }
     } catch (error) {
-      LogUtil.log('Failed to open browser', {
+      LogUtil.log(JSON.stringify({ openDetailError: error }), {
         level: 'error',
-        additionalInfo: { informationId: information.id },
-        error: error as Error,
+        notify: true,
+        user,
       });
     }
   };

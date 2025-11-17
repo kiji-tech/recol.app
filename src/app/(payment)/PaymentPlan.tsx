@@ -15,7 +15,7 @@ export default function PaymentPlan() {
   // === Member ===
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { session, profile } = useAuth();
+  const { session, profile, user } = useAuth();
   const { activePlanId, managementURL, onSubmit, onRefetch, premiumPlanList } = usePremiumPlan();
 
   // === Method ===
@@ -47,6 +47,7 @@ export default function PaymentPlan() {
       // ユーザーの意思でキャンセルされた場合
       if (e && (e as { userCancelled?: boolean }).userCancelled) return;
       LogUtil.log(`支払いに失敗しました: ${JSON.stringify(e)}`, {
+        user,
         level: 'error',
         notify: true,
       });
@@ -60,24 +61,27 @@ export default function PaymentPlan() {
    * プレミアムプランの解約イベントハンドラ
    */
   const handleCancel = async () => {
-    LogUtil.log('handle cancel.');
     if (profile && !profile.isPremiumUser()) {
       Alert.alert(i18n.t('SCREEN.PAYMENT.NOT_PREMIUM'));
       return;
     }
 
-    Alert.alert(i18n.t('SCREEN.PAYMENT.CANCEL_CONFIRM_TITLE'), i18n.t('SCREEN.PAYMENT.CANCEL_CONFIRM_MESSAGE'), [
-      { text: i18n.t('COMMON.CANCEL'), style: 'cancel' },
-      {
-        text: i18n.t('SCREEN.PAYMENT.CANCEL_PREMIUM'),
-        style: 'destructive',
-        onPress: async () => {
-          Linking.openURL(managementURL || '').then(async () => {
-            await onRefetch();
-          });
+    Alert.alert(
+      i18n.t('SCREEN.PAYMENT.CANCEL_CONFIRM_TITLE'),
+      i18n.t('SCREEN.PAYMENT.CANCEL_CONFIRM_MESSAGE'),
+      [
+        { text: i18n.t('COMMON.CANCEL'), style: 'cancel' },
+        {
+          text: i18n.t('SCREEN.PAYMENT.CANCEL_PREMIUM'),
+          style: 'destructive',
+          onPress: async () => {
+            Linking.openURL(managementURL || '').then(async () => {
+              await onRefetch();
+            });
+          },
         },
-      },
-    ]);
+      ]
+    );
   };
 
   // === Render ===

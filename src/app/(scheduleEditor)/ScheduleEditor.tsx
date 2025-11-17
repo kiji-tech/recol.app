@@ -24,7 +24,7 @@ import { useMap } from '@/src/features/map';
 export default function ScheduleEditor() {
   // === Member ===
   const { plan, editSchedule, setEditSchedule, refetchPlan } = usePlan();
-  const { session, profile } = useAuth();
+  const { session, profile, user } = useAuth();
   const [openMapModal, setOpenMapModal] = useState(false);
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -35,7 +35,6 @@ export default function ScheduleEditor() {
    */
   const saveSchedule = async (updateSchedule: Schedule) => {
     await upsertSchedule(updateSchedule, session).then(async () => {
-      LogUtil.log('complete update schedule', { level: 'info' });
       // 通知処理の見直し
       await NotificationUtil.upsertUserSchedule(
         editSchedule as Schedule,
@@ -63,7 +62,11 @@ export default function ScheduleEditor() {
       })
       .catch((e) => {
         if (e && e.message) {
-          LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+          LogUtil.log(JSON.stringify({ saveScheduleError: e }), {
+            level: 'error',
+            notify: true,
+            user,
+          });
           Toast.warn(i18n.t('SCREEN.SCHEDULE.SAVE_FAILED'));
         }
       })

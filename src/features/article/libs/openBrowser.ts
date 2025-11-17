@@ -8,11 +8,6 @@ import { LogUtil } from '../../../libs/LogUtil';
  */
 export const openBrowser = async (article: Article): Promise<void> => {
   try {
-    LogUtil.log('Opening browser for article', {
-      level: 'info',
-      additionalInfo: { articleId: article.id },
-    });
-
     const url = `${process.env.EXPO_PUBLIC_WEB_URI}/articles/${article.id}`;
     const supported = await Linking.canOpenURL(url);
 
@@ -27,10 +22,9 @@ export const openBrowser = async (article: Article): Promise<void> => {
       throw new Error('Invalid URL');
     }
   } catch (error) {
-    LogUtil.log('Failed to open browser', {
+    LogUtil.log(JSON.stringify({ openBrowserError: error }), {
       level: 'error',
-      additionalInfo: { articleId: article.id },
-      error: error as Error,
+      notify: true,
     });
 
     // エラーメッセージの統一
@@ -50,27 +44,17 @@ export const openBrowser = async (article: Article): Promise<void> => {
  */
 export const openUrl = async (url: string): Promise<void> => {
   try {
-    LogUtil.log('Opening browser for URL', {
-      level: 'info',
-      additionalInfo: { url },
-    });
-
     const supported = await Linking.canOpenURL(url);
 
     if (supported) {
       await Linking.openURL(url);
-
-      LogUtil.log('Browser opened successfully', {
-        level: 'info',
-        additionalInfo: { url },
-      });
     } else {
       throw new Error('Invalid URL');
     }
   } catch (error) {
-    LogUtil.log('Failed to open browser', {
+    LogUtil.log(JSON.stringify({ openUrlError: error }), {
       level: 'error',
-      additionalInfo: { url },
+      notify: true,
       error: error as Error,
     });
 

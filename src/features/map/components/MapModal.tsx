@@ -9,7 +9,6 @@ import ResearchButton from './ResearchButton';
 import { SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
 import { Header } from '@/src/components';
 import PlaceBottomSheet from './PlaceBottomSheet/PlaceBottomSheet';
-import { LogUtil } from '@/src/libs/LogUtil';
 import { useMap } from '../hooks/useMap';
 import { useLocation } from '@/src/contexts/LocationContext';
 
@@ -60,14 +59,12 @@ export default function MapModal({ isOpen, onClose }: Props) {
 
   /** 場所詳細ボトムシート 閉じる処理 */
   const handleCloseDetailPlace = () => {
-    LogUtil.log('handleCloseDetailPlace', { level: 'info' });
     setIsDetailPlace(false);
     clearSelectedPlace();
   };
 
   /** モーダルを閉じる */
   const handleClose = (): undefined => {
-    LogUtil.log('handleClose', { level: 'info' });
     onClose();
   };
 
@@ -77,7 +74,6 @@ export default function MapModal({ isOpen, onClose }: Props) {
    */
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', function () {
-      LogUtil.log('MapModal hardwareBackPress', { level: 'info' });
       handleClose();
       return true;
     });
