@@ -11,12 +11,13 @@ import * as Location from 'expo-location';
 import { useMutation, useQuery } from 'react-query';
 import i18n from '@/src/libs/i18n';
 import { Toast } from 'toastify-react-native';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 export default function PlanEditor() {
   // === Member ===
   const router = useRouter();
   const { uid: planId } = useLocalSearchParams<{ uid: string }>();
-  const { session } = useAuth();
+  const { session, user } = useAuth();
   const { data: plan, isLoading } = useQuery({
     queryKey: ['plan', planId],
     queryFn: () => fetchPlan(planId, session),
@@ -39,7 +40,7 @@ export default function PlanEditor() {
   // === Method ===
   /** 登録 */
   const handlerSubmit = async () => {
-    console.log('handlerSubmit', title, memo);
+    LogUtil.log('handlerSubmit', { user, level: 'info', additionalInfo: { title, memo } });
     mutation.mutate({
       ...editPlan,
       title,

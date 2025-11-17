@@ -2,13 +2,13 @@ import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
-import { usePlan } from '@/src/contexts/PlanContext';
 import { Plan } from '@/src/features/plan';
 import { Schedule } from '../types/Schedule';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import dayjs from 'dayjs';
 import i18n from '@/src/libs/i18n';
 import CategoryIcon from './CategoryIcon';
+import { usePlan } from '@/src/contexts/PlanContext';
 
 /**
  * 本日の予定を表示するコンポーネント
@@ -63,15 +63,11 @@ type Props = {
 export default function TodayScheduleList({ planList }: Props) {
   // 直近7日にある予定を取得して表示する
   // === Member ===
-
+  const { setEditSchedule } = usePlan();
   // === Method ===
   const handlePress = (schedule: Schedule) => {
-    router.push({
-      pathname: '/(plan)/ScheduleScreen',
-      params: {
-        uid: schedule.plan_id!,
-      },
-    });
+    setEditSchedule(schedule);
+    router.push(`/(plan)/ScheduleScreen`);
   };
 
   // === Memo ===

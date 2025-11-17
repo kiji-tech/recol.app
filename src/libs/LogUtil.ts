@@ -1,8 +1,10 @@
+import { User } from '@supabase/supabase-js';
 import { notifySlack } from '../features/slack';
 
 type LogLevel = 'info' | 'warn' | 'error';
 
 interface LogOptions {
+  user?: User | null;
   level?: LogLevel;
   notify?: boolean;
   error?: Error;
@@ -26,7 +28,7 @@ export class LogUtil {
    * ログを出力し、必要に応じてSlackに通知する
    */
   static async log(message: unknown, options: LogOptions = {}) {
-    const { level = 'info', notify = false, error, additionalInfo = {} } = options;
+    const { level = 'info', notify = false, error, additionalInfo = {}, user } = options;
     const m = typeof message == 'string' ? message : JSON.stringify(message);
     const logData: LogData = {
       timestamp: new Date().toISOString(),
@@ -43,24 +45,24 @@ export class LogUtil {
         name: error.name,
       };
     }
-
+    const customMessage = `[${level.toUpperCase()}] ${user ? user.email : ''} ${message}`;
     // コンソールへの出力
     if (process.env.EXPO_PUBLIC_ENABLE_CONSOLE_LOG == 'ON') {
       switch (level) {
         case 'info':
-          console.log(`[${level.toUpperCase()}] ${message}`);
+          console.log(customMessage);
           break;
         case 'warn':
-          console.warn(`[${level.toUpperCase()}] ${message}`);
+          console.warn(customMessage);
           break;
         case 'error':
-          console.error(`[${level.toUpperCase()}] ${message}`);
+          console.error(customMessage);
           break;
       }
     }
 
     // Slack通知処理（libに委譲）
-    await this.sendSlackNotification(level, m, logData, notify);
+    await this.sendSlackNotification(level, customMessage, logData, notify);
   }
 
   /**

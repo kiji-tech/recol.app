@@ -1,8 +1,8 @@
 import React, { ReactNode, useCallback } from 'react';
 import ScheduleComponents from '../../features/schedule/components/ScheduleComponent';
 import { BackgroundView, Header } from '@/src/components';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Plan, fetchPlan } from '@/src/features/plan';
+import { useRouter } from 'expo-router';
+import { Plan } from '@/src/features/plan';
 import { useFocusEffect } from '@react-navigation/native';
 import { deleteSchedule, Schedule } from '@/src/features/schedule';
 import { useAuth } from '@/src/features/auth';
@@ -13,22 +13,12 @@ import PlanInformation from '../../features/schedule/components/PlanInformation'
 import ScheduleMenu from '../../features/schedule/components/ScheduleMenu';
 import { Toast } from 'toastify-react-native';
 import i18n from '@/src/libs/i18n';
-import { useQuery } from 'react-query';
-import MaskLoading from '@/src/components/MaskLoading';
+import { usePlan } from '@/src/contexts/PlanContext';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
-  const { session } = useAuth();
-  const { uid: planId } = useLocalSearchParams<{ uid: string }>();
-
-  const {
-    data: plan,
-    isLoading,
-    refetch,
-  } = useQuery({
-    queryKey: ['plan', planId],
-    queryFn: () => fetchPlan(planId, session),
-  });
+  const { session, user } = useAuth();
+  const { plan, planId, refetchPlan } = usePlan();
 
   // === Method ===
   /**
@@ -46,7 +36,6 @@ export default function ScheduleScreen(): ReactNode {
       router.back();
       return;
     }
-    refetch();
   };
 
   /**
@@ -55,13 +44,18 @@ export default function ScheduleScreen(): ReactNode {
   const handleDeleteSchedule = async (schedule: Schedule) => {
     const text = i18n.t('SCREEN.SCHEDULE.DELETE_SUCCESS').replace('#title#', schedule.title || '');
     await deleteSchedule(schedule, session).catch((e) => {
-      LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+      LogUtil.log(JSON.stringify({ deleteScheduleError: e }), {
+        level: 'error',
+        notify: true,
+        user,
+      });
       if (e && e.message) {
         Toast.warn(e.message);
       }
       throw new Error(e.message);
     });
 
+    refetchPlan();
     Toast.info(text);
     initView();
   };
@@ -78,7 +72,6 @@ export default function ScheduleScreen(): ReactNode {
   useFocusEffect(
     useCallback(() => {
       const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-        LogUtil.log('ScheduleScreen hardwareBackPress', { level: 'info' });
         router.back();
         return true;
       });
@@ -94,7 +87,6 @@ export default function ScheduleScreen(): ReactNode {
         onBack={() => router.back()}
         rightComponent={plan ? <ScheduleMenu plan={plan} /> : undefined}
       />
-      {isLoading && <MaskLoading />}
       {/* Plan Information */}
       <ScrollView showsVerticalScrollIndicator={false}>
         {plan && (
@@ -102,7 +94,6 @@ export default function ScheduleScreen(): ReactNode {
             <PlanInformation plan={plan} />
             {/* Schedule */}
             <ScheduleComponents
-              isLoading={isLoading}
               plan={plan || ({ schedule: [] } as unknown as Plan)}
               onDelete={handleDeleteSchedule}
             />

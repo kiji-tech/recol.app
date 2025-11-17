@@ -26,6 +26,8 @@ import { ForceUpdateModal } from '../features/version/components/ForceUpdateModa
 import Constants from 'expo-constants';
 import ToastManager from 'toastify-react-native';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { MapProvider } from '@/src/features/map';
+import { LogUtil } from '../libs/LogUtil';
 
 // === LogBox ===
 LogBox.ignoreLogs([
@@ -87,7 +89,7 @@ const Layout = () => {
         setShowForceUpdate(true);
       }
     } catch (error) {
-      console.error('バージョンチェックエラー:', error);
+      LogUtil.log('バージョンチェックエラー', { level: 'warn', error: error as Error });
     }
   }, []);
 
@@ -180,22 +182,24 @@ const RouteLayout = () => {
 
   return (
     <PremiumPlanProvider>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <MenuProvider>
-            <PlanProvider>
-              <LocationProvider>
-                <GestureHandlerRootView style={{ flex: 1 }}>
-                  <ThemeProvider>
-                    <Layout />
-                    <ToastManager />
-                  </ThemeProvider>
-                </GestureHandlerRootView>
-              </LocationProvider>
-            </PlanProvider>
-          </MenuProvider>
-        </AuthProvider>
-      </QueryClientProvider>
+      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <LocationProvider>
+            <MenuProvider>
+              <PlanProvider>
+                <MapProvider>
+                  <GestureHandlerRootView style={{ flex: 1 }}>
+                    <ThemeProvider>
+                      <Layout />
+                      <ToastManager />
+                    </ThemeProvider>
+                  </GestureHandlerRootView>
+                </MapProvider>
+              </PlanProvider>
+            </MenuProvider>
+          </LocationProvider>
+        </QueryClientProvider>
+      </AuthProvider>
     </PremiumPlanProvider>
   );
 };

@@ -29,7 +29,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const loadTheme = async () => {
       try {
         const savedTheme = await AsyncStorage.getItem(THEME_STORAGE_KEY).catch((e) => {
-          if (e && e.message) LogUtil.log(e.message, { level: 'error' });
+          if (e && e.message)
+            LogUtil.log(JSON.stringify({ loadThemeError: e }), { level: 'error' });
         });
         const themeToApply = (savedTheme as ThemeMode) || systemColorScheme || 'light';
 
@@ -39,7 +40,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           // Androidの場合は遅延実行
           await new Promise((resolve) => setTimeout(resolve, 0)).catch((e) => {
             if (e && e.message) {
-              LogUtil.log(e.message, { level: 'error' });
+              LogUtil.log(JSON.stringify({ loadThemeError: e }), { level: 'error' });
             }
           });
           colorScheme.set(themeToApply);
@@ -56,13 +57,13 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
 
     loadTheme().catch((e) => {
-      if (e && e.message) LogUtil.log(e.message, { level: 'error' });
+      if (e && e.message) LogUtil.log(JSON.stringify({ loadThemeError: e }), { level: 'error' });
     });
   }, [systemColorScheme]);
 
   const setTheme = async (newTheme: ThemeMode) => {
     await AsyncStorage.setItem(THEME_STORAGE_KEY, newTheme).catch((e) => {
-      if (e && e.message) LogUtil.log(e.message, { level: 'error' });
+      if (e && e.message) LogUtil.log(JSON.stringify({ setThemeError: e }), { level: 'error' });
     });
     if (Platform.OS === 'ios') {
       colorScheme.set(newTheme);
@@ -70,7 +71,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       // Androidの場合は遅延実行
       await new Promise((resolve) => setTimeout(resolve, 0)).catch((e) => {
         if (e && e.message) {
-          LogUtil.log(e.message, { level: 'error' });
+          LogUtil.log(JSON.stringify({ setThemeError: e }), { level: 'error' });
         }
       });
       colorScheme.set(newTheme);

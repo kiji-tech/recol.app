@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { router } from 'expo-router';
-import { Tables } from '@/src/libs/database.types';
 import { ScrollView, Text, TextInput, View } from 'react-native';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
@@ -9,7 +8,6 @@ import dayjs from '@/src/libs/dayjs';
 import MapModal from '../../features/map/components/MapModal';
 import { upsertSchedule } from '@/src/features/schedule';
 import { useAuth } from '@/src/features/auth';
-import { Place } from '@/src/features/map/types/Place';
 import { Schedule } from '@/src/features/schedule';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { LogUtil } from '@/src/libs/LogUtil';
@@ -21,21 +19,22 @@ import {
   adjustStartAtWhenNormal,
 } from '@/src/features/schedule/libs/scheduleTime';
 import i18n from '@/src/libs/i18n';
+import { useMap } from '@/src/features/map';
 
 export default function ScheduleEditor() {
   // === Member ===
-  const { plan, editSchedule, setEditSchedule } = usePlan();
-  const { session, profile } = useAuth();
+  const { plan, editSchedule, setEditSchedule, refetchPlan } = usePlan();
+  const { session, profile, user } = useAuth();
   const [openMapModal, setOpenMapModal] = useState(false);
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { refetchSearchPlaceList } = useMap();
   // === Method ===
   /**
    * スケジュールを保存する
    */
   const saveSchedule = async (updateSchedule: Schedule) => {
     await upsertSchedule(updateSchedule, session).then(async () => {
-      LogUtil.log('complete update schedule', { level: 'info' });
       // 通知処理の見直し
       await NotificationUtil.upsertUserSchedule(
         editSchedule as Schedule,
@@ -57,12 +56,17 @@ export default function ScheduleEditor() {
     } as Schedule;
     saveSchedule(updateSchedule)
       .then(() => {
+        refetchPlan();
         // プランの再取得
         router.back();
       })
       .catch((e) => {
         if (e && e.message) {
-          LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
+          LogUtil.log(JSON.stringify({ saveScheduleError: e }), {
+            level: 'error',
+            notify: true,
+            user,
+          });
           Toast.warn(i18n.t('SCREEN.SCHEDULE.SAVE_FAILED'));
         }
       })
@@ -82,6 +86,7 @@ export default function ScheduleEditor() {
    * マップを表示する
    */
   const handleMapModal = () => {
+    refetchSearchPlaceList();
     setOpenMapModal(true);
   };
 
@@ -94,7 +99,7 @@ export default function ScheduleEditor() {
 
   // === Effect ===
   useEffect(() => {
-    if (!editSchedule) setEditSchedule({} as Tables<'schedule'> & { place_list: Place[] });
+    if (!editSchedule) setEditSchedule({} as Schedule);
   }, []);
 
   // === Render ===

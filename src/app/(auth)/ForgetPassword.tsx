@@ -8,7 +8,7 @@ import i18n from '@/src/libs/i18n';
 
 export default function ForgetPassword() {
   const router = useRouter();
-  const { resetPassword } = useAuth();
+  const { resetPassword, user } = useAuth();
   const [email, setEmail] = useState('');
   const handleResetPassword = () => {
     resetPassword(email)
@@ -17,7 +17,7 @@ export default function ForgetPassword() {
         router.navigate('/(auth)/SignIn');
       })
       .catch((error) => {
-        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true, user });
         Alert.alert(i18n.t('SCREEN.AUTH.RESET_PASSWORD_FAILED'));
       });
   };
@@ -37,7 +37,11 @@ export default function ForgetPassword() {
           onChangeText={(text) => setEmail(text)}
           autoCapitalize="none"
         />
-        <Button theme="theme" text={i18n.t('SCREEN.AUTH.RESET_PASSWORD_BUTTON')} onPress={handleResetPassword} />
+        <Button
+          theme="theme"
+          text={i18n.t('SCREEN.AUTH.RESET_PASSWORD_BUTTON')}
+          onPress={handleResetPassword}
+        />
       </View>
     </BackgroundView>
   );

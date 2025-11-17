@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { TouchableOpacity, View, Text, Dimensions, Platform, BackHandler } from 'react-native';
 import { Image } from 'expo-image';
 import { IconButton } from '@/src/components';
-import { router, useFocusEffect, useGlobalSearchParams } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { FlatList } from 'react-native-gesture-handler';
 import { deletePlanMediaList, fetchPlanMediaList, uploadPlanMediaList } from '@/src/features/media';
@@ -17,6 +17,7 @@ import * as Progress from 'react-native-progress';
 import { useMutation, useQuery } from 'react-query';
 import { Toast } from 'toastify-react-native';
 import MaskLoading from '@/src/components/MaskLoading';
+import { usePlan } from '@/src/contexts/PlanContext';
 
 export default function MediaScreen() {
   // === Member ===
@@ -26,21 +27,21 @@ export default function MediaScreen() {
   const [uploadedImage, setUploadedImage] = useState<string[]>([]);
   const [addImage, setAddImage] = useState<string[]>([]);
   const { isDarkMode } = useTheme();
-  const { session } = useAuth();
-  const { uid: planId } = useGlobalSearchParams<{ uid: string }>();
+  const { session, user } = useAuth();
+  const { planId } = usePlan();
   const {
     data: images,
     isLoading,
     refetch,
   } = useQuery({
     queryKey: ['images', planId!],
-    queryFn: () => fetchPlanMediaList(planId, session),
+    queryFn: () => fetchPlanMediaList(planId!, session),
   });
 
   const imageUploadMutation = useMutation({
     mutationFn: (images: string[]) => uploadPlanMediaList(planId!, images, session),
     onError: (error) => {
-      LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+      LogUtil.log(JSON.stringify(error), { level: 'error', notify: true, user });
       if (error && error instanceof Error && error.message) {
         Toast.warn(error.message);
       }
@@ -56,7 +57,7 @@ export default function MediaScreen() {
     },
     onError: (error) => {
       if (error && error instanceof Error && error.message) {
-        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
+        LogUtil.log(JSON.stringify(error), { level: 'error', notify: true, user });
         Toast.warn(error.message);
       }
     },
@@ -124,7 +125,6 @@ export default function MediaScreen() {
           : undefined,
     });
     if (result.canceled) {
-      LogUtil.log('canceled', { level: 'info' });
       return;
     }
     // 選択された画像のURIを取得
@@ -145,7 +145,11 @@ export default function MediaScreen() {
             })
             .catch((e) => {
               if (e && e.message) {
-                LogUtil.log(`fetch image error ${e.message}`, { level: 'error', notify: true });
+                LogUtil.log(`fetch image error ${e.message}`, {
+                  level: 'error',
+                  notify: true,
+                  user,
+                });
               }
               return null;
             })
@@ -157,7 +161,7 @@ export default function MediaScreen() {
           setUploadedImage((prev) => [...prev, base64Image]);
         } catch (error) {
           // エラーはmutationのonErrorで処理されるため、ここではログのみ
-          LogUtil.log(`Upload failed for image: ${error}`, { level: 'error' });
+          LogUtil.log(`Upload failed for image: ${error}`, { level: 'error', user });
         }
       }
     }
@@ -183,7 +187,6 @@ export default function MediaScreen() {
   useFocusEffect(
     useCallback(() => {
       const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-        LogUtil.log('MediaScreen hardwareBackPress', { level: 'info' });
         router.back();
         return true;
       });

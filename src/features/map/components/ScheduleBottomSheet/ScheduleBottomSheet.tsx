@@ -13,7 +13,7 @@ type Props = {
   scheduleList: Schedule[];
   selectedPlace: Place | null;
   selectedSchedule: Schedule | null;
-  selectedSchedulePlaceList: Place[];
+  selectedPlaceList: Place[];
   onSelectedSchedule: (schedule: Schedule) => void;
   onSelectedPlace: (place: Place) => void;
 };
@@ -25,7 +25,7 @@ const ScheduleBottomSheet = forwardRef(
       scheduleList,
       selectedPlace,
       selectedSchedule,
-      selectedSchedulePlaceList,
+      selectedPlaceList,
       onSelectedSchedule,
       onSelectedPlace,
     }: Props,
@@ -74,11 +74,11 @@ const ScheduleBottomSheet = forwardRef(
           onSelectedSchedule={handleSelectSchedule}
         />
         {/* コンテンツ */}
-        <SelectedMapBottomSheetBody 
+        <SelectedMapBottomSheetBody
           ref={scrollRef}
           selectedPlace={selectedPlace}
           selectedSchedule={selectedSchedule}
-          selectedSchedulePlaceList={selectedSchedulePlaceList}
+          selectedPlaceList={selectedPlaceList}
           onSelectedPlace={onSelectedPlace}
         />
       </BottomSheetLayout>

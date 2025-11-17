@@ -7,6 +7,7 @@ import Purchases, {
   PurchasesPackage,
 } from 'react-native-purchases';
 import dayjs from 'dayjs';
+import { useAuth } from '../hooks/useAuth';
 
 type PremiumPlanContextType = {
   isPremium: boolean; // プレミアムユーザーかどうか
@@ -35,7 +36,6 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
   const [premiumPlanList, setPremiumPlanList] = useState<PurchasesPackage[]>([]);
   const [endAt, setEndAt] = useState<Date | null>(null);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
-
   // すでにプレミアム会員になっているかどうか判定しています
   const checkPremium = (customerInfo: CustomerInfo) => {
     if (customerInfo.activeSubscriptions.length > 0) {
@@ -56,16 +56,19 @@ export const PremiumPlanProvider = ({ children }: { children: React.ReactNode })
       }
 
       if (!apiKey) {
-        LogUtil.log('RevenueCat API key is not configured', { level: 'error' });
+        LogUtil.log(JSON.stringify({ initRevenueCatError: 'apiKey is not set' }), {
+          level: 'error',
+          notify: true,
+        });
         return false;
       }
       Purchases.configure({ apiKey });
 
-      LogUtil.log('RevenueCat initialized successfully', { level: 'info' });
       return true;
     } catch (error) {
-      LogUtil.log('RevenueCat initialization failed: ' + JSON.stringify(error), {
-        level: 'warn',
+      LogUtil.log(JSON.stringify({ initRevenueCatError: error }), {
+        level: 'error',
+        notify: true,
       });
       return false;
     }

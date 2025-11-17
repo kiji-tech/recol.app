@@ -1,6 +1,8 @@
+import { User } from 'npm:@supabase/supabase-js';
 type LogLevel = 'info' | 'warn' | 'error';
 
 interface LogOptions {
+  user?: User | null;
   level?: LogLevel;
   notify?: boolean;
   error?: Error;
@@ -29,7 +31,7 @@ export class LogUtil {
    * ログを出力し、必要に応じてSlackに通知する
    */
   static async log(message: unknown, options: LogOptions = {}) {
-    const { level = 'info', notify = false, error, additionalInfo = {} } = options;
+    const { level = 'info', notify = false, error, additionalInfo = {}, user } = options;
     const m = typeof message == 'string' ? message : JSON.stringify(message);
     const logData: LogData = {
       timestamp: new Date().toISOString(),
@@ -48,20 +50,19 @@ export class LogUtil {
     }
 
     // コンソールへの出力
-    if (this.ENABLE_CONSOLE_LOG) {
-      switch (level) {
-        case 'info':
-          console.log(`[${level.toUpperCase()}] ${message}`);
-          break;
-        case 'warn':
-          console.warn(`[${level.toUpperCase()}] ${message}`);
-          break;
-        case 'error':
-          console.error(`[${level.toUpperCase()}] ${message}`);
-          break;
-      }
+    const customMessage = `[${level.toUpperCase()}] ${user ? user.email : ''} ${message}`;
+    // コンソールへの出力
+    switch (level) {
+      case 'info':
+        console.log(customMessage);
+        break;
+      case 'warn':
+        console.warn(customMessage);
+        break;
+      case 'error':
+        console.error(customMessage);
+        break;
     }
-
     // Slack通知が有効で、通知フラグがtrueの場合
     if (this.ENABLE_SLACK_NOTIFICATION && notify && this.SLACK_WEBHOOK_URL) {
       await fetch(this.SLACK_WEBHOOK_URL, {

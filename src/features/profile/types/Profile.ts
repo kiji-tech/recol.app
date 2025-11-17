@@ -47,6 +47,15 @@ export class Profile {
   }
 
   /**
+   * テスター判定
+   * @param profile
+   * @returns
+   */
+  public isTester(): boolean {
+    return this.role == 'Tester';
+  }
+
+  /**
    * プレミアムユーザー判定
    * @param profile
    * @returns true: プレミアムユーザー, false: プレミアムユーザーではない

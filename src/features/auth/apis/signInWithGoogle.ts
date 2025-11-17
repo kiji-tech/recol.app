@@ -15,10 +15,9 @@ export const signInWithGoogle = async (): Promise<AuthResult> => {
   });
   await GoogleSignin.hasPlayServices();
   const userInfo = await GoogleSignin.signIn();
-  LogUtil.log('userInfo: ' + JSON.stringify(userInfo), { level: 'info' });
 
   if (!userInfo?.data?.idToken) {
-    LogUtil.log('signInWithIdToken error: no ID token present!', {
+    LogUtil.log(JSON.stringify({ signInWithGoogleError: 'no ID token present!' }), {
       level: 'error',
       notify: true,
     });
@@ -30,14 +29,12 @@ export const signInWithGoogle = async (): Promise<AuthResult> => {
   });
 
   if (error) {
-    LogUtil.log('signInWithIdToken error: ' + JSON.stringify(error), {
+    LogUtil.log(JSON.stringify({ signInWithGoogleError: error }), {
       level: 'error',
       notify: true,
     });
     throw error;
   }
-
-  LogUtil.log('signInWithIdToken data: ' + JSON.stringify(data), { level: 'info' });
 
   const session = data.session;
   const user = data.session?.user ?? null;
