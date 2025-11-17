@@ -1,268 +1,269 @@
-{
-    "TABBAR": {
-        "HOME": "Accueil",
-        "PLAN": "Plan",
-        "SCHEDULE": "Calendrier",
-        "SETTINGS": "Paramètres",
-        "MAP": "Carte",
-        "MEDIA": "Médias",
-        "SAMPLE": "Échantillon"
-    },
-    "DATA": {
-        "SCHEDULE": {
-            "DATETIME": "Date et heure",
-            "CATEGORY": "Catégorie",
-            "PLACE_LIST": "Candidats",
-            "MEMO": "Mémo"
-        }
-    },
-    "SCREEN": {
-        "HOME": {
-            "TODAY_SCHEDULE": "Calendrier d'aujourd'hui",
-            "RECENT_PLAN": "Plan récent",
-            "NEW_ARTICLE": "Nouvel article"
-        },
-        "PLAN": {
-            "CREATE_TITLE": "Créer un nouveau plan",
-            "EDIT_TITLE": "Modifier",
-            "NEW_PLAN": "Nouveau plan",
-            "TITLE_LABEL": "Veuillez saisir le titre du plan.",
-            "TITLE_PLACEHOLDER": "Goûter à...",
-            "MEMO_LABEL": "Mémo",
-            "MEMO_PLACEHOLDER": "Veuillez saisir un mémo.",
-            "ADD_FRIEND": "Ajouter des amis",
-            "SELECT": "Sélectionner",
-            "REGISTER": "Enregistrer",
-            "PREPARING": "Préparation en cours",
-            "TITLE_REQUIRED": "Veuillez saisir le titre du plan",
-            "REGISTER_SUCCESS": "a été enregistré",
-            "REGISTER_FAILED": "Échec de l'enregistrement du plan",
-            "PLAN_NOT_FOUND": "Plan introuvable",
-            "LIST_TITLE": "Liste des plans"
-        },
-        "AUTH": {
-            "SIGN_IN": "Se connecter",
-            "SIGN_UP": "S'inscrire",
-            "FORGOT_PASSWORD": "Mot de passe oublié ?",
-            "OR": "ou",
-            "EMAIL_PLACEHOLDER": "Adresse e-mail...",
-            "PASSWORD_PLACEHOLDER": "Mot de passe...",
-            "EMAIL_REQUIRED": "L'adresse e-mail est requise",
-            "PASSWORD_REQUIRED": "Le mot de passe est requis",
-            "EMAIL_INVALID": "Format d'e-mail invalide",
-            "PASSWORD_MISMATCH": "Les mots de passe ne correspondent pas",
-            "SIGN_IN_FAILED": "Échec de la connexion",
-            "SIGN_UP_FAILED": "Échec de l'inscription",
-            "EMAIL_ALREADY_EXISTS": "Cette adresse e-mail est déjà enregistrée.",
-            "BACK_TO_SIGN_IN": "Retour à la connexion",
-            "RESET_PASSWORD_TITLE": "Réinitialiser le mot de passe",
-            "RESET_PASSWORD_BUTTON": "Réinitialiser le mot de passe",
-            "RESET_PASSWORD_SUCCESS": "L'e-mail de réinitialisation du mot de passe a été envoyé.",
-            "RESET_PASSWORD_FAILED": "Échec de l'envoi de l'e-mail de réinitialisation du mot de passe.",
-            "CHANGE_PASSWORD": "Changer le mot de passe",
-            "PASSWORD": "Mot de passe",
-            "PASSWORD_CONFIRM": "Mot de passe (Confirmation)",
-            "LINK_CHECKING": "Vérification du lien...",
-            "INVALID_LINK": "Lien invalide",
-            "INVALID_LINK_MESSAGE": "Le lien de réinitialisation du mot de passe est invalide ou expiré.",
-            "ERROR_OCCURRED": "Une erreur s'est produite",
-            "ERROR_MESSAGE": "Une erreur s'est produite lors de la vérification du lien de réinitialisation du mot de passe.",
-            "SAME_PASSWORD_ERROR": "Impossible d'utiliser le même mot de passe que le nouveau mot de passe.",
-            "PASSWORD_CHANGE_FAILED": "Échec du changement de mot de passe.",
-            "PASSWORD_CHANGED": "Mot de passe modifié",
-            "REQUEST_NEW_ACCOUNT_TITLE": "Un e-mail de création de compte a été envoyé à votre adresse e-mail.",
-            "EMAIL_LABEL": "Adresse e-mail saisie",
-            "CHECK_EMAIL": "Veuillez vérifier votre e-mail et créer votre compte.",
-            "RESEND_EMAIL": "Renvoyer l'e-mail",
-            "EMAIL_NOT_FOUND": "Impossible de récupérer l'adresse e-mail.",
-            "RESEND_SUCCESS": "L'e-mail de confirmation a été renvoyé.",
-            "RESEND_FAILED": "Échec du renvoi de l'e-mail.",
-            "CONGRATULATIONS": "Félicitations !",
-            "WELCOME": "Bienvenue sur Re:CoL",
-            "GREAT_TRIP": "Créons ensemble des plans de voyage incroyables",
-            "REGISTRATION_COMPLETE": "🎊 Inscription terminée 🎊",
-            "EXPERIENCE_STARTS": "Votre expérience incroyable commence maintenant",
-            "GET_STARTED": "Commencer !"
-        },
-        "INFORMATION": {
-            "TITLE": "Informations",
-            "NO_INFORMATION": "Aucune information disponible",
-            "ERROR_OCCURRED": "Une erreur s'est produite"
-        },
-        "ACCOUNT": {
-            "DELETE_TITLE": "Supprimer le compte",
-            "IMPORTANT_NOTICE": "Avis important",
-            "DELETE_WARNING": "La suppression de votre compte supprimera définitivement toutes les données et ne pourra pas être annulée. Veuillez lire et accepter les éléments suivants avant de continuer.",
-            "PREMIUM_CANCEL_GUIDE": "Guide d'annulation du plan Premium",
-            "PREMIUM_NOT_AUTO_CANCEL": "Les plans Premium ne sont pas automatiquement annulés.",
-            "CHECK_HERE": "ici",
-            "CHECK_PURCHASE": "pour vérifier votre statut d'achat.",
-            "DELETE_CONSENT": "Consentement à la suppression du compte",
-            "SUBSCRIPTION_CANCELED": "L'abonnement a été annulé.",
-            "NO_REFUND": "Les remboursements ne sont pas disponibles même s'il reste une période de plan premium.",
-            "NO_RESTORE": "Les plans associés à ce compte ne peuvent pas être restaurés après suppression.",
-            "DELETE_BUTTON": "Supprimer le compte",
-            "DELETE_CONFIRM_TITLE": "Confirmer la suppression du compte",
-            "DELETE_CONFIRM_MESSAGE": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action ne peut pas être annulée.",
-            "DELETE_SUCCESS_TITLE": "Suppression du compte terminée",
-            "DELETE_SUCCESS_MESSAGE": "Votre compte a été supprimé avec succès.",
-            "DELETE_FAILED": "Échec de la suppression du compte.",
-            "ENABLE_DELETE": "Cochez tous les éléments de consentement pour activer le bouton de suppression"
-        },
-        "PROFILE": {
-            "EDIT_TITLE": "Modifier le profil",
-            "EMAIL_LABEL": "Adresse e-mail",
-            "DISPLAY_NAME_LABEL": "Nom d'affichage",
-            "DISPLAY_NAME_PLACEHOLDER": "Saisir le nom d'affichage",
-            "SAVE": "Enregistrer",
-            "NOT_FOUND": "introuvable"
-        },
-        "PAYMENT": {
-            "NO_SESSION": "Aucune information de session. Veuillez vous reconnecter.",
-            "PAYMENT_FAILED": "Échec du paiement. Veuillez nous contacter.",
-            "NOT_PREMIUM": "Vous n'êtes pas abonné à un plan premium.",
-            "CANCEL_CONFIRM_TITLE": "Confirmer l'annulation",
-            "CANCEL_CONFIRM_MESSAGE": "Voulez-vous annuler votre plan premium ?",
-            "CANCEL_PREMIUM": "Annuler",
-            "PREMIUM_TITLE_1": "Vivez mieux",
-            "PREMIUM_TITLE_2": "vos vacances avec Premium",
-            "PREMIUM_SUBTITLE": "Enrichissez vos voyages et vacances",
-            "PLAN_COMPARISON": "Comparaison des plans",
-            "SELECT_PLAN": "Sélectionner un plan",
-            "CANCEL_PREMIUM_BUTTON": "Annuler le plan Premium",
-            "UPGRADE_COMPLETE": "Mise à niveau terminée !",
-            "WELCOME_PREMIUM": "Bienvenue dans le plan Premium. Profitez de toutes les fonctionnalités."
-        },
-        "SETTINGS": {
-            "ACCOUNT_SETTINGS": "Paramètres du compte",
-            "PROFILE_EDIT": "Modifier le profil",
+    {
+        "TABBAR": {
+            "HOME": "Accueil",
             "PLAN": "Plan",
-            "APP_SETTINGS": "Paramètres de l'application",
-            "APP_VERSION": "Version de l'application",
-            "OTHER": "Autre",
-            "TERMS": "Conditions d'utilisation",
-            "PRIVACY_POLICY": "Politique de confidentialité",
-            "CONTACT": "Nous contacter",
-            "SHARE_TWITTER": "Partager sur Twitter",
-            "DELETE_ACCOUNT": "Supprimer le compte",
-            "SIGN_OUT": "Se déconnecter"
+            "SCHEDULE": "Calendrier",
+            "SETTINGS": "Paramètres",
+            "MAP": "Carte",
+            "MEDIA": "Médias",
+            "SAMPLE": "Échantillon"
         },
-        "SCHEDULE": {
-            "TITLE_PLACEHOLDER": "Titre...",
-            "NO_LOGIN": "Informations de connexion introuvables",
-            "PLAN_NOT_FOUND": "Impossible de récupérer les informations du plan",
-            "FETCH_FAILED": "Échec de la récupération des informations du plan",
-            "CANDIDATE_COUNT": "#count# candidats trouvés",
-            "DELETE_CONFIRM": "Supprimer le calendrier",
-            "DELETE_SUCCESS": "#title# a été supprimé",
-            "SAVE_FAILED": "Échec de l'enregistrement du calendrier",
-            "ADD_FROM_MAP": "Ajouter depuis la carte",
-            "SELECT_CATEGORY": "Sélectionner une catégorie",
-            "CATEGORY": {
-                "MOVEMENT": "Déplacement",
-                "MEALS": "Repas",
-                "CAFE": "Café",
-                "AMUSEMENT": "Divertissement",
-                "OTHER": "Autre"
+        "DATA": {
+            "SCHEDULE": {
+                "DATETIME": "Date et heure",
+                "CATEGORY": "Catégorie",
+                "PLACE_LIST": "Candidats",
+                "MEMO": "Mémo"
+            }
+        },
+        "SCREEN": {
+            "HOME": {
+                "TODAY_SCHEDULE": "Calendrier d'aujourd'hui",
+                "RECENT_PLAN": "Plan récent",
+                "NEW_ARTICLE": "Nouvel article"
             },
-            "TIME_EDITOR": {
-                "PREVIOUS_START_TIME": "Définir l'heure de début depuis le précédent",
-                "NEXT_START_TIME": "Définir l'heure de début du suivant"
+            "PLAN": {
+                "CREATE_TITLE": "Créer un nouveau plan",
+                "EDIT_TITLE": "Modifier",
+                "NEW_PLAN": "Nouveau plan",
+                "TITLE_LABEL": "Veuillez saisir le titre du plan.",
+                "TITLE_PLACEHOLDER": "Goûter à...",
+                "MEMO_LABEL": "Mémo",
+                "MEMO_PLACEHOLDER": "Veuillez saisir un mémo.",
+                "ADD_FRIEND": "Ajouter des amis",
+                "SELECT": "Sélectionner",
+                "REGISTER": "Enregistrer",
+                "PREPARING": "Préparation en cours",
+                "TITLE_REQUIRED": "Veuillez saisir le titre du plan",
+                "REGISTER_SUCCESS": "a été enregistré",
+                "REGISTER_FAILED": "Échec de l'enregistrement du plan",
+                "PLAN_NOT_FOUND": "Plan introuvable",
+                "LIST_TITLE": "Liste des plans"
+            },
+            "AUTH": {
+                "SIGN_IN": "Se connecter",
+                "SIGN_UP": "S'inscrire",
+                "FORGOT_PASSWORD": "Mot de passe oublié ?",
+                "OR": "ou",
+                "EMAIL_PLACEHOLDER": "Adresse e-mail...",
+                "PASSWORD_PLACEHOLDER": "Mot de passe...",
+                "EMAIL_REQUIRED": "L'adresse e-mail est requise",
+                "PASSWORD_REQUIRED": "Le mot de passe est requis",
+                "EMAIL_INVALID": "Format d'e-mail invalide",
+                "PASSWORD_MISMATCH": "Les mots de passe ne correspondent pas",
+                "SIGN_IN_FAILED": "Échec de la connexion",
+                "SIGN_UP_FAILED": "Échec de l'inscription",
+                "EMAIL_ALREADY_EXISTS": "Cette adresse e-mail est déjà enregistrée.",
+                "BACK_TO_SIGN_IN": "Retour à la connexion",
+                "RESET_PASSWORD_TITLE": "Réinitialiser le mot de passe",
+                "RESET_PASSWORD_BUTTON": "Réinitialiser le mot de passe",
+                "RESET_PASSWORD_SUCCESS": "L'e-mail de réinitialisation du mot de passe a été envoyé.",
+                "RESET_PASSWORD_FAILED": "Échec de l'envoi de l'e-mail de réinitialisation du mot de passe.",
+                "CHANGE_PASSWORD": "Changer le mot de passe",
+                "PASSWORD": "Mot de passe",
+                "PASSWORD_CONFIRM": "Mot de passe (Confirmation)",
+                "LINK_CHECKING": "Vérification du lien...",
+                "INVALID_LINK": "Lien invalide",
+                "INVALID_LINK_MESSAGE": "Le lien de réinitialisation du mot de passe est invalide ou expiré.",
+                "ERROR_OCCURRED": "Une erreur s'est produite",
+                "ERROR_MESSAGE": "Une erreur s'est produite lors de la vérification du lien de réinitialisation du mot de passe.",
+                "SAME_PASSWORD_ERROR": "Impossible d'utiliser le même mot de passe que le nouveau mot de passe.",
+                "PASSWORD_CHANGE_FAILED": "Échec du changement de mot de passe.",
+                "PASSWORD_CHANGED": "Mot de passe modifié",
+                "REQUEST_NEW_ACCOUNT_TITLE": "Un e-mail de création de compte a été envoyé à votre adresse e-mail.",
+                "EMAIL_LABEL": "Adresse e-mail saisie",
+                "CHECK_EMAIL": "Veuillez vérifier votre e-mail et créer votre compte.",
+                "RESEND_EMAIL": "Renvoyer l'e-mail",
+                "EMAIL_NOT_FOUND": "Impossible de récupérer l'adresse e-mail.",
+                "RESEND_SUCCESS": "L'e-mail de confirmation a été renvoyé.",
+                "RESEND_FAILED": "Échec du renvoi de l'e-mail.",
+                "CONGRATULATIONS": "Félicitations !",
+                "WELCOME": "Bienvenue sur Re:CoL",
+                "GREAT_TRIP": "Créons ensemble des plans de voyage incroyables",
+                "REGISTRATION_COMPLETE": "🎊 Inscription terminée 🎊",
+                "EXPERIENCE_STARTS": "Votre expérience incroyable commence maintenant",
+                "GET_STARTED": "Commencer !"
+            },
+            "INFORMATION": {
+                "TITLE": "Informations",
+                "NO_INFORMATION": "Aucune information disponible",
+                "ERROR_OCCURRED": "Une erreur s'est produite"
+            },
+            "ACCOUNT": {
+                "DELETE_TITLE": "Supprimer le compte",
+                "IMPORTANT_NOTICE": "Avis important",
+                "DELETE_WARNING": "La suppression de votre compte supprimera définitivement toutes les données et ne pourra pas être annulée. Veuillez lire et accepter les éléments suivants avant de continuer.",
+                "PREMIUM_CANCEL_GUIDE": "Guide d'annulation du plan Premium",
+                "PREMIUM_NOT_AUTO_CANCEL": "Les plans Premium ne sont pas automatiquement annulés.",
+                "CHECK_HERE": "ici",
+                "CHECK_PURCHASE": "pour vérifier votre statut d'achat.",
+                "DELETE_CONSENT": "Consentement à la suppression du compte",
+                "SUBSCRIPTION_CANCELED": "L'abonnement a été annulé.",
+                "NO_REFUND": "Les remboursements ne sont pas disponibles même s'il reste une période de plan premium.",
+                "NO_RESTORE": "Les plans associés à ce compte ne peuvent pas être restaurés après suppression.",
+                "DELETE_BUTTON": "Supprimer le compte",
+                "DELETE_CONFIRM_TITLE": "Confirmer la suppression du compte",
+                "DELETE_CONFIRM_MESSAGE": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action ne peut pas être annulée.",
+                "DELETE_SUCCESS_TITLE": "Suppression du compte terminée",
+                "DELETE_SUCCESS_MESSAGE": "Votre compte a été supprimé avec succès.",
+                "DELETE_FAILED": "Échec de la suppression du compte.",
+                "ENABLE_DELETE": "Cochez tous les éléments de consentement pour activer le bouton de suppression"
+            },
+            "PROFILE": {
+                "EDIT_TITLE": "Modifier le profil",
+                "EMAIL_LABEL": "Adresse e-mail",
+                "DISPLAY_NAME_LABEL": "Nom d'affichage",
+                "DISPLAY_NAME_PLACEHOLDER": "Saisir le nom d'affichage",
+                "SAVE": "Enregistrer",
+                "NOT_FOUND": "introuvable"
+            },
+            "PAYMENT": {
+                "NO_SESSION": "Aucune information de session. Veuillez vous reconnecter.",
+                "PAYMENT_FAILED": "Échec du paiement. Veuillez nous contacter.",
+                "NOT_PREMIUM": "Vous n'êtes pas abonné à un plan premium.",
+                "CANCEL_CONFIRM_TITLE": "Confirmer l'annulation",
+                "CANCEL_CONFIRM_MESSAGE": "Voulez-vous annuler votre plan premium ?",
+                "CANCEL_PREMIUM": "Annuler",
+                "PREMIUM_TITLE_1": "Vivez mieux",
+                "PREMIUM_TITLE_2": "vos vacances avec Premium",
+                "PREMIUM_SUBTITLE": "Enrichissez vos voyages et vacances",
+                "PLAN_COMPARISON": "Comparaison des plans",
+                "SELECT_PLAN": "Sélectionner un plan",
+                "CANCEL_PREMIUM_BUTTON": "Annuler le plan Premium",
+                "UPGRADE_COMPLETE": "Mise à niveau terminée !",
+                "WELCOME_PREMIUM": "Bienvenue dans le plan Premium. Profitez de toutes les fonctionnalités."
+            },
+            "SETTINGS": {
+                "ACCOUNT_SETTINGS": "Paramètres du compte",
+                "PROFILE_EDIT": "Modifier le profil",
+                "PLAN": "Plan",
+                "APP_SETTINGS": "Paramètres de l'application",
+                "APP_VERSION": "Version de l'application",
+                "TESTER_SETTINGS": "Paramètres du testeur",
+                "OTHER": "Autre",
+                "TERMS": "Conditions d'utilisation",
+                "PRIVACY_POLICY": "Politique de confidentialité",
+                "CONTACT": "Nous contacter",
+                "SHARE_TWITTER": "Partager sur Twitter",
+                "DELETE_ACCOUNT": "Supprimer le compte",
+                "SIGN_OUT": "Se déconnecter"
+            },
+            "SCHEDULE": {
+                "TITLE_PLACEHOLDER": "Titre...",
+                "NO_LOGIN": "Informations de connexion introuvables",
+                "PLAN_NOT_FOUND": "Impossible de récupérer les informations du plan",
+                "FETCH_FAILED": "Échec de la récupération des informations du plan",
+                "CANDIDATE_COUNT": "#count# candidats trouvés",
+                "DELETE_CONFIRM": "Supprimer le calendrier",
+                "DELETE_SUCCESS": "#title# a été supprimé",
+                "SAVE_FAILED": "Échec de l'enregistrement du calendrier",
+                "ADD_FROM_MAP": "Ajouter depuis la carte",
+                "SELECT_CATEGORY": "Sélectionner une catégorie",
+                "CATEGORY": {
+                    "MOVEMENT": "Déplacement",
+                    "MEALS": "Repas",
+                    "CAFE": "Café",
+                    "AMUSEMENT": "Divertissement",
+                    "OTHER": "Autre"
+                },
+                "TIME_EDITOR": {
+                    "PREVIOUS_START_TIME": "Définir l'heure de début depuis le précédent",
+                    "NEXT_START_TIME": "Définir l'heure de début du suivant"
+                }
+            },
+            "PLAN_LIST": {
+                "FETCH_FAILED": "Échec de la récupération des plans",
+                "SORT_SAVE_FAILED": "Échec de l'enregistrement de l'ordre de tri"
+            },
+            "MAP": {
+                "SELECT_SCHEDULE": "Sélectionner un calendrier",
+                "NO_RESULT": "Aucun résultat de recherche",
+                "NO_SELECTED": "Aucun candidat sélectionné",
+                "RESEARCH": "Rechercher à nouveau dans la zone",
+                "CATEGORY": {
+                    "SEARCH_RESULT": "Résultat de recherche",
+                    "SELECTED": "Sélectionné",
+                    "CAFE": "Café",
+                    "MEAL": "Repas",
+                    "HOTEL": "Hôtel",
+                    "SPOT": "Lieu"
+                }
             }
         },
-        "PLAN_LIST": {
-            "FETCH_FAILED": "Échec de la récupération des plans",
-            "SORT_SAVE_FAILED": "Échec de l'enregistrement de l'ordre de tri"
-        },
-        "MAP": {
-            "SELECT_SCHEDULE": "Sélectionner un calendrier",
-            "NO_RESULT": "Aucun résultat de recherche",
-            "NO_SELECTED": "Aucun candidat sélectionné",
-            "RESEARCH": "Rechercher à nouveau dans la zone",
-            "CATEGORY": {
-                "SEARCH_RESULT": "Résultat de recherche",
-                "SELECTED": "Sélectionné",
-                "CAFE": "Café",
-                "MEAL": "Repas",
-                "HOTEL": "Hôtel",
-                "SPOT": "Lieu"
+        "COMPONENT": {
+            "PLAN": {
+                "NOT_FOUND": "Aucun plan trouvé",
+                "ADD_PLAN": "Ajouter un plan",
+                "SUPER_USER": "Super utilisateur",
+                "FREE_PLAN": "Plan gratuit",
+                "PREMIUM_PLAN": "Plan Premium",
+                "EXPIRATION_DATE": "Date d'expiration",
+                "SORT_TITLE": "Trier",
+                "SORT_CREATED_AT": "Date de création (Décroissant)",
+                "SORT_SCHEDULE_DATE": "Date du calendrier (Décroissant)",
+                "NO_MEMO": "Aucun mémo.",
+                "NO_SCHEDULE_TODAY": "Aucun calendrier aujourd'hui",
+                "NO_PLAN_RECENT": "Aucun plan récent #days# jours",
+                "DELETE_CONFIRM": "#title# à supprimer",
+                "DELETE_CONFIRM_MESSAGE": "Une fois supprimé, il ne peut pas être restauré. Êtes-vous sûr de vouloir le supprimer ?"
+            },
+            "PAYMENT": {
+                "FEATURE": "Fonctionnalité",
+                "FREE": "Gratuit",
+                "PREMIUM": "Premium",
+                "ALL_FEATURES": "Toutes les fonctionnalités disponibles",
+                "MEDIA_CAPACITY": "Capacité média",
+                "MEDIA_CAPACITY_FREE": "1 Go / Plan",
+                "MEDIA_CAPACITY_PREMIUM": "100 Go / Plan",
+                "AD_DISPLAY": "Affichage publicitaire",
+                "YES": "○",
+                "NO": "-",
+                "RECOMMENDED": "Recommandé",
+                "CURRENT_FREE_PLAN": "Utilisation actuelle du plan gratuit",
+                "UPGRADE_MESSAGE": "Passez au plan Premium pour profiter de toutes les fonctionnalités",
+                "CURRENT_PLAN": "Plan actuel",
+                "POPULAR_PLAN": "Plan populaire",
+                "TRIAL_MESSAGE": "Commencez avec un essai d'1 mois",
+                "TRIAL_MESSAGE_MONTHLY": "est gratuit pendant 1 mois !",
+                "TRIAL_MESSAGE_AFTER_END": "Après la fin de l'essai, vous serez automatiquement mis à niveau vers le plan premium.",
+                "DISCOUNT_MESSAGE": "#discount#% DE RÉDUCTION !"
+            },
+            "INFORMATION": {
+                "DETAIL": "Voir les détails",
+                "CLOSE": "Fermer",
+                "INVALID_URL": "URL invalide"
+            },
+            "SCHEDULE": {
+                "EDIT_PLAN": "Modifier le plan",
+                "ADD_SCHEDULE": "Ajouter un calendrier",
+                "EDIT_TIME": "Modifier l'heure",
+                "SHARE": "Partager",
+                "SHARE_TITLE": "Partager le calendrier"
+            },
+            "VERSION": {
+                "UPDATE_REQUIRED": "Mise à jour de l'application requise",
+                "UPDATE_MESSAGE": "Veuillez mettre à jour l'application pour utiliser les dernières fonctionnalités et mises à jour de sécurité.",
+                "UPDATE_BUTTON": "Mettre à jour dans le magasin"
+            },
+            "SCHEDULE_NOTIFICATION": {
+                "TITLE": "Notification du calendrier",
+                "MESSAGE": "Recevez des notifications lorsque le calendrier commence.",
+                "NO_PERMISSION_TITLE": "Autorisation de notification requise",
+                "NO_PERMISSION": "L'autorisation de notification est requise pour utiliser les notifications de calendrier. Veuillez autoriser les notifications dans les paramètres de l'appareil.",
+                "ERROR_MESSAGE": "Échec de l'obtention de l'autorisation de notification. Veuillez réessayer plus tard."
             }
+        },
+        "COMMON": {
+            "DARK_MODE": "Mode sombre",
+            "ERROR": "Erreur",
+            "SUCCESS": "Succès",
+            "CANCEL": "Annuler",
+            "OK": "OK",
+            "SAVE": "Enregistrer",
+            "NOT_FOUND": "introuvable",
+            "DELETE": "Supprimer",
+            "DAYS": " jours",
+            "SEARCH": "Rechercher",
+            "MONTH": "Mois"
         }
-    },
-    "COMPONENT": {
-        "PLAN": {
-            "NOT_FOUND": "Aucun plan trouvé",
-            "ADD_PLAN": "Ajouter un plan",
-            "SUPER_USER": "Super utilisateur",
-            "FREE_PLAN": "Plan gratuit",
-            "PREMIUM_PLAN": "Plan Premium",
-            "EXPIRATION_DATE": "Date d'expiration",
-            "SORT_TITLE": "Trier",
-            "SORT_CREATED_AT": "Date de création (Décroissant)",
-            "SORT_SCHEDULE_DATE": "Date du calendrier (Décroissant)",
-            "NO_MEMO": "Aucun mémo.",
-            "NO_SCHEDULE_TODAY": "Aucun calendrier aujourd'hui",
-            "NO_PLAN_RECENT": "Aucun plan récent #days# jours",
-            "DELETE_CONFIRM": "#title# à supprimer",
-            "DELETE_CONFIRM_MESSAGE": "Une fois supprimé, il ne peut pas être restauré. Êtes-vous sûr de vouloir le supprimer ?"
-        },
-        "PAYMENT": {
-            "FEATURE": "Fonctionnalité",
-            "FREE": "Gratuit",
-            "PREMIUM": "Premium",
-            "ALL_FEATURES": "Toutes les fonctionnalités disponibles",
-            "MEDIA_CAPACITY": "Capacité média",
-            "MEDIA_CAPACITY_FREE": "1 Go / Plan",
-            "MEDIA_CAPACITY_PREMIUM": "100 Go / Plan",
-            "AD_DISPLAY": "Affichage publicitaire",
-            "YES": "○",
-            "NO": "-",
-            "RECOMMENDED": "Recommandé",
-            "CURRENT_FREE_PLAN": "Utilisation actuelle du plan gratuit",
-            "UPGRADE_MESSAGE": "Passez au plan Premium pour profiter de toutes les fonctionnalités",
-            "CURRENT_PLAN": "Plan actuel",
-            "POPULAR_PLAN": "Plan populaire",
-            "TRIAL_MESSAGE": "Commencez avec un essai d'1 mois",
-            "TRIAL_MESSAGE_MONTHLY": "est gratuit pendant 1 mois !",
-            "TRIAL_MESSAGE_AFTER_END": "Après la fin de l'essai, vous serez automatiquement mis à niveau vers le plan premium.",
-            "DISCOUNT_MESSAGE": "#discount#% DE RÉDUCTION !"
-        },
-        "INFORMATION": {
-            "DETAIL": "Voir les détails",
-            "CLOSE": "Fermer",
-            "INVALID_URL": "URL invalide"
-        },
-        "SCHEDULE": {
-            "EDIT_PLAN": "Modifier le plan",
-            "ADD_SCHEDULE": "Ajouter un calendrier",
-            "EDIT_TIME": "Modifier l'heure",
-            "SHARE": "Partager",
-            "SHARE_TITLE": "Partager le calendrier"
-        },
-        "VERSION": {
-            "UPDATE_REQUIRED": "Mise à jour de l'application requise",
-            "UPDATE_MESSAGE": "Veuillez mettre à jour l'application pour utiliser les dernières fonctionnalités et mises à jour de sécurité.",
-            "UPDATE_BUTTON": "Mettre à jour dans le magasin"
-        },
-        "SCHEDULE_NOTIFICATION": {
-            "TITLE": "Notification du calendrier",
-            "MESSAGE": "Recevez des notifications lorsque le calendrier commence.",
-            "NO_PERMISSION_TITLE": "Autorisation de notification requise",
-            "NO_PERMISSION": "L'autorisation de notification est requise pour utiliser les notifications de calendrier. Veuillez autoriser les notifications dans les paramètres de l'appareil.",
-            "ERROR_MESSAGE": "Échec de l'obtention de l'autorisation de notification. Veuillez réessayer plus tard."
-        }
-    },
-    "COMMON": {
-        "DARK_MODE": "Mode sombre",
-        "ERROR": "Erreur",
-        "SUCCESS": "Succès",
-        "CANCEL": "Annuler",
-        "OK": "OK",
-        "SAVE": "Enregistrer",
-        "NOT_FOUND": "introuvable",
-        "DELETE": "Supprimer",
-        "DAYS": " jours",
-        "SEARCH": "Rechercher",
-        "MONTH": "Mois"
     }
-}
