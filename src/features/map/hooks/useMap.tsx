@@ -8,11 +8,9 @@ import { searchNearby } from '../libs/searchNearby';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { MapCategory } from '../types/MapCategory';
 import { Region } from 'react-native-maps';
-import { useLocation } from '@/src/contexts/LocationContext';
 import { fetchCachePlace } from '../apis/fetchCachePlace';
 import { Schedule } from '../../schedule';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { useFocusEffect } from '@react-navigation/native';
 
 type MapContextType = {
   searchPlaceList: Place[];
@@ -44,7 +42,6 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [selectedPlaceList, setSelectedPlaceList] = useState<Place[]>([]);
   const [region, setRegion] = useState<Region | null>(null);
-  const { currentRegion } = useLocation();
   const { editSchedule, setEditSchedule } = usePlan();
   const [isLoadingSelectedPlaceList, setIsLoadingSelectedPlaceList] = useState<boolean>(false);
 
@@ -82,8 +79,7 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
           setIsLoadingSelectedPlaceList(false);
         });
       }
-    }
-    else if (selectedCategory === 'text') {
+    } else if (selectedCategory === 'text') {
       placeList = await searchPlaceByText(
         session,
         region?.latitude || 0,
@@ -137,9 +133,9 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   const handleSelectedPlace = (place: Place) => {
     setRegion((prev) => {
       return {
-        ...(prev || {}),
         ...place.location,
-        latitude: place.location.latitude,
+        latitudeDelta: prev?.latitudeDelta || 0.05,
+        longitudeDelta: prev?.longitudeDelta || 0.03,
       } as Region;
     });
     setSelectedPlace(place);
@@ -158,35 +154,18 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   );
 
   /** スケジュールに対する場所の削除 */
-  const handleRemoveSelectedPlace = (place: Place) => {
-    setSelectedPlaceList((prev) => prev.filter((p) => p.id !== place.id));
-    setEditSchedule({
-      ...editSchedule,
-      place_list: editSchedule?.place_list?.filter((p: string) => p !== place.id) || [],
-    } as Schedule);
-  };
+  const handleRemoveSelectedPlace = useCallback(
+    (place: Place) => {
+      setSelectedPlaceList((prev) => prev.filter((p) => p.id !== place.id));
+      setEditSchedule({
+        ...editSchedule,
+        place_list: editSchedule?.place_list?.filter((p: string) => p !== place.id) || [],
+      } as Schedule);
+    },
+    [editSchedule]
+  );
 
   // === Effect ===
-
-  /**
-   * 初回ロケーション情報取得処理
-   */
-  useFocusEffect(
-    useCallback(() => {
-      if (currentRegion) {
-        setRegion(
-          selectedPlaceList.length > 0
-            ? {
-                ...selectedPlaceList[0].location,
-                latitudeDelta: 0.025,
-                longitudeDelta: 0.025,
-              }
-            : currentRegion
-        );
-        // fetchLocation(currentRegion.latitude, currentRegion.longitude);
-      }
-    }, [currentRegion, selectedPlaceList])
-  );
 
   /**
    * スケジュールに対する場所の取得処理
@@ -194,6 +173,16 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     fetchCachePlace(editSchedule?.place_list || [], session).then((data: Place[]) => {
       setSelectedPlaceList(data || []);
+      //   if (data.length > 0) {
+      //     setRegion((prev) => {
+      //       return {
+      //         ...(prev || {}),
+      //         ...data[0].location,
+      //         latitudeDelta: prev?.latitudeDelta || 0.05,
+      //         longitudeDelta: prev?.longitudeDelta || 0.03,
+      //       } as Region;
+      //     });
+      //   }
     });
   }, [editSchedule]);
 

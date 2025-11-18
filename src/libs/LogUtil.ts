@@ -45,21 +45,9 @@ export class LogUtil {
         name: error.name,
       };
     }
-    const customMessage = `[${level.toUpperCase()}] ${user ? user.email : ''} ${message}`;
+    const customMessage = `[${level.toUpperCase()}] ${user ? `[${user.email}]` : ''} ${message}`;
     // コンソールへの出力
-    if (process.env.EXPO_PUBLIC_ENABLE_CONSOLE_LOG == 'ON') {
-      switch (level) {
-        case 'info':
-          console.log(customMessage);
-          break;
-        case 'warn':
-          console.warn(customMessage);
-          break;
-        case 'error':
-          console.error(customMessage);
-          break;
-      }
-    }
+    console.log(customMessage);
 
     // Slack通知処理（libに委譲）
     await this.sendSlackNotification(level, customMessage, logData, notify);

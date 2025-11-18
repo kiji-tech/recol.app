@@ -35,7 +35,7 @@ export default function ScheduleBottomSheetHeader({
    * @returns {React.ReactNode} スケジュールヘッダーコンポーネント
    */
   return (
-    <View className="m-2 p-4 border border-light-border dark:border-dark-border rounded-lg">
+    <View className="m-2 px-4 border border-light-border dark:border-dark-border rounded-lg">
       {/* セレクタ */}
       <RNPickerSelect
         items={scheduleList.map((s) => ({
