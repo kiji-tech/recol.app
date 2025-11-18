@@ -1,30 +1,27 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Header, Loading } from '@/src/components';
 import { BackgroundView } from '@/src/components';
 import { borderColor } from '@/src/themes/ColorUtil';
-import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { View, Text, TextInput } from 'react-native';
 import { updatePlan } from '@/src/features/plan/apis/updatePlan';
-import { fetchPlan, Plan } from '@/src/features/plan';
+import { Plan } from '@/src/features/plan';
 import { useAuth } from '@/src/features/auth';
 import * as Location from 'expo-location';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import i18n from '@/src/libs/i18n';
 import { Toast } from 'toastify-react-native';
 import { LogUtil } from '@/src/libs/LogUtil';
+import { usePlan } from '@/src/contexts/PlanContext';
 
 export default function PlanEditor() {
   // === Member ===
   const router = useRouter();
-  const { uid: planId } = useLocalSearchParams<{ uid: string }>();
   const { session, user } = useAuth();
-  const { data: plan, isLoading } = useQuery({
-    queryKey: ['plan', planId],
-    queryFn: () => fetchPlan(planId, session),
-  });
-  const [editPlan, setEditPlan] = useState<Plan | null>(plan!);
+  const { plan, planLoading } = usePlan();
   const [title, setTitle] = useState<string>(plan?.title || '');
   const [memo, setMemo] = useState<string>(plan?.memo || '');
+
   const mutation = useMutation({
     mutationFn: (newPlan: Plan) => updatePlan(newPlan, session),
     onSuccess: () => {
@@ -40,9 +37,9 @@ export default function PlanEditor() {
   // === Method ===
   /** 登録 */
   const handlerSubmit = async () => {
-    LogUtil.log('handlerSubmit', { user, level: 'info', additionalInfo: { title, memo } });
+    LogUtil.log(JSON.stringify({ handlerSubmit: { title, memo } }), { user, level: 'info' });
     mutation.mutate({
-      ...editPlan,
+      ...plan,
       title,
       memo,
     } as Plan);
@@ -54,23 +51,14 @@ export default function PlanEditor() {
     requestPermission();
   }
 
-  // === Effect ===
-  useFocusEffect(
-    useCallback(() => {
-      if (plan) {
-        setEditPlan(plan);
-      }
-    }, [plan])
-  );
-
   // === Render ===
-  if (isLoading || !editPlan) {
+  if (planLoading || !plan) {
     return <Loading />;
   }
   return (
     <BackgroundView>
       <Header
-        title={`${editPlan?.title || i18n.t('SCREEN.PLAN.NEW_PLAN')}${i18n.t('SCREEN.PLAN.EDIT_TITLE')}`}
+        title={`${plan?.title || i18n.t('SCREEN.PLAN.NEW_PLAN')}${i18n.t('SCREEN.PLAN.EDIT_TITLE')}`}
         onBack={() => {
           router.back();
         }}

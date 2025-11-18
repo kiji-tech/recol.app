@@ -45,7 +45,7 @@ export class LogUtil {
         name: error.name,
       };
     }
-    const customMessage = `[${level.toUpperCase()}] ${user && `[${user.email}]`} ${message}`;
+    const customMessage = `[${level.toUpperCase()}] ${user ? `[${user.email}]` : ''} ${message}`;
     // コンソールへの出力
     console.log(customMessage);
 
