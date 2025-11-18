@@ -53,7 +53,7 @@
         "chalk": "^5.4.1",
         "dayjs": "^1.11.13",
         "dom-to-image": "^2.6.0",
-        "expo": "~53.0.23",
+        "expo": "~53.0.24",
         "expo-apple-authentication": "^7.2.4",
         "expo-auth-session": "~6.2.1",
         "expo-build-properties": "~0.14.8",
