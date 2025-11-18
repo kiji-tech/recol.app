@@ -25,18 +25,26 @@ const LocationProvider = ({ children }: { children: React.ReactNode }) => {
   /**
    * 現在位置を取得
    */
-  const getCurrentPosition = async () => {
-    const location = await Location.getCurrentPositionAsync({}).catch((error) => {
+  const getCurrentPosition = useCallback(async () => {
+    LogUtil.log(JSON.stringify({ getCurrentPosition: { currentRegion } }), {
+      level: 'info',
+      user,
+    });
+    try {
+      const location = await Location.getCurrentPositionAsync({});
+      if (!location) return;
+      setCurrentRegion((prev) => {
+        return {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: prev?.latitudeDelta || 0.05,
+          longitudeDelta: prev?.longitudeDelta || 0.03,
+        } as Region;
+      });
+    } catch (error) {
       LogUtil.log(JSON.stringify({ getCurrentPositionError: error }), { level: 'error', user });
-    });
-    if (!location) return;
-    setCurrentRegion({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-      latitudeDelta: 0.05,
-      longitudeDelta: 0.03,
-    });
-  };
+    }
+  }, [currentRegion, user]);
 
   // === Effect ===
   useFocusEffect(

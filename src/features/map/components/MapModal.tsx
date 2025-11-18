@@ -11,6 +11,7 @@ import { Header } from '@/src/components';
 import PlaceBottomSheet from './PlaceBottomSheet/PlaceBottomSheet';
 import { useMap } from '../hooks/useMap';
 import { useLocation } from '@/src/contexts/LocationContext';
+import { LogUtil } from '@/src/libs/LogUtil';
 
 type Props = {
   isOpen: boolean;
@@ -27,14 +28,13 @@ export default function MapModal({ isOpen, onClose }: Props) {
     searchPlaceList,
     selectedPlace,
     selectedPlaceList,
-    clearSelectedPlace,
     handleTextSearch,
     handleResearch,
-    handleSelectedCategory,
     handleSelectedPlace,
     region,
     setRegion,
     radius,
+    selectedCategory,
   } = useMap();
   const isIOS = Platform.OS === 'ios';
 
@@ -43,15 +43,16 @@ export default function MapModal({ isOpen, onClose }: Props) {
   /** マップ選択時のスクロール位置計算 */
   const calcScrollHeight = useCallback(
     (selectedPlace: Place) => {
-      const PLACE_HEIGHT = 113;
-      const index = searchPlaceList.findIndex((place: Place) => place.id === selectedPlace.id);
-      const selectedIndex = selectedPlaceList
-        ? selectedPlaceList.findIndex((place: Place) => place.id === selectedPlace.id)
-        : -1;
-      if (selectedIndex !== -1) {
-        handleSelectedCategory('selected');
+      const PLACE_HEIGHT = 140;
+      // 選択状態の場合は､selectedPlaceListからインデックスを取得
+      if (selectedCategory === 'selected') {
+        const selectedIndex = selectedPlaceList
+          ? selectedPlaceList.findIndex((place: Place) => place.id === selectedPlace.id)
+          : -1;
         return selectedIndex * PLACE_HEIGHT;
       }
+
+      const index = searchPlaceList.findIndex((place: Place) => place.id === selectedPlace.id);
       return index * PLACE_HEIGHT;
     },
     [searchPlaceList, selectedPlaceList]
@@ -59,8 +60,8 @@ export default function MapModal({ isOpen, onClose }: Props) {
 
   /** 場所詳細ボトムシート 閉じる処理 */
   const handleCloseDetailPlace = () => {
+    LogUtil.log('handleCloseDetailPlace', { level: 'info' });
     setIsDetailPlace(false);
-    clearSelectedPlace();
   };
 
   /** モーダルを閉じる */
@@ -105,7 +106,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
 
       {/* 再検索 */}
       <ResearchButton
-        centerRegion={region || currentRegion || null}
+        centerRegion={region || null}
         currentRegion={currentRegion || null}
         radius={radius}
         onPress={handleResearch}
@@ -117,7 +118,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
           placeList={searchPlaceList}
           selectedPlaceList={selectedPlaceList}
           radius={radius}
-          region={region || currentRegion}
+          region={region}
           isMarker={true}
           isCallout={true}
           isCenterCircle={true}

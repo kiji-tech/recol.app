@@ -16,6 +16,7 @@ import DirectionBottomSheet from '@/src/features/map/components/DirectionBottomS
 import { DirectionMode } from '@/src/features/map/types/Direction';
 import PlaceBottomSheet from '@/src/features/map/components/PlaceBottomSheet/PlaceBottomSheet';
 import { usePlan } from '@/src/contexts/PlanContext';
+import { LogUtil } from '@/src/libs/LogUtil';
 /**
  * 初期表示
  */
@@ -66,24 +67,27 @@ export default function MapScreen() {
    * @param mode {DirectionMode} 交通手段
    * @returns {void}
    */
-  const setupDirections = async (place: Place, mode?: DirectionMode) => {
-    setIsLoadingDirection(true);
-    try {
-      const directions: Direction = await fetchDirection(
-        `${currentRegion?.latitude},${currentRegion?.longitude}`,
-        `${place.location.latitude},${place.location.longitude}`,
-        mode
-      );
-      if (directions.status !== 'OK' || !directions.routes || directions.routes.length === 0) {
-        Toast.warn('経路の取得に失敗しました｡');
-        setRouteList([]);
-        return;
+  const setupDirections = useCallback(
+    async (place: Place, mode?: DirectionMode) => {
+      setIsLoadingDirection(true);
+      try {
+        const directions: Direction = await fetchDirection(
+          `${currentRegion?.latitude},${currentRegion?.longitude}`,
+          `${place.location.latitude},${place.location.longitude}`,
+          mode
+        );
+        if (directions.status !== 'OK' || !directions.routes || directions.routes.length === 0) {
+          Toast.warn('経路の取得に失敗しました｡');
+          setRouteList([]);
+          return;
+        }
+        setRouteList(directions.routes);
+      } finally {
+        setIsLoadingDirection(false);
       }
-      setRouteList(directions.routes);
-    } finally {
-      setIsLoadingDirection(false);
-    }
-  };
+    },
+    [currentRegion]
+  );
 
   /**
    * リージョン変更処理
@@ -106,11 +110,11 @@ export default function MapScreen() {
    * 経路表示ボトムシート 表示処理
    * @returns {void}
    */
-  const handleDirectionView = async () => {
+  const handleDirectionView = useCallback(async () => {
     if (!selectedPlace) return;
-    await setupDirections(selectedPlace!, selectedMode);
     setViewMode('direction');
-  };
+    await setupDirections(selectedPlace!, selectedMode);
+  }, [selectedPlace, selectedMode]);
 
   /**
    * 経路表示ボトムシート クローズ処理
@@ -145,7 +149,13 @@ export default function MapScreen() {
    * @returns {void}
    */
   const handleShowCurrentLocation = () => {
-    setRegion(currentRegion as Region);
+    LogUtil.log('handleShowCurrentLocation', { level: 'info' });
+    if (!currentRegion) return;
+    setRegion({
+      ...region,
+      latitude: currentRegion.latitude,
+      longitude: currentRegion.longitude,
+    } as Region);
   };
 
   /**
@@ -189,7 +199,7 @@ export default function MapScreen() {
           placeList={[]}
           selectedPlaceList={selectedPlaceList}
           radius={radius}
-          region={region || currentRegion}
+          region={region}
           isMarker={true}
           isCallout={true}
           isCenterCircle={false}
