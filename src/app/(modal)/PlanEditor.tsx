@@ -18,7 +18,7 @@ export default function PlanEditor() {
   // === Member ===
   const router = useRouter();
   const { session, user } = useAuth();
-  const { plan, planLoading } = usePlan();
+  const { plan, planLoading, planId } = usePlan();
   const [title, setTitle] = useState<string>(plan?.title || '');
   const [memo, setMemo] = useState<string>(plan?.memo || '');
 
@@ -52,7 +52,7 @@ export default function PlanEditor() {
   }
 
   // === Render ===
-  if (planLoading || !plan) {
+  if (planLoading || plan?.uid !== planId) {
     return <Loading />;
   }
   return (
