@@ -44,7 +44,7 @@ const ScheduleBottomSheet = forwardRef(
 
     /** マップ選択時のスクロール位置計算 */
     const calcScrollHeight = (selectedPlace: Place) => {
-      const PLACE_HEIGHT = 113;
+      const PLACE_HEIGHT = 140;
       const index =
         selectedSchedule?.place_list?.findIndex((place) => place === selectedPlace.id) || 0;
       return index * PLACE_HEIGHT;
