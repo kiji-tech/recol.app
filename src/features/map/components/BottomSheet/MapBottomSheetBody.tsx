@@ -15,8 +15,14 @@ type Props = {
 const MapBottomSheetBody = forwardRef(
   ({ onSelectedPlace }: Props, ref: ForwardedRef<BottomSheetScrollViewMethods>) => {
     // ==== Member ====
-    const { searchPlaceList, isSearchLoading, selectedPlace, selectedPlaceList, selectedCategory } =
-      useMap();
+    const {
+      searchPlaceList,
+      isSearchLoading,
+      isLoadingSelectedPlaceList,
+      selectedPlace,
+      selectedPlaceList,
+      selectedCategory,
+    } = useMap();
     const scrollRef = useRef<BottomSheetScrollViewMethods>(null);
     if (ref) {
       useImperativeHandle(ref, () => ({
@@ -41,7 +47,7 @@ const MapBottomSheetBody = forwardRef(
     // ==== Method ====
 
     // ==== Render ====
-    if (isSearchLoading) return <Loading />;
+    if (isSearchLoading || isLoadingSelectedPlaceList) return <Loading />;
     return (
       <BottomSheetScrollView className="w-full flex-1" ref={scrollRef}>
         {!isSearchLoading && searchPlaceList && searchPlaceList.length == 0 && (

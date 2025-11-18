@@ -190,7 +190,7 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   const {
     data: searchPlaceList = [],
     refetch: refetchSearchPlaceList,
-    isLoading: isSearchLoading,
+    isFetching: isSearchLoading,
   } = useQuery({
     queryKey: ['searchPlaceList', selectedCategory, searchText, editSchedule?.uid],
     queryFn: () => fetchPlaceList(),

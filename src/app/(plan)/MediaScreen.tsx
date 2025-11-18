@@ -31,7 +31,7 @@ export default function MediaScreen() {
   const { planId } = usePlan();
   const {
     data: images,
-    isLoading,
+    isFetching,
     refetch,
   } = useQuery({
     queryKey: ['images', planId!],
@@ -196,7 +196,7 @@ export default function MediaScreen() {
 
   // === Render ===
 
-  if (isLoading) {
+  if (isFetching) {
     return <MaskLoading />;
   }
 
@@ -282,16 +282,16 @@ export default function MediaScreen() {
             icon={<AntDesign name="delete" size={24} color={'white'} />}
             onPress={handleDeleteImages}
             theme="danger"
-            disabled={isLoading}
-            loading={isLoading}
+            disabled={isFetching}
+            loading={isFetching}
           />
         )}
         {mode === 'normal' && (
           <IconButton
             icon={<AntDesign name="plus" size={24} color={isDarkMode ? 'white' : 'black'} />}
             onPress={handleAddImages}
-            disabled={isLoading}
-            loading={isLoading}
+            disabled={isFetching}
+            loading={isFetching}
           />
         )}
       </View>

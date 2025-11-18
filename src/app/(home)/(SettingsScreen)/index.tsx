@@ -31,7 +31,7 @@ export default function Settings() {
   const {
     data: profile,
     refetch,
-    isLoading: isProfileLoading,
+    isFetching: isProfileLoading,
   } = useQuery({
     queryKey: ['profile'],
     queryFn: () => fetchProfile(session),

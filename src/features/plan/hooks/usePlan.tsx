@@ -11,7 +11,7 @@ export const usePlan = () => {
   const {
     data: plan,
     refetch: refetchPlan,
-    isLoading: planLoading,
+    isFetching: planLoading,
   } = useQuery({
     queryKey: ['plan', planId],
     queryFn: () => fetchPlan(planId as string, session),
