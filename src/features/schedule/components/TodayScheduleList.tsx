@@ -63,9 +63,10 @@ type Props = {
 export default function TodayScheduleList({ planList }: Props) {
   // 直近7日にある予定を取得して表示する
   // === Member ===
-  const { setEditSchedule } = usePlan();
+  const { setEditSchedule, setPlanId } = usePlan();
   // === Method ===
   const handlePress = (schedule: Schedule) => {
+    setPlanId(schedule.plan_id!);
     setEditSchedule(schedule);
     router.push(`/(plan)/ScheduleScreen`);
   };
