@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import i18n from '@/src/libs/i18n';
 import RNPickerSelect from 'react-native-picker-select';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import { isIOS } from 'toastify-react-native/utils/helpers';
 
 type Props = {
   scheduleList: Schedule[];
@@ -35,7 +36,9 @@ export default function ScheduleBottomSheetHeader({
    * @returns {React.ReactNode} スケジュールヘッダーコンポーネント
    */
   return (
-    <View className="m-2 px-4 border border-light-border dark:border-dark-border rounded-lg">
+    <View
+      className={`m-2 px-4 border border-light-border dark:border-dark-border rounded-lg ${isIOS && 'py-2'}`}
+    >
       {/* セレクタ */}
       <RNPickerSelect
         items={scheduleList.map((s) => ({
@@ -52,9 +55,11 @@ export default function ScheduleBottomSheetHeader({
         style={{
           inputIOS: {
             fontSize: 12,
+            color: isDarkMode ? '#ECECEC' : '#2A2A2A',
           },
           inputAndroid: {
             fontSize: 12,
+            color: isDarkMode ? '#ECECEC' : '#2A2A2A',
           },
         }}
         value={selectedSchedule?.uid}
