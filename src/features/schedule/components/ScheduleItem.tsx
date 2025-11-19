@@ -1,9 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { Tables } from '@/src/libs/database.types';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { Place } from '@/src/features/map/types/Place';
 import { Schedule } from '@/src/features/schedule';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import CategoryIcon from './CategoryIcon';
@@ -14,8 +12,8 @@ import { openUrl } from '@/src/features/article/libs/openBrowser';
 type Props = {
   item: Schedule;
   isEndDateView: boolean;
-  onPress: (schedule: Tables<'schedule'> & { place_list: Place[] }) => void;
-  onLongPress: (schedule: Tables<'schedule'> & { place_list: Place[] }) => void;
+  onPress: (schedule: Schedule) => void;
+  onLongPress: (schedule: Schedule) => void;
 };
 export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress }: Props) {
   const { isDarkMode } = useTheme();
@@ -54,12 +52,12 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
               <View className="flex flex-row gap-2 items-center">
                 <FontAwesome5 name="map-marker-alt" size={18} color="#f87171" />
                 <Text className="text-lg text-light-text dark:text-dark-text">
-                  {item.place_list?.length || 0}件
+                  {item.place_list.filter((place) => place !== null)?.length || 0}件
                 </Text>
               </View>
             )}
           </View>
-        </View> 
+        </View>
         {/* 終了時刻 */}
         {isEndDateView && (
           <View className="flex flex-row gap-2 items-center mb-4">

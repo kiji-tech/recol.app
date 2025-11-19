@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { ReactNode } from 'react';
-import { Modal, Text, TouchableOpacity } from 'react-native';
+import { Modal, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import BackgroundView from './BackgroundView';
 import { BackHandler } from 'react-native';
+import BackButton from './BackButton';
 
 type Props = {
   children: ReactNode;
@@ -25,15 +26,11 @@ export default function ModalLayout({ children, visible = true, size, onClose }:
       animationType="slide"
       onRequestClose={onClose}
       style={{ height: size == 'full' ? '92%' : size == 'half' ? '50%' : Number(size) }}
-      className={`w-screen flex flex-col justify-start items-start gap-8
-    bg-light-background dark:bg-dark-border`}
     >
-      <BackgroundView>
-        <TouchableOpacity onPress={onClose} className="mb-4">
-          <Text className="text-xl text-light-text dark:text-dark-text">Close</Text>
-        </TouchableOpacity>
+      <SafeAreaView className="h-screen w-screen bg-light-background dark:bg-dark-background">
+        <BackButton onPress={onClose} />
         {children}
-      </BackgroundView>
+      </SafeAreaView>
     </Modal>
   );
 }

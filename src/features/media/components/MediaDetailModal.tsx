@@ -36,7 +36,7 @@ export default function MediaDetailModal({
   if (imageList.length === 0) return null;
   return (
     <ModalLayout visible={visible} size="full" onClose={onClose}>
-      <View className="flex-1 bg-light-background dark:bg-dark-background">
+      <View className="flex-1">
         <ImageViewer
           imageUrls={imageList.map((item) => ({
             url: item,

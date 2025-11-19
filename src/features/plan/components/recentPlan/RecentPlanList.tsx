@@ -80,7 +80,11 @@ export default function RecentPlanList({ planList }: Props) {
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }: { item: Plan }) => (
-            <RecentPlanItem plan={item} days={days as RecentPlanDays} onPress={handlePress} />
+            <RecentPlanItem
+              plan={item}
+              days={days as RecentPlanDays}
+              onPress={(plan: Plan) => handlePress(plan)}
+            />
           )}
           keyExtractor={(item: Plan) => item.uid}
         />

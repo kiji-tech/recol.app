@@ -75,16 +75,9 @@ const updateScheduleRecord = async (
 ): Promise<DatabaseResult<Schedule[]>> => {
   if (!scheduleList || scheduleList.length === 0) return { data: null, error: null };
 
-  const updateData = scheduleList.map((schedule) => {
-    return {
-      ...schedule,
-      place_list: schedule.place_list || [],
-    } as Schedule;
-  });
-
   const { data, error } = await supabase
     .from('schedule')
-    .upsert(updateData, { onConflict: 'uid' })
+    .upsert(scheduleList, { onConflict: 'uid' })
     .select('*');
   return { data, error };
 };

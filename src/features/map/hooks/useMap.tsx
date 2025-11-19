@@ -11,6 +11,7 @@ import { Region } from 'react-native-maps';
 import { fetchCachePlace } from '../apis/fetchCachePlace';
 import { Schedule } from '../../schedule';
 import { usePlan } from '@/src/contexts/PlanContext';
+import { useLocation } from '@/src/contexts/LocationContext';
 
 type MapContextType = {
   searchPlaceList: Place[];
@@ -37,11 +38,12 @@ const DEFAULT_RADIUS = 4200;
 
 const MapProvider = ({ children }: { children: React.ReactNode }) => {
   const { session, user } = useAuth();
+  const { currentRegion } = useLocation();
   const [searchText, setSearchText] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<MapCategory>('selected');
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [selectedPlaceList, setSelectedPlaceList] = useState<Place[]>([]);
-  const [region, setRegion] = useState<Region | null>(null);
+  const [region, setRegion] = useState<Region | null>(currentRegion);
   const { editSchedule, setEditSchedule } = usePlan();
   const [isLoadingSelectedPlaceList, setIsLoadingSelectedPlaceList] = useState<boolean>(false);
 
