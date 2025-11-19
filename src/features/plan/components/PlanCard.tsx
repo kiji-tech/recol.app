@@ -66,7 +66,7 @@ export default function PlanCard({ plan, onDelete }: PlanCardProps) {
       onPress={() => handleSelectPlan(plan)}
       onLongPress={() => handleDeletePlan(plan)}
     >
-      <View className="flex flex-row justify-between items-start p-4 h-24 w-full ">
+      <View className="flex flex-row justify-between items-start p-4 h-24 w-full">
         <View className="flex flex-row gap-4 justify-start items-start">
           {/*  TODO: メンバー */}
           <View className="w-10 h-10 bg-light-info dark:bg-dark-info rounded-full"></View>

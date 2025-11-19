@@ -32,7 +32,7 @@ const TodayScheduleItem = ({
   return (
     <TouchableOpacity
       onPress={() => onPress(schedule)}
-      className={`flex flex-col justify-start items-start border-[1px] w-48 h-32 border-light-border dark:border-dark-border rounded-md p-4 gap-2 bg-light-background dark:bg-dark-background`}
+      className={`flex flex-col justify-start items-start w-48 h-32 rounded-md p-4 gap-2 bg-light-background dark:bg-dark-background`}
     >
       {/* 日時 */}
       <View className="flex flex-row justify-start items-center gap-2">

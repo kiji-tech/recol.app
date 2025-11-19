@@ -98,7 +98,7 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
   // === Render ===
   return (
     <>
-      <View className="bg-light-background dark:bg-dark-background rounded-xl border-[1px] border-light-border dark:border-dark-border ">
+      <View className="bg-light-background dark:bg-dark-background rounded-xl ">
         {scheduleList.map((schedule, index) => {
           const date = dayjs(schedule.from).format(DATE_FORMAT);
           const isDateView =

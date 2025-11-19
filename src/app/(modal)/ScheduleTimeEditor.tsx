@@ -117,7 +117,7 @@ const ScheduleTimeEditorItem = ({
  */
 export default function ScheduleTimeEditor() {
   // === Member ===
-  const { plan } = usePlan();
+  const { plan, refetchPlan, refetchPlanList } = usePlan();
   const { session, user } = useAuth();
   const [currentPlan, setCurrentPlan] = useState<Plan | null>({
     ...plan,
@@ -128,6 +128,8 @@ export default function ScheduleTimeEditor() {
   const { mutate, isLoading } = useMutation({
     mutationFn: () => updatePlan(currentPlan!, session),
     onSuccess: () => {
+      refetchPlan();
+      refetchPlanList();
       router.back();
     },
     onError: (e) => {

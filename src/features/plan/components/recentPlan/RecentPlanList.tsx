@@ -49,10 +49,10 @@ export default function RecentPlanList({ planList }: Props) {
           <TouchableOpacity
             key={availableDay}
             onPress={() => handleDaysSelect(availableDay)}
-            className={`px-4 py-2 rounded-md border-[1px] ${
+            className={`px-4 py-2 rounded-md ${
               days === availableDay
-                ? 'bg-light-primary dark:bg-dark-primary border-light-primary dark:border-dark-primary'
-                : 'bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border'
+                ? 'bg-light-primary dark:bg-dark-primary'
+                : 'bg-light-background dark:bg-dark-background'
             }`}
           >
             <Text

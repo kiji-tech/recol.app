@@ -29,7 +29,7 @@ const hasLocation = (location: string) => {
 export const ArticleCard: React.FC<{ item: Article }> = ({ item }) => {
   return (
     <TouchableOpacity
-      className="flex flex-col bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border border rounded-md w-60"
+      className="flex flex-col bg-light-background dark:bg-dark-background rounded-md w-60"
       onPress={() => openBrowser(item)}
       accessibilityLabel={`記事: ${item.title}`}
     >

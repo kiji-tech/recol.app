@@ -66,7 +66,7 @@ export default function RecentPlanItem({
   return (
     <TouchableOpacity
       onPress={() => onPress(plan)}
-      className={`flex flex-col justify-start items-start border-[1px] w-60 h-40 border-light-border dark:border-dark-border rounded-md p-4 gap-2 bg-light-background dark:bg-dark-background mr-4`}
+      className={`flex flex-col justify-start items-start w-60 h-40 rounded-md p-4 gap-2 bg-light-background dark:bg-dark-background mr-4`}
     >
       {/* タイトル */}
       <Text className={`text-light-text dark:text-dark-text text-lg font-bold`} numberOfLines={2}>
