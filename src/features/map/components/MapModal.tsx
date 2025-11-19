@@ -118,7 +118,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
           placeList={searchPlaceList}
           selectedPlaceList={selectedPlaceList}
           radius={radius}
-          region={region}
+          region={region || currentRegion}
           isMarker={true}
           isCallout={true}
           isCenterCircle={true}
