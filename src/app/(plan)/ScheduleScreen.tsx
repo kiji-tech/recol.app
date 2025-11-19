@@ -14,11 +14,12 @@ import ScheduleMenu from '../../features/schedule/components/ScheduleMenu';
 import { Toast } from 'toastify-react-native';
 import i18n from '@/src/libs/i18n';
 import { usePlan } from '@/src/contexts/PlanContext';
+import MaskLoading from '@/src/components/MaskLoading';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
   const { session, user } = useAuth();
-  const { plan, planId, refetchPlan } = usePlan();
+  const { plan, planId, refetchPlan, planLoading } = usePlan();
 
   // === Method ===
   /**
@@ -82,6 +83,7 @@ export default function ScheduleScreen(): ReactNode {
   // === Render ===
   return (
     <BackgroundView>
+      {planLoading && <MaskLoading />}
       {/* ヘッダー */}
       <Header
         onBack={() => router.back()}
