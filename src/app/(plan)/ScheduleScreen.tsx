@@ -19,7 +19,7 @@ import MaskLoading from '@/src/components/MaskLoading';
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
   const { session, user } = useAuth();
-  const { plan, planId, refetchPlan, planLoading } = usePlan();
+  const { plan, planId, refetchPlan, refetchPlanList, planLoading } = usePlan();
 
   // === Method ===
   /**
@@ -55,8 +55,8 @@ export default function ScheduleScreen(): ReactNode {
       }
       throw new Error(e.message);
     });
-
     refetchPlan();
+    refetchPlanList();
     Toast.info(text);
     initView();
   };

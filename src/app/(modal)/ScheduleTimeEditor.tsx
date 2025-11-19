@@ -128,7 +128,6 @@ export default function ScheduleTimeEditor() {
   const { mutate, isLoading } = useMutation({
     mutationFn: () => updatePlan(currentPlan!, session),
     onSuccess: () => {
-      refetchPlan();
       refetchPlanList();
       router.back();
     },
