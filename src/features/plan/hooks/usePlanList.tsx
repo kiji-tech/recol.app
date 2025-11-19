@@ -11,7 +11,7 @@ import { useStoragePlanList } from './useStoragePlanList';
 
 export const PLAN_LIST_STORAGE_KEY = '@plan_list';
 
-export const usePlanList = (planId?: string | null, setPlanId?: (planId: string) => void) => {
+export const usePlanList = () => {
   const { session, user } = useAuth();
   const { setStoragePlan, refetch: refetchStoragePlanList } = useStoragePlanList();
   const [sortType, setSortType] = useState<PlanSortType>(DEFAULT_PLAN_SORT_TYPE);
@@ -25,11 +25,6 @@ export const usePlanList = (planId?: string | null, setPlanId?: (planId: string)
 
     setStoragePlan(response);
     refetchStoragePlanList();
-
-    if (planId && setPlanId) {
-      const updatePlan = response.find((p) => p.uid === planId);
-      if (updatePlan) setPlanId(updatePlan.uid);
-    }
     return response;
   };
 

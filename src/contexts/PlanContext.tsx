@@ -40,7 +40,7 @@ const PlanProvider = ({ children }: { children: React.ReactNode }) => {
     refetch: refetchPlanList,
     sortType,
     setSortType,
-  } = usePlanList(planId, setPlanId);
+  } = usePlanList();
   // === Storage Plan List ===
   const {
     data: storagePlanList,
