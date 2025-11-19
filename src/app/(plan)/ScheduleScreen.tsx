@@ -72,6 +72,8 @@ export default function ScheduleScreen(): ReactNode {
    */
   useFocusEffect(
     useCallback(() => {
+      // 画面に来たときにプランを取り直す
+      refetchPlan();
       const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
         router.back();
         return true;

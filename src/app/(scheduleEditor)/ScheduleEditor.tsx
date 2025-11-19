@@ -23,7 +23,7 @@ import { useMap } from '@/src/features/map';
 
 export default function ScheduleEditor() {
   // === Member ===
-  const { plan, editSchedule, setEditSchedule, refetchPlan, refetchPlanList } = usePlan();
+  const { plan, editSchedule, setEditSchedule } = usePlan();
   const { session, profile, user } = useAuth();
   const [openMapModal, setOpenMapModal] = useState(false);
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
@@ -58,8 +58,6 @@ export default function ScheduleEditor() {
     saveSchedule(updateSchedule)
       .then(() => {
         // プランの再取得
-        refetchPlan();
-        refetchPlanList();
         router.back();
       })
       .catch((e) => {
