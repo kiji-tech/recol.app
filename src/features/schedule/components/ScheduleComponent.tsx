@@ -14,19 +14,13 @@ import ScheduleItem from '@/src/features/schedule/components/ScheduleItem';
 import i18n from '@/src/libs/i18n';
 
 type Props = {
-  plan: Plan | null;
   onDelete?: (schedule: Schedule) => void;
-  isLoading?: boolean;
 };
 
-export default function ScheduleComponents({
-  plan,
-  onDelete,
-  isLoading = false,
-}: Props): ReactNode {
+export default function ScheduleComponents({ onDelete }: Props): ReactNode {
   // === Member ===
   const DATE_FORMAT = 'YYYY-MM-DD';
-  const { setEditSchedule } = usePlan();
+  const { plan, planLoading: isLoading, setEditSchedule } = usePlan();
   const scheduleList = useMemo(() => {
     return plan?.schedule.sort((a, b) => dayjs(a.from).diff(dayjs(b.from))) as Schedule[];
   }, [plan]);

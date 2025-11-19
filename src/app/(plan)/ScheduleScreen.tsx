@@ -93,12 +93,9 @@ export default function ScheduleScreen(): ReactNode {
       <ScrollView showsVerticalScrollIndicator={false}>
         {plan && (
           <>
-            <PlanInformation plan={plan} />
+            <PlanInformation />
             {/* Schedule */}
-            <ScheduleComponents
-              plan={plan || ({ schedule: [] } as unknown as Plan)}
-              onDelete={handleDeleteSchedule}
-            />
+            <ScheduleComponents onDelete={handleDeleteSchedule} />
           </>
         )}
       </ScrollView>

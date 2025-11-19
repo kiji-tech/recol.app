@@ -4,8 +4,10 @@ import Autolink from 'react-native-autolink';
 import Title from '@/src/components/Title';
 import { Plan } from '@/src/features/plan';
 import { useTheme } from '@/src/contexts/ThemeContext';
+import { usePlan } from '@/src/contexts/PlanContext';
 import { openUrl } from '../../article/libs/openBrowser';
 import i18n from '@/src/libs/i18n';
+import MaskLoading from '@/src/components/MaskLoading';
 
 type Props = {
   plan: Plan | null;
@@ -17,15 +19,16 @@ type Props = {
  * ・画像
  * ・メンバー
  */
-export default function PlanInformation({ plan }: Props) {
+export default function PlanInformation() {
   // === Member ===
   const { isDarkMode } = useTheme();
+  const { plan, planLoading } = usePlan();
 
   // === Render ===
-  if (!plan) return <></>;
-
+  if (!plan) return null;
   return (
     <View className="flex flex-col gap-2 mb-4">
+      {planLoading && <MaskLoading />}
       <Title text={plan.title || ''} />
       {/* 予定メモ */}
       {plan.memo ? (
