@@ -168,7 +168,8 @@
                 },
                 "TIME_EDITOR": {
                     "PREVIOUS_START_TIME": "Définir l'heure de début depuis le précédent",
-                    "NEXT_START_TIME": "Définir l'heure de début du suivant"
+                    "NEXT_START_TIME": "Définir l'heure de début du suivant",
+                    "SUBMIT_ERROR": "Échec de l'enregistrement du calendrier."
                 }
             },
             "PLAN_LIST": {

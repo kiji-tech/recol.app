@@ -53,6 +53,7 @@ export default function ScheduleEditor() {
       ...editSchedule,
       from: dayjs(editSchedule.from).format(DATE_FORMAT),
       to: dayjs(editSchedule.to).format(DATE_FORMAT),
+      place_list: editSchedule.place_list?.filter((place) => place !== null),
     } as Schedule;
     saveSchedule(updateSchedule)
       .then(() => {
@@ -197,7 +198,11 @@ export default function ScheduleEditor() {
                     .t('SCREEN.SCHEDULE.CANDIDATE_COUNT')
                     .replace(
                       '#count#',
-                      ((editSchedule.place_list && editSchedule.place_list!.length) || 0).toString()
+                      (
+                        (editSchedule.place_list &&
+                          editSchedule.place_list.filter((place) => place !== null).length) ||
+                        0
+                      ).toString()
                     )}
                 </Text>
               </View>

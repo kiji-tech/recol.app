@@ -168,7 +168,8 @@
             },
             "TIME_EDITOR": {
                 "PREVIOUS_START_TIME": "Startzeit vom vorherigen festlegen",
-                "NEXT_START_TIME": "Startzeit des nächsten festlegen"
+                "NEXT_START_TIME": "Startzeit des nächsten festlegen",
+                "SUBMIT_ERROR": "Zeitplan konnte nicht gespeichert werden"
             }
         },
         "PLAN_LIST": {
