@@ -1,11 +1,9 @@
 import React, { useMemo } from 'react';
-import { Tables } from '@/src/libs/database.types';
 import { ReactNode } from 'react';
 import { Text, View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Plan } from '@/src/features/plan';
-import { Place } from '@/src/features/map/types/Place';
 import { Schedule } from '@/src/features/schedule';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { Button, IconButton } from '@/src/components';
@@ -41,7 +39,7 @@ export default function ScheduleComponents({
       plan_id: plan!.uid,
       from: from.format('YYYY-MM-DDTHH:mm:00.000Z'),
       to: to.format('YYYY-MM-DDTHH:mm:00.000Z'),
-    } as Tables<'schedule'> & { place_list: Place[] };
+    } as Schedule;
     setEditSchedule(newSchedule);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
@@ -64,7 +62,7 @@ export default function ScheduleComponents({
   };
 
   /** アイテムクリックイベント */
-  const handleSchedulePress = (schedule: Tables<'schedule'> & { place_list: Place[] }) => {
+  const handleSchedulePress = (schedule: Schedule) => {
     const s = {
       ...schedule,
       plan_id: plan!.uid,
@@ -76,7 +74,7 @@ export default function ScheduleComponents({
         .set('hour', dayjs(schedule.to).get('hour'))
         .set('minute', dayjs(schedule.to).get('minute'))
         .format('YYYY-MM-DDTHH:mm:00.000Z'),
-    } as Tables<'schedule'> & { place_list: Place[] };
+    } as Schedule;
     setEditSchedule(s);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };

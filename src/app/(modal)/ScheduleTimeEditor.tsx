@@ -18,6 +18,7 @@ import { LogUtil } from '@/src/libs/LogUtil';
 import { Toast } from 'toastify-react-native';
 import MaskLoading from '@/src/components/MaskLoading';
 import i18n from '@/src/libs/i18n';
+import { useMutation } from 'react-query';
 
 const ScheduleTimeEditorItem = ({
   item,
@@ -124,7 +125,20 @@ export default function ScheduleTimeEditor() {
       ? plan?.schedule.sort((a: Schedule, b: Schedule) => dayjs(a.from).diff(dayjs(b.from)))
       : [],
   } as Plan);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { mutate, isLoading } = useMutation({
+    mutationFn: () => updatePlan(currentPlan!, session),
+    onSuccess: () => {
+      router.back();
+    },
+    onError: (e) => {
+      LogUtil.log(JSON.stringify({ scheduleTimeEditorError: e }), {
+        user,
+        level: 'error',
+        notify: true,
+      });
+      Toast.warn(i18n.t('SCREEN.SCHEDULE.TIME_EDITOR.SUBMIT_ERROR'));
+    },
+  });
 
   // === Method ===
   /**
@@ -136,27 +150,6 @@ export default function ScheduleTimeEditor() {
       ...currentPlan,
       schedule: currentPlan?.schedule.map((s: Schedule) => (s.uid == item.uid ? item : s)),
     } as Plan);
-  };
-
-  /**
-   * currentPlanのスケジュールを保存する
-   */
-  const handleSave = () => {
-    if (!currentPlan) return;
-    setIsLoading(true);
-    updatePlan(currentPlan, session)
-      .then(() => {
-        router.back();
-      })
-      .catch((e) => {
-        if (e && e.message) {
-          LogUtil.log(JSON.stringify(e), { user, level: 'error', notify: true });
-          Toast.warn(e.message);
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
   };
 
   return (
@@ -186,7 +179,7 @@ export default function ScheduleTimeEditor() {
         <View className="my-4">
           <Button
             text={i18n.t('COMMON.SAVE')}
-            onPress={() => handleSave()}
+            onPress={mutate}
             disabled={isLoading}
             loading={isLoading}
             theme="theme"

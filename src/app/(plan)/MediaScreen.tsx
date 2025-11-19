@@ -1,5 +1,13 @@
 import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, View, Text, Dimensions, Platform, BackHandler } from 'react-native';
+import {
+  TouchableOpacity,
+  View,
+  Text,
+  Dimensions,
+  Platform,
+  BackHandler,
+  SafeAreaView,
+} from 'react-native';
 import { Image } from 'expo-image';
 import { IconButton } from '@/src/components';
 import { router, useFocusEffect } from 'expo-router';
@@ -18,6 +26,7 @@ import { useMutation, useQuery } from 'react-query';
 import { Toast } from 'toastify-react-native';
 import MaskLoading from '@/src/components/MaskLoading';
 import { usePlan } from '@/src/contexts/PlanContext';
+import i18n from '@/src/libs/i18n';
 
 export default function MediaScreen() {
   // === Member ===
@@ -202,7 +211,7 @@ export default function MediaScreen() {
 
   /**  画像が選択された場合 */
   return (
-    <BackgroundView>
+    <SafeAreaView className="bg-light-background dark:bg-dark-background">
       {/* 画像が選択されていれば､モーダルが表示される */}
       <MediaDetailModal
         visible={visibleImage !== null}
@@ -219,14 +228,16 @@ export default function MediaScreen() {
         }
         onClose={handleCloseImageView}
       />
+      {/* 画像が登録されていない場合 */}
       {images?.length === 0 && (
         <View className="flex justify-center items-center h-full">
           <Text className="text-light-text dark:text-dark-text text-xl">
-            メディアは登録されていません
+            {i18n.t('SCREEN.MEDIA.NO_IMAGE_LIST')}
           </Text>
         </View>
       )}
-      {/* アニメーションバー  */}
+
+      {/* 画像登録時のアニメーションバー  */}
       {addImage.length > 0 && (
         <View className={`absolute w-full z-50 ${Platform.OS === 'ios' ? 'top-20' : 'top-0'}`}>
           <Progress.Bar
@@ -252,7 +263,7 @@ export default function MediaScreen() {
         renderItem={({ item }) => {
           return (
             <TouchableOpacity
-              className="aspect-square w-1/3 border border-light-border dark:border-dark-border"
+              className="aspect-square w-1/3"
               onPress={() => handlePressImage(item)}
               onLongPress={() => {
                 handleLongPressImage(item);
@@ -295,6 +306,6 @@ export default function MediaScreen() {
           />
         )}
       </View>
-    </BackgroundView>
+    </SafeAreaView>
   );
 }
