@@ -188,6 +188,9 @@
                 "HOTEL": "ホテル・旅館",
                 "SPOT": "観光スポット"
             }
+        },
+        "MEDIA": {
+            "NO_IMAGE_LIST": "メディアは登録されていません"
         }
     },
     "COMPONENT": {

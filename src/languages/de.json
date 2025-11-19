@@ -188,6 +188,9 @@
                 "HOTEL": "Hotel",
                 "SPOT": "Ort"
             }
+        },
+        "MEDIA": {
+            "NO_IMAGE_LIST": "Keine Medien registriert"
         }
     },
     "COMPONENT": {
