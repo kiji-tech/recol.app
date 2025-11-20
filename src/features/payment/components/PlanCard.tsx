@@ -30,8 +30,7 @@ export default function PlanCard({
 
   return (
     <TouchableOpacity
-      className={`flex flex-col gap-2 py-2 px-4 rounded-md 
-        border border-light-border dark:border-dark-border  
+      className={`flex flex-col gap-2 py-2 px-4 rounded-md  
         ${isCurrentPlan ? 'bg-light-shadow dark:bg-dark-shadow' : 'bg-light-background dark:bg-dark-background'}
         `}
       onPress={onPress}
@@ -63,7 +62,7 @@ export default function PlanCard({
             <Text className="text-3xl font-bold text-light-text dark:text-dark-text">
               {getPriceString(payment.product.priceString)} / Month
             </Text>
-            <Text className="text-md font-semibold text-light-danger dark:text-dark-dangers">
+            <Text className="text-md font-semibold text-light-danger dark:text-dark-danger">
               {i18n.t('COMPONENT.PAYMENT.TRIAL_MESSAGE_MONTHLY')}
             </Text>
           </View>
@@ -84,11 +83,14 @@ export default function PlanCard({
               {getPriceString(payment.product.priceString)} / Year
             </Text>
             <Text className="text-md font-semibold text-light-danger dark:text-dark-danger">
-              {i18n.t('COMPONENT.PAYMENT.DISCOUNT_MESSAGE').replace('#discount#', (discount?.toFixed(0) ?? 0).toString())}
+              {i18n
+                .t('COMPONENT.PAYMENT.DISCOUNT_MESSAGE')
+                .replace('#discount#', (discount?.toFixed(0) ?? 0).toString())}
             </Text>
           </View>
           <Text className="text-xs opacity-70 font-semibold">
-            （{getPriceString(payment.product.pricePerMonthString || '')} / {i18n.t('COMMON.MONTH')}）
+            （{getPriceString(payment.product.pricePerMonthString || '')} / {i18n.t('COMMON.MONTH')}
+            ）
           </Text>
         </View>
       )}

@@ -15,7 +15,7 @@ const PlanItem = ({
 }) => {
   return (
     <View
-      className={`flex flex-row justify-between border-light-border dark:border-dark-border border-b ${highlight ? 'bg-light-primary/10 dark:bg-dark-primary/10' : ''}`}
+      className={`flex flex-row justify-between ${highlight ? 'bg-light-primary/10 dark:bg-dark-primary/10' : ''}`}
     >
       <Text className="p-4 flex-1 text-center text-light-text dark:text-dark-text font-medium">
         {title}
@@ -44,16 +44,30 @@ export default function PlanTable() {
             {i18n.t('COMPONENT.PAYMENT.FEATURE')}
           </Text>
           <View className="p-4 w-32 self-center">
-            <Text className="text-center text-white font-bold">{i18n.t('COMPONENT.PAYMENT.FREE')}</Text>
+            <Text className="text-center text-white font-bold">
+              {i18n.t('COMPONENT.PAYMENT.FREE')}
+            </Text>
           </View>
           <View className="p-4 w-40 self-center">
-            <Text className="text-center text-white font-bold text-lg">{i18n.t('COMPONENT.PAYMENT.PREMIUM')}</Text>
-            <Text className="text-center text-white/80 text-xs">{i18n.t('COMPONENT.PAYMENT.ALL_FEATURES')}</Text>
+            <Text className="text-center text-white font-bold text-lg">
+              {i18n.t('COMPONENT.PAYMENT.PREMIUM')}
+            </Text>
+            <Text className="text-center text-white/80 text-xs">
+              {i18n.t('COMPONENT.PAYMENT.ALL_FEATURES')}
+            </Text>
           </View>
         </View>
       </View>
-      <PlanItem title={i18n.t('COMPONENT.PAYMENT.MEDIA_CAPACITY')} free={i18n.t('COMPONENT.PAYMENT.MEDIA_CAPACITY_FREE')} premium={i18n.t('COMPONENT.PAYMENT.MEDIA_CAPACITY_PREMIUM')} />
-      <PlanItem title={i18n.t('COMPONENT.PAYMENT.AD_DISPLAY')} free={i18n.t('COMPONENT.PAYMENT.YES')} premium={i18n.t('COMPONENT.PAYMENT.NO')} />
+      <PlanItem
+        title={i18n.t('COMPONENT.PAYMENT.MEDIA_CAPACITY')}
+        free={i18n.t('COMPONENT.PAYMENT.MEDIA_CAPACITY_FREE')}
+        premium={i18n.t('COMPONENT.PAYMENT.MEDIA_CAPACITY_PREMIUM')}
+      />
+      <PlanItem
+        title={i18n.t('COMPONENT.PAYMENT.AD_DISPLAY')}
+        free={i18n.t('COMPONENT.PAYMENT.YES')}
+        premium={i18n.t('COMPONENT.PAYMENT.NO')}
+      />
       {/* <PlanItem title="AI分析機能" free="-" premium="○" highlight={true} />
       <PlanItem title="優先サポート" free="-" premium="○" />
       <PlanItem title="データエクスポート" free="-" premium="○" /> */}
