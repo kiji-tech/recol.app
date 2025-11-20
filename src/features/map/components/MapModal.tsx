@@ -12,6 +12,7 @@ import PlaceBottomSheet from './PlaceBottomSheet/PlaceBottomSheet';
 import { useMap } from '../hooks/useMap';
 import { useLocation } from '@/src/contexts/LocationContext';
 import { LogUtil } from '@/src/libs/LogUtil';
+import { MapCategory } from '../types/MapCategory';
 
 type Props = {
   isOpen: boolean;
@@ -28,9 +29,11 @@ export default function MapModal({ isOpen, onClose }: Props) {
     searchPlaceList,
     selectedPlace,
     selectedPlaceList,
-    handleTextSearch,
-    handleResearch,
-    handleSelectedPlace,
+    checkRateLimit,
+    doTextSearch,
+    doResearch,
+    doSelectedPlace,
+    doSelectedCategory,
     region,
     setRegion,
     radius,
@@ -39,8 +42,9 @@ export default function MapModal({ isOpen, onClose }: Props) {
   const isIOS = Platform.OS === 'ios';
 
   // === Method ===
-
-  /** マップ選択時のスクロール位置計算 */
+  /**
+   * マップ選択時のスクロール位置計算
+   */
   const calcScrollHeight = useCallback(
     (selectedPlace: Place) => {
       const PLACE_HEIGHT = 140;
@@ -58,13 +62,64 @@ export default function MapModal({ isOpen, onClose }: Props) {
     [searchPlaceList, selectedPlaceList]
   );
 
-  /** 場所詳細ボトムシート 閉じる処理 */
+  /**
+   * 再検索 イベントハンドラ
+   */
+  const handleResearch = () => {
+    const rateLimit = checkRateLimit();
+    if (!rateLimit) {
+      // TODO: 動画視聴しますかのモーダルを表示する
+
+      return;
+    }
+    doResearch();
+  };
+
+  /**
+   * 選択場所 イベントハンドラ
+   * @param place {Place} 選択場所
+   */
+  const handleSelectedPlace = (place: Place) => {
+    doSelectedPlace(place);
+  };
+
+  /**
+   * 検索 イベントハンドラ
+   */
+  const handleTextSearch = (text: string) => {
+    const rateLimit = checkRateLimit();
+    if (!rateLimit) {
+      // TODO: 動画視聴しますかのモーダルを表示する
+
+      return;
+    }
+    doTextSearch(text);
+  };
+
+  /**
+   *
+   */
+  const handleSelectedCategory = (category: MapCategory) => {
+    const rateLimit = checkRateLimit();
+    if (!rateLimit) {
+      // TODO: 動画視聴しますかのモーダルを表示する
+
+      return;
+    }
+    doSelectedCategory(category);
+  };
+
+  /**
+   * 場所詳細ボトムシート 閉じる処理
+   */
   const handleCloseDetailPlace = () => {
     LogUtil.log('handleCloseDetailPlace', { level: 'info' });
     setIsDetailPlace(false);
   };
 
-  /** モーダルを閉じる */
+  /**
+   * モーダルを閉じる
+   */
   const handleClose = (): undefined => {
     onClose();
   };
@@ -109,7 +164,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
         centerRegion={region || null}
         currentRegion={currentRegion || null}
         radius={radius}
-        onPress={handleResearch}
+        onPress={() => handleResearch}
       />
 
       {/* マップ */}
@@ -132,6 +187,9 @@ export default function MapModal({ isOpen, onClose }: Props) {
         <MapBottomSheet
           bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
           scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
+          onSelectedCategory={(category: MapCategory) => {
+            handleSelectedCategory(category);
+          }}
           onSelectedPlace={(place: Place) => {
             handleSelectedPlace(place);
             setIsDetailPlace(true);

@@ -6,34 +6,38 @@ import BottomSheetHeaderButton from './BottomSheetHeaderButton';
 import i18n from '@/src/libs/i18n';
 import { useMap } from '../../hooks/useMap';
 
-type SearchSelectedButtonProps = {
+type CategoryButton = {
   id: MapCategory;
   label: string;
   onPress: (id: MapCategory) => void;
 };
 
-export default function PlaceCardHeader() {
+type MapBottomSheetHeaderProps = {
+  onPress: (id: MapCategory) => void;
+};
+export default function MapBottomSheetHeader({ onPress }: MapBottomSheetHeaderProps) {
   // === Member ====
-  const { selectedCategory, handleSelectedCategory } = useMap();
+  const { selectedCategory, isSearchLoading } = useMap();
   // === Method ====
-  const handleOnSelectedCategory = (id: MapCategory) => {
-    handleSelectedCategory(id);
-  };
   const checkSelectedCategory = useCallback(
     (id: string) => selectedCategory === id,
     [selectedCategory]
   );
 
-  const categoryButtonList: SearchSelectedButtonProps[] = [
+  const categoryButtonList: CategoryButton[] = [
     {
       id: 'selected',
       label: i18n.t('SCREEN.MAP.CATEGORY.SELECTED'),
-      onPress: handleOnSelectedCategory,
+      onPress,
     },
-    { id: 'cafe', label: i18n.t('SCREEN.MAP.CATEGORY.CAFE'), onPress: handleOnSelectedCategory },
-    { id: 'meal', label: i18n.t('SCREEN.MAP.CATEGORY.MEAL'), onPress: handleOnSelectedCategory },
-    { id: 'hotel', label: i18n.t('SCREEN.MAP.CATEGORY.HOTEL'), onPress: handleOnSelectedCategory },
-    { id: 'spot', label: i18n.t('SCREEN.MAP.CATEGORY.SPOT'), onPress: handleOnSelectedCategory },
+    { id: 'cafe', label: i18n.t('SCREEN.MAP.CATEGORY.CAFE'), onPress },
+    { id: 'meal', label: i18n.t('SCREEN.MAP.CATEGORY.MEAL'), onPress },
+    {
+      id: 'hotel',
+      label: i18n.t('SCREEN.MAP.CATEGORY.HOTEL'),
+      onPress,
+    },
+    { id: 'spot', label: i18n.t('SCREEN.MAP.CATEGORY.SPOT'), onPress },
   ];
   if (selectedCategory == 'text') {
     categoryButtonList.unshift({
@@ -58,6 +62,7 @@ export default function PlaceCardHeader() {
             key={item.id}
             id={item.id}
             label={item.label}
+            disabled={isSearchLoading}
             selected={checkSelectedCategory(item.id)}
             onPress={(id: string) => item.onPress(id as MapCategory)}
           />

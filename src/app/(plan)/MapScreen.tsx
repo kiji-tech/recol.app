@@ -31,10 +31,10 @@ export default function MapScreen() {
     setRegion,
     selectedPlace,
     selectedPlaceList,
-    handleSelectedPlace,
+    doSelectedPlace,
+    doSelectedCategory,
     radius,
-    handleSelectedCategory,
-  } = useMap();
+} = useMap();
 
   const { currentRegion } = useLocation();
 
@@ -185,7 +185,7 @@ export default function MapScreen() {
   useFocusEffect(
     useCallback(() => {
       setupBackPress();
-      handleSelectedCategory('selected');
+      doSelectedCategory('selected');
       setEditSchedule(viewScheduleList[0] || null);
       return () => handleBackPress?.remove();
     }, [])
@@ -207,7 +207,7 @@ export default function MapScreen() {
           isRealTimePosition={true}
           selectedStepIndex={selectedStepIndex}
           onSelectedPlace={async (place: Place) => {
-            handleSelectedPlace(place);
+            doSelectedPlace(place);
             /** 経路表示ボトムシートなら経路を取得 */
             if (viewMode === 'direction') {
               await setupDirections(place, selectedMode);
@@ -252,7 +252,7 @@ export default function MapScreen() {
           selectedPlaceList={selectedPlaceList || []}
           onSelectedSchedule={handleSelectedSchedule}
           onSelectedPlace={async (place: Place) => {
-            handleSelectedPlace(place);
+            doSelectedPlace(place);
             setViewMode('detail');
           }}
         />

@@ -19,12 +19,18 @@ export default function ResearchButton({ centerRegion, currentRegion, radius, on
   const platform = Platform.OS;
   const [isView, setIsView] = useState(false);
   // ==== Method ====
+  /**
+   * 再検索ボタン押下処理
+   */
   const handlePress = () => {
     setIsView(!IS_RESEARCHED);
     reSearchTimer();
     onPress();
   };
 
+  /**
+   * 再検索タイマー
+   */
   const reSearchTimer = () => {
     if (!isView) {
       setTimeout(() => {

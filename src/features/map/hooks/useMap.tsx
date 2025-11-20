@@ -20,12 +20,13 @@ type MapContextType = {
   selectedPlaceList: Place[];
   selectedCategory: MapCategory;
   clearSelectedPlace: () => void;
-  handleTextSearch: (searchText: string) => void;
-  handleResearch: () => void;
-  handleSelectedCategory: (category: MapCategory) => void;
-  handleSelectedPlace: (place: Place) => void;
-  handleAddSelectedPlace: (place: Place) => void;
-  handleRemoveSelectedPlace: (place: Place) => void;
+  checkRateLimit: () => boolean;
+  doTextSearch: (searchText: string) => void;
+  doResearch: () => void;
+  doSelectedCategory: (category: MapCategory) => void;
+  doSelectedPlace: (place: Place) => void;
+  doAddSelectedPlace: (place: Place) => void;
+  doRemoveSelectedPlace: (place: Place) => void;
   region: Region | null;
   setRegion: (region: Region) => void;
   radius: number;
@@ -37,7 +38,7 @@ const MapContext = createContext<MapContextType | null>(null);
 const DEFAULT_RADIUS = 4200;
 
 const MapProvider = ({ children }: { children: React.ReactNode }) => {
-  const { session, user } = useAuth();
+  const { session, user, profile } = useAuth();
   const { currentRegion } = useLocation();
   const [searchText, setSearchText] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<MapCategory>('selected');
@@ -63,7 +64,26 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
 
   // === 検索系メソッド ===
   /**
+   * レート制限チェック
+   * @returns true: レート制限なし, false: レート制限あり
+   */
+  const checkRateLimit = (): boolean => {
+    const OK = true;
+    const rateLimit = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_LIMIT_RATE || 5;
+    console.log({ rateLimit });
+    // プロフィールがない場合は実施できない
+    if (!profile) return !OK;
+    // User以外は制限なし
+    if (!profile.isUser()) {
+      return OK;
+    }
+
+    return OK;
+  };
+
+  /**
    * 検索処理
+   * @returns {Promise<Place[]>} 検索結果
    */
   const fetchPlaceList = async (): Promise<Place[]> => {
     LogUtil.log('fetchPlaceList', { level: 'info', user });
@@ -99,22 +119,23 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
       );
     }
     if (placeList.length > 0) {
-      handleSelectedPlace(placeList[0]);
+      doSelectedPlace(placeList[0]);
     }
     return placeList;
   };
 
   /**
    * エリアで再検索
+   * @returns {void}
    */
-  const handleResearch = async () => {
+  const doResearch = async () => {
     refetchSearchPlaceList();
   };
 
   /**
    * テキスト検索 実行処理
    */
-  const handleTextSearch = async (searchText: string) => {
+  const doTextSearch = async (searchText: string) => {
     setSelectedCategory('text');
     setSearchText(searchText);
   };
@@ -124,7 +145,7 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
    * @param category {MapCategory} 選択したカテゴリ
    * @returns {void}
    */
-  const handleSelectedCategory = (category: MapCategory) => {
+  const doSelectedCategory = (category: MapCategory) => {
     setSelectedCategory(category);
   };
   /**
@@ -132,7 +153,7 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
    * @param place {Place} 選択した場所
    * @returns {void}
    */
-  const handleSelectedPlace = (place: Place) => {
+  const doSelectedPlace = (place: Place) => {
     setRegion((prev) => {
       return {
         ...place.location,
@@ -143,8 +164,12 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
     setSelectedPlace(place);
   };
 
-  /** スケジュールに対する場所の追加 */
-  const handleAddSelectedPlace = useCallback(
+  /**
+   * スケジュールに対する場所の追加
+   * @param place {Place} 選択した場所
+   * @returns {void}
+   */
+  const doAddSelectedPlace = useCallback(
     (place: Place) => {
       setSelectedPlaceList((prev) => [...prev, place]);
       setEditSchedule({
@@ -155,8 +180,12 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
     [editSchedule]
   );
 
-  /** スケジュールに対する場所の削除 */
-  const handleRemoveSelectedPlace = useCallback(
+  /**
+   * スケジュールに対する場所の削除
+   * @param place {Place} 選択した場所
+   * @returns {void}
+   */
+  const doRemoveSelectedPlace = useCallback(
     (place: Place) => {
       setSelectedPlaceList((prev) => prev.filter((p) => p.id !== place.id));
       setEditSchedule({
@@ -168,23 +197,12 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   );
 
   // === Effect ===
-
   /**
    * スケジュールに対する場所の取得処理
    */
   useEffect(() => {
     fetchCachePlace(editSchedule?.place_list || [], session).then((data: Place[]) => {
       setSelectedPlaceList(data || []);
-      //   if (data.length > 0) {
-      //     setRegion((prev) => {
-      //       return {
-      //         ...(prev || {}),
-      //         ...data[0].location,
-      //         latitudeDelta: prev?.latitudeDelta || 0.05,
-      //         longitudeDelta: prev?.longitudeDelta || 0.03,
-      //       } as Region;
-      //     });
-      //   }
     });
   }, [editSchedule]);
 
@@ -207,12 +225,13 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
         selectedPlace,
         selectedPlaceList,
         clearSelectedPlace,
-        handleSelectedCategory,
-        handleSelectedPlace,
-        handleTextSearch,
-        handleResearch,
-        handleAddSelectedPlace,
-        handleRemoveSelectedPlace,
+        checkRateLimit,
+        doSelectedCategory,
+        doSelectedPlace,
+        doTextSearch,
+        doResearch,
+        doAddSelectedPlace,
+        doRemoveSelectedPlace,
         region,
         setRegion,
         radius,
