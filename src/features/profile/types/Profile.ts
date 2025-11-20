@@ -56,6 +56,13 @@ export class Profile {
   }
 
   /**
+   * User判定
+   */
+  public isUser(): boolean {
+    return this.role == 'User';
+  }
+
+  /**
    * プレミアムユーザー判定
    * @param profile
    * @returns true: プレミアムユーザー, false: プレミアムユーザーではない
