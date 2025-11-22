@@ -12,6 +12,8 @@ import { fetchCachePlace } from '../apis/fetchCachePlace';
 import { Schedule } from '../../schedule';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useLocation } from '@/src/contexts/LocationContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PaymentPlan, Role } from '../../profile';
 
 type MapContextType = {
   searchPlaceList: Place[];
@@ -20,7 +22,8 @@ type MapContextType = {
   selectedPlaceList: Place[];
   selectedCategory: MapCategory;
   clearSelectedPlace: () => void;
-  checkRateLimit: () => boolean;
+  checkRateLimit: () => Promise<boolean>;
+  clearRateLimitCount: () => Promise<void>;
   doTextSearch: (searchText: string) => void;
   doResearch: () => void;
   doSelectedCategory: (category: MapCategory) => void;
@@ -33,7 +36,7 @@ type MapContextType = {
   refetchSearchPlaceList: () => void;
   isLoadingSelectedPlaceList: boolean;
 };
-
+const RATE_LIMIT_STORAGE_KEY = '@rate_limit';
 const MapContext = createContext<MapContextType | null>(null);
 const DEFAULT_RADIUS = 4200;
 
@@ -45,8 +48,17 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [selectedPlaceList, setSelectedPlaceList] = useState<Place[]>([]);
   const [region, setRegion] = useState<Region | null>(currentRegion);
-  const { editSchedule, setEditSchedule } = usePlan();
   const [isLoadingSelectedPlaceList, setIsLoadingSelectedPlaceList] = useState<boolean>(false);
+  const { editSchedule, setEditSchedule } = usePlan();
+  const rateLimitMap: Record<PaymentPlan, number> = {
+    Premium: 20,
+    Free: 5,
+    Basic: 5,
+  };
+  const mapSearchRateLimit = useMemo(
+    () => rateLimitMap[profile?.payment_plan || 'Free'],
+    [profile]
+  );
 
   /** Map上の半径の計算 */
   const radius = useMemo(() => {
@@ -62,15 +74,30 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
     setSelectedPlace(null);
   };
 
-  // === 検索系メソッド ===
+  // === Rate Limit ===
+  /**
+   * レート制限カウントを取得する
+   */
+  const fetchRateLimitCount = async (): Promise<number> => {
+    const count = await AsyncStorage.getItem(RATE_LIMIT_STORAGE_KEY);
+    return Number(count || 0);
+  };
+
+  /**
+   * レート制限カウントをクリアする
+   */
+  const clearRateLimitCount = async () => {
+    await AsyncStorage.setItem(RATE_LIMIT_STORAGE_KEY, '0');
+  };
+
   /**
    * レート制限チェック
    * @returns true: レート制限なし, false: レート制限あり
    */
-  const checkRateLimit = (): boolean => {
+  const checkRateLimit = async (): Promise<boolean> => {
     const OK = true;
-    const rateLimit = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_LIMIT_RATE || 5;
-    console.log({ rateLimit });
+    const count = (await fetchRateLimitCount()) + 1;
+
     // プロフィールがない場合は実施できない
     if (!profile) return !OK;
     // User以外は制限なし
@@ -78,9 +105,18 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
       return OK;
     }
 
+    //カウントの比較
+    if (count >= mapSearchRateLimit) {
+      return !OK;
+    }
+
+    // カウントを増やす
+    await AsyncStorage.setItem(RATE_LIMIT_STORAGE_KEY, count.toString());
+
     return OK;
   };
 
+  // === 検索系メソッド ===
   /**
    * 検索処理
    * @returns {Promise<Place[]>} 検索結果
@@ -226,6 +262,7 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
         selectedPlaceList,
         clearSelectedPlace,
         checkRateLimit,
+        clearRateLimitCount,
         doSelectedCategory,
         doSelectedPlace,
         doTextSearch,

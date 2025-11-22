@@ -13,6 +13,7 @@ import { useMap } from '../hooks/useMap';
 import { useLocation } from '@/src/contexts/LocationContext';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { MapCategory } from '../types/MapCategory';
+import RateLimitModal from './RateLimitModal';
 
 type Props = {
   isOpen: boolean;
@@ -25,6 +26,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
   const scrollRef = useRef<BottomSheetScrollViewMethods>(null);
   const { currentRegion } = useLocation();
   const [isDetailPlace, setIsDetailPlace] = useState(false);
+  const [isRateLimit, setIsRateLimit] = useState(false);
   const {
     searchPlaceList,
     selectedPlace,
@@ -65,11 +67,11 @@ export default function MapModal({ isOpen, onClose }: Props) {
   /**
    * 再検索 イベントハンドラ
    */
-  const handleResearch = () => {
-    const rateLimit = checkRateLimit();
+  const handleResearch = async () => {
+    const rateLimit = await checkRateLimit();
     if (!rateLimit) {
-      // TODO: 動画視聴しますかのモーダルを表示する
-
+      // 動画視聴しますかのモーダルを表示する
+      setIsRateLimit(true);
       return;
     }
     doResearch();
@@ -85,25 +87,28 @@ export default function MapModal({ isOpen, onClose }: Props) {
 
   /**
    * 検索 イベントハンドラ
+   * @param text {string} 検索文字列
    */
-  const handleTextSearch = (text: string) => {
-    const rateLimit = checkRateLimit();
+  const handleTextSearch =  async (text: string) => {
+    const rateLimit = await checkRateLimit();
     if (!rateLimit) {
-      // TODO: 動画視聴しますかのモーダルを表示する
-
+      // 動画視聴しますかのモーダルを表示する
+      setIsRateLimit(true);
       return;
     }
     doTextSearch(text);
   };
 
   /**
-   *
+   * 選択カテゴリー イベントハンドラ
+   * @param category {MapCategory} 選択カテゴリー
    */
-  const handleSelectedCategory = (category: MapCategory) => {
-    const rateLimit = checkRateLimit();
+  const handleSelectedCategory = async (category: MapCategory) => {
+    const rateLimit = await checkRateLimit();
+    LogUtil.log(`${JSON.stringify({ rateLimit })}`);
     if (!rateLimit) {
-      // TODO: 動画視聴しますかのモーダルを表示する
-
+      // 動画視聴しますかのモーダルを表示する
+      setIsRateLimit(true);
       return;
     }
     doSelectedCategory(category);
@@ -153,7 +158,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
   // === Render ===
   if (!isOpen) return null;
   return (
-    <View className="w-full h-full absolute top-0 left-0">
+    <View className="w-full h-full absolute top-0 left-0 z-2">
       {/* 検索ヘッダー */}
       <View className={`w-full h-12 absolute z-50 px-2 ${isIOS ? 'top-20' : 'top-4'}`}>
         <Header onBack={() => handleClose()} onSearch={handleTextSearch} />
@@ -181,6 +186,9 @@ export default function MapModal({ isOpen, onClose }: Props) {
           onSelectedPlace={handleSelectedPlace}
         />
       </View>
+
+      {/* リミットレートオーバー */}
+      {isRateLimit && <RateLimitModal isOpen={isRateLimit} onClose={() => setIsRateLimit(false)} />}
 
       {/* マップボトムシート */}
       {!isDetailPlace && (
