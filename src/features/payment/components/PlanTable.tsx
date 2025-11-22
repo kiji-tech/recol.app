@@ -64,6 +64,11 @@ export default function PlanTable() {
         premium={i18n.t('COMPONENT.PAYMENT.MEDIA_CAPACITY_PREMIUM')}
       />
       <PlanItem
+        title={i18n.t('COMPONENT.PAYMENT.RATE_LIMIT')}
+        free={i18n.t('COMPONENT.PAYMENT.RATE_LIMIT_FREE')}
+        premium={i18n.t('COMPONENT.PAYMENT.RATE_LIMIT_PREMIUM')}
+      />
+      <PlanItem
         title={i18n.t('COMPONENT.PAYMENT.AD_DISPLAY')}
         free={i18n.t('COMPONENT.PAYMENT.YES')}
         premium={i18n.t('COMPONENT.PAYMENT.NO')}
