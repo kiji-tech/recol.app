@@ -6,7 +6,7 @@ import { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bot
 import { ScrollResponderMixin } from 'react-native';
 import { useMap } from '../../hooks/useMap';
 import { isIOS } from 'toastify-react-native/utils/helpers';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import { Loading } from '@/src/components';
 
 type Props = {
@@ -54,8 +54,8 @@ const MapBottomSheetBody = forwardRef(
           <View className="w-full p-8">
             <Text className="text-center text-light-text dark:text-dark-text">
               {selectedCategory == 'selected'
-                ? i18n.t('SCREEN.MAP.NO_SELECTED')
-                : i18n.t('SCREEN.MAP.NO_RESULT')}
+                ? generateI18nMessage('SCREEN.MAP.NO_SELECTED')
+                : generateI18nMessage('SCREEN.MAP.NO_RESULT')}
             </Text>
           </View>
         )}

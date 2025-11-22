@@ -5,7 +5,7 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import Button from '@/src/components/Button';
 import { Information } from '../types/Information';
 import { LogUtil } from '@/src/libs/LogUtil';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import { useAuth } from '../../auth/hooks/useAuth';
 
 interface InformationModalProps {
@@ -47,7 +47,7 @@ export default function InformationModal({ information, visible, onClose }: Info
       // エラーメッセージの統一
       if (error instanceof Error) {
         if (error.message.includes('Invalid URL')) {
-          throw new Error(i18n.t('COMPONENT.INFORMATION.INVALID_URL'));
+          throw new Error(generateI18nMessage('COMPONENT.INFORMATION.INVALID_URL'));
         }
       }
 
@@ -100,7 +100,7 @@ export default function InformationModal({ information, visible, onClose }: Info
             {information.detailUrl && (
               <View className="mb-4">
                 <Button
-                  text={i18n.t('COMPONENT.INFORMATION.DETAIL')}
+                  text={generateI18nMessage('COMPONENT.INFORMATION.DETAIL')}
                   theme="info"
                   onPress={() => {
                     if (information.detailUrl) {
@@ -118,7 +118,7 @@ export default function InformationModal({ information, visible, onClose }: Info
 
             {/* 閉じるボタン */}
             <Button
-              text={i18n.t('COMPONENT.INFORMATION.CLOSE')}
+              text={generateI18nMessage('COMPONENT.INFORMATION.CLOSE')}
               theme="background"
               onPress={onClose}
             />

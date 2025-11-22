@@ -11,7 +11,7 @@ import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { useFocusEffect } from '@react-navigation/native';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import { useQuery } from 'react-query';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Plan } from '@/src/features/plan';
@@ -66,22 +66,22 @@ export default function Home() {
       />
       <ScrollView>
         <View className="flex flex-col justify-start items-start gap-2">
-          {/* 登録されているスケジ ュールで予定が近いものを5つくらい表示する */}
+          {/* 登録されているスケジ ロールで予定が近いものを5つくらい表示する */}
           <View className="w-full flex flex-row justify-start items-center gap-2">
-            <Title text={i18n.t('SCREEN.HOME.TODAY_SCHEDULE')} />
+            <Title text={generateI18nMessage('SCREEN.HOME.TODAY_SCHEDULE')} />
             {planLoading && <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />}
           </View>
           <TodayScheduleList planList={viewPlanList} />
 
           {/* 直近n日のプラン */}
           <View className="w-full flex flex-row justify-start items-center gap-2">
-            <Title text={i18n.t('SCREEN.HOME.RECENT_PLAN')} />
+            <Title text={generateI18nMessage('SCREEN.HOME.RECENT_PLAN')} />
             {planLoading && <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />}
           </View>
           <RecentPlanList planList={viewPlanList} />
 
           {/* 新着・おすすめ・旅行先・グッズ */}
-          <Title text={i18n.t('SCREEN.HOME.NEW_ARTICLE')} />
+          <Title text={generateI18nMessage('SCREEN.HOME.NEW_ARTICLE')} />
           {/* 新着記事 */}
           <View className="w-full mb-8">
             <FlatList

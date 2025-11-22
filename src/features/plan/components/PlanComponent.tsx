@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/src/features/auth';
 import { usePremiumPlan } from '@/src/features/auth/hooks/usePremiumPlan';
 import dayjs from 'dayjs';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 
 export default function PlanComponent() {
   // === Member ===
@@ -18,7 +18,9 @@ export default function PlanComponent() {
   if (profile && (profile.isAdmin() || profile.isSuperUser())) {
     return (
       <View className="px-4 py-2 text-md">
-        <Text className="text-light-text dark:text-dark-text">{i18n.t('COMPONENT.PLAN.SUPER_USER')}</Text>
+        <Text className="text-light-text dark:text-dark-text">
+          {generateI18nMessage('COMPONENT.PLAN.SUPER_USER')}
+        </Text>
       </View>
     );
   }
@@ -31,18 +33,21 @@ export default function PlanComponent() {
       >
         {!isPremium && (
           <View className="flex flex-row items-start justify-between ">
-            <Text className="text-light-text dark:text-dark-text">{i18n.t('COMPONENT.PLAN.FREE_PLAN')}</Text>
+            <Text className="text-light-text dark:text-dark-text">
+              {generateI18nMessage('COMPONENT.PLAN.FREE_PLAN')}
+            </Text>
           </View>
         )}
 
         {profile && profile.isPremiumUser() && (
           <View className="flex-col items-start justify-between">
             <Text className="text-light-text dark:text-dark-text mb-2 text-lg">
-              {i18n.t('COMPONENT.PLAN.PREMIUM_PLAN')}
+              {generateI18nMessage('COMPONENT.PLAN.PREMIUM_PLAN')}
             </Text>
             {/* プランの有効期限 */}
             <Text className="text-light-text dark:text-dark-text mb-2 text-sm">
-              {i18n.t('COMPONENT.PLAN.EXPIRATION_DATE')}: {dayjs(profile.payment_end_at).format('YYYY-MM-DD HH:mm')}
+              {generateI18nMessage('COMPONENT.PLAN.EXPIRATION_DATE')}:{' '}
+              {dayjs(profile.payment_end_at).format('YYYY-MM-DD HH:mm')}
             </Text>
           </View>
         )}

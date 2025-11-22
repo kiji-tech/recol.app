@@ -7,7 +7,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { MyBannerAd } from './Ad/BannerAd';
 import { useAuth } from '../features/auth';
 import { router } from 'expo-router';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   // === Member ===
@@ -157,7 +157,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
               <Text
                 className={`text-light-text dark:text-dark-text  ${isFocused ? 'text-md' : 'text-sm'}`}
               >
-                {i18n.t(`TABBAR.${label}`) as string}
+                {generateI18nMessage(`TABBAR.${label}`) as string}
               </Text>
             </TouchableOpacity>
           );

@@ -8,7 +8,7 @@ import { Share, View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 import { generateShareMessage } from '@/src/features/schedule/libs/generateShareMessage';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import { usePlan } from '@/src/contexts/PlanContext';
 
 export default function ScheduleMenu({ plan }: { plan: Plan }) {
@@ -46,7 +46,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
   const handleSharePress = async () => {
     await Share.share({
       message: generateShareMessage(plan),
-      title: i18n.t('COMPONENT.SCHEDULE.SHARE_TITLE'),
+      title: generateI18nMessage('COMPONENT.SCHEDULE.SHARE_TITLE'),
     });
   };
 
@@ -69,7 +69,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
         }}
       >
         <MenuOption
-          text={i18n.t('COMPONENT.SCHEDULE.EDIT_PLAN')}
+          text={generateI18nMessage('COMPONENT.SCHEDULE.EDIT_PLAN')}
           customStyles={{
             optionText: {
               paddingVertical: 12,
@@ -80,7 +80,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
           onSelect={handleEditPress}
         />
         <MenuOption
-          text={i18n.t('COMPONENT.SCHEDULE.ADD_SCHEDULE')}
+          text={generateI18nMessage('COMPONENT.SCHEDULE.ADD_SCHEDULE')}
           customStyles={{
             optionText: {
               paddingVertical: 12,
@@ -93,7 +93,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
           }}
         />
         <MenuOption
-          text={i18n.t('COMPONENT.SCHEDULE.EDIT_TIME')}
+          text={generateI18nMessage('COMPONENT.SCHEDULE.EDIT_TIME')}
           customStyles={{
             optionText: {
               paddingVertical: 12,
@@ -106,7 +106,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
           }}
         />
         <MenuOption
-          text={i18n.t('COMPONENT.SCHEDULE.SHARE')}
+          text={generateI18nMessage('COMPONENT.SCHEDULE.SHARE')}
           customStyles={{
             optionText: {
               paddingVertical: 12,

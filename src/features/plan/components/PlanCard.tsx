@@ -6,7 +6,7 @@ import { usePlan } from '@/src/contexts/PlanContext';
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 
 type PlanCardProps = {
   plan: Plan;
@@ -35,15 +35,15 @@ export default function PlanCard({ plan, onDelete }: PlanCardProps) {
    */
   const handleDeletePlan = (plan: Plan) => {
     Alert.alert(
-      i18n.t('COMPONENT.PLAN.DELETE_CONFIRM').replace('#title#', plan.title || ''),
-      i18n.t('COMPONENT.PLAN.DELETE_CONFIRM_MESSAGE'),
+      generateI18nMessage('COMPONENT.PLAN.DELETE_CONFIRM').replace('#title#', plan.title || ''),
+      generateI18nMessage('COMPONENT.PLAN.DELETE_CONFIRM_MESSAGE'),
       [
         {
-          text: i18n.t('COMMON.CANCEL'),
+          text: generateI18nMessage('COMMON.CANCEL'),
           style: 'cancel',
         },
         {
-          text: i18n.t('COMMON.DELETE'),
+          text: generateI18nMessage('COMMON.DELETE'),
           onPress: async () => {
             onDelete(plan.uid);
           },
@@ -82,7 +82,7 @@ export default function PlanCard({ plan, onDelete }: PlanCardProps) {
               </Text>
             ) : (
               <Text className="text-light-text dark:text-dark-text text-sm line-clamp-2 opacity-70">
-                {i18n.t('COMPONENT.PLAN.NO_MEMO')}
+                {generateI18nMessage('COMPONENT.PLAN.NO_MEMO')}
               </Text>
             )}
           </View>

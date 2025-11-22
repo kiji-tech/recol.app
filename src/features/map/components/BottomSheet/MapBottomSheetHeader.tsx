@@ -3,7 +3,7 @@ import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import React, { useCallback } from 'react';
 import { View } from 'react-native';
 import BottomSheetHeaderButton from './BottomSheetHeaderButton';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import { useMap } from '../../hooks/useMap';
 
 type CategoryButton = {
@@ -27,22 +27,22 @@ export default function MapBottomSheetHeader({ onPress }: MapBottomSheetHeaderPr
   const categoryButtonList: CategoryButton[] = [
     {
       id: 'selected',
-      label: i18n.t('SCREEN.MAP.CATEGORY.SELECTED'),
+      label: generateI18nMessage('SCREEN.MAP.CATEGORY.SELECTED'),
       onPress,
     },
-    { id: 'cafe', label: i18n.t('SCREEN.MAP.CATEGORY.CAFE'), onPress },
-    { id: 'meal', label: i18n.t('SCREEN.MAP.CATEGORY.MEAL'), onPress },
+    { id: 'cafe', label: generateI18nMessage('SCREEN.MAP.CATEGORY.CAFE'), onPress },
+    { id: 'meal', label: generateI18nMessage('SCREEN.MAP.CATEGORY.MEAL'), onPress },
     {
       id: 'hotel',
-      label: i18n.t('SCREEN.MAP.CATEGORY.HOTEL'),
+      label: generateI18nMessage('SCREEN.MAP.CATEGORY.HOTEL'),
       onPress,
     },
-    { id: 'spot', label: i18n.t('SCREEN.MAP.CATEGORY.SPOT'), onPress },
+    { id: 'spot', label: generateI18nMessage('SCREEN.MAP.CATEGORY.SPOT'), onPress },
   ];
   if (selectedCategory == 'text') {
     categoryButtonList.unshift({
       id: 'text',
-      label: i18n.t('SCREEN.MAP.CATEGORY.SEARCH_RESULT'),
+      label: generateI18nMessage('SCREEN.MAP.CATEGORY.SEARCH_RESULT'),
       onPress: () => {},
     });
   }

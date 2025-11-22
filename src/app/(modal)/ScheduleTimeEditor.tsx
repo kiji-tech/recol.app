@@ -17,7 +17,7 @@ import {
 import { LogUtil } from '@/src/libs/LogUtil';
 import { Toast } from 'toastify-react-native';
 import MaskLoading from '@/src/components/MaskLoading';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import { useMutation } from 'react-query';
 
 const ScheduleTimeEditorItem = ({
@@ -57,7 +57,7 @@ const ScheduleTimeEditorItem = ({
             }}
           >
             <Text className="text-light-text dark:text-dark-text text-sm px-2 py-1">
-              {i18n.t('SCREEN.SCHEDULE.TIME_EDITOR.PREVIOUS_START_TIME')}
+              {generateI18nMessage('SCREEN.SCHEDULE.TIME_EDITOR.PREVIOUS_START_TIME')}
             </Text>
           </TouchableOpacity>
         )}
@@ -75,7 +75,7 @@ const ScheduleTimeEditorItem = ({
             }}
           >
             <Text className="text-light-text dark:text-dark-text text-sm px-2 py-1">
-              {i18n.t('SCREEN.SCHEDULE.TIME_EDITOR.NEXT_START_TIME')}
+              {generateI18nMessage('SCREEN.SCHEDULE.TIME_EDITOR.NEXT_START_TIME')}
             </Text>
           </TouchableOpacity>
         )}
@@ -136,7 +136,7 @@ export default function ScheduleTimeEditor() {
         level: 'error',
         notify: true,
       });
-      Toast.warn(i18n.t('SCREEN.SCHEDULE.TIME_EDITOR.SUBMIT_ERROR'));
+      Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.TIME_EDITOR.SUBMIT_ERROR'));
     },
   });
 
@@ -178,7 +178,7 @@ export default function ScheduleTimeEditor() {
         </View>
         <View className="my-4">
           <Button
-            text={i18n.t('COMMON.SAVE')}
+            text={generateI18nMessage('COMMON.SAVE')}
             onPress={mutate}
             disabled={isLoading}
             loading={isLoading}
