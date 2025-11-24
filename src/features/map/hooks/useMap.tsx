@@ -82,7 +82,6 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
    */
   const fetchRateLimitCount = async (): Promise<number> => {
     const jsonValue = await AsyncStorage.getItem(RATE_LIMIT_STORAGE_KEY);
-    console.log('jsonValue', jsonValue);
     const searchDates: string[] = jsonValue != null ? JSON.parse(jsonValue) : [];
 
     const now = dayjs();
@@ -138,7 +137,6 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
     if (cleanJsonValue && typeof cleanJsonValue == 'string') {
       await clearRateLimitCount();
     }
-    console.log;
     const cleanSearchDates: string[] = cleanJsonValue != null ? JSON.parse(cleanJsonValue) : [];
 
     const newSearchDates = [...cleanSearchDates, newDateStr];

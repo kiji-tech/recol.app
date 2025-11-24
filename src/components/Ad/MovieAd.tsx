@@ -9,6 +9,7 @@ import {
 import generateI18nMessage from '@/src/libs/i18n';
 import { useFocusEffect } from 'expo-router';
 import Button from '../Button';
+import { useMap } from '@/src/features/map';
 
 const adUnitId =
   process.env.EXPO_PUBLIC_APP_ENV == 'development'
@@ -27,12 +28,12 @@ type Props = {
 export default function MovieAd({ onComplete }: Props) {
   // === Member ===
   const [loaded, setLoaded] = useState(false);
-
+  const { clearRateLimitCount } = useMap();
   // === Method ===
 
   // === Handler ===
   const handleMovieButtonPress = () => {
-    // TODO: 動画を視聴 視聴完了後にリミット制限をリセットしてモーダルを閉じる
+    // 動画を視聴 視聴完了後にリミット制限をリセットしてモーダルを閉じる
     rewardedAd.show();
   };
 
@@ -42,6 +43,12 @@ export default function MovieAd({ onComplete }: Props) {
       const unsubscribeLoaded = rewardedAd.addAdEventListener(RewardedAdEventType.LOADED, () => {
         setLoaded(true);
       });
+      const unsubscribeReward = rewardedAd.addAdEventListener(
+        RewardedAdEventType.EARNED_REWARD,
+        () => {
+          clearRateLimitCount();
+        }
+      );
       const closedAd = rewardedAd.addAdEventListener(AdEventType.CLOSED, () => {
         onComplete();
       });
@@ -51,6 +58,7 @@ export default function MovieAd({ onComplete }: Props) {
       // Unsubscribe from events on unmount
       return () => {
         unsubscribeLoaded();
+        unsubscribeReward();
         closedAd();
       };
     }, [])
