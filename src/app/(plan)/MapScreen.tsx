@@ -1,19 +1,15 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { BackHandler, View } from 'react-native';
+import { BackHandler, Linking, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Region } from 'react-native-maps';
 import { useLocation } from '@/src/contexts/LocationContext';
-import { Place, Direction, Route, Step, useMap } from '@/src/features/map';
+import { Place, Route, Step, useMap } from '@/src/features/map';
 import Map from '@/src/features/map/components/Map';
-import { fetchDirection } from '@/src/features/map/libs/direction';
-import { Toast } from 'toastify-react-native';
 import { NativeEventSubscription } from 'react-native';
 import { Schedule } from '@/src/features/schedule';
 import dayjs from 'dayjs';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import ScheduleBottomSheet from '@/src/features/map/components/ScheduleBottomSheet/ScheduleBottomSheet';
-import DirectionBottomSheet from '@/src/features/map/components/DirectionBottomSheet/DirectionBottomSheet';
-import { DirectionMode } from '@/src/features/map/types/Direction';
 import PlaceBottomSheet from '@/src/features/map/components/PlaceBottomSheet/PlaceBottomSheet';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { LogUtil } from '@/src/libs/LogUtil';
@@ -34,13 +30,12 @@ export default function MapScreen() {
     doSelectedPlace,
     doSelectedCategory,
     radius,
-} = useMap();
+  } = useMap();
 
   const { currentRegion } = useLocation();
 
-  const [viewMode, setViewMode] = useState<'list' | 'detail' | 'direction'>('list');
+  const [viewMode, setViewMode] = useState<'list' | 'detail'>('list');
   const [routeList, setRouteList] = useState<Route[]>([]);
-  const [isLoadingDirection, setIsLoadingDirection] = useState(false);
   const [handleBackPress, setHandleBackPress] = useState<NativeEventSubscription | null>(null);
 
   const viewScheduleList: Schedule[] = useMemo(() => {
@@ -50,8 +45,6 @@ export default function MapScreen() {
         .sort((a, b) => dayjs(a.from).diff(dayjs(b.from))) || []
     );
   }, [plan]);
-  const [selectedMode, setSelectedMode] = useState<DirectionMode>('walking');
-  const [selectedStepIndex, setSelectedStepIndex] = useState<number | null>(null);
 
   const stepList: Step[] = useMemo(() => {
     if (!routeList || routeList.length === 0) return [];
@@ -61,34 +54,6 @@ export default function MapScreen() {
   }, [routeList]);
 
   // === Method ===
-  /**
-   * 経路設定処理
-   * @param place {Place} 選択した場所
-   * @param mode {DirectionMode} 交通手段
-   * @returns {void}
-   */
-  const setupDirections = useCallback(
-    async (place: Place, mode?: DirectionMode) => {
-      setIsLoadingDirection(true);
-      try {
-        const directions: Direction = await fetchDirection(
-          `${currentRegion?.latitude},${currentRegion?.longitude}`,
-          `${place.location.latitude},${place.location.longitude}`,
-          mode
-        );
-        if (directions.status !== 'OK' || !directions.routes || directions.routes.length === 0) {
-          Toast.warn('経路の取得に失敗しました｡');
-          setRouteList([]);
-          return;
-        }
-        setRouteList(directions.routes);
-      } finally {
-        setIsLoadingDirection(false);
-      }
-    },
-    [currentRegion]
-  );
-
   /**
    * リージョン変更処理
    * @param region {Region} 移動したリージョン
@@ -111,38 +76,10 @@ export default function MapScreen() {
    * @returns {void}
    */
   const handleDirectionView = useCallback(async () => {
-    if (!selectedPlace) return;
-    setViewMode('direction');
-    await setupDirections(selectedPlace!, selectedMode);
-  }, [selectedPlace, selectedMode]);
-
-  /**
-   * 経路表示ボトムシート クローズ処理
-   * @returns {void}
-   */
-  const handleCloseDirectionView = () => {
-    setViewMode('detail');
-    setRouteList([]);
-    setSelectedStepIndex(null);
-  };
-
-  /**
-   * 経路表示ボトムシート Step選択処理
-   * @param index {number} 選択したStepのインデックス
-   * @returns {void}
-   */
-  const handleStepSelect = (index: number) => {
-    setSelectedStepIndex(index);
-    // 経路マーカーを選択したStepのマーカーに移動
-    const step = stepList[index];
-    if (step) {
-      setRegion({
-        ...region,
-        latitude: step.start_location.lat,
-        longitude: step.start_location.lng,
-      } as Region);
-    }
-  };
+    // GoogleMapの経路URLのリンク
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${selectedPlace?.displayName.text}`;
+    Linking.openURL(url);
+  }, [selectedPlace]);
 
   /**
    * 現在地を表示処理
@@ -156,17 +93,6 @@ export default function MapScreen() {
       latitude: currentRegion.latitude,
       longitude: currentRegion.longitude,
     } as Region);
-  };
-
-  /**
-   * 経路表示ボトムシート 経路モード選択処理
-   * @param mode {DirectionMode} 選択した経路モード
-   */
-  const handleSelectedDirectionMode = (mode: DirectionMode) => {
-    setSelectedMode(mode);
-    setRouteList([]);
-    setSelectedStepIndex(0);
-    setupDirections(selectedPlace!, mode);
   };
 
   /**
@@ -205,33 +131,12 @@ export default function MapScreen() {
           isCenterCircle={false}
           routeList={routeList}
           isRealTimePosition={true}
-          selectedStepIndex={selectedStepIndex}
           onSelectedPlace={async (place: Place) => {
             doSelectedPlace(place);
-            /** 経路表示ボトムシートなら経路を取得 */
-            if (viewMode === 'direction') {
-              await setupDirections(place, selectedMode);
-              return;
-            }
           }}
           onRegionChange={handleRegionChange}
         />
       </View>
-      {/* 経路表示ボトムシート */}
-      {viewMode === 'direction' && (
-        <DirectionBottomSheet
-          bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
-          selectedPlace={selectedPlace!}
-          selectedMode={selectedMode}
-          stepList={stepList}
-          selectedStepIndex={selectedStepIndex}
-          isLoading={isLoadingDirection}
-          onSelectedMode={handleSelectedDirectionMode}
-          onShowCurrentLocation={handleShowCurrentLocation}
-          onStepSelect={handleStepSelect}
-          onClose={handleCloseDirectionView}
-        />
-      )}
       {/* 場所詳細ボトムシート */}
       {viewMode === 'detail' && (
         <PlaceBottomSheet

@@ -52,9 +52,9 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoadingSelectedPlaceList, setIsLoadingSelectedPlaceList] = useState<boolean>(false);
   const { editSchedule, setEditSchedule } = usePlan();
   const rateLimitMap: Record<PaymentPlan, number> = {
-    Premium: 20,
-    Free: 1,
-    Basic: 1,
+    Premium: Number(process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_LIMIT_RATE || 5) * 4,
+    Free: Number(process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_LIMIT_RATE || 5),
+    Basic: Number(process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_LIMIT_RATE || 5),
   };
   const mapSearchRateLimit = useMemo(
     () => rateLimitMap[profile?.payment_plan || 'Free'],
@@ -137,9 +137,8 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
     const cleanJsonValue = await AsyncStorage.getItem(RATE_LIMIT_STORAGE_KEY);
     if (cleanJsonValue && typeof cleanJsonValue == 'string') {
       await clearRateLimitCount();
-      
     }
-      console.log
+    console.log;
     const cleanSearchDates: string[] = cleanJsonValue != null ? JSON.parse(cleanJsonValue) : [];
 
     const newSearchDates = [...cleanSearchDates, newDateStr];
