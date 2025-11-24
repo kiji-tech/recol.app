@@ -5,6 +5,7 @@ import Title from '@/src/components/Title';
 import { useAuth } from '../../auth';
 import { useMap } from '../hooks/useMap';
 import generateI18nMessage from '@/src/libs/i18n';
+import MovieAd from '@/src/components/Ad/MovieAd';
 
 type Props = {
   isOpen: boolean;
@@ -18,8 +19,7 @@ export default function RateLimitModal({ isOpen, onClose }: Props) {
   // === Method ===
 
   // === Handle ===
-  const handleMovieButtonPress = () => {
-    // TODO: 動画を視聴 視聴完了後にリミット制限をリセットしてモーダルを閉じる
+  const handleMovieAdComplete = () => {
     clearRateLimitCount();
     onClose();
   };
@@ -37,12 +37,7 @@ export default function RateLimitModal({ isOpen, onClose }: Props) {
             { key: 'plan', value: profile?.getPlanName() || '' },
           ])}
         </Text>
-        <Button
-          onPress={handleMovieButtonPress}
-          size="fit"
-          theme="theme"
-          text={generateI18nMessage('SCREEN.MAP.RATE_LIMIT_MODAL.MOVIE_BUTTON')}
-        />
+        <MovieAd onComplete={handleMovieAdComplete} />
       </View>
     </ModalLayout>
   );

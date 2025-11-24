@@ -192,7 +192,7 @@
             "RATE_LIMIT_MODAL": {
                 "TITLE": "Rate limit error",
                 "MESSAGE": "#plan# allows up to 5 sessions per hour. Watching a video will reset the count.",
-                "MOVIE_BUTTON": "Watch Video"
+                "MOVIE_BUTTON": "Show Rewarded Interstitial Ad"
             }
         },
         "MEDIA": {
