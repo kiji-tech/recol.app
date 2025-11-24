@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { Schedule } from '@/src/features/schedule';
 import dayjs from 'dayjs';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import RNPickerSelect from 'react-native-picker-select';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { isIOS } from 'toastify-react-native/utils/helpers';
@@ -48,7 +48,7 @@ export default function ScheduleBottomSheetHeader({
         }))}
         placeholder={{
           key: 'placeholder',
-          label: i18n.t('SCREEN.MAP.SELECT_SCHEDULE'),
+          label: generateI18nMessage('SCREEN.MAP.SELECT_SCHEDULE'),
           value: 'placeholder',
           color: isDarkMode ? '#5A5A5A' : '#D7D7D7',
         }}

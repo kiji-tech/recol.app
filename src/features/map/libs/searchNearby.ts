@@ -2,7 +2,7 @@ import { Place } from '@/src/features/map/types/Place';
 import { Session } from '@supabase/supabase-js';
 import { fetchCachePlace } from '../apis/fetchCachePlace';
 import { MapCategory } from '../types/MapCategory';
-import i18n from '@/src/libs/i18n';
+import { i18n } from '@/src/libs/i18n';
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
 // スポットは50個以下にする必要がある
 const INCLUDED_TYPES: Record<MapCategory, string[]> = {

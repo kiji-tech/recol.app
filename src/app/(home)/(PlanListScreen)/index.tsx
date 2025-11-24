@@ -10,7 +10,7 @@ import PlanListMenu from '@/src/features/plan/components/PlanListMenu';
 import PlanSortModal from '@/src/features/plan/components/PlanSortModal';
 import { PlanSortType, PLAN_SORT_TYPE_STORAGE_KEY } from '@/src/features/plan/types/PlanSortType';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import { deletePlan } from '@/src/features/plan';
 import { useMutation } from 'react-query';
 import { useAuth } from '@/src/features/auth';
@@ -48,7 +48,7 @@ export default function PlanListScreen() {
    */
   const handleSaveSortType = async (savedSortType: PlanSortType) => {
     await AsyncStorage.setItem(PLAN_SORT_TYPE_STORAGE_KEY, savedSortType).catch(() => {
-      Toast.warn(i18n.t('SCREEN.PLAN_LIST.SORT_SAVE_FAILED'));
+      Toast.warn(generateI18nMessage('SCREEN.PLAN_LIST.SORT_SAVE_FAILED'));
     });
     setSortType(savedSortType);
     setIsSortModalVisible(false);
@@ -72,7 +72,7 @@ export default function PlanListScreen() {
   return (
     <BackgroundView>
       <Header
-        title={i18n.t('SCREEN.PLAN.LIST_TITLE')}
+        title={generateI18nMessage('SCREEN.PLAN.LIST_TITLE')}
         rightComponent={<PlanListMenu onSortPress={handleSortPress} />}
       />
       {/* プラン一覧 */}

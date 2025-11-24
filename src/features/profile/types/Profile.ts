@@ -2,6 +2,8 @@ import dayjs from 'dayjs';
 import { Tables, Enums } from '../../../libs/database.types';
 import { Subscription } from '../../payment/types/Subscription';
 
+import generateI18nMessage from '@/src/libs/i18n';
+
 export type ProfileType = Tables<'profile'>;
 export type PaymentPlan = Enums<'PaymentPlan'>;
 export type Role = Enums<'Role'>;
@@ -28,6 +30,13 @@ export class Profile {
     }
   }
 
+  public getPlanName = (): string => {
+    if (this.payment_plan == 'Premium') {
+      return generateI18nMessage('COMMON.PLAN.PREMIUM');
+    }
+    return generateI18nMessage('COMMON.PLAN.FREE');
+  };
+
   /**
    * 管理者判定
    * @param profile
@@ -53,6 +62,13 @@ export class Profile {
    */
   public isTester(): boolean {
     return this.role == 'Tester';
+  }
+
+  /**
+   * User判定
+   */
+  public isUser(): boolean {
+    return this.role == 'User';
   }
 
   /**

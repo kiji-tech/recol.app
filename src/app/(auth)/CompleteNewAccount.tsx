@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { BackgroundView } from '@/src/components';
 import { Image } from 'expo-image';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 
 // パーティクルコンポーネント
 const Particle = ({ delay, position }: { delay: number; position: { x: number; y: number } }) => {
@@ -192,13 +192,13 @@ export default function CompleteNewAccount() {
             className="items-center mb-8"
           >
             <Text className="text-3xl font-bold text-center text-light-text dark:text-dark-text mb-4">
-              {i18n.t('SCREEN.AUTH.CONGRATULATIONS')}
+              {generateI18nMessage('SCREEN.AUTH.CONGRATULATIONS')}
             </Text>
             <Text className="text-xl text-center text-light-text dark:text-dark-text mb-2">
-              {i18n.t('SCREEN.AUTH.WELCOME')}
+              {generateI18nMessage('SCREEN.AUTH.WELCOME')}
             </Text>
             <Text className="text-base text-center text-gray-600 dark:text-gray-400 leading-6">
-              {i18n.t('SCREEN.AUTH.GREAT_TRIP')}
+              {generateI18nMessage('SCREEN.AUTH.GREAT_TRIP')}
             </Text>
           </Animated.View>
 
@@ -211,10 +211,10 @@ export default function CompleteNewAccount() {
             className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-2xl p-6 mb-8 w-full border border-purple-200 dark:border-purple-700"
           >
             <Text className="text-center text-lg font-medium text-purple-800 dark:text-purple-200 mb-2">
-              {i18n.t('SCREEN.AUTH.REGISTRATION_COMPLETE')}
+              {generateI18nMessage('SCREEN.AUTH.REGISTRATION_COMPLETE')}
             </Text>
             <Text className="text-center text-sm text-purple-700 dark:text-purple-300">
-              {i18n.t('SCREEN.AUTH.EXPERIENCE_STARTS')}
+              {generateI18nMessage('SCREEN.AUTH.EXPERIENCE_STARTS')}
             </Text>
           </Animated.View>
 
@@ -226,7 +226,10 @@ export default function CompleteNewAccount() {
             }}
             className="w-full"
           >
-            <Button title={i18n.t('SCREEN.AUTH.GET_STARTED')} onPress={handleGetStarted} />
+            <Button
+              title={generateI18nMessage('SCREEN.AUTH.GET_STARTED')}
+              onPress={handleGetStarted}
+            />
           </Animated.View>
         </Animated.View>
 

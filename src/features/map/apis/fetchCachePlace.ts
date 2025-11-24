@@ -1,7 +1,7 @@
 import { Place } from '@/src/features/map/types/Place';
 import { apiRequest } from '../../commons/apiService';
 import { Session } from '@supabase/supabase-js';
-import i18n from '@/src/libs/i18n';
+import { i18n } from '@/src/libs/i18n';
 
 /**
  * GoogleMap Place情報の取得

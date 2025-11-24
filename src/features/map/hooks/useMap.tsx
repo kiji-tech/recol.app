@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import dayjs from 'dayjs';
 import { createContext, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { searchPlaceByText } from '../libs/searchPlaceByText';
@@ -12,6 +13,8 @@ import { fetchCachePlace } from '../apis/fetchCachePlace';
 import { Schedule } from '../../schedule';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { useLocation } from '@/src/contexts/LocationContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PaymentPlan, Role } from '../../profile';
 
 type MapContextType = {
   searchPlaceList: Place[];
@@ -20,32 +23,43 @@ type MapContextType = {
   selectedPlaceList: Place[];
   selectedCategory: MapCategory;
   clearSelectedPlace: () => void;
-  handleTextSearch: (searchText: string) => void;
-  handleResearch: () => void;
-  handleSelectedCategory: (category: MapCategory) => void;
-  handleSelectedPlace: (place: Place) => void;
-  handleAddSelectedPlace: (place: Place) => void;
-  handleRemoveSelectedPlace: (place: Place) => void;
+  checkRateLimit: () => Promise<boolean>;
+  clearRateLimitCount: () => Promise<void>;
+  doTextSearch: (searchText: string) => void;
+  doResearch: () => void;
+  doSelectedCategory: (category: MapCategory) => void;
+  doSelectedPlace: (place: Place) => void;
+  doAddSelectedPlace: (place: Place) => void;
+  doRemoveSelectedPlace: (place: Place) => void;
   region: Region | null;
   setRegion: (region: Region) => void;
   radius: number;
   refetchSearchPlaceList: () => void;
   isLoadingSelectedPlaceList: boolean;
 };
-
+const RATE_LIMIT_STORAGE_KEY = '@rate_limit';
 const MapContext = createContext<MapContextType | null>(null);
 const DEFAULT_RADIUS = 4200;
 
 const MapProvider = ({ children }: { children: React.ReactNode }) => {
-  const { session, user } = useAuth();
+  const { session, user, profile } = useAuth();
   const { currentRegion } = useLocation();
   const [searchText, setSearchText] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<MapCategory>('selected');
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [selectedPlaceList, setSelectedPlaceList] = useState<Place[]>([]);
   const [region, setRegion] = useState<Region | null>(currentRegion);
-  const { editSchedule, setEditSchedule } = usePlan();
   const [isLoadingSelectedPlaceList, setIsLoadingSelectedPlaceList] = useState<boolean>(false);
+  const { editSchedule, setEditSchedule } = usePlan();
+  const rateLimitMap: Record<PaymentPlan, number> = {
+    Premium: Number(process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_LIMIT_RATE || 5) * 4,
+    Free: Number(process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_LIMIT_RATE || 5),
+    Basic: Number(process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_LIMIT_RATE || 5),
+  };
+  const mapSearchRateLimit = useMemo(
+    () => rateLimitMap[profile?.payment_plan || 'Free'],
+    [profile]
+  );
 
   /** Map上の半径の計算 */
   const radius = useMemo(() => {
@@ -61,9 +75,82 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
     setSelectedPlace(null);
   };
 
+  // === Rate Limit ===
+  /**
+   * レート制限カウントを取得する
+   * 直近1時間で検索した件数（length）を返す
+   */
+  const fetchRateLimitCount = async (): Promise<number> => {
+    const jsonValue = await AsyncStorage.getItem(RATE_LIMIT_STORAGE_KEY);
+    console.log('jsonValue', jsonValue);
+    const searchDates: string[] = jsonValue != null ? JSON.parse(jsonValue) : [];
+
+    const now = dayjs();
+    const oneHourAgo = now.subtract(1, 'hour');
+
+    // 直近1時間のデータのみにフィルタリング
+    const validDates = searchDates.filter((dateStr) => {
+      const date = dayjs(dateStr);
+      return date.isAfter(oneHourAgo);
+    });
+
+    // フィルタリング後のデータを保存し直す（掃除）
+    if (validDates.length !== searchDates.length) {
+      await AsyncStorage.setItem(RATE_LIMIT_STORAGE_KEY, JSON.stringify(validDates));
+    }
+
+    return validDates.length;
+  };
+
+  /**
+   * レート制限カウントをクリアする
+   */
+  const clearRateLimitCount = async () => {
+    await AsyncStorage.removeItem(RATE_LIMIT_STORAGE_KEY);
+  };
+
+  /**
+   * レート制限チェック
+   * @returns true: レート制限なし, false: レート制限あり
+   */
+  const checkRateLimit = async (): Promise<boolean> => {
+    const OK = true;
+
+    // プロフィールがない場合は実施できない
+    if (!profile) return !OK;
+    // User以外は制限なし
+    if (!profile.isUser()) {
+      return OK;
+    }
+
+    const currentCount = await fetchRateLimitCount();
+
+    //カウントの比較
+    if (currentCount >= mapSearchRateLimit) {
+      return !OK;
+    }
+
+    // カウントを増やす（現在時刻を追加）
+    const now = dayjs();
+    const newDateStr = now.format('YYYY-MM-DD HH:mm:ss');
+
+    const cleanJsonValue = await AsyncStorage.getItem(RATE_LIMIT_STORAGE_KEY);
+    if (cleanJsonValue && typeof cleanJsonValue == 'string') {
+      await clearRateLimitCount();
+    }
+    console.log;
+    const cleanSearchDates: string[] = cleanJsonValue != null ? JSON.parse(cleanJsonValue) : [];
+
+    const newSearchDates = [...cleanSearchDates, newDateStr];
+    await AsyncStorage.setItem(RATE_LIMIT_STORAGE_KEY, JSON.stringify(newSearchDates));
+
+    return OK;
+  };
+
   // === 検索系メソッド ===
   /**
    * 検索処理
+   * @returns {Promise<Place[]>} 検索結果
    */
   const fetchPlaceList = async (): Promise<Place[]> => {
     LogUtil.log('fetchPlaceList', { level: 'info', user });
@@ -99,22 +186,23 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
       );
     }
     if (placeList.length > 0) {
-      handleSelectedPlace(placeList[0]);
+      doSelectedPlace(placeList[0]);
     }
     return placeList;
   };
 
   /**
    * エリアで再検索
+   * @returns {void}
    */
-  const handleResearch = async () => {
+  const doResearch = async () => {
     refetchSearchPlaceList();
   };
 
   /**
    * テキスト検索 実行処理
    */
-  const handleTextSearch = async (searchText: string) => {
+  const doTextSearch = async (searchText: string) => {
     setSelectedCategory('text');
     setSearchText(searchText);
   };
@@ -124,7 +212,7 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
    * @param category {MapCategory} 選択したカテゴリ
    * @returns {void}
    */
-  const handleSelectedCategory = (category: MapCategory) => {
+  const doSelectedCategory = (category: MapCategory) => {
     setSelectedCategory(category);
   };
   /**
@@ -132,7 +220,7 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
    * @param place {Place} 選択した場所
    * @returns {void}
    */
-  const handleSelectedPlace = (place: Place) => {
+  const doSelectedPlace = (place: Place) => {
     setRegion((prev) => {
       return {
         ...place.location,
@@ -143,8 +231,12 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
     setSelectedPlace(place);
   };
 
-  /** スケジュールに対する場所の追加 */
-  const handleAddSelectedPlace = useCallback(
+  /**
+   * スケジュールに対する場所の追加
+   * @param place {Place} 選択した場所
+   * @returns {void}
+   */
+  const doAddSelectedPlace = useCallback(
     (place: Place) => {
       setSelectedPlaceList((prev) => [...prev, place]);
       setEditSchedule({
@@ -155,8 +247,12 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
     [editSchedule]
   );
 
-  /** スケジュールに対する場所の削除 */
-  const handleRemoveSelectedPlace = useCallback(
+  /**
+   * スケジュールに対する場所の削除
+   * @param place {Place} 選択した場所
+   * @returns {void}
+   */
+  const doRemoveSelectedPlace = useCallback(
     (place: Place) => {
       setSelectedPlaceList((prev) => prev.filter((p) => p.id !== place.id));
       setEditSchedule({
@@ -168,23 +264,12 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   );
 
   // === Effect ===
-
   /**
    * スケジュールに対する場所の取得処理
    */
   useEffect(() => {
     fetchCachePlace(editSchedule?.place_list || [], session).then((data: Place[]) => {
       setSelectedPlaceList(data || []);
-      //   if (data.length > 0) {
-      //     setRegion((prev) => {
-      //       return {
-      //         ...(prev || {}),
-      //         ...data[0].location,
-      //         latitudeDelta: prev?.latitudeDelta || 0.05,
-      //         longitudeDelta: prev?.longitudeDelta || 0.03,
-      //       } as Region;
-      //     });
-      //   }
     });
   }, [editSchedule]);
 
@@ -207,12 +292,14 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
         selectedPlace,
         selectedPlaceList,
         clearSelectedPlace,
-        handleSelectedCategory,
-        handleSelectedPlace,
-        handleTextSearch,
-        handleResearch,
-        handleAddSelectedPlace,
-        handleRemoveSelectedPlace,
+        checkRateLimit,
+        clearRateLimitCount,
+        doSelectedCategory,
+        doSelectedPlace,
+        doTextSearch,
+        doResearch,
+        doAddSelectedPlace,
+        doRemoveSelectedPlace,
         region,
         setRegion,
         radius,

@@ -188,6 +188,11 @@
                 "MEAL": "Meal",
                 "HOTEL": "Hotel",
                 "SPOT": "Spot"
+            },
+            "RATE_LIMIT_MODAL": {
+                "TITLE": "Rate limit error",
+                "MESSAGE": "#plan# allows up to 5 sessions per hour. Watching a video will reset the count.",
+                "MOVIE_BUTTON": "Show Rewarded Interstitial Ad"
             }
         },
         "MEDIA": {
@@ -222,6 +227,9 @@
             "AD_DISPLAY": "Ad Display",
             "YES": "○",
             "NO": "-",
+            "RATE_LIMIT": "Map Search Limit",
+            "RATE_LIMIT_FREE": "5 times / hour",
+            "RATE_LIMIT_PREMIUM": "20 times / hour",
             "RECOMMENDED": "Recommended",
             "CURRENT_FREE_PLAN": "Currently using Free Plan",
             "UPGRADE_MESSAGE": "Upgrade to Premium Plan to enjoy all features",
@@ -268,6 +276,10 @@
         "DELETE": "Delete",
         "DAYS": " days",
         "SEARCH": "Search",
-        "MONTH": "Month"
+        "MONTH": "Month",
+        "PLAN": {
+            "FREE": "Free plan",
+            "PREMIUM": "Premium plan"
+        }
     }
 }

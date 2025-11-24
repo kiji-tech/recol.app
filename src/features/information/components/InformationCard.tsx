@@ -54,9 +54,7 @@ export default function InformationCard({ information, onPress }: InformationCar
 
   return (
     <TouchableOpacity
-      className={`rounded-xl p-4 mb-4 ${
-        isDarkMode ? 'bg-gray-800' : 'bg-white'
-      } border border-light-border dark:border-dark-border`}
+      className={`rounded-xl p-4 mb-4 ${isDarkMode ? 'bg-gray-800' : 'bg-white'} `}
       onPress={handlePress}
     >
       {/* 画像 */}

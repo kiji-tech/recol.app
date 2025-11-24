@@ -12,6 +12,8 @@ import PlaceBottomSheet from './PlaceBottomSheet/PlaceBottomSheet';
 import { useMap } from '../hooks/useMap';
 import { useLocation } from '@/src/contexts/LocationContext';
 import { LogUtil } from '@/src/libs/LogUtil';
+import { MapCategory } from '../types/MapCategory';
+import RateLimitModal from './RateLimitModal';
 
 type Props = {
   isOpen: boolean;
@@ -24,13 +26,16 @@ export default function MapModal({ isOpen, onClose }: Props) {
   const scrollRef = useRef<BottomSheetScrollViewMethods>(null);
   const { currentRegion } = useLocation();
   const [isDetailPlace, setIsDetailPlace] = useState(false);
+  const [isRateLimit, setIsRateLimit] = useState(false);
   const {
     searchPlaceList,
     selectedPlace,
     selectedPlaceList,
-    handleTextSearch,
-    handleResearch,
-    handleSelectedPlace,
+    checkRateLimit,
+    doTextSearch,
+    doResearch,
+    doSelectedPlace,
+    doSelectedCategory,
     region,
     setRegion,
     radius,
@@ -39,8 +44,9 @@ export default function MapModal({ isOpen, onClose }: Props) {
   const isIOS = Platform.OS === 'ios';
 
   // === Method ===
-
-  /** マップ選択時のスクロール位置計算 */
+  /**
+   * マップ選択時のスクロール位置計算
+   */
   const calcScrollHeight = useCallback(
     (selectedPlace: Place) => {
       const PLACE_HEIGHT = 140;
@@ -58,13 +64,67 @@ export default function MapModal({ isOpen, onClose }: Props) {
     [searchPlaceList, selectedPlaceList]
   );
 
-  /** 場所詳細ボトムシート 閉じる処理 */
+  /**
+   * 再検索 イベントハンドラ
+   */
+  const handleResearch = async () => {
+    const rateLimit = await checkRateLimit();
+    if (!rateLimit) {
+      // 動画視聴しますかのモーダルを表示する
+      setIsRateLimit(true);
+      return;
+    }
+    doResearch();
+  };
+
+  /**
+   * 選択場所 イベントハンドラ
+   * @param place {Place} 選択場所
+   */
+  const handleSelectedPlace = (place: Place) => {
+    doSelectedPlace(place);
+  };
+
+  /**
+   * 検索 イベントハンドラ
+   * @param text {string} 検索文字列
+   */
+  const handleTextSearch =  async (text: string) => {
+    const rateLimit = await checkRateLimit();
+    if (!rateLimit) {
+      // 動画視聴しますかのモーダルを表示する
+      setIsRateLimit(true);
+      return;
+    }
+    doTextSearch(text);
+  };
+
+  /**
+   * 選択カテゴリー イベントハンドラ
+   * @param category {MapCategory} 選択カテゴリー
+   */
+  const handleSelectedCategory = async (category: MapCategory) => {
+    const rateLimit = await checkRateLimit();
+    LogUtil.log(`${JSON.stringify({ rateLimit })}`);
+    if (!rateLimit) {
+      // 動画視聴しますかのモーダルを表示する
+      setIsRateLimit(true);
+      return;
+    }
+    doSelectedCategory(category);
+  };
+
+  /**
+   * 場所詳細ボトムシート 閉じる処理
+   */
   const handleCloseDetailPlace = () => {
     LogUtil.log('handleCloseDetailPlace', { level: 'info' });
     setIsDetailPlace(false);
   };
 
-  /** モーダルを閉じる */
+  /**
+   * モーダルを閉じる
+   */
   const handleClose = (): undefined => {
     onClose();
   };
@@ -98,7 +158,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
   // === Render ===
   if (!isOpen) return null;
   return (
-    <View className="w-full h-full absolute top-0 left-0">
+    <View className="w-full h-full absolute top-0 left-0 z-2">
       {/* 検索ヘッダー */}
       <View className={`w-full h-12 absolute z-50 px-2 ${isIOS ? 'top-20' : 'top-4'}`}>
         <Header onBack={() => handleClose()} onSearch={handleTextSearch} />
@@ -109,7 +169,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
         centerRegion={region || null}
         currentRegion={currentRegion || null}
         radius={radius}
-        onPress={handleResearch}
+        onPress={() => handleResearch}
       />
 
       {/* マップ */}
@@ -127,11 +187,17 @@ export default function MapModal({ isOpen, onClose }: Props) {
         />
       </View>
 
+      {/* リミットレートオーバー */}
+      {isRateLimit && <RateLimitModal isOpen={isRateLimit} onClose={() => setIsRateLimit(false)} />}
+
       {/* マップボトムシート */}
       {!isDetailPlace && (
         <MapBottomSheet
           bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
           scrollRef={scrollRef as React.RefObject<BottomSheetScrollViewMethods>}
+          onSelectedCategory={(category: MapCategory) => {
+            handleSelectedCategory(category);
+          }}
           onSelectedPlace={(place: Place) => {
             handleSelectedPlace(place);
             setIsDetailPlace(true);

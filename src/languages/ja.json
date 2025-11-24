@@ -188,6 +188,11 @@
                 "MEAL": "食事",
                 "HOTEL": "ホテル・旅館",
                 "SPOT": "観光スポット"
+            },
+            "RATE_LIMIT_MODAL": {
+                "TITLE": "検索制限エラー",
+                "MESSAGE": "#plan#では1時間に5回まで検索可能です。動画を視聴すると回数がリセットされます。",
+                "MOVIE_BUTTON": "動画を見て制限を解除する"
             }
         },
         "MEDIA": {
@@ -219,9 +224,12 @@
             "MEDIA_CAPACITY": "メディア容量",
             "MEDIA_CAPACITY_FREE": "1GB / プラン",
             "MEDIA_CAPACITY_PREMIUM": "100GB / プラン",
-            "AD_DISPLAY": "広告表示",
+            "AD_DISPLAY": "広告バー表示",
             "YES": "○",
             "NO": "-",
+            "RATE_LIMIT": "マップ検索制限",
+            "RATE_LIMIT_FREE": "5回 / 時",
+            "RATE_LIMIT_PREMIUM": "20回 / 時",
             "RECOMMENDED": "おすすめ",
             "CURRENT_FREE_PLAN": "現在フリープランをご利用中です",
             "UPGRADE_MESSAGE": "プレミアムプランにアップグレードして、すべての機能をお楽しみください",
@@ -268,6 +276,10 @@
         "DELETE": "削除",
         "DAYS": " 日",
         "SEARCH": "検索",
-        "MONTH": "月"
+        "MONTH": "月",
+        "PLAN": {
+            "FREE": "フリープラン",
+            "PREMIUM": "プレミアムプラン"
+        }
     }
 }

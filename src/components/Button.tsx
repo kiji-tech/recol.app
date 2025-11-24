@@ -7,6 +7,7 @@ interface Props {
   theme?: 'theme' | 'info' | 'warn' | 'danger' | 'background';
   disabled?: boolean;
   loading?: boolean;
+  size?: 'full' | 'fit' | string;
   onPress: () => void;
 }
 
@@ -15,6 +16,7 @@ const Button = ({
   theme = 'background',
   disabled = false,
   loading = false,
+  size = 'full',
   onPress = () => void 0,
 }: Props) => {
   const { isDarkMode } = useTheme();
@@ -22,7 +24,8 @@ const Button = ({
     <TouchableOpacity
       className={`
             ${disabled ? 'opacity-20' : ''}
-            rounded-md w-full flex justify-center item-center py-4 px-8 bg-light-${theme} dark:bg-dark-${theme}
+            ${size === 'fit' ? 'w-fit' : 'w-full'}
+            rounded-md flex justify-center item-center py-4 px-8 bg-light-${theme} dark:bg-dark-${theme}
             `}
       onPress={onPress}
       disabled={disabled}

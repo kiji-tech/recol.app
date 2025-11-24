@@ -6,7 +6,7 @@ import { useRecentPlanDays, RecentPlanDays } from '../../hooks/useRecentPlanDays
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Plan } from '../../index';
 import RecentPlanItem from './RecentPlanItem';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import dayjs from 'dayjs';
 type Props = {
   planList?: Plan[];
@@ -61,7 +61,7 @@ export default function RecentPlanList({ planList }: Props) {
               }`}
             >
               {availableDay}
-              {i18n.t('COMMON.DAYS')}
+              {generateI18nMessage('COMMON.DAYS')}
             </Text>
           </TouchableOpacity>
         ))}
@@ -70,7 +70,9 @@ export default function RecentPlanList({ planList }: Props) {
       {/* プランリスト */}
       {!planList || planList.length === 0 ? (
         <Text className="text-light-text dark:text-dark-text text-sm">
-          {i18n.t('COMPONENT.PLAN.NO_PLAN_RECENT').replace('#days#', days.toString())}
+          {generateI18nMessage('COMPONENT.PLAN.NO_PLAN_RECENT', [
+            { key: 'days', value: days.toString() },
+          ])}
         </Text>
       ) : (
         <FlatList

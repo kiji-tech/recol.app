@@ -6,7 +6,7 @@ import { Plan } from '@/src/features/plan';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { openUrl } from '../../article/libs/openBrowser';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import MaskLoading from '@/src/components/MaskLoading';
 
 type Props = {
@@ -45,7 +45,7 @@ export default function PlanInformation() {
         />
       ) : (
         <Text className="text-md text-light-text dark:text-dark-text opacity-70">
-          {i18n.t('COMPONENT.PLAN.NO_MEMO')}
+          {generateI18nMessage('COMPONENT.PLAN.NO_MEMO')}
         </Text>
       )}
       {/* メンバーリスト */}

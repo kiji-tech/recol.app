@@ -12,7 +12,7 @@ import { BackHandler } from 'react-native';
 import PlanInformation from '../../features/schedule/components/PlanInformation';
 import ScheduleMenu from '../../features/schedule/components/ScheduleMenu';
 import { Toast } from 'toastify-react-native';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import { usePlan } from '@/src/contexts/PlanContext';
 import MaskLoading from '@/src/components/MaskLoading';
 
@@ -27,13 +27,13 @@ export default function ScheduleScreen(): ReactNode {
    */
   const initView = () => {
     if (!session) {
-      Toast.warn(i18n.t('SCREEN.SCHEDULE.NO_LOGIN'));
+      Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.NO_LOGIN'));
       router.navigate('/(auth)/SignIn');
       return;
     }
 
     if (!planId) {
-      Toast.warn(i18n.t('SCREEN.SCHEDULE.PLAN_NOT_FOUND'));
+      Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.PLAN_NOT_FOUND'));
       router.back();
       return;
     }
@@ -43,7 +43,9 @@ export default function ScheduleScreen(): ReactNode {
    * 予定の削除処理
    */
   const handleDeleteSchedule = async (schedule: Schedule) => {
-    const text = i18n.t('SCREEN.SCHEDULE.DELETE_SUCCESS').replace('#title#', schedule.title || '');
+    const text = generateI18nMessage('SCREEN.SCHEDULE.DELETE_SUCCESS', [
+      { key: 'title', value: schedule.title || '' },
+    ]);
     await deleteSchedule(schedule, session).catch((e) => {
       LogUtil.log(JSON.stringify({ deleteScheduleError: e }), {
         level: 'error',
