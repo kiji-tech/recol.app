@@ -9,7 +9,7 @@ import { Plan } from '@/src/features/plan';
 import { useAuth } from '@/src/features/auth';
 import * as Location from 'expo-location';
 import { useMutation } from 'react-query';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import { Toast } from 'toastify-react-native';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { usePlan } from '@/src/contexts/PlanContext';
@@ -58,7 +58,7 @@ export default function PlanEditor() {
   return (
     <BackgroundView>
       <Header
-        title={`${plan?.title || i18n.t('SCREEN.PLAN.NEW_PLAN')}${i18n.t('SCREEN.PLAN.EDIT_TITLE')}`}
+        title={`${plan?.title || generateI18nMessage('SCREEN.PLAN.NEW_PLAN')}${generateI18nMessage('SCREEN.PLAN.EDIT_TITLE')}`}
         onBack={() => {
           router.back();
         }}
@@ -66,11 +66,11 @@ export default function PlanEditor() {
       {/* タイトル */}
       <View className="w-full flex flex-col justify-start items-start gap-4">
         <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
-          {i18n.t('SCREEN.PLAN.TITLE_LABEL')}
+          {generateI18nMessage('SCREEN.PLAN.TITLE_LABEL')}
         </Text>
         <TextInput
           value={title}
-          placeholder={i18n.t('SCREEN.PLAN.TITLE_PLACEHOLDER')}
+          placeholder={generateI18nMessage('SCREEN.PLAN.TITLE_PLACEHOLDER')}
           placeholderTextColor="gray"
           className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
                 ${borderColor} text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background
@@ -79,12 +79,12 @@ export default function PlanEditor() {
         />
         <View className="w-full flex flex-col justify-start items-start">
           <Text className="text-lg font-bold text-light-text dark:text-dark-text">
-            {i18n.t('SCREEN.PLAN.MEMO_LABEL')}
+            {generateI18nMessage('SCREEN.PLAN.MEMO_LABEL')}
           </Text>
           <TextInput
             value={memo}
             multiline={true}
-            placeholder={i18n.t('SCREEN.PLAN.MEMO_PLACEHOLDER')}
+            placeholder={generateI18nMessage('SCREEN.PLAN.MEMO_PLACEHOLDER')}
             placeholderTextColor="gray"
             className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
             border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
@@ -93,14 +93,18 @@ export default function PlanEditor() {
           />
         </View>
         <Text className="text-lg font-bold text-light-text dark:text-dark-text">
-          {i18n.t('SCREEN.PLAN.ADD_FRIEND')}
+          {generateI18nMessage('SCREEN.PLAN.ADD_FRIEND')}
         </Text>
         <Button
           theme="info"
-          text={i18n.t('SCREEN.PLAN.SELECT')}
-          onPress={() => alert(i18n.t('SCREEN.PLAN.PREPARING'))}
+          text={generateI18nMessage('SCREEN.PLAN.SELECT')}
+          onPress={() => alert(generateI18nMessage('SCREEN.PLAN.PREPARING'))}
         />
-        <Button theme="theme" text={i18n.t('SCREEN.PLAN.REGISTER')} onPress={handlerSubmit} />
+        <Button
+          theme="theme"
+          text={generateI18nMessage('SCREEN.PLAN.REGISTER')}
+          onPress={handlerSubmit}
+        />
       </View>
     </BackgroundView>
   );

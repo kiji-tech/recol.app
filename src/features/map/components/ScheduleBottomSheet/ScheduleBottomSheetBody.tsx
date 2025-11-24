@@ -5,7 +5,7 @@ import { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bot
 import { Schedule } from '@/src/features/schedule';
 import { Place } from '@/src/features/map/types/Place';
 import { ScrollResponderMixin, Text, View } from 'react-native';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import { useMap } from '../../hooks/useMap';
 import { Loading } from '@/src/components';
 
@@ -50,7 +50,7 @@ const ScheduleBottomSheetBody = forwardRef(
         {!selectedSchedule && (
           <View className="w-full p-8">
             <Text className="text-center text-light-text dark:text-dark-text">
-              {i18n.t('SCREEN.MAP.NO_SELECTED')}
+              {generateI18nMessage('SCREEN.MAP.NO_SELECTED')}
             </Text>
           </View>
         )}

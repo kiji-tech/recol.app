@@ -188,6 +188,11 @@
                 "MEAL": "Mahlzeit",
                 "HOTEL": "Hotel",
                 "SPOT": "Ort"
+            },
+            "RATE_LIMIT_MODAL": {
+                "TITLE": "Ratenbegrenzungsfehler",
+                "MESSAGE": "#plan# erlaubt bis zu 5 Sitzungen pro Stunde. Das Ansehen eines Videos setzt den Zähler zurück.",
+                "MOVIE_BUTTON": "Werbung ansehen, um freizuschalten"
             }
         },
         "MEDIA": {
@@ -222,6 +227,9 @@
             "AD_DISPLAY": "Werbeanzeige",
             "YES": "○",
             "NO": "-",
+            "RATE_LIMIT": "Kartensuchlimit",
+            "RATE_LIMIT_FREE": "5 Mal / Stunde",
+            "RATE_LIMIT_PREMIUM": "20 Mal / Stunde",
             "RECOMMENDED": "Empfohlen",
             "CURRENT_FREE_PLAN": "Aktuell kostenloser Plan in Verwendung",
             "UPGRADE_MESSAGE": "Upgrade auf Premium-Plan, um alle Funktionen zu nutzen",
@@ -268,6 +276,10 @@
         "DELETE": "Löschen",
         "DAYS": " Tage",
         "SEARCH": "Suchen",
-        "MONTH": "Monat"
+        "MONTH": "Monat",
+        "PLAN": {
+            "FREE": "Kostenloser Plan",
+            "PREMIUM": "Premium-Plan"
+        }
     }
 }

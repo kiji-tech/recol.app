@@ -25,8 +25,8 @@ export default function PlaceBottomSheetBody({ isEdit = false, onDirection }: Pr
     isSearchLoading,
     selectedPlace,
     selectedPlaceList,
-    handleAddSelectedPlace,
-    handleRemoveSelectedPlace,
+    doAddSelectedPlace,
+    doRemoveSelectedPlace,
   } = useMap();
   const [imageModalVisible, setImageModalVisible] = useState(false);
 
@@ -121,7 +121,7 @@ export default function PlaceBottomSheetBody({ isEdit = false, onDirection }: Pr
                         />
                       }
                       theme="danger"
-                      onPress={() => handleRemoveSelectedPlace(selectedPlace!)}
+                      onPress={() => doRemoveSelectedPlace(selectedPlace!)}
                     />
                   )}
                 {isEdit &&
@@ -132,7 +132,7 @@ export default function PlaceBottomSheetBody({ isEdit = false, onDirection }: Pr
                         <FontAwesome6 name="add" size={16} color={isDarkMode ? 'white' : 'black'} />
                       }
                       theme="info"
-                      onPress={() => handleAddSelectedPlace(selectedPlace!)}
+                      onPress={() => doAddSelectedPlace(selectedPlace!)}
                     />
                   )}
               </View>

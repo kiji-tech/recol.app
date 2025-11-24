@@ -9,7 +9,7 @@ import { PurchasesPackage } from 'react-native-purchases';
 import CurrentPlanBadge from '../../features/payment/components/CurrentPlanBadge';
 import PlanTable from '../../features/payment/components/PlanTable';
 import PlanCard from '../../features/payment/components/PlanCard';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 
 export default function PaymentPlan() {
   // === Member ===
@@ -35,7 +35,7 @@ export default function PaymentPlan() {
    */
   const handlePayment = async (payment: PurchasesPackage) => {
     if (!session) {
-      Alert.alert(i18n.t('SCREEN.PAYMENT.NO_SESSION'));
+      Alert.alert(generateI18nMessage('SCREEN.PAYMENT.NO_SESSION'));
       router.push('/(auth)/SignIn');
       return;
     }
@@ -51,7 +51,7 @@ export default function PaymentPlan() {
         level: 'error',
         notify: true,
       });
-      Alert.alert(i18n.t('SCREEN.PAYMENT.PAYMENT_FAILED'));
+      Alert.alert(generateI18nMessage('SCREEN.PAYMENT.PAYMENT_FAILED'));
     } finally {
       setIsLoading(false);
     }
@@ -62,17 +62,17 @@ export default function PaymentPlan() {
    */
   const handleCancel = async () => {
     if (profile && !profile.isPremiumUser()) {
-      Alert.alert(i18n.t('SCREEN.PAYMENT.NOT_PREMIUM'));
+      Alert.alert(generateI18nMessage('SCREEN.PAYMENT.NOT_PREMIUM'));
       return;
     }
 
     Alert.alert(
-      i18n.t('SCREEN.PAYMENT.CANCEL_CONFIRM_TITLE'),
-      i18n.t('SCREEN.PAYMENT.CANCEL_CONFIRM_MESSAGE'),
+      generateI18nMessage('SCREEN.PAYMENT.CANCEL_CONFIRM_TITLE'),
+      generateI18nMessage('SCREEN.PAYMENT.CANCEL_CONFIRM_MESSAGE'),
       [
-        { text: i18n.t('COMMON.CANCEL'), style: 'cancel' },
+        { text: generateI18nMessage('COMMON.CANCEL'), style: 'cancel' },
         {
-          text: i18n.t('SCREEN.PAYMENT.CANCEL_PREMIUM'),
+          text: generateI18nMessage('SCREEN.PAYMENT.CANCEL_PREMIUM'),
           style: 'destructive',
           onPress: async () => {
             Linking.openURL(managementURL || '').then(async () => {
@@ -94,13 +94,13 @@ export default function PaymentPlan() {
           {/* ヘッダーセクション */}
           <View className="items-center py-4">
             <Text className="text-2xl font-bold text-light-text dark:text-dark-text text-center">
-              {i18n.t('SCREEN.PAYMENT.PREMIUM_TITLE_1')}
+              {generateI18nMessage('SCREEN.PAYMENT.PREMIUM_TITLE_1')}
             </Text>
             <Text className="text-2xl font-bold text-light-primary dark:text-dark-primary text-center">
-              {i18n.t('SCREEN.PAYMENT.PREMIUM_TITLE_2')}
+              {generateI18nMessage('SCREEN.PAYMENT.PREMIUM_TITLE_2')}
             </Text>
             <Text className="text-gray-600 dark:text-gray-400 text-center">
-              {i18n.t('SCREEN.PAYMENT.PREMIUM_SUBTITLE')}
+              {generateI18nMessage('SCREEN.PAYMENT.PREMIUM_SUBTITLE')}
             </Text>
           </View>
           {/* 現在のプラン状況 */}
@@ -108,14 +108,14 @@ export default function PaymentPlan() {
           {/* 比較表 */}
           <View>
             <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-3">
-              {i18n.t('SCREEN.PAYMENT.PLAN_COMPARISON')}
+              {generateI18nMessage('SCREEN.PAYMENT.PLAN_COMPARISON')}
             </Text>
             <PlanTable />
           </View>
           {/* プラン選択 */}
           <View>
             <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-3">
-              {i18n.t('SCREEN.PAYMENT.SELECT_PLAN')}
+              {generateI18nMessage('SCREEN.PAYMENT.SELECT_PLAN')}
             </Text>
             <View className="flex flex-col gap-8">
               {premiumPlanList.length > 0 &&
@@ -140,7 +140,7 @@ export default function PaymentPlan() {
           {profile?.isPremiumUser() && (
             <View className="items-center">
               <Button
-                text={i18n.t('SCREEN.PAYMENT.CANCEL_PREMIUM_BUTTON')}
+                text={generateI18nMessage('SCREEN.PAYMENT.CANCEL_PREMIUM_BUTTON')}
                 onPress={handleCancel}
                 disabled={isLoading}
                 loading={isLoading}

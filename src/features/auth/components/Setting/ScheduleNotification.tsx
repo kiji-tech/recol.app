@@ -9,7 +9,7 @@ import { updateProfile } from '@/src/features/profile';
 import { fetchScheduleListForNotification } from '@/src/features/schedule';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import { Toast } from 'toastify-react-native';
 import { useMutation } from 'react-query';
 export default function ScheduleNotification() {
@@ -41,8 +41,8 @@ export default function ScheduleNotification() {
         }
 
         Alert.alert(
-          i18n.t('COMPONENT.SCHEDULE_NOTIFICATION.NO_PERMISSION_TITLE'),
-          i18n.t('COMPONENT.SCHEDULE_NOTIFICATION.NO_PERMISSION'),
+          generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.NO_PERMISSION_TITLE'),
+          generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.NO_PERMISSION'),
           [
             {
               text: '設定を開く',
@@ -70,8 +70,8 @@ export default function ScheduleNotification() {
         }
 
         Alert.alert(
-          i18n.t('COMMON.ERROR'),
-          i18n.t('COMPONENT.SCHEDULE_NOTIFICATION.ERROR_MESSAGE'),
+          generateI18nMessage('COMMON.ERROR'),
+          generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.ERROR_MESSAGE'),
           [{ text: 'OK' }]
         );
         return false;
@@ -127,11 +127,11 @@ export default function ScheduleNotification() {
         <View className="flex-row items-center">
           <Ionicons name="calendar-outline" size={24} color={isDarkMode ? 'white' : 'black'} />
           <Text className="ml-3 text-light-text dark:text-dark-text">
-            {i18n.t('COMPONENT.SCHEDULE_NOTIFICATION.TITLE')}
+            {generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.TITLE')}
           </Text>
         </View>
         <Text className="text-sm text-light-text dark:text-dark-text ml-9 mt-1">
-          {i18n.t('COMPONENT.SCHEDULE_NOTIFICATION.MESSAGE')}
+          {generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.MESSAGE')}
         </Text>
       </View>
       <View className="absolute right-4">

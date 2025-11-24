@@ -14,4 +14,13 @@ const translations = {
 
 const i18n = new I18n(translations);
 i18n.locale = getLocales()[0].languageCode ?? 'en';
-export default i18n;
+
+export default function generateI18nMessage(
+  messageKey: string,
+  list?: { key: string; value: string }[]
+): string {
+  const message = i18n.t(messageKey);
+  return list?.reduce((acc, { key, value }) => acc.replace(`#${key}#`, value), message) || message;
+}
+
+export { i18n, generateI18nMessage };

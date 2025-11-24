@@ -4,7 +4,7 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import { View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 interface PlanListMenuProps {
   onSortPress: () => void;
 }
@@ -40,7 +40,7 @@ export default function PlanListMenu({ onSortPress }: PlanListMenuProps) {
         }}
       >
         <MenuOption
-          text={i18n.t('COMPONENT.PLAN.ADD_PLAN')}
+          text={generateI18nMessage('COMPONENT.PLAN.ADD_PLAN')}
           customStyles={{
             optionText: {
               paddingVertical: 12,
@@ -51,7 +51,7 @@ export default function PlanListMenu({ onSortPress }: PlanListMenuProps) {
           onSelect={handleAddPress}
         />
         <MenuOption
-          text={i18n.t('COMPONENT.PLAN.SORT_TITLE')}
+          text={generateI18nMessage('COMPONENT.PLAN.SORT_TITLE')}
           customStyles={{
             optionText: {
               paddingVertical: 12,

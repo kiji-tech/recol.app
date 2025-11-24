@@ -26,7 +26,7 @@ import { useMutation, useQuery } from 'react-query';
 import { Toast } from 'toastify-react-native';
 import MaskLoading from '@/src/components/MaskLoading';
 import { usePlan } from '@/src/contexts/PlanContext';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 
 export default function MediaScreen() {
   // === Member ===
@@ -232,7 +232,7 @@ export default function MediaScreen() {
       {images?.length === 0 && (
         <View className="flex justify-center items-center h-full">
           <Text className="text-light-text dark:text-dark-text text-xl">
-            {i18n.t('SCREEN.MEDIA.NO_IMAGE_LIST')}
+            {generateI18nMessage('SCREEN.MEDIA.NO_IMAGE_LIST')}
           </Text>
         </View>
       )}

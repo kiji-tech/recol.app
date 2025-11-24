@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text } from 'react-native';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 
 interface TrialMessageProps {
   isMonthly: boolean;
@@ -14,7 +14,7 @@ export default function TrialMessage({ isMonthly, isCurrentPlan }: TrialMessageP
 
   return (
     <Text className="mt-1 text-xs text-light-success dark:text-dark-success font-medium">
-      {i18n.t('COMPONENT.PAYMENT.TRIAL_MESSAGE')}
+      {generateI18nMessage('COMPONENT.PAYMENT.TRIAL_MESSAGE')}
     </Text>
   );
 }

@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 import { Text, View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
-import { Plan } from '@/src/features/plan';
 import { Schedule } from '@/src/features/schedule';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { Button, IconButton } from '@/src/components';
@@ -11,7 +10,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import dayjs from 'dayjs';
 import MaskLoading from '@/src/components/MaskLoading';
 import ScheduleItem from '@/src/features/schedule/components/ScheduleItem';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 
 type Props = {
   onDelete?: (schedule: Schedule) => void;
@@ -77,11 +76,13 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
   const handleScheduleLongPress = (schedule: Schedule) => {
     if (!onDelete) return;
     // 削除アラート
-    const text = i18n.t('SCREEN.SCHEDULE.DELETE_SUCCESS').replace('#title#', schedule.title || '');
-    Alert.alert(text, i18n.t('SCREEN.SCHEDULE.DELETE_CONFIRM'), [
-      { text: i18n.t('COMMON.CANCEL'), style: 'cancel' },
+    const text = generateI18nMessage('SCREEN.SCHEDULE.DELETE_SUCCESS', [
+      { key: 'title', value: schedule.title || '' },
+    ]);
+    Alert.alert(text, generateI18nMessage('SCREEN.SCHEDULE.DELETE_CONFIRM'), [
+      { text: generateI18nMessage('COMMON.CANCEL'), style: 'cancel' },
       {
-        text: i18n.t('COMMON.DELETE'),
+        text: generateI18nMessage('COMMON.DELETE'),
         style: 'destructive',
         onPress: () => {
           // 削除処理
@@ -147,7 +148,7 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
       </View>
       <View className="my-8">
         <Button
-          text={i18n.t('COMPONENT.SCHEDULE.ADD_SCHEDULE')}
+          text={generateI18nMessage('COMPONENT.SCHEDULE.ADD_SCHEDULE')}
           disabled={isLoading}
           onPress={() => handleAddSchedule()}
         />

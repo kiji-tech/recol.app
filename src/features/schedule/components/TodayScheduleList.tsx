@@ -6,7 +6,7 @@ import { Plan } from '@/src/features/plan';
 import { Schedule } from '../types/Schedule';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import dayjs from 'dayjs';
-import i18n from '@/src/libs/i18n';
+import generateI18nMessage from '@/src/libs/i18n';
 import CategoryIcon from './CategoryIcon';
 import { usePlan } from '@/src/contexts/PlanContext';
 
@@ -83,7 +83,7 @@ export default function TodayScheduleList({ planList }: Props) {
   if (scheduleList.length === 0) {
     return (
       <Text className="text-light-text dark:text-dark-text text-sm">
-        {i18n.t('COMPONENT.PLAN.NO_SCHEDULE_TODAY')}
+        {generateI18nMessage('COMPONENT.PLAN.NO_SCHEDULE_TODAY')}
       </Text>
     );
   }
