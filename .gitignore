@@ -38,8 +38,6 @@ yarn-error.*
 
 /docs/
 /functions/
-.env
-
 /android/
 /ios/
 # @generated expo-cli sync-8d4afeec25ea8a192358fae2f8e2fc766bdce4ec
@@ -76,8 +74,9 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
-.env.prod
+.env.production
 
 # typescript
 *.tsbuildinfo
