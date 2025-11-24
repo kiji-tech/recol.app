@@ -188,6 +188,11 @@
                     "MEAL": "Repas",
                     "HOTEL": "Hôtel",
                     "SPOT": "Lieu"
+                },
+                "RATE_LIMIT_MODAL": {
+                    "TITLE": "Erreur de limite de taux",
+                    "MESSAGE": "#plan# permet jusqu'à 5 sessions par heure. Regarder une vidéo réinitialisera le compte.",
+                    "MOVIE_BUTTON": "Regarder une publicité pour débloquer"
                 }
             },
             "MEDIA": {
@@ -271,6 +276,10 @@
             "DELETE": "Supprimer",
             "DAYS": " jours",
             "SEARCH": "Rechercher",
-            "MONTH": "Mois"
+            "MONTH": "Mois",
+            "PLAN": {
+                "FREE": "Plan gratuit",
+                "PREMIUM": "Plan premium"
+            }
         }
     }

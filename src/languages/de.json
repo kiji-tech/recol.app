@@ -188,6 +188,11 @@
                 "MEAL": "Mahlzeit",
                 "HOTEL": "Hotel",
                 "SPOT": "Ort"
+            },
+            "RATE_LIMIT_MODAL": {
+                "TITLE": "Ratenbegrenzungsfehler",
+                "MESSAGE": "#plan# erlaubt bis zu 5 Sitzungen pro Stunde. Das Ansehen eines Videos setzt den Zähler zurück.",
+                "MOVIE_BUTTON": "Werbung ansehen, um freizuschalten"
             }
         },
         "MEDIA": {
@@ -271,6 +276,10 @@
         "DELETE": "Löschen",
         "DAYS": " Tage",
         "SEARCH": "Suchen",
-        "MONTH": "Monat"
+        "MONTH": "Monat",
+        "PLAN": {
+            "FREE": "Kostenloser Plan",
+            "PREMIUM": "Premium-Plan"
+        }
     }
 }
