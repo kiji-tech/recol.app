@@ -1,9 +1,8 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { Button, ModalLayout } from '@/src/components';
+import { ModalLayout } from '@/src/components';
 import Title from '@/src/components/Title';
 import { useAuth } from '../../auth';
-import { useMap } from '../hooks/useMap';
 import generateI18nMessage from '@/src/libs/i18n';
 import MovieAd from '@/src/components/Ad/MovieAd';
 
@@ -14,13 +13,11 @@ type Props = {
 export default function RateLimitModal({ isOpen, onClose }: Props) {
   // === Member ===
   const { profile } = useAuth();
-  const { clearRateLimitCount } = useMap();
 
   // === Method ===
 
   // === Handle ===
   const handleMovieAdComplete = () => {
-    clearRateLimitCount();
     onClose();
   };
 
