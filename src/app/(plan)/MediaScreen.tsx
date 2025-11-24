@@ -18,7 +18,6 @@ import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { Media } from '@/src/features/media';
 import MediaDetailModal from '@/src/features/media/components/MediaDetailModal';
-import BackgroundView from '@/src/components/BackgroundView';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import * as ImagePicker from 'expo-image-picker';
 import * as Progress from 'react-native-progress';
@@ -211,7 +210,7 @@ export default function MediaScreen() {
 
   /**  画像が選択された場合 */
   return (
-    <SafeAreaView className="bg-light-background dark:bg-dark-background">
+    <SafeAreaView className="bg-light-background dark:bg-dark-background h-full">
       {/* 画像が選択されていれば､モーダルが表示される */}
       <MediaDetailModal
         visible={visibleImage !== null}
