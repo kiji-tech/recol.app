@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import dayjs from 'dayjs';
 import { createContext, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { searchPlaceByText } from '../libs/searchPlaceByText';
@@ -52,8 +53,8 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   const { editSchedule, setEditSchedule } = usePlan();
   const rateLimitMap: Record<PaymentPlan, number> = {
     Premium: 20,
-    Free: 5,
-    Basic: 5,
+    Free: 1,
+    Basic: 1,
   };
   const mapSearchRateLimit = useMemo(
     () => rateLimitMap[profile?.payment_plan || 'Free'],
@@ -77,17 +78,35 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   // === Rate Limit ===
   /**
    * レート制限カウントを取得する
+   * 直近1時間で検索した件数（length）を返す
    */
   const fetchRateLimitCount = async (): Promise<number> => {
-    const count = await AsyncStorage.getItem(RATE_LIMIT_STORAGE_KEY);
-    return Number(count || 0);
+    const jsonValue = await AsyncStorage.getItem(RATE_LIMIT_STORAGE_KEY);
+    console.log('jsonValue', jsonValue);
+    const searchDates: string[] = jsonValue != null ? JSON.parse(jsonValue) : [];
+
+    const now = dayjs();
+    const oneHourAgo = now.subtract(1, 'hour');
+
+    // 直近1時間のデータのみにフィルタリング
+    const validDates = searchDates.filter((dateStr) => {
+      const date = dayjs(dateStr);
+      return date.isAfter(oneHourAgo);
+    });
+
+    // フィルタリング後のデータを保存し直す（掃除）
+    if (validDates.length !== searchDates.length) {
+      await AsyncStorage.setItem(RATE_LIMIT_STORAGE_KEY, JSON.stringify(validDates));
+    }
+
+    return validDates.length;
   };
 
   /**
    * レート制限カウントをクリアする
    */
   const clearRateLimitCount = async () => {
-    await AsyncStorage.setItem(RATE_LIMIT_STORAGE_KEY, '0');
+    await AsyncStorage.removeItem(RATE_LIMIT_STORAGE_KEY);
   };
 
   /**
@@ -96,7 +115,6 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
    */
   const checkRateLimit = async (): Promise<boolean> => {
     const OK = true;
-    const count = (await fetchRateLimitCount()) + 1;
 
     // プロフィールがない場合は実施できない
     if (!profile) return !OK;
@@ -105,13 +123,27 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
       return OK;
     }
 
+    const currentCount = await fetchRateLimitCount();
+
     //カウントの比較
-    if (count >= mapSearchRateLimit) {
+    if (currentCount >= mapSearchRateLimit) {
       return !OK;
     }
 
-    // カウントを増やす
-    await AsyncStorage.setItem(RATE_LIMIT_STORAGE_KEY, count.toString());
+    // カウントを増やす（現在時刻を追加）
+    const now = dayjs();
+    const newDateStr = now.format('YYYY-MM-DD HH:mm:ss');
+
+    const cleanJsonValue = await AsyncStorage.getItem(RATE_LIMIT_STORAGE_KEY);
+    if (cleanJsonValue && typeof cleanJsonValue == 'string') {
+      await clearRateLimitCount();
+      
+    }
+      console.log
+    const cleanSearchDates: string[] = cleanJsonValue != null ? JSON.parse(cleanJsonValue) : [];
+
+    const newSearchDates = [...cleanSearchDates, newDateStr];
+    await AsyncStorage.setItem(RATE_LIMIT_STORAGE_KEY, JSON.stringify(newSearchDates));
 
     return OK;
   };
