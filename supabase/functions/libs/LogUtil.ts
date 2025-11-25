@@ -1,4 +1,6 @@
 import { User } from 'npm:@supabase/supabase-js';
+import { Context } from 'jsr:@hono/hono';
+
 type LogLevel = 'info' | 'warn' | 'error';
 
 interface LogOptions {
@@ -30,8 +32,9 @@ export class LogUtil {
   /**
    * ログを出力し、必要に応じてSlackに通知する
    */
-  static async log(message: unknown, options: LogOptions = {}) {
+  static async log(message: unknown, options: LogOptions = {}, c?: Context) {
     const { level = 'info', notify = false, error, additionalInfo = {}, user } = options;
+    const clientIP = c?.req.header('x-forwarded-for') || 'Unknown';
     const m = typeof message == 'string' ? message : JSON.stringify(message);
     const logData: LogData = {
       timestamp: new Date().toISOString(),
@@ -50,7 +53,7 @@ export class LogUtil {
     }
 
     // コンソールへの出力
-    const customMessage = `[${level.toUpperCase()}] ${user ? user.email : ''} ${message}`;
+    const customMessage = `[${clientIP}] [${level.toUpperCase()}] ${user ? user.email : ''} ${message}`;
     // コンソールへの出力
     switch (level) {
       case 'info':

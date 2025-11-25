@@ -1,5 +1,6 @@
 import { User } from '@supabase/supabase-js';
 import { notifySlack } from '../features/slack';
+import * as Network from 'expo-network';
 
 type LogLevel = 'info' | 'warn' | 'error';
 
@@ -29,6 +30,7 @@ export class LogUtil {
    */
   static async log(message: unknown, options: LogOptions = {}) {
     const { level = 'info', notify = false, error, additionalInfo = {}, user } = options;
+    const currentIP = await Network.getIpAddressAsync();
     const m = typeof message == 'string' ? message : JSON.stringify(message);
     const logData: LogData = {
       timestamp: new Date().toISOString(),
@@ -45,7 +47,7 @@ export class LogUtil {
         name: error.name,
       };
     }
-    const customMessage = `[${level.toUpperCase()}] ${user ? `[${user.email}]` : ''} ${message}`;
+    const customMessage = `[${currentIP}] [${level.toUpperCase()}] ${user ? `[${user.email}]` : ''} ${message}`;
     // コンソールへの出力
     console.log(customMessage);
 

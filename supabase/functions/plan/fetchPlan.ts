@@ -65,18 +65,18 @@ export const get = async (c: Context, supabase: SupabaseClient, user: User) => {
     return c.json({ message: getMessage('C005', ['プラン']), code: 'C005' }, 500);
   }
 
-  LogUtil.log('[GET] plan/:uid 完了', { level: 'info' });
+  LogUtil.log('[GET] plan/:uid 完了', { level: 'info' }, c);
   return c.json(plan);
 };
 
 export const list = async (c: Context, supabase: SupabaseClient, user: User) => {
-  LogUtil.log('[POST] plan/list 開始', { level: 'info' });
+  LogUtil.log('[POST] plan/list 開始', { level: 'info' }, c);
 
   const { data: planList, error } = await fetchPlanList(supabase, user.id);
   if (error) {
     return c.json({ message: getMessage('C005', ['プラン']), code: 'C005' }, 500);
   }
 
-  LogUtil.log('[POST] plan/list 完了', { level: 'info' });
+  LogUtil.log('[POST] plan/list 完了', { level: 'info' }, c);
   return c.json(planList);
 };
