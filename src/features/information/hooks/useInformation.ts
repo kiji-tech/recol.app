@@ -158,7 +158,12 @@ export const useInformation = () => {
     if (informationList.length === 0 || currentIndex >= informationList.length) {
       return null;
     }
-    return informationList[currentIndex];
+    const targetInformation = informationList[currentIndex];
+    if (targetInformation.isNotification == false) {
+      setCurrentIndex(currentIndex + 1);
+      return null;
+    }
+    return targetInformation;
   };
 
   useEffect(() => {

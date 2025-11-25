@@ -13,6 +13,7 @@ export type InformationType = {
   image: ImageType | undefined;
   detailUrl: string | undefined;
   platform: string[] | undefined;
+  isNotification: boolean;
 };
 
 /**
@@ -39,6 +40,7 @@ export class Information {
   body: string = '';
   startAt: string = '';
   endAt: string | undefined;
+  isNotification: boolean = true;
   image: Image | undefined;
   detailUrl: string | undefined;
   platform: string[] | undefined;
@@ -52,5 +54,6 @@ export class Information {
     this.image = data.image ? new Image(data.image) : undefined;
     this.detailUrl = data.detailUrl;
     this.platform = data.platform;
+    this.isNotification = data.isNotification;
   }
 }
