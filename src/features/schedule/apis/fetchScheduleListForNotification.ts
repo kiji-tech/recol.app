@@ -14,5 +14,5 @@ export async function fetchScheduleListForNotification(
     session,
     ctrl,
   });
-  return response.data!;
+  return response.data!.map((schedule) => new Schedule(schedule));
 }

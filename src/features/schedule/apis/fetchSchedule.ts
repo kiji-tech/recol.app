@@ -15,5 +15,5 @@ export async function fetchSchedule(
     session,
     ctrl,
   });
-  return response.data!;
+  return new Schedule(response.data!);
 }

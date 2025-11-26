@@ -28,11 +28,11 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
 
   // === Method ====
   const onNewSchedule = (from: dayjs.Dayjs, to: dayjs.Dayjs) => {
-    const newSchedule = {
+    const newSchedule = new Schedule({
       plan_id: plan!.uid,
       from: from.format('YYYY-MM-DDTHH:mm:00.000Z'),
       to: to.format('YYYY-MM-DDTHH:mm:00.000Z'),
-    } as Schedule;
+    } as Schedule);
     setEditSchedule(newSchedule);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
@@ -56,7 +56,7 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
 
   /** アイテムクリックイベント */
   const handleSchedulePress = (schedule: Schedule) => {
-    const s = {
+    const s = new Schedule({
       ...schedule,
       plan_id: plan!.uid,
       from: dayjs(schedule.from)
@@ -67,7 +67,7 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
         .set('hour', dayjs(schedule.to).get('hour'))
         .set('minute', dayjs(schedule.to).get('minute'))
         .format('YYYY-MM-DDTHH:mm:00.000Z'),
-    } as Schedule;
+    });
     setEditSchedule(s);
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };

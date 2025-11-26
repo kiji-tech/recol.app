@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { router } from 'expo-router';
-import { ScrollView, Text, TextInput, View } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
 import DatePicker from '../../components/DatePicker';
@@ -8,6 +9,7 @@ import dayjs from '@/src/libs/dayjs';
 import MapModal from '../../features/map/components/MapModal';
 import { upsertSchedule } from '@/src/features/schedule';
 import { useAuth } from '@/src/features/auth';
+import useImagePicker from '@/src/features/media/hooks/useImagePicker';
 import { Schedule } from '@/src/features/schedule';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { LogUtil } from '@/src/libs/LogUtil';
@@ -20,15 +22,20 @@ import {
 } from '@/src/features/schedule/libs/scheduleTime';
 import generateI18nMessage from '@/src/libs/i18n';
 import { useMap } from '@/src/features/map';
+import { useTheme } from '@/src/contexts/ThemeContext';
+import { Image } from 'expo-image';
+import { Media } from '@/src/features/media';
 
 export default function ScheduleEditor() {
+  const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
   // === Member ===
   const { plan, editSchedule, setEditSchedule } = usePlan();
   const { session, profile, user } = useAuth();
   const [openMapModal, setOpenMapModal] = useState(false);
-  const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { refetchSearchPlaceList } = useMap();
+  const { selectImageList } = useImagePicker();
+  const { isDarkMode } = useTheme();
   // === Method ===
   /**
    * スケジュールを保存する
@@ -74,6 +81,26 @@ export default function ScheduleEditor() {
         setIsLoading(false);
       });
   };
+
+  /**
+   * メディアを追加
+   */
+  const handleAddMedia = async () => {
+    LogUtil.log(JSON.stringify('handleAddMedia START'), {
+      level: 'info',
+    });
+    const result: ImagePicker.ImagePickerAsset[] = await selectImageList();
+    const addMediaList = result.map(
+      (media: ImagePicker.ImagePickerAsset) =>
+        new Media({ uid: media.assetId, url: media.uri } as Media)
+    );
+    setEditSchedule({
+      ...editSchedule,
+      media_list: [...editSchedule!.media_list, ...addMediaList],
+    } as Schedule);
+  };
+
+  const handleDeleteMedia = () => {};
 
   /**
    * マップから選択した場所を追加
@@ -177,6 +204,7 @@ export default function ScheduleEditor() {
                 } as Schedule);
               }}
             />
+
             {/* マップから追加する */}
             <View className="w-full flex flex-col justify-start items-start gap-4">
               <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
@@ -205,6 +233,42 @@ export default function ScheduleEditor() {
                   ])}
                 </Text>
               </View>
+            </View>
+
+            {/* メディア */}
+            <View className="w-full flex flex-col justify-start items-start gap-2">
+              <View className="flex flex-row justify-start items-center">
+                <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
+                  {generateI18nMessage('SCREEN.SCHEDULE.MEDIA_LIST')}(
+                  {editSchedule.media_list?.length})
+                </Text>
+                {/* +ボタン */}
+                <TouchableOpacity
+                  className="w-8 h-8 rounded-full flex items-center justify-center bg-light-background dark:bg-dark-background"
+                  onPress={handleAddMedia}
+                >
+                  <FontAwesome5 name="plus" size={12} color={isDarkMode ? 'white' : 'black'} />
+                </TouchableOpacity>
+              </View>
+              {/* 登録している一覧 */}
+              <FlatList
+                data={editSchedule?.media_list}
+                horizontal={true}
+                contentContainerClassName="gap-4"
+                renderItem={({ item }) => {
+                  return (
+                    <View className="w-32 h-32 rounded-xl border border-light-border dark:border-dark-border">
+                      <Image
+                        source={item.url}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                        }}
+                      />
+                    </View>
+                  );
+                }}
+              />
             </View>
 
             {/* メモ */}
