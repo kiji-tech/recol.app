@@ -15,7 +15,7 @@ export async function fetchPlanList(
   ctrl?: AbortController,
   sortType?: PlanSortType
 ): Promise<Plan[]> {
-  const response = await apiRequest<Plan[]>('/plan/list', {
+  const response = await apiRequest<Plan[]>('/v1/plan/list', {
     method: 'POST',
     session,
     ctrl,

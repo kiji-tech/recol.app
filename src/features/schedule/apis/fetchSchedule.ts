@@ -10,7 +10,7 @@ export async function fetchSchedule(
   session: Session | null,
   ctrl?: AbortController
 ) {
-  const response = await apiRequest<Schedule>(`/schedule/${scheduleId}`, {
+  const response = await apiRequest<Schedule>(`/v1/schedule/${scheduleId}`, {
     method: 'GET',
     session,
     ctrl,

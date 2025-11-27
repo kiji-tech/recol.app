@@ -11,7 +11,7 @@ export async function uploadPlanMediaList(
   session: Session | null,
   ctrl?: AbortController
 ) {
-  const response = await apiRequest<void>('/media', {
+  const response = await apiRequest<void>('/v1/media', {
     method: 'POST',
     session,
     body: { planId, scheduleId, images },

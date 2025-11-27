@@ -10,7 +10,7 @@ export async function fetchPlanMediaList(
   session: Session | null,
   ctrl?: AbortController
 ): Promise<Media[]> {
-  const response = await apiRequest<MediaType[]>('/media/list', {
+  const response = await apiRequest<MediaType[]>('/v1/media/list', {
     method: 'POST',
     session,
     body: { planId },
