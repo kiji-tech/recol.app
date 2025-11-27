@@ -3,7 +3,15 @@ import { Tables, Enums } from './database.types.ts';
 
 // データベースの型定義を使用
 export type Plan = Tables<'plan'>;
+export type PlanWithScheduleWithMedia = Tables<'plan'> & {
+  schedule: (Tables<'schedule'> & {
+    media: Tables<'media'>[];
+  })[];
+};
 export type Schedule = Tables<'schedule'>;
+export type ScheduleWithMedia = Tables<'schedule'> & {
+  media: Tables<'media'>[];
+};
 export type Profile = Tables<'profile'>;
 export type Media = Tables<'media'>;
 export type Message = Tables<'message'>;

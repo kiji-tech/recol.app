@@ -40,7 +40,9 @@ export default function useImagePicker() {
    * @param options
    * @returns
    */
-  const selectImageList = async (options?: ImagePicker.ImagePickerOptions): Promise<ImagePicker.ImagePickerAsset[]> => {
+  const selectImageList = async (
+    options?: ImagePicker.ImagePickerOptions
+  ): Promise<ImagePicker.ImagePickerAsset[]> => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
@@ -60,5 +62,6 @@ export default function useImagePicker() {
 
   return {
     selectImageList,
+    toBase64,
   };
 }

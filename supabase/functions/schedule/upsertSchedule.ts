@@ -12,16 +12,28 @@ import { LogUtil } from '../libs/LogUtil.ts';
 export const upsertSchedule = async (c: Context, supabase: SupabaseClient) => {
   LogUtil.log('[UPSERT] schedule', { level: 'info' });
   const { schedule } = await c.req.json();
+  const { uid, plan_id, title, description, category, place_list, from, to, delete_flag } =
+    schedule;
   // scheduleの更新
   const { data, error } = await supabase
     .from('schedule')
     .upsert(
       {
-        ...schedule,
+        uid,
+        plan_id,
+        title,
+        description,
+        category,
+        place_list,
+        from,
+        to,
+        delete_flag,
       },
       { onConflict: 'uid' }
     )
-    .select('*');
+    .select(
+      '*,media(*)                                                                                                                                                                                                                                                                                 '
+    );
   if (error) {
     LogUtil.log(JSON.stringify(error), { level: 'error' });
     return c.json({ message: getMessage('C007', ['スケジュール']), code: 'C007' }, 400);

@@ -47,7 +47,7 @@ export default function MediaScreen() {
   });
 
   const imageUploadMutation = useMutation({
-    mutationFn: (images: string[]) => uploadPlanMediaList(planId!, images, session),
+    mutationFn: (images: string[]) => uploadPlanMediaList(planId!, null, images, session),
     onError: (error) => {
       LogUtil.log(JSON.stringify(error), { level: 'error', notify: true, user });
       if (error && error instanceof Error && error.message) {

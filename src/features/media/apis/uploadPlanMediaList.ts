@@ -6,6 +6,7 @@ import { Session } from '@supabase/supabase-js';
  */
 export async function uploadPlanMediaList(
   planId: string,
+  scheduleId: string | null,
   images: string[],
   session: Session | null,
   ctrl?: AbortController
@@ -13,7 +14,7 @@ export async function uploadPlanMediaList(
   const response = await apiRequest<void>('/media', {
     method: 'POST',
     session,
-    body: { planId, images },
+    body: { planId, scheduleId, images },
     ctrl,
   });
   return response.data!;

@@ -2,7 +2,7 @@ import { Context } from 'jsr:@hono/hono';
 import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
-import { Schedule, DatabaseResult } from '../libs/types.ts';
+import { Schedule, DatabaseResult, Media } from '../libs/types.ts';
 import dayjs from 'dayjs';
 
 /**
@@ -14,11 +14,13 @@ import dayjs from 'dayjs';
 const fetchScheduleById = async (
   supabase: SupabaseClient,
   scheduleId: string
-): Promise<DatabaseResult<Schedule>> => {
+): Promise<DatabaseResult<Schedule & { media: Media }>> => {
   const { data: schedule, error } = await supabase
     .from('schedule')
-    .select('*')
+    .select('*,media(*)')
     .eq('uid', scheduleId)
+    .eq('delete_flag', false)
+    .eq('media.delete_flag', false)
     .maybeSingle();
 
   if (error) {
@@ -44,12 +46,13 @@ const fetchScheduleById = async (
 const fetchScheduleListByPlanId = async (
   supabase: SupabaseClient,
   planId: string
-): Promise<DatabaseResult<Schedule[]>> => {
+): Promise<DatabaseResult<(Schedule & { media: Media })[]>> => {
   const { data: scheduleList, error } = await supabase
     .from('schedule')
-    .select('*')
+    .select('*,media(*)')
     .eq('plan_id', planId)
     .eq('delete_flag', false)
+    .eq('media.delete_flag', false)
     .order('created_at', { ascending: false })
     .order('from', { ascending: true });
 
@@ -124,7 +127,7 @@ export const get = async (c: Context, supabase: SupabaseClient) => {
   }
 
   LogUtil.log('[GET] schedule/:id 完了', { level: 'info' });
-  return c.json(schedule);
+  return c.json({ ...schedule, media_list: schedule?.media || [] });
 };
 
 /**
@@ -140,9 +143,15 @@ export const list = async (c: Context, supabase: SupabaseClient) => {
   if (error) {
     return c.json({ message: getMessage('C005', ['スケジュール']), code: 'C005' }, 400);
   }
-
+  LogUtil.log(`スケジュール一覧取得成功: ${scheduleList?.length || 0}件`, { level: 'info' });
+  LogUtil.log(
+    `スケジュールメディア取得成功: ${scheduleList?.map((schedule) => schedule.media?.length || 0).reduce((a, b) => a + b, 0)}件`,
+    { level: 'info' }
+  );
   LogUtil.log('[POST] schedule/list 完了', { level: 'info' });
-  return c.json(scheduleList);
+  return c.json(
+    scheduleList?.map((schedule) => ({ ...schedule, media_list: schedule.media || [] }))
+  );
 };
 
 /**

@@ -8,7 +8,6 @@ export const withUser = async (
   c: Context,
   fn: (c: Context, supabase: SupabaseClient, user: User) => Promise<Response>
 ) => {
-  LogUtil.log('[WITH USER] ユーザー認証開始', { level: 'info' }, c);
   const supabase = generateSupabase(c);
   const user = await getUser(c, supabase);
   if (!user) {

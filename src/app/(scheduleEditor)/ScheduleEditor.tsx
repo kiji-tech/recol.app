@@ -24,7 +24,8 @@ import generateI18nMessage from '@/src/libs/i18n';
 import { useMap } from '@/src/features/map';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { Image } from 'expo-image';
-import { Media } from '@/src/features/media';
+import { deletePlanMediaList, Media, uploadPlanMediaList } from '@/src/features/media';
+import { useMutation } from 'react-query';
 
 export default function ScheduleEditor() {
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
@@ -32,10 +33,24 @@ export default function ScheduleEditor() {
   const { plan, editSchedule, setEditSchedule } = usePlan();
   const { session, profile, user } = useAuth();
   const [openMapModal, setOpenMapModal] = useState(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { refetchSearchPlaceList } = useMap();
-  const { selectImageList } = useImagePicker();
+  const { selectImageList, toBase64 } = useImagePicker();
   const { isDarkMode } = useTheme();
+  const [mediaList, setMediaList] = useState<ImagePicker.ImagePickerAsset[]>([]);
+  const [removeMediaList, setRemoveMediaList] = useState<string[]>([]);
+  const viewMediaList: { url: string; uid: string; isNew: boolean }[] = useMemo(
+    () =>
+      mediaList
+        .map((media) => ({ url: media.uri!, uid: media.assetId!, isNew: true }))
+        .concat(
+          editSchedule?.media_list?.map((media: Media) => ({
+            url: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${media.url}`,
+            uid: media.uid,
+            isNew: false,
+          })) || []
+        ),
+    [mediaList, editSchedule]
+  );
   // === Method ===
   /**
    * スケジュールを保存する
@@ -51,56 +66,31 @@ export default function ScheduleEditor() {
   };
 
   /**
-   * スケジュールの編集 イベントハンドラ
-   */
-  const handleScheduleSubmit = async () => {
-    if (!plan || !editSchedule) return;
-    setIsLoading(true);
-    const updateSchedule = {
-      ...editSchedule,
-      from: dayjs(editSchedule.from).format(DATE_FORMAT),
-      to: dayjs(editSchedule.to).format(DATE_FORMAT),
-      place_list: editSchedule.place_list?.filter((place) => place !== null),
-    } as Schedule;
-    saveSchedule(updateSchedule)
-      .then(() => {
-        // プランの再取得
-        router.back();
-      })
-      .catch((e) => {
-        if (e && e.message) {
-          LogUtil.log(JSON.stringify({ saveScheduleError: e }), {
-            level: 'error',
-            notify: true,
-            user,
-          });
-          Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.SAVE_FAILED'));
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
-
-  /**
    * メディアを追加
    */
   const handleAddMedia = async () => {
-    LogUtil.log(JSON.stringify('handleAddMedia START'), {
-      level: 'info',
-    });
     const result: ImagePicker.ImagePickerAsset[] = await selectImageList();
-    const addMediaList = result.map(
-      (media: ImagePicker.ImagePickerAsset) =>
-        new Media({ uid: media.assetId, url: media.uri } as Media)
-    );
-    setEditSchedule({
-      ...editSchedule,
-      media_list: [...editSchedule!.media_list, ...addMediaList],
-    } as Schedule);
+    setMediaList((prev) => [...prev, ...result]);
   };
 
-  const handleDeleteMedia = () => {};
+  /**
+   * メディア削除処理
+   * 新規メディアの場合は、メディアリストから削除
+   * 既存メディアの場合は、削除メディアリストに追加
+   * @param image { uid: string; url: string; isNew: boolean }
+   */
+  const handleDeleteMedia = (image: { uid: string; url: string; isNew: boolean }) => {
+    LogUtil.log(`handleDeleteMedia Start: ${JSON.stringify(image)}`);
+    if (image.isNew) {
+      setMediaList((prev) => prev.filter((media) => media.assetId !== image.uid));
+    } else {
+      setEditSchedule((prev) => ({
+        ...prev,
+        media_list: prev.media_list?.filter((media) => media.uid !== image.uid),
+      }));
+      setRemoveMediaList((prev) => [...prev, image.uid]);
+    }
+  };
 
   /**
    * マップから選択した場所を追加
@@ -123,6 +113,46 @@ export default function ScheduleEditor() {
   const handleBack = () => {
     router.back();
   };
+
+  // === mutate ===
+  /**
+   * スケジュールの編集 イベントハンドラ
+   */
+  const mutateUpdateSchedule = useMutation('updateSchedule', {
+    mutationFn: async () => {
+      if (!plan || !editSchedule) return;
+      // メディアの登録
+      const mediaBase64List = [];
+      for (const media of mediaList) {
+        const base64 = await toBase64(media.uri!);
+        if (base64) mediaBase64List.push(base64);
+      }
+      await uploadPlanMediaList(editSchedule.plan_id!, editSchedule.uid!, mediaBase64List, session);
+
+      // 削除対象メディアの更新
+      await deletePlanMediaList(editSchedule.plan_id!, removeMediaList, session);
+
+      // スケジュールの更新
+      const updateSchedule = {
+        ...editSchedule,
+        from: dayjs(editSchedule.from).format(DATE_FORMAT),
+        to: dayjs(editSchedule.to).format(DATE_FORMAT),
+        place_list: editSchedule.place_list?.filter((place) => place !== null),
+      } as Schedule;
+      await saveSchedule(updateSchedule);
+    },
+    onSuccess: () => {
+      router.back();
+    },
+    onError: (e) => {
+      LogUtil.log(JSON.stringify({ saveScheduleError: e }), {
+        level: 'error',
+        notify: true,
+        user,
+      });
+      Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.SAVE_FAILED'));
+    },
+  });
 
   // === Effect ===
   useEffect(() => {
@@ -235,42 +265,6 @@ export default function ScheduleEditor() {
               </View>
             </View>
 
-            {/* メディア */}
-            <View className="w-full flex flex-col justify-start items-start gap-2">
-              <View className="flex flex-row justify-start items-center">
-                <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
-                  {generateI18nMessage('SCREEN.SCHEDULE.MEDIA_LIST')}(
-                  {editSchedule.media_list?.length})
-                </Text>
-                {/* +ボタン */}
-                <TouchableOpacity
-                  className="w-8 h-8 rounded-full flex items-center justify-center bg-light-background dark:bg-dark-background"
-                  onPress={handleAddMedia}
-                >
-                  <FontAwesome5 name="plus" size={12} color={isDarkMode ? 'white' : 'black'} />
-                </TouchableOpacity>
-              </View>
-              {/* 登録している一覧 */}
-              <FlatList
-                data={editSchedule?.media_list}
-                horizontal={true}
-                contentContainerClassName="gap-4"
-                renderItem={({ item }) => {
-                  return (
-                    <View className="w-32 h-32 rounded-xl border border-light-border dark:border-dark-border">
-                      <Image
-                        source={item.url}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                        }}
-                      />
-                    </View>
-                  );
-                }}
-              />
-            </View>
-
             {/* メモ */}
             <View className="w-full flex flex-col justify-start items-start">
               <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
@@ -291,13 +285,65 @@ export default function ScheduleEditor() {
               />
             </View>
 
+            {/* メディア */}
+            <View className="w-full flex flex-col justify-start items-start gap-2">
+              <View className="flex flex-row justify-start items-center gap-4   ">
+                <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
+                  {generateI18nMessage('SCREEN.SCHEDULE.MEDIA_LIST', [
+                    {
+                      key: 'count',
+                      value: editSchedule.media_list?.length.toString() || '0',
+                    },
+                  ])}
+                </Text>
+                {/* +ボタン */}
+                <TouchableOpacity
+                  className="w-8 h-8 rounded-full flex items-center justify-center bg-light-background dark:bg-dark-background"
+                  onPress={handleAddMedia}
+                >
+                  <FontAwesome5 name="plus" size={12} color={isDarkMode ? 'white' : 'black'} />
+                </TouchableOpacity>
+              </View>
+              {/* 登録している一覧 */}
+              <FlatList
+                data={viewMediaList}
+                horizontal={true}
+                contentContainerClassName="gap-4"
+                keyExtractor={(item: { uid: string; url: string; isNew: boolean }) => item.uid}
+                renderItem={({ item }) => {
+                  return (
+                    <View className="w-32 h-32 rounded-xl border border-light-border dark:border-dark-border">
+                      <TouchableOpacity
+                        className="absolute top-2 right-2 z-10 bg-light-background dark:bg-dark-background rounded-full p-2"
+                        onPress={() => handleDeleteMedia(item)}
+                      >
+                        <FontAwesome5
+                          name="minus"
+                          size={12}
+                          color={isDarkMode ? 'white' : 'black'}
+                        />
+                      </TouchableOpacity>
+                      <Image
+                        source={{ uri: item.url }}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: 12,
+                        }}
+                      />
+                    </View>
+                  );
+                }}
+              />
+            </View>
+
             {/* 保存ボタン */}
             <Button
               theme="theme"
-              onPress={handleScheduleSubmit}
+              onPress={mutateUpdateSchedule.mutate}
               text={generateI18nMessage('COMMON.SAVE')}
-              disabled={isLoading}
-              loading={isLoading}
+              disabled={mutateUpdateSchedule.isLoading}
+              loading={mutateUpdateSchedule.isLoading}
             />
           </View>
         </ScrollView>

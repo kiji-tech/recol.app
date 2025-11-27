@@ -53,7 +53,7 @@ export class LogUtil {
     }
 
     // コンソールへの出力
-    const customMessage = `[${clientIP}] [${level.toUpperCase()}] ${user ? user.email : ''} ${message}`;
+    const customMessage = `[${clientIP}] ${user ? user.email : ''} ${message}`;
     // コンソールへの出力
     switch (level) {
       case 'info':
