@@ -242,7 +242,7 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
         place_list: [...(editSchedule?.place_list || []), place.id],
       } as Schedule);
     },
-    [editSchedule]
+    [editSchedule?.place_list]
   );
 
   /**
@@ -258,7 +258,7 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
         place_list: editSchedule?.place_list?.filter((p: string) => p !== place.id) || [],
       } as Schedule);
     },
-    [editSchedule]
+    [editSchedule?.place_list]
   );
 
   // === Effect ===
@@ -269,7 +269,7 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
     fetchCachePlace(editSchedule?.place_list || [], session).then((data: Place[]) => {
       setSelectedPlaceList(data || []);
     });
-  }, [editSchedule]);
+  }, [editSchedule?.place_list]);
 
   // === Query ===
   const {
