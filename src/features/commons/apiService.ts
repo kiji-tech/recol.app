@@ -29,6 +29,7 @@ export async function apiRequest<T, B = Record<string, unknown>>(
   }
 ): Promise<ApiResponse<T>> {
   const { method, body, ctrl, session } = options;
+  LogUtil.log(`=== start apiRequest ${endpoint} ===`);
 
   const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     method,

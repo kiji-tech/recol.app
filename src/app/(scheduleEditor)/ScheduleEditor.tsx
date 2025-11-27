@@ -38,14 +38,21 @@ export default function ScheduleEditor() {
   const { isDarkMode } = useTheme();
   const [mediaList, setMediaList] = useState<ImagePicker.ImagePickerAsset[]>([]);
   const [removeMediaList, setRemoveMediaList] = useState<string[]>([]);
-  const viewMediaList: { url: string; uid: string; isNew: boolean }[] = useMemo(
+  type ViewMedia = { url: string; uid: string; base64?: string; isNew: boolean };
+  const viewMediaList: ViewMedia[] = useMemo(
     () =>
       mediaList
-        .map((media) => ({ url: media.uri!, uid: media.assetId!, isNew: true }))
+        .map((media, index) => ({
+          url: media.uri!,
+          uid: `media-${index}`,
+          base64: media.base64,
+          isNew: true,
+        }))
         .concat(
           editSchedule?.media_list?.map((media: Media) => ({
             url: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${media.url}`,
-            uid: media.uid,
+            uid: media.uid!,
+            base64: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${media.url}`,
             isNew: false,
           })) || []
         ),
@@ -54,14 +61,16 @@ export default function ScheduleEditor() {
   // === Method ===
   /**
    * スケジュールを保存する
+   * @param updateSchedule 更新するスケジュール
    */
-  const saveSchedule = async (updateSchedule: Schedule) => {
-    await upsertSchedule(updateSchedule, session).then(async () => {
+  const saveSchedule = async (updateSchedule: Schedule): Promise<Schedule> => {
+    return await upsertSchedule(updateSchedule, session).then(async (savedSchedule) => {
       // 通知処理の見直し
       await NotificationUtil.upsertUserSchedule(
-        editSchedule as Schedule,
+        updateSchedule,
         profile?.enabled_schedule_notification ?? false
       );
+      return savedSchedule;
     });
   };
 
@@ -82,9 +91,11 @@ export default function ScheduleEditor() {
   const handleDeleteMedia = (image: { uid: string; url: string; isNew: boolean }) => {
     LogUtil.log(`handleDeleteMedia Start: ${JSON.stringify(image)}`);
     if (image.isNew) {
-      setMediaList((prev) => prev.filter((media) => media.assetId !== image.uid));
+      setMediaList((prev: ImagePicker.ImagePickerAsset) =>
+        prev.filter((media) => media.uri !== image.url)
+      );
     } else {
-      setEditSchedule((prev) => ({
+      setEditSchedule((prev: Schedule) => ({
         ...prev,
         media_list: prev.media_list?.filter((media) => media.uid !== image.uid),
       }));
@@ -121,25 +132,30 @@ export default function ScheduleEditor() {
   const mutateUpdateSchedule = useMutation('updateSchedule', {
     mutationFn: async () => {
       if (!plan || !editSchedule) return;
-      // メディアの登録
-      const mediaBase64List = [];
-      for (const media of mediaList) {
-        const base64 = await toBase64(media.uri!);
-        if (base64) mediaBase64List.push(base64);
-      }
-      await uploadPlanMediaList(editSchedule.plan_id!, editSchedule.uid!, mediaBase64List, session);
-
       // 削除対象メディアの更新
-      await deletePlanMediaList(editSchedule.plan_id!, removeMediaList, session);
+      if (removeMediaList.length > 0) {
+        LogUtil.log(`removeMediaList: ${JSON.stringify(removeMediaList)}`);
+        await deletePlanMediaList(editSchedule.plan_id!, removeMediaList, session);
+      }
 
       // スケジュールの更新
+      LogUtil.log(`updateSchedule: ${JSON.stringify(editSchedule)}`);
       const updateSchedule = {
         ...editSchedule,
         from: dayjs(editSchedule.from).format(DATE_FORMAT),
         to: dayjs(editSchedule.to).format(DATE_FORMAT),
         place_list: editSchedule.place_list?.filter((place) => place !== null),
       } as Schedule;
-      await saveSchedule(updateSchedule);
+      const savedSchedule = await saveSchedule(updateSchedule);
+
+      setEditSchedule((prev: Schedule) => ({ ...prev, uid: savedSchedule.uid! }));
+
+      // メディアの登録
+      for (const media of mediaList) {
+        const base64 = await toBase64(media.uri!);
+        if (base64)
+          await uploadPlanMediaList(savedSchedule.plan_id!, savedSchedule.uid!, [base64], session);
+      }
     },
     onSuccess: () => {
       router.back();
@@ -148,7 +164,6 @@ export default function ScheduleEditor() {
       LogUtil.log(JSON.stringify({ saveScheduleError: e }), {
         level: 'error',
         notify: true,
-        user,
       });
       Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.SAVE_FAILED'));
     },
@@ -292,7 +307,7 @@ export default function ScheduleEditor() {
                   {generateI18nMessage('SCREEN.SCHEDULE.MEDIA_LIST', [
                     {
                       key: 'count',
-                      value: editSchedule.media_list?.length.toString() || '0',
+                      value: viewMediaList.length.toString() || '0',
                     },
                   ])}
                 </Text>
@@ -309,7 +324,7 @@ export default function ScheduleEditor() {
                 data={viewMediaList}
                 horizontal={true}
                 contentContainerClassName="gap-4"
-                keyExtractor={(item: { uid: string; url: string; isNew: boolean }) => item.uid}
+                keyExtractor={(item: ViewMedia) => item.uid}
                 renderItem={({ item }) => {
                   return (
                     <View className="w-32 h-32 rounded-xl border border-light-border dark:border-dark-border">
@@ -324,7 +339,7 @@ export default function ScheduleEditor() {
                         />
                       </TouchableOpacity>
                       <Image
-                        source={{ uri: item.url }}
+                        source={{ uri: item.base64 }}
                         style={{
                           width: '100%',
                           height: '100%',
@@ -340,7 +355,7 @@ export default function ScheduleEditor() {
             {/* 保存ボタン */}
             <Button
               theme="theme"
-              onPress={mutateUpdateSchedule.mutate}
+              onPress={mutateUpdateSchedule.mutateAsync}
               text={generateI18nMessage('COMMON.SAVE')}
               disabled={mutateUpdateSchedule.isLoading}
               loading={mutateUpdateSchedule.isLoading}

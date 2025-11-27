@@ -194,6 +194,7 @@ export default function MediaScreen() {
    */
   useFocusEffect(
     useCallback(() => {
+      refetch();
       const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
         router.back();
         return true;

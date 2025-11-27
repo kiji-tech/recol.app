@@ -21,7 +21,7 @@ export default function MapScreen() {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
 
-  const { plan, editSchedule, setEditSchedule } = usePlan();
+  const { plan, editSchedule, setEditSchedule, refetchPlan } = usePlan();
   const {
     region,
     setRegion,
@@ -45,13 +45,6 @@ export default function MapScreen() {
         .sort((a, b) => dayjs(a.from).diff(dayjs(b.from))) || []
     );
   }, [plan]);
-
-  const stepList: Step[] = useMemo(() => {
-    if (!routeList || routeList.length === 0) return [];
-    const [firstRoute] = routeList;
-    if (!firstRoute || !firstRoute.legs || firstRoute.legs.length === 0) return [];
-    return firstRoute.legs.flatMap((leg) => leg.steps || []);
-  }, [routeList]);
 
   // === Method ===
   /**
@@ -110,9 +103,10 @@ export default function MapScreen() {
   // === Effect ===
   useFocusEffect(
     useCallback(() => {
-      setupBackPress();
+      refetchPlan();
       doSelectedCategory('selected');
       setEditSchedule(viewScheduleList[0] || null);
+      setupBackPress();
       return () => handleBackPress?.remove();
     }, [])
   );

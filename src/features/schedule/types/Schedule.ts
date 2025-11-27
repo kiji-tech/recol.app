@@ -2,7 +2,7 @@ import { Database, Tables } from '@/src/libs/database.types';
 import { Media } from '../../media';
 
 export class Schedule {
-  uid: string = '';
+  uid?: string;
   plan_id: string | null = null;
   title: string | null = null;
   description: string | null = null;
@@ -11,7 +11,7 @@ export class Schedule {
   media_list: Media[] = [];
   from: string | null = null;
   to: string | null = null;
-  delete_flag: boolean | null = null;
+  delete_flag: boolean = false;
   created_at: string = '';
   updated_at: string | null = null;
 

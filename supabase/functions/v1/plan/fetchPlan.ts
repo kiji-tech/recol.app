@@ -60,11 +60,9 @@ const fetchPlanList = async (
     .order('created_at', { ascending: false });
 
   if (error) {
-    LogUtil.log('プラン一覧取得エラー', {
+    LogUtil.log(`プラン一覧取得エラー: ${JSON.stringify(error)}`, {
       level: 'error',
       notify: true,
-      error: error,
-      additionalInfo: { userId },
     });
     return { data: null, error };
   }

@@ -9,7 +9,7 @@ export async function upsertSchedule(
   schedule: Schedule,
   session: Session | null,
   ctrl?: AbortController
-) {
+): Promise<Schedule> {
   const response = await apiRequest<Schedule>('/v1/schedule', {
     method: 'POST',
     session,
