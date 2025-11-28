@@ -38,21 +38,19 @@ export default function ScheduleEditor() {
   const { isDarkMode } = useTheme();
   const [mediaList, setMediaList] = useState<ImagePicker.ImagePickerAsset[]>([]);
   const [removeMediaList, setRemoveMediaList] = useState<string[]>([]);
-  type ViewMedia = { url: string; uid: string; base64?: string; isNew: boolean };
+  type ViewMedia = { url: string; uid: string; isNew: boolean };
   const viewMediaList: ViewMedia[] = useMemo(
     () =>
       mediaList
         .map((media, index) => ({
           url: media.uri!,
           uid: `media-${index}`,
-          base64: media.base64,
           isNew: true,
         }))
         .concat(
           editSchedule?.media_list?.map((media: Media) => ({
             url: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${media.url}`,
             uid: media.uid!,
-            base64: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${media.url}`,
             isNew: false,
           })) || []
         ),
@@ -339,7 +337,7 @@ export default function ScheduleEditor() {
                         />
                       </TouchableOpacity>
                       <Image
-                        source={{ uri: item.base64 }}
+                        source={{ uri: item.url }}
                         style={{
                           width: '100%',
                           height: '100%',
