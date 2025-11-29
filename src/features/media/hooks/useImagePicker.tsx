@@ -54,6 +54,38 @@ export default function useImagePicker() {
         Platform.OS === 'android'
           ? ImagePicker.UIImagePickerPresentationStyle.AUTOMATIC
           : undefined,
+      ...options,
+    });
+
+    if (result.canceled) return [];
+    return result.assets;
+  };
+
+  /**
+   * カメラを起動して撮影した画像の情報を返す
+   * @param options
+   * @returns
+   */
+  const takePhoto = async (
+    options?: ImagePicker.ImagePickerOptions
+  ): Promise<ImagePicker.ImagePickerAsset[]> => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert('カメラへのアクセス許可が必要です');
+      return [];
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      aspect: [1, 1],
+      quality: 0.2,
+      base64: true,
+      presentationStyle:
+        Platform.OS === 'android'
+          ? ImagePicker.UIImagePickerPresentationStyle.AUTOMATIC
+          : undefined,
+      ...options,
     });
 
     if (result.canceled) return [];
@@ -63,5 +95,6 @@ export default function useImagePicker() {
   return {
     selectImageList,
     toBase64,
+    takePhoto,
   };
 }

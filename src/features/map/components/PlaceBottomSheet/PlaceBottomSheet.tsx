@@ -9,12 +9,14 @@ type Props = {
   bottomSheetRef: React.RefObject<BottomSheet>;
   isEdit?: boolean;
   onDirection?: () => void;
+  onPost?: () => void;
   onClose: () => void;
 };
 export default function PlaceBottomSheet({
   bottomSheetRef,
   isEdit = false,
   onDirection,
+  onPost,
   onClose,
 }: Props) {
   // === Effect ===
@@ -33,7 +35,7 @@ export default function PlaceBottomSheet({
     <>
       <BottomSheetLayout ref={bottomSheetRef}>
         <PlaceBottomSheetHeader onClose={onClose} />
-        <PlaceBottomSheetBody isEdit={isEdit} onDirection={onDirection} />
+        <PlaceBottomSheetBody isEdit={isEdit} onDirection={onDirection} onPost={onPost} />
       </BottomSheetLayout>
     </>
   );
