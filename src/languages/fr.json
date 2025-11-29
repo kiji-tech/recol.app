@@ -154,6 +154,7 @@
                 "PLAN_NOT_FOUND": "Impossible de récupérer les informations du plan",
                 "FETCH_FAILED": "Échec de la récupération des informations du plan",
                 "CANDIDATE_COUNT": "#count# candidats trouvés",
+                "MEDIA_LIST": "Médias enregistrés (#count#)",
                 "DELETE_CONFIRM": "Supprimer le calendrier",
                 "DELETE_SUCCESS": "#title# a été supprimé",
                 "SAVE_FAILED": "Échec de l'enregistrement du calendrier",
