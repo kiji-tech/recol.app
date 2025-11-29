@@ -35,18 +35,22 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
         {/* 情報詳細 */}
         <View className="flex flex-col gap-2 p-4 ml-4 border-l-[1px] border-light-border dark:border-dark-border">
           <View className="flex flex-row justify-between">
-            <Autolink
-              text={item.description || ''}
-              linkStyle={{
-                color: isDarkMode ? '#60a5fa' : '#2563eb',
-              }}
-              onPress={openUrl}
-              textProps={{
-                className: 'text-light-text dark:text-dark-text line-clamp-2',
-              }}
-              numberOfLines={2}
-            />
-            <MediaViewer schedule={item} />
+            <View className="w-2/3 z-50">
+              <Autolink
+                text={item.description || ''}
+                linkStyle={{
+                  color: isDarkMode ? '#60a5fa' : '#2563eb',
+                }}
+                onPress={openUrl}
+                textProps={{
+                  className: 'text-light-text dark:text-dark-text',
+                }}
+                numberOfLines={8}
+              />
+            </View>
+            <View className="flex-1">
+              <MediaViewer schedule={item} />
+            </View>
           </View>
           <View className="flex flex-row justify-between">
             {/* TODO: チェックリスト（将来機能） */}
