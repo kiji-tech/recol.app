@@ -35,7 +35,7 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
         {/* 情報詳細 */}
         <View className="flex flex-col gap-2 p-4 ml-4 border-l-[1px] border-light-border dark:border-dark-border">
           <View className="flex flex-row justify-between">
-            <View className="w-2/3 z-50">
+            <View className="flex-1 z-50">
               <Autolink
                 text={item.description || ''}
                 linkStyle={{
@@ -48,9 +48,11 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
                 numberOfLines={8}
               />
             </View>
-            <View className="flex-1">
-              <MediaViewer schedule={item} />
-            </View>
+            {item.media_list && item.media_list?.length > 0 && (
+              <View className="w-1/3">
+                <MediaViewer schedule={item} />
+              </View>
+            )}
           </View>
           <View className="flex flex-row justify-between">
             {/* TODO: チェックリスト（将来機能） */}
