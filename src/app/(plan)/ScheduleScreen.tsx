@@ -2,7 +2,6 @@ import React, { ReactNode, useCallback } from 'react';
 import ScheduleComponents from '../../features/schedule/components/ScheduleComponent';
 import { BackgroundView, Header } from '@/src/components';
 import { useRouter } from 'expo-router';
-import { Plan } from '@/src/features/plan';
 import { useFocusEffect } from '@react-navigation/native';
 import { deleteSchedule, Schedule } from '@/src/features/schedule';
 import { useAuth } from '@/src/features/auth';
@@ -41,6 +40,7 @@ export default function ScheduleScreen(): ReactNode {
 
   /**
    * 予定の削除処理
+   * @param schedule {Schedule} 
    */
   const handleDeleteSchedule = async (schedule: Schedule) => {
     const text = generateI18nMessage('SCREEN.SCHEDULE.DELETE_SUCCESS', [
@@ -76,6 +76,7 @@ export default function ScheduleScreen(): ReactNode {
     useCallback(() => {
       // 画面に来たときにプランを取り直す
       refetchPlan();
+      refetchPlanList();
       const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
         router.back();
         return true;

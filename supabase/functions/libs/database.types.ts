@@ -14,6 +14,7 @@ export type Database = {
           created_at: string
           delete_flag: boolean | null
           plan_id: string | null
+          schedule_id: string | null
           uid: string
           upload_user_id: string | null
           url: string | null
@@ -22,6 +23,7 @@ export type Database = {
           created_at?: string
           delete_flag?: boolean | null
           plan_id?: string | null
+          schedule_id?: string | null
           uid?: string
           upload_user_id?: string | null
           url?: string | null
@@ -30,6 +32,7 @@ export type Database = {
           created_at?: string
           delete_flag?: boolean | null
           plan_id?: string | null
+          schedule_id?: string | null
           uid?: string
           upload_user_id?: string | null
           url?: string | null
@@ -40,6 +43,13 @@ export type Database = {
             columns: ["plan_id"]
             isOneToOne: false
             referencedRelation: "plan"
+            referencedColumns: ["uid"]
+          },
+          {
+            foreignKeyName: "media_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "schedule"
             referencedColumns: ["uid"]
           },
         ]
@@ -259,7 +269,7 @@ export type Database = {
     }
     Enums: {
       PaymentPlan: "Free" | "Basic" | "Premium"
-      Role: "Admin" | "SuperUser" | "Tester" | "User"
+      Role: "Admin" | "SuperUser" | "User"
       schedule_category: "movement" | "meals" | "sightseeing" | "other"
       ScheduleCategory:
         | "Movement"
@@ -396,7 +406,7 @@ export const Constants = {
   public: {
     Enums: {
       PaymentPlan: ["Free", "Basic", "Premium"],
-      Role: ["Admin", "SuperUser", "Tester", "User"],
+      Role: ["Admin", "SuperUser", "User"],
       schedule_category: ["movement", "meals", "sightseeing", "other"],
       ScheduleCategory: [
         "Movement",

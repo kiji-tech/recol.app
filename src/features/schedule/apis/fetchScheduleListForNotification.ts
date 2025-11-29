@@ -9,10 +9,10 @@ export async function fetchScheduleListForNotification(
   session: Session | null,
   ctrl?: AbortController
 ) {
-  const response = await apiRequest<Schedule[]>(`/schedule/list/notification`, {
+  const response = await apiRequest<Schedule[]>(`/v1/schedule/list/notification`, {
     method: 'POST',
     session,
     ctrl,
   });
-  return response.data!;
+  return response.data!.map((schedule) => new Schedule(schedule));
 }

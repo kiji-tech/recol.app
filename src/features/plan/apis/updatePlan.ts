@@ -6,7 +6,7 @@ import { Plan } from '..';
  * プランの更新
  */
 export async function updatePlan(plan: Plan, session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Plan>('/plan', {
+  const response = await apiRequest<Plan>('/v1/plan', {
     method: 'PUT',
     session,
     body: plan as Plan,

@@ -10,7 +10,7 @@ export async function deleteSchedule(
   session: Session | null,
   ctrl?: AbortController
 ) {
-  await apiRequest<void>('/schedule/delete', {
+  await apiRequest<void>('/v1/schedule/delete', {
     method: 'POST',
     session,
     body: { uid: schedule.uid },

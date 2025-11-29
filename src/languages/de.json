@@ -154,6 +154,7 @@
             "PLAN_NOT_FOUND": "Planinformationen konnten nicht abgerufen werden",
             "FETCH_FAILED": "Planinformationen konnten nicht abgerufen werden",
             "CANDIDATE_COUNT": "#count# Kandidaten gefunden",
+            "MEDIA_LIST": "Gespeicherte Medien (#count#)",
             "DELETE_CONFIRM": "Zeitplan löschen",
             "DELETE_SUCCESS": "#title# wurde gelöscht",
             "SAVE_FAILED": "Zeitplan konnte nicht gespeichert werden",

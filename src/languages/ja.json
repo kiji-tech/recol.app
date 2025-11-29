@@ -154,6 +154,7 @@
             "PLAN_NOT_FOUND": "プランの情報が取得できませんでした",
             "FETCH_FAILED": "プランの情報が取得に失敗しました",
             "CANDIDATE_COUNT": "#count# 件候補があります",
+            "MEDIA_LIST": "画像（#count#）",
             "DELETE_CONFIRM": "スケジュールを削除します",
             "DELETE_SUCCESS": "#title#を削除しました",
             "SAVE_FAILED": "スケジュールの保存に失敗しました",

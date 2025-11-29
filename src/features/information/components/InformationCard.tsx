@@ -61,6 +61,7 @@ export default function InformationCard({ information, onPress }: InformationCar
       {information.image && (
         <View className="mb-3 w-full">
           <Image
+            contentFit="contain"
             cachePolicy="memory-disk"
             source={{ uri: information.image.url }}
             style={{

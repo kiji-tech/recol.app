@@ -10,7 +10,7 @@ export async function deletePlanMediaList(
   session: Session | null,
   ctrl?: AbortController
 ) {
-  await apiRequest<void>('/media/delete', {
+  await apiRequest<void>('/v1/media/delete', {
     method: 'POST',
     session,
     body: { planId, mediaIdList },

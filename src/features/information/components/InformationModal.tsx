@@ -70,6 +70,7 @@ export default function InformationModal({ information, visible, onClose }: Info
             {information.image && (
               <View className="mb-4 w-full">
                 <Image
+                  contentFit="contain"
                   cachePolicy="memory-disk"
                   source={{ uri: information.image.url }}
                   style={{

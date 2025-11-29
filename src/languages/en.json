@@ -154,6 +154,7 @@
             "PLAN_NOT_FOUND": "Could not retrieve plan information",
             "FETCH_FAILED": "Failed to retrieve plan information",
             "CANDIDATE_COUNT": "#count# candidates found",
+            "MEDIA_LIST": "Saved media（#count#）",
             "DELETE_CONFIRM": "Are you sure you want to delete this schedule?",
             "DELETE_SUCCESS": "#title# has been deleted",
             "SAVE_FAILED": "Failed to save schedule",
