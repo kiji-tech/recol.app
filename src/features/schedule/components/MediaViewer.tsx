@@ -27,13 +27,13 @@ export default function MediaViewer({ schedule }: Props) {
     if (total === 1) return [{ rotate: '0deg' }];
     if (total === 2) {
       return index === 0
-        ? [{ rotate: '-6deg' }, { translateX: -8 }, { translateY: 2 }]
-        : [{ rotate: '5deg' }, { translateX: 8 }, { translateY: -2 }];
+        ? [{ rotate: '-6deg' }, { translateX: -8 }, { translateY: 12 }]
+        : [{ rotate: '5deg' }, { translateX: 8 }, { translateY: -12 }];
     }
     // total === 3
-    if (index === 0) return [{ rotate: '-10deg' }, { translateX: -15 }, { translateY: 5 }];
-    if (index === 1) return [{ rotate: '8deg' }, { translateX: 12 }, { translateY: -8 }];
-    return [{ rotate: '-2deg' }, { translateX: 0 }, { translateY: 0 }];
+    if (index === 0) return [{ rotate: '-10deg' }, { translateX: 18 }, { translateY: 32 }];
+    if (index === 1) return [{ rotate: '8deg' }, { translateX: 12 }, { translateY: -24 }];
+    return [{ rotate: '-2deg' }, { translateX: 0 }, { translateY: 8 }];
   };
 
   // === Handler ===
