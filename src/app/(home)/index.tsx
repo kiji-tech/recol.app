@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { BackgroundView, Header, IconButton } from '@/src/components';
-import { Article, fetchArticleList } from '@/src/features/article';
+import { fetchArticleList } from '@/src/features/article';
 import { useInformation, InformationModal } from '@/src/features/information';
 import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -14,7 +14,6 @@ import { Place, useMap } from '@/src/features/map';
 import PlaceBottomSheet from '@/src/features/map/components/PlaceBottomSheet/PlaceBottomSheet';
 import PostsReportModal from '@/src/features/posts/components/PostsReportModal';
 import { Posts } from '@/src/features/posts/types/Posts';
-import { SafeAreaView } from 'react-native';
 
 export default function Home() {
   // === Member ===
@@ -77,7 +76,7 @@ export default function Home() {
   );
 
   return (
-    <SafeAreaView className="bg-[#f7f7f7] dark:bg-black flex flex-col justify-start h-full">
+    <BackgroundView>
       <Header
         title="Re:CoL"
         rightComponent={
@@ -114,6 +113,6 @@ export default function Home() {
           bottomSheetRef={null}
         />
       )}
-    </SafeAreaView>
+    </BackgroundView>
   );
 }
