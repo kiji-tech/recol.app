@@ -4,10 +4,11 @@ import { generateSupabase } from '../libs/supabase.ts';
 export const fetchPostsList = async (c: Context) => {
   const supabase = generateSupabase(c);
   const { option } = await c.req.json();
-  console.log({ option });
-  const { data: posts, error } = await supabase.from('posts').select('*, profile(*)');
-  // .limit(option.limit)
-  // .offset(option.offset);
+  const { data: posts, error } = await supabase
+    .from('posts')
+    .select('*, profile(*)')
+    .range(option.offset, option.limit + option.offset)
+    .order('created_at', { ascending: false });
 
   if (error) {
     return c.json({ message: error.message }, 500);
