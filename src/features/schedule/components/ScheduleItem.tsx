@@ -50,7 +50,11 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
             </View>
             {item.media_list && item.media_list?.length > 0 && (
               <View className="w-1/3">
-                <MediaViewer schedule={item} />
+                <MediaViewer
+                  mediaUrlList={item.media_list
+                    .map((media) => media.url || '')
+                    .filter((url) => url !== '')}
+                />
               </View>
             )}
           </View>

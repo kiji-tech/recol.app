@@ -1,20 +1,19 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { BackgroundView, Header, IconButton } from '@/src/components';
-import { ActivityIndicator, FlatList, ScrollView, View } from 'react-native';
 import { Article, fetchArticleList } from '@/src/features/article';
-import { ArticleCard } from '../../features/article/components/ArticleCard';
-import { TodayScheduleList } from '@/src/features/schedule';
 import { useInformation, InformationModal } from '@/src/features/information';
-import RecentPlanList from '@/src/features/plan/components/recentPlan/RecentPlanList';
-import Title from '@/src/components/Title';
 import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import { useFocusEffect } from '@react-navigation/native';
-import generateI18nMessage from '@/src/libs/i18n';
 import { useQuery } from 'react-query';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Plan } from '@/src/features/plan';
+import PostsList from '@/src/features/posts/components/PostsList';
+import { Place, useMap } from '@/src/features/map';
+import PlaceBottomSheet from '@/src/features/map/components/PlaceBottomSheet/PlaceBottomSheet';
+import PostsReportModal from '@/src/features/posts/components/PostsReportModal';
+import { Posts } from '@/src/features/posts/types/Posts';
 
 export default function Home() {
   // === Member ===
@@ -22,6 +21,10 @@ export default function Home() {
   const { isDarkMode } = useTheme();
   const { storagePlanList, planLoading, refetchPlanList, planList } = usePlan();
   const { currentInformation, isModalVisible, handleCloseModal } = useInformation();
+  const { doSelectedPlace } = useMap();
+  const [selectedPosts, setSelectedPosts] = useState<Posts | null>(null);
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isDetailPlace, setIsDetailPlace] = useState(false);
   const viewPlanList = useMemo<Plan[]>(() => {
     if (planLoading) return storagePlanList || [];
     return planList || [];
@@ -37,6 +40,32 @@ export default function Home() {
    */
   const handleNotificationPress = (): void => {
     router.push('/(modal)/InformationList');
+  };
+
+  /**
+   * 選択した投稿の場所を表示する
+   * @param place {Place} 選択した投稿の場所
+   */
+  const handleSelectPlace = (place: Place) => {
+    doSelectedPlace(place);
+    setIsDetailPlace(true);
+  };
+
+  /**
+   * 投稿を報告する
+   * @param posts {Posts} 投稿
+   */
+  const handleReport = (posts: Posts) => {
+    setSelectedPosts(posts);
+    setIsReportOpen(true);
+  };
+
+  /**
+   * 投稿報告モーダルを閉じる
+   */
+  const handleReportModalClose = () => {
+    setIsReportOpen(false);
+    setSelectedPosts(null);
   };
 
   // === Effect ===
@@ -64,42 +93,26 @@ export default function Home() {
           />
         }
       />
-      <ScrollView>
-        <View className="flex flex-col justify-start items-start gap-2">
-          {/* 登録されているスケジ ロールで予定が近いものを5つくらい表示する */}
-          <View className="w-full flex flex-row justify-start items-center gap-2">
-            <Title text={generateI18nMessage('SCREEN.HOME.TODAY_SCHEDULE')} />
-            {planLoading && <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />}
-          </View>
-          <TodayScheduleList planList={viewPlanList} />
-
-          {/* 直近n日のプラン */}
-          <View className="w-full flex flex-row justify-start items-center gap-2">
-            <Title text={generateI18nMessage('SCREEN.HOME.RECENT_PLAN')} />
-            {planLoading && <ActivityIndicator color={isDarkMode ? 'white' : 'black'} />}
-          </View>
-          <RecentPlanList planList={viewPlanList} />
-
-          {/* 新着・おすすめ・旅行先・グッズ */}
-          <Title text={generateI18nMessage('SCREEN.HOME.NEW_ARTICLE')} />
-          {/* 新着記事 */}
-          <View className="w-full mb-8">
-            <FlatList
-              data={articles || []}
-              horizontal={true}
-              contentContainerStyle={{ gap: 16 }}
-              showsHorizontalScrollIndicator={false}
-              keyExtractor={(item: Article) => item.id}
-              renderItem={({ item }) => <ArticleCard item={item} />}
-            />
-          </View>
-        </View>
-      </ScrollView>
+      <PostsList onSelect={handleSelectPlace} onReport={handleReport} />
+      {isReportOpen && (
+        <PostsReportModal
+          isOpen={isReportOpen}
+          onClose={handleReportModalClose}
+          posts={selectedPosts!}
+        />
+      )}
       <InformationModal
         information={currentInformation}
         visible={isModalVisible}
         onClose={handleCloseModal}
       />
+      {isDetailPlace && (
+        <PlaceBottomSheet
+          isEdit={false}
+          onClose={() => setIsDetailPlace(false)}
+          bottomSheetRef={null}
+        />
+      )}
     </BackgroundView>
   );
 }

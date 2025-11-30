@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import { Schedule } from '../types/Schedule';
 import { Image } from 'expo-image';
 import MediaDetailModal from '../../media/components/MediaDetailModal';
 
 type Props = {
-  schedule: Schedule;
+  mediaUrlList: string[];
 };
 
-export default function MediaViewer({ schedule }: Props) {
-  const mediaList = schedule.media_list.slice(0, 3);
+export default function MediaViewer({ mediaUrlList }: Props) {
   const [isOpen, setIsOpen] = useState(false);
-
-  if (mediaList.length === 0) {
+  const mediaViewList = mediaUrlList.slice(0, 3);
+  if (mediaViewList.length === 0) {
     return null;
   }
 
@@ -48,20 +46,19 @@ export default function MediaViewer({ schedule }: Props) {
         onPress={() => setIsOpen(true)}
       >
         <View className="relative w-full aspect-[4/3] items-center justify-center">
-          {mediaList.map((media, index) => (
+          {mediaViewList.map((mediaUrl, index) => (
             <View
-              key={media.uid || index}
+              key={`media-${index}`}
               className="absolute w-full h-full overflow-hidden rounded-xl border-2 border-white bg-white shadow-md"
               style={{
                 zIndex: index + 20,
-                transform: getTransform(index, mediaList.length) as any,
+                transform: getTransform(index, mediaViewList.length) as any,
                 elevation: 5,
               }}
             >
-              {/* <Text>{media.uid}</Text> */}
               <Image
                 source={{
-                  uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${media.url}`,
+                  uri: mediaUrl,
                 }}
                 style={{
                   width: '100%',
@@ -75,13 +72,8 @@ export default function MediaViewer({ schedule }: Props) {
       </TouchableOpacity>
       <MediaDetailModal
         visible={isOpen}
-        imageList={
-          schedule.media_list?.map(
-            (item) =>
-              `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${item.url}`
-          ) || []
-        }
-        selectedImage={`${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${schedule.media_list[0].url}`}
+        imageList={mediaUrlList || []}
+        selectedImage={mediaUrlList[0]}
         onClose={handleCloseImageView}
       />
     </>

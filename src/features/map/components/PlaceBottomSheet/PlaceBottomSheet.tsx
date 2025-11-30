@@ -6,7 +6,7 @@ import PlaceBottomSheetBody from './PlaceBottomSheetBody';
 import { BackHandler } from 'react-native';
 
 type Props = {
-  bottomSheetRef: React.RefObject<BottomSheet>;
+  bottomSheetRef: React.RefObject<BottomSheet> | null;
   isEdit?: boolean;
   onDirection?: () => void;
   onPost?: () => void;

@@ -1,4 +1,5 @@
 import { Tables } from '@/src/libs/database.types';
+import { Profile } from '../../profile';
 export type PostsType = Tables<'posts'>;
 
 export class Posts {
@@ -9,6 +10,7 @@ export class Posts {
   medias: string[] = [];
   delete_flag: boolean = false;
   created_at?: string;
+  profile: Profile = new Profile({} as Profile);
 
   constructor(data: PostsType | Posts) {
     for (const key in data) {

@@ -27,5 +27,6 @@ app.post('/media', (c: Context) => withUser(c, media.createMedia));
 app.post('/media/delete', (c: Context) => withUser(c, media.deleteMedia));
 
 // === Posts ===
+app.post('/posts/list', posts.fetchPostsList);
 app.post('/posts', (c: Context) => withUser(c, posts.createPosts));
 Deno.serve(app.fetch);

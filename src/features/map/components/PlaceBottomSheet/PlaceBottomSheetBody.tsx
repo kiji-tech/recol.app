@@ -12,13 +12,12 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import MediaDetailModal from '@/src/features/media/components/MediaDetailModal';
 import MaskLoading from '@/src/components/MaskLoading';
 import { useMap } from '../../hooks/useMap';
-import PostPlaceModal from '../../../posts/components/PostPlaceModal';
+
 type Props = {
   isEdit?: boolean;
   onDirection?: () => void;
   onPost?: () => void;
 };
-
 export default function PlaceBottomSheetBody({ isEdit = false, onDirection, onPost }: Props) {
   // === Member ===
   const { isDarkMode } = useTheme();
