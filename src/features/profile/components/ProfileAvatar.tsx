@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Profile } from '../types/Profile';
 import { User } from '@supabase/supabase-js';
+import { Image } from 'expo-image';
 
 type Props = {
   profile?: Profile | null;
@@ -14,6 +15,7 @@ export default function ProfileAvatar({ profile, user }: Props) {
       <View className="w-24 h-24 rounded-full overflow-hidden border-2 border-light-border dark:border-dark-border">
         {profile?.avatar_url ? (
           <Image
+            cachePolicy="memory-disk"
             source={{
               uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`,
             }}

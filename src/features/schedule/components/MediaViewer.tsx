@@ -56,6 +56,7 @@ export default function MediaViewer({ mediaUrlList }: Props) {
               }}
             >
               <Image
+                cachePolicy="memory-disk"
                 source={{
                   uri: mediaUrl,
                 }}

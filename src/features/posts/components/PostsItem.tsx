@@ -66,6 +66,7 @@ export default function PostsItem({ posts, onSelect, onReport }: Props) {
           <View className="flex flex-row items-center justify-between">
             <View className="flex flex-row gap-2 flex-1 items-center justify-start">
               <Image
+                cachePolicy="memory-disk"
                 source={{
                   uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`,
                 }}
@@ -76,7 +77,7 @@ export default function PostsItem({ posts, onSelect, onReport }: Props) {
                 }}
               />
               {/* 投稿者 */}
-              <View className="flex flex-col gap-1">
+              <View className="flex flex-1 flex-col items-start justify-start">
                 <Text className="text-light-text dark:text-dark-text text-sm font-bold">
                   {profile?.display_name}
                 </Text>

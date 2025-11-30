@@ -34,6 +34,7 @@ export default function ScheduleInfoCard({ schedule, onPress }: ScheduleInfoCard
           >
             {place.photos && place.photos.length > 0 && (
               <Image
+                cachePolicy="memory-disk"
                 style={{
                   width: '100%',
                   height: 160,

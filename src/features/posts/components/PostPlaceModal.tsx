@@ -190,6 +190,7 @@ export default function PostPlaceModal({ place, onClose }: Props) {
             renderItem={({ item, index }) => (
               <View className="h-full aspect-square">
                 <Image
+                  cachePolicy="memory-disk"
                   source={{ uri: item.uri }}
                   style={{ height: '100%', width: '100%', borderRadius: 16 }}
                   contentFit="cover"

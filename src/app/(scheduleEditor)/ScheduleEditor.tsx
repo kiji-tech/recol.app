@@ -343,6 +343,7 @@ export default function ScheduleEditor() {
                         />
                       </TouchableOpacity>
                       <Image
+                        cachePolicy="memory-disk"
                         source={{ uri: item.url }}
                         style={{
                           width: '100%',
