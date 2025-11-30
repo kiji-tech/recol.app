@@ -49,7 +49,7 @@ export default function PlaceBottomSheetBody({ isEdit = false, onDirection, onPo
   return (
     <>
       <View className="w-full flex-1 px-4">
-        <BottomSheetScrollView className="w-full flex-1">
+        <BottomSheetScrollView className="w-full flex-1" showsVerticalScrollIndicator={false}>
           <View className="flex flex-col justify-start items-start gap-4 pb-8">
             {isSearchLoading && <MaskLoading />}
             <View className="flex flex-row justify-between items-start gap-4">

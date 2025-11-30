@@ -14,6 +14,7 @@ import { Place, useMap } from '@/src/features/map';
 import PlaceBottomSheet from '@/src/features/map/components/PlaceBottomSheet/PlaceBottomSheet';
 import PostsReportModal from '@/src/features/posts/components/PostsReportModal';
 import { Posts } from '@/src/features/posts/types/Posts';
+import { SafeAreaView } from 'react-native';
 
 export default function Home() {
   // === Member ===
@@ -76,7 +77,7 @@ export default function Home() {
   );
 
   return (
-    <BackgroundView>
+    <SafeAreaView className="bg-[#f7f7f7] dark:bg-black flex flex-col justify-start h-full">
       <Header
         title="Re:CoL"
         rightComponent={
@@ -113,6 +114,6 @@ export default function Home() {
           bottomSheetRef={null}
         />
       )}
-    </BackgroundView>
+    </SafeAreaView>
   );
 }

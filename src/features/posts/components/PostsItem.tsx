@@ -19,6 +19,7 @@ export default function PostsItem({ posts, onSelect, onReport }: Props) {
   // === Member ===
   const { session } = useAuth();
   const { uid, place_id, body, created_at, medias, profile } = posts;
+
   // === Method ===
   /**
    * 表示する日時文字列を決定して返却する
@@ -27,14 +28,6 @@ export default function PostsItem({ posts, onSelect, onReport }: Props) {
    */
   const toDateString = (date: string) => {
     return dayjs(date).fromNow();
-  };
-
-  // === Handler ===
-  /**
-   * ポップアップメニューを表示する
-   */
-  const handleMenu = () => {
-    onReport(posts);
   };
 
   // === Query ===
@@ -60,35 +53,37 @@ export default function PostsItem({ posts, onSelect, onReport }: Props) {
   if (!placeInfo) return <></>;
   return (
     <TouchableOpacity
-      className="flex flex-col justify-start items-start gap-2 py-4 pr-4 border-b border-gray-200 rounded w-full bg-light-background dark:bg-dark-background shadow-md"
+      className="flex flex-col justify-start items-start gap-2 py-4 pr-4 border-b border-gray-200 w-full bg-light-background dark:bg-dark-background"
       onPress={() => onSelect(placeInfo!)}
     >
       <View className="flex flex-row gap-2">
         {/* 画像（ユーザー or マップ） */}
-        <View className="w-1/4 mr-10">
+        <View className="w-1/4 mr-6">
           <MediaViewer mediaUrlList={mediaUrlList || []} />
         </View>
         <View className="flex-1 w-3/4">
           {/* アバター */}
           <View className="flex flex-row items-center justify-between">
-            <View className="flex flex-row gap-2 items-center justify-start">
+            <View className="flex flex-row gap-2 flex-1 items-center justify-start">
               <Image
                 source={{
                   uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`,
                 }}
                 style={{
                   borderRadius: 100,
-                  width: 24,
-                  height: 24,
+                  width: 32,
+                  height: 32,
                 }}
               />
               {/* 投稿者 */}
-              <Text className="text-light-text dark:text-dark-text text-sm font-bold">
-                {profile?.display_name}
-              </Text>
-              <Text className="text-light-text dark:text-dark-text text-xs">
-                @{profile?.uid.slice(0, 6)} {toDateString(created_at!)}
-              </Text>
+              <View className="flex flex-col gap-1">
+                <Text className="text-light-text dark:text-dark-text text-sm font-bold">
+                  {profile?.display_name}
+                </Text>
+                <Text className="text-light-text dark:text-dark-text text-xs">
+                  @{profile?.uid.slice(0, 6)} {toDateString(created_at!)}
+                </Text>
+              </View>
             </View>
             <PostsMenu onReport={() => onReport(posts)} />
           </View>
