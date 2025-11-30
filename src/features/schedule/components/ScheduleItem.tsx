@@ -52,7 +52,11 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
               <View className="w-1/3">
                 <MediaViewer
                   mediaUrlList={item.media_list
-                    .map((media) => media.url || '')
+                    .map(
+                      (media) =>
+                        `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${media.url}` ||
+                        ''
+                    )
                     .filter((url) => url !== '')}
                 />
               </View>

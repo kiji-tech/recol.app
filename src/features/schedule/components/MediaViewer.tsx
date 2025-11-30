@@ -13,7 +13,6 @@ export default function MediaViewer({ mediaUrlList }: Props) {
   if (mediaViewList.length === 0) {
     return null;
   }
-
   // === Method ===
   /**
    * 画像を配置する位置を返す

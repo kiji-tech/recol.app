@@ -14,7 +14,7 @@ export const uploadMediaFiles = async (
   supabase: SupabaseClient,
   filePath: string,
   images: string[],
-  storageName: 'media' | 'posts'
+  storageName: 'medias' | 'posts'
 ) => {
   LogUtil.log(JSON.stringify({ uploadMediaFiles: { filePath, storageName } }), { level: 'info' });
   const newImagesData = images.map((image, index) => {

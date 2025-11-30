@@ -86,7 +86,7 @@ export const createMedia = async (c: Context, supabase: SupabaseClient, user: Us
 
   // 2. ファイルアップロードとDB保存
   const filePath = `${planId}/${Date.now()}-${Math.random().toString(36).substring(2)}`;
-  const { uploadedImages, error } = await uploadMediaFiles(supabase, filePath, images, 'media');
+  const { uploadedImages, error } = await uploadMediaFiles(supabase, filePath, images, 'medias');
   if (error) {
     return c.json(error, 500);
   }

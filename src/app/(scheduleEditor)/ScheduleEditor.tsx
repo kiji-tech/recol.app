@@ -149,11 +149,17 @@ export default function ScheduleEditor() {
       setEditSchedule((prev: Schedule) => ({ ...prev, uid: savedSchedule.uid! }));
 
       // メディアの登録
+      const createMediaList = [];
       for (const media of mediaList) {
         const base64 = await toBase64(media.uri!);
-        if (base64)
-          await uploadPlanMediaList(savedSchedule.plan_id!, savedSchedule.uid!, [base64], session);
+        if (base64) createMediaList.push(base64);
       }
+      await uploadPlanMediaList(
+        savedSchedule.plan_id!,
+        savedSchedule.uid!,
+        createMediaList,
+        session
+      );
     },
     onSuccess: () => {
       router.back();
