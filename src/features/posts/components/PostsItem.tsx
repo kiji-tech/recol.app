@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 import { fetchCachePlace } from '../../map/apis/fetchCachePlace';
 import { Place } from '../../map/types/Place';
 import MediaViewer from '../../schedule/components/MediaViewer';
-import dayjs from 'dayjs';
+import dayjs from '@/src/libs/dayjs';
 import { Image } from 'expo-image';
 import PostsMenu from './PostsMenu';
 
@@ -26,11 +26,7 @@ export default function PostsItem({ posts, onSelect, onReport }: Props) {
    * @returns {string} 日時文字列
    */
   const toDateString = (date: string) => {
-    const dayjsDate = dayjs(date);
-    if (dayjsDate.isSame(dayjs(), 'day')) {
-      return dayjsDate.format('H:mm');
-    }
-    return dayjsDate.format('YYYY-MM-DD H:mm');
+    return dayjs(date).fromNow();
   };
 
   // === Handler ===
@@ -64,11 +60,11 @@ export default function PostsItem({ posts, onSelect, onReport }: Props) {
   if (!placeInfo) return <></>;
   return (
     <TouchableOpacity
-      onPress={() => onSelect(placeInfo!)}
       className="flex flex-col justify-start items-start gap-2 py-4 pr-4 border-b border-gray-200 rounded w-full bg-light-background dark:bg-dark-background shadow-md"
+      onPress={() => onSelect(placeInfo!)}
     >
-      {/* 画像（ユーザー or マップ） */}
       <View className="flex flex-row gap-2">
+        {/* 画像（ユーザー or マップ） */}
         <View className="w-1/4 mr-10">
           <MediaViewer mediaUrlList={mediaUrlList || []} />
         </View>
@@ -82,22 +78,20 @@ export default function PostsItem({ posts, onSelect, onReport }: Props) {
                 }}
                 style={{
                   borderRadius: 100,
-                  width: 32,
-                  height: 32,
+                  width: 24,
+                  height: 24,
                 }}
               />
               {/* 投稿者 */}
-              <Text className="text-light-text dark:text-dark-text text-sm line-clamp-1">
-                {profile?.display_name}@{profile?.uid.slice(0, 6)}
+              <Text className="text-light-text dark:text-dark-text text-sm font-bold">
+                {profile?.display_name}
+              </Text>
+              <Text className="text-light-text dark:text-dark-text text-xs">
+                @{profile?.uid.slice(0, 6)} {toDateString(created_at!)}
               </Text>
             </View>
             <PostsMenu onReport={() => onReport(posts)} />
           </View>
-          {/* 投稿日時 */}
-          <Text className="text-light-text dark:text-dark-text text-sm">
-            {toDateString(created_at!)}
-          </Text>
-          {/* ロケーション情報 */}
           {/* 投稿内容 */}
           <Text className="text-light-text dark:text-dark-text text-sm ">{body}</Text>
         </View>
