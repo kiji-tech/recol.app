@@ -20,7 +20,8 @@
         "HOME": {
             "TODAY_SCHEDULE": "本日の予定",
             "RECENT_PLAN": "直近の予定",
-            "NEW_ARTICLE": "新着記事"
+            "NEW_ARTICLE": "新着記事",
+            "NEW_POST": "新規投稿"
         },
         "PLAN": {
             "CREATE_TITLE": "新しい予定を作成する",
@@ -264,6 +265,16 @@
             "NO_PERMISSION_TITLE": "通知権限が必要です",
             "NO_PERMISSION": "スケジュール通知を使用するには、デバイスの設定から通知権限を許可してください。",
             "ERROR_MESSAGE": "通知権限を取得できませんでした。後でもう一度お試しください。"
+        },
+        "POSTS": {
+            "REPORT": "通報",
+            "REASON_MESSAGE": "通報する理由を選択してください。",
+            "INAPPROPRIATE_CONTENT": "不適切なコンテンツ",
+            "OFFENSIVE_CONTENT": "攻撃的なコンテンツ",
+            "PRIVACY_VIOLATION": "プライバシーの侵害",
+            "DETAIL": "詳細",
+            "DETAIL_PLACEHOLDER": "詳細を入力してください。",
+            "OTHER": "その他"
         }
     },
     "COMMON": {
