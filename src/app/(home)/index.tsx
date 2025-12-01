@@ -15,6 +15,7 @@ import PlaceBottomSheet from '@/src/features/map/components/PlaceBottomSheet/Pla
 import PostsReportModal from '@/src/features/posts/components/PostsReportModal';
 import { Posts } from '@/src/features/posts/types/Posts';
 import { SafeAreaView } from 'react-native';
+import { usePosts } from '@/src/features/posts/hooks/usePosts';
 
 export default function Home() {
   // === Member ===
@@ -35,6 +36,7 @@ export default function Home() {
     queryKey: ['articles'],
     queryFn: fetchArticleList,
   });
+
   // === Method ===
   /**
    * 通知一覧画面へ遷移

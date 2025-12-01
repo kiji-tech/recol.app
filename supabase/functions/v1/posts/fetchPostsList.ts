@@ -7,6 +7,7 @@ export const fetchPostsList = async (c: Context) => {
   const { data: posts, error } = await supabase
     .from('posts')
     .select('*, profile(*)')
+    .eq('delete_flag', false)
     .range(option.offset, option.limit + option.offset)
     .order('created_at', { ascending: false });
 

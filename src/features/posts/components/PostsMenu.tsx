@@ -4,13 +4,18 @@ import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-m
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import generateI18nMessage from '@/src/libs/i18n';
+import { useAuth } from '../../auth';
+import { Posts } from '../types/Posts';
 
 type Props = {
+  posts: Posts;
+  onDelete: () => void;
   onReport: () => void;
 };
-export default function PostsMenu({ onReport }: Props) {
+export default function PostsMenu({ posts, onDelete, onReport }: Props) {
   // === Member ===
   const { isDarkMode } = useTheme();
+  const { profile } = useAuth();
 
   // === Render ===
   return (
@@ -31,17 +36,32 @@ export default function PostsMenu({ onReport }: Props) {
           },
         }}
       >
-        <MenuOption
-          customStyles={{
-            optionText: {
-              paddingVertical: 12,
-              paddingHorizontal: 8,
-              color: 'black',
-            },
-          }}
-          onSelect={onReport}
-          text={generateI18nMessage('COMPONENT.POSTS.REPORT')}
-        />
+        {profile?.uid === posts.user_id && (
+          <MenuOption
+            customStyles={{
+              optionText: {
+                paddingVertical: 12,
+                paddingHorizontal: 8,
+                color: 'black',
+              },
+            }}
+            onSelect={onDelete}
+            text={generateI18nMessage('COMMON.DELETE')}
+          />
+        )}
+        {profile?.uid !== posts.user_id && (
+          <MenuOption
+            customStyles={{
+              optionText: {
+                paddingVertical: 12,
+                paddingHorizontal: 8,
+                color: 'black',
+              },
+            }}
+            onSelect={onReport}
+            text={generateI18nMessage('COMPONENT.POSTS.REPORT')}
+          />
+        )}
       </MenuOptions>
     </Menu>
   );

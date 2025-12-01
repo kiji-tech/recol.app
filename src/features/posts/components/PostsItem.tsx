@@ -13,9 +13,10 @@ import PostsMenu from './PostsMenu';
 type Props = {
   posts: Posts;
   onSelect: (place: Place) => void;
+  onDelete: (posts: Posts) => void;
   onReport: (posts: Posts) => void;
 };
-export default function PostsItem({ posts, onSelect, onReport }: Props) {
+export default function PostsItem({ posts, onSelect, onDelete, onReport }: Props) {
   // === Member ===
   const { session } = useAuth();
   const { uid, place_id, body, created_at, medias, profile } = posts;
@@ -86,7 +87,11 @@ export default function PostsItem({ posts, onSelect, onReport }: Props) {
                 </Text>
               </View>
             </View>
-            <PostsMenu onReport={() => onReport(posts)} />
+            <PostsMenu
+              posts={posts}
+              onDelete={() => onDelete(posts)}
+              onReport={() => onReport(posts)}
+            />
           </View>
           {/* 投稿内容 */}
           <Text className="text-light-text dark:text-dark-text text-sm ">{body}</Text>

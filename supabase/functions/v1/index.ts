@@ -30,4 +30,5 @@ app.post('/media/delete', (c: Context) => withUser(c, media.deleteMedia));
 app.post('/posts/list', posts.fetchPostsList);
 app.post('/posts', (c: Context) => withUser(c, posts.createPosts));
 app.post('/posts/report', posts.createPostsReport);
+app.post('/posts/delete', (c: Context) => withUser(c, posts.deletePosts));
 Deno.serve(app.fetch);

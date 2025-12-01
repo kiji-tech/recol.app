@@ -1,10 +1,9 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { usePosts } from '../hooks/usePosts';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator } from 'react-native';
 import { Posts } from '../types/Posts';
-import { Place, useMap } from '../../map';
+import { Place } from '../../map/types/Place';
 import PostsItem from './PostsItem';
-import { useFocusEffect } from '@react-navigation/native';
 
 type Props = {
   onSelect: (place: Place) => void;
@@ -12,17 +11,16 @@ type Props = {
 };
 export default function PostsList({ onSelect, onReport }: Props) {
   // === Member ===
-  const { data: postsList, refetch } = usePosts();
+  const { posts, reset, refetch, isLoading, deleteMutate } = usePosts();
 
-  // === Effect ===
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [])
-  );
+  // === Handler ===
+  const handleDelete = (posts: Posts) => {
+    deleteMutate.mutate(posts);
+    reset();
+  };
 
   // === Render ===
-  if (!postsList || postsList!.length === 0) {
+  if (!posts || posts!.length === 0) {
     return (
       <View>
         <Text>No posts found</Text>
@@ -32,11 +30,22 @@ export default function PostsList({ onSelect, onReport }: Props) {
 
   return (
     <FlatList
-      data={postsList}
+      data={posts}
       showsHorizontalScrollIndicator={false}
       contentContainerClassName="flex flex-col justify-start items-start"
       keyExtractor={(item: Posts) => item.uid!}
-      renderItem={({ item }) => <PostsItem posts={item} onSelect={onSelect} onReport={onReport} />}
+      renderItem={({ item }) => (
+        <PostsItem posts={item} onSelect={onSelect} onDelete={handleDelete} onReport={onReport} />
+      )}
+      refreshing={isLoading}
+      onRefresh={() => reset()}
+      onEndReached={() => refetch()}
+      onEndReachedThreshold={0.3}
+      ListFooterComponent={
+        <View className="flex flex-col justify-center items-center my-8 w-screen">
+          <ActivityIndicator />
+        </View>
+      }
     />
   );
 }

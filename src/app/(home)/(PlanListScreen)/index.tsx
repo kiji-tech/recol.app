@@ -41,7 +41,7 @@ export default function PlanListScreen() {
     },
   });
 
-  // === Method ===s
+  // === Method ===
   /**
    * ソート条件を保存する
    * @param {PlanSortType} savedSortType - 保存されたソート条件
