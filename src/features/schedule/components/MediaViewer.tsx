@@ -9,7 +9,7 @@ type Props = {
 
 export default function MediaViewer({ mediaUrlList }: Props) {
   const [isOpen, setIsOpen] = useState(false);
-  const mediaViewList = mediaUrlList.slice(0, 3);
+  const mediaViewList = mediaUrlList.slice(0, 3).reverse();
   if (mediaViewList.length === 0) {
     return null;
   }

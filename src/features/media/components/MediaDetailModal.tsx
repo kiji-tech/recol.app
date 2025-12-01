@@ -1,9 +1,10 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Modal, Text, View } from 'react-native';
 import { useTheme } from '@/src/contexts/ThemeContext';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { Image } from 'expo-image';
 import ModalLayout from '../../../components/ModalLayout';
+import { BackButton } from '@/src/components';
 
 type MediaDetailModalProps = {
   imageList: string[];
@@ -32,27 +33,32 @@ export default function MediaDetailModal({
   visible = true,
   onClose,
 }: MediaDetailModalProps) {
-  const { isDarkMode } = useTheme();
   if (imageList.length === 0) return null;
   return (
-    <ModalLayout visible={visible} size="full" onClose={onClose}>
-      <View className="flex-1">
-        <ImageViewer
-          imageUrls={imageList.map((item) => ({
-            url: item,
-          }))}
-          saveToLocalByLongPress={false}
-          index={imageList.findIndex((item) => item === selectedImage)}
-          renderImage={(props) => <Image {...props} className="rounded-xl h-full w-full" />}
-          enableSwipeDown={true}
-          enablePreload={true}
-          onCancel={onClose}
-          renderIndicator={(currentIndex, allSize) => (
-            <RenderIndicator currentIndex={currentIndex} allSize={allSize} />
-          )}
-          backgroundColor={isDarkMode ? '#1a1a1a' : 'white'}
-        />
+    <Modal
+      visible={visible}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={onClose}
+      className="bg-light-background dark:bg-dark-background"
+    >
+      <View className="absolute top-16 left-4 z-50">
+        <BackButton onPress={() => onClose()} />
       </View>
-    </ModalLayout>
+      <ImageViewer
+        imageUrls={imageList.map((item) => ({
+          url: item,
+        }))}
+        saveToLocalByLongPress={false}
+        index={imageList.findIndex((item) => item === selectedImage)}
+        renderImage={(props) => <Image {...props} className="rounded-xl h-full w-full" />}
+        enableSwipeDown={true}
+        enablePreload={true}
+        onCancel={onClose}
+        renderIndicator={(currentIndex, allSize) => (
+          <RenderIndicator currentIndex={currentIndex} allSize={allSize} />
+        )}
+      />
+    </Modal>
   );
 }
