@@ -5,9 +5,9 @@ import { useAuth } from '@/src/features/auth';
 import { useQuery } from 'react-query';
 import { fetchCachePlace } from '../../map/apis/fetchCachePlace';
 import { Place } from '../../map/types/Place';
+import { Image } from 'expo-image';
 import MediaViewer from '../../schedule/components/MediaViewer';
 import dayjs from '@/src/libs/dayjs';
-import { Image } from 'expo-image';
 import PostsMenu from './PostsMenu';
 
 type Props = {
@@ -54,15 +54,15 @@ export default function PostsItem({ posts, onSelect, onDelete, onReport }: Props
   if (!placeInfo) return <></>;
   return (
     <TouchableOpacity
-      className="flex flex-col justify-start items-start gap-2 py-4 pr-4 border-b border-gray-200 w-full bg-light-background dark:bg-dark-background"
+      className="flex flex-row justify-start items-start gap-4 py-4 pr-4 border-b border-gray-200 w-full bg-light-background dark:bg-dark-background"
       onPress={() => onSelect(placeInfo!)}
     >
-      <View className="flex flex-row gap-2">
-        {/* 画像（ユーザー or マップ） */}
-        <View className="w-1/4 mr-6">
-          <MediaViewer mediaUrlList={mediaUrlList || []} />
-        </View>
-        <View className="flex-1 w-3/4">
+      {/* 画像（ユーザー or マップ） */}
+      <View className="w-1/4 mr-6">
+        <MediaViewer mediaUrlList={mediaUrlList || []} />
+      </View>
+      <View className="flex-1 flex-col justify-start items-between">
+        <View className="flex flex-col justify-start items-start gap-2">
           {/* アバター */}
           <View className="flex flex-row items-center justify-between">
             <View className="flex flex-row gap-2 flex-1 items-center justify-start">
@@ -79,22 +79,23 @@ export default function PostsItem({ posts, onSelect, onDelete, onReport }: Props
               />
               {/* 投稿者 */}
               <View className="flex flex-1 flex-col items-start justify-start">
-                <Text className="text-light-text dark:text-dark-text text-sm font-bold">
+                <Text className="text-light-text dark:text-dark-text text-md font-bold">
                   {profile?.display_name}
                 </Text>
-                <Text className="text-light-text dark:text-dark-text text-xs">
+                <Text className="text-light-text dark:text-dark-text text-sm">
                   @{profile?.uid.slice(0, 6)} {toDateString(created_at!)}
                 </Text>
               </View>
             </View>
             <PostsMenu
               posts={posts}
+              place={placeInfo}
               onDelete={() => onDelete(posts)}
               onReport={() => onReport(posts)}
             />
           </View>
           {/* 投稿内容 */}
-          <Text className="text-light-text dark:text-dark-text text-sm ">{body}</Text>
+          <Text className="text-light-text dark:text-dark-text text-md ">{body}</Text>
         </View>
       </View>
     </TouchableOpacity>

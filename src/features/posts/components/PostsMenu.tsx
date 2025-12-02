@@ -6,16 +6,20 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import generateI18nMessage from '@/src/libs/i18n';
 import { useAuth } from '../../auth';
 import { Posts } from '../types/Posts';
+import { Place } from '../../map/types/Place';
+import { useShare } from '../../commons/hooks/useShare';
 
 type Props = {
   posts: Posts;
+  place: Place;
   onDelete: () => void;
   onReport: () => void;
 };
-export default function PostsMenu({ posts, onDelete, onReport }: Props) {
+export default function PostsMenu({ posts, place, onDelete, onReport }: Props) {
   // === Member ===
   const { isDarkMode } = useTheme();
   const { profile } = useAuth();
+  const { sharePosts } = useShare();
 
   // === Render ===
   return (
@@ -36,6 +40,19 @@ export default function PostsMenu({ posts, onDelete, onReport }: Props) {
           },
         }}
       >
+        <MenuOption
+          customStyles={{
+            optionText: {
+              paddingVertical: 12,
+              paddingHorizontal: 8,
+              color: 'black',
+            },
+          }}
+          onSelect={() => {
+            sharePosts(posts, place);
+          }}
+          text="Share"
+        />
         {profile?.uid === posts.user_id && (
           <MenuOption
             customStyles={{

@@ -13,5 +13,5 @@ export async function fetchPostsList(
     session,
     ctrl,
   });
-  return response.data!;
+  return response.data!.map((item) => new Posts(item));
 }

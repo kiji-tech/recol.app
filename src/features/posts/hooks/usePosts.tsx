@@ -11,17 +11,12 @@ import { LogUtil } from '@/src/libs/LogUtil';
 export const usePosts = () => {
   const LIMIT_NUM = 10;
   // === Member ===
-  const { session } = useAuth();
+  const { session, profile } = useAuth();
   const [queryParams, setQueryParams] = useState<QueryParams>({ offset: 0, limit: LIMIT_NUM });
   const [posts, setPosts] = useState<Posts[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // ==== Method ===
-  /**
-   * 投稿を共有する
-   */
-  const sharePosts = async (posts: Posts) => {};
-
   /**
    * 投稿一覧をリセットする
    */

@@ -3,6 +3,7 @@ import { Tables, Enums } from '../../../libs/database.types';
 import { Subscription } from '../../payment/types/Subscription';
 
 import generateI18nMessage from '@/src/libs/i18n';
+import { Posts } from '../../posts/types/Posts';
 
 export type ProfileType = Tables<'profile'>;
 export type PaymentPlan = Enums<'PaymentPlan'>;
@@ -86,5 +87,9 @@ export class Profile {
     )
       return Profile.IS_PREMIUM_USER;
     return !Profile.IS_PREMIUM_USER;
+  }
+
+  public isMyPosts(posts: Posts): boolean {
+    return this.uid === posts.user_id;
   }
 }

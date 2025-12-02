@@ -2,6 +2,8 @@ import { Tables } from '@/src/libs/database.types';
 import { Profile } from '../../profile';
 export type PostsType = Tables<'posts'>;
 
+const IS_MY_POSTS = true;
+
 export class Posts {
   uid?: string;
   place_id: string = '';
