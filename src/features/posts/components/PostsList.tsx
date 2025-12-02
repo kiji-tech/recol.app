@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { usePosts } from '../hooks/usePosts';
 import { View, Text, FlatList, ActivityIndicator } from 'react-native';
 import { Posts } from '../types/Posts';
@@ -11,7 +11,7 @@ type Props = {
 };
 export default function PostsList({ onSelect, onReport }: Props) {
   // === Member ===
-  const { posts, reset, refetch, isLoading, deleteMutate } = usePosts();
+  const { posts, reset, fetchPosts, isLoading, deleteMutate } = usePosts();
 
   // === Handler ===
   const handleDelete = (posts: Posts) => {
@@ -19,11 +19,16 @@ export default function PostsList({ onSelect, onReport }: Props) {
     reset();
   };
 
+  // === Effect ===
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
   // === Render ===
   if (!posts || posts!.length === 0) {
     return (
       <View>
-        <Text>No posts found</Text>
+        <Text className="text-center text-light-text dark:text-dark-text">No posts found</Text>
       </View>
     );
   }
@@ -38,8 +43,10 @@ export default function PostsList({ onSelect, onReport }: Props) {
         <PostsItem posts={item} onSelect={onSelect} onDelete={handleDelete} onReport={onReport} />
       )}
       refreshing={isLoading}
-      onRefresh={() => reset()}
-      onEndReached={() => refetch()}
+      onRefresh={async () => {
+        await reset();
+      }}
+      onEndReached={() => fetchPosts()}
       onEndReachedThreshold={0.3}
       ListFooterComponent={
         <View className="flex flex-col justify-center items-center my-8 w-screen">

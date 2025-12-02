@@ -21,21 +21,11 @@ export default function Home() {
   // === Member ===
   const router = useRouter();
   const { isDarkMode } = useTheme();
-  const { storagePlanList, planLoading, refetchPlanList, planList } = usePlan();
   const { currentInformation, isModalVisible, handleCloseModal } = useInformation();
   const { doSelectedPlace } = useMap();
   const [selectedPosts, setSelectedPosts] = useState<Posts | null>(null);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isDetailPlace, setIsDetailPlace] = useState(false);
-  const viewPlanList = useMemo<Plan[]>(() => {
-    if (planLoading) return storagePlanList || [];
-    return planList || [];
-  }, [planLoading, planList, storagePlanList]);
-
-  const { data: articles } = useQuery({
-    queryKey: ['articles'],
-    queryFn: fetchArticleList,
-  });
 
   // === Method ===
   /**
@@ -72,11 +62,7 @@ export default function Home() {
   };
 
   // === Effect ===
-  useFocusEffect(
-    useCallback(() => {
-      refetchPlanList();
-    }, [])
-  );
+  useFocusEffect(useCallback(() => {}, []));
 
   return (
     <BackgroundView>
