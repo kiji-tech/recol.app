@@ -1,9 +1,7 @@
 import React from 'react';
 import { Modal, Text, View } from 'react-native';
-import { useTheme } from '@/src/contexts/ThemeContext';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { Image } from 'expo-image';
-import ModalLayout from '../../../components/ModalLayout';
 import { BackButton } from '@/src/components';
 
 type MediaDetailModalProps = {
@@ -53,7 +51,6 @@ export default function MediaDetailModal({
         index={imageList.findIndex((item) => item === selectedImage)}
         renderImage={(props) => <Image {...props} className="rounded-xl h-full w-full" />}
         enableSwipeDown={true}
-        enablePreload={true}
         onCancel={onClose}
         renderIndicator={(currentIndex, allSize) => (
           <RenderIndicator currentIndex={currentIndex} allSize={allSize} />

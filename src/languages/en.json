@@ -252,7 +252,10 @@
             "ADD_SCHEDULE": "Add Schedule",
             "EDIT_TIME": "Edit Time",
             "SHARE": "Share",
-            "SHARE_TITLE": "Share Schedule"
+            "SHARE_TITLE": "Share schedule",
+            "POSTS": "Posts a memory.",
+            "NOT_FOUND_PLACE": "No place found",
+            "POSTS_PLACE_SELECT": "Select Place"
         },
         "VERSION": {
             "UPDATE_REQUIRED": "App Update Required",
