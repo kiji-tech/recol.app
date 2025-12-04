@@ -19,7 +19,7 @@ export default function PlanComponent() {
     return (
       <View className="px-4 py-2 text-md">
         <Text className="text-light-text dark:text-dark-text">
-          {generateI18nMessage('COMPONENT.PLAN.SUPER_USER')}
+          {generateI18nMessage('FEATURE.PLAN.SUPER_USER')}
         </Text>
       </View>
     );
@@ -34,7 +34,7 @@ export default function PlanComponent() {
         {!isPremium && (
           <View className="flex flex-row items-start justify-between ">
             <Text className="text-light-text dark:text-dark-text">
-              {generateI18nMessage('COMPONENT.PLAN.FREE_PLAN')}
+              {generateI18nMessage('FEATURE.PLAN.FREE_PLAN')}
             </Text>
           </View>
         )}
@@ -42,11 +42,11 @@ export default function PlanComponent() {
         {profile && profile.isPremiumUser() && (
           <View className="flex-col items-start justify-between">
             <Text className="text-light-text dark:text-dark-text mb-2 text-lg">
-              {generateI18nMessage('COMPONENT.PLAN.PREMIUM_PLAN')}
+              {generateI18nMessage('FEATURE.PLAN.PREMIUM_PLAN')}
             </Text>
             {/* プランの有効期限 */}
             <Text className="text-light-text dark:text-dark-text mb-2 text-sm">
-              {generateI18nMessage('COMPONENT.PLAN.EXPIRATION_DATE')}:{' '}
+              {generateI18nMessage('FEATURE.PLAN.EXPIRATION_DATE')}:{' '}
               {dayjs(profile.payment_end_at).format('YYYY-MM-DD HH:mm')}
             </Text>
           </View>

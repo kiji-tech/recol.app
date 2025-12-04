@@ -41,8 +41,8 @@ export default function ScheduleNotification() {
         }
 
         Alert.alert(
-          generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.NO_PERMISSION_TITLE'),
-          generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.NO_PERMISSION'),
+          generateI18nMessage('FEATURE.SCHEDULE_NOTIFICATION.NO_PERMISSION_TITLE'),
+          generateI18nMessage('FEATURE.SCHEDULE_NOTIFICATION.NO_PERMISSION'),
           [
             {
               text: '設定を開く',
@@ -71,7 +71,7 @@ export default function ScheduleNotification() {
 
         Alert.alert(
           generateI18nMessage('COMMON.ERROR'),
-          generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.ERROR_MESSAGE'),
+          generateI18nMessage('FEATURE.SCHEDULE_NOTIFICATION.ERROR_MESSAGE'),
           [{ text: 'OK' }]
         );
         return false;
@@ -127,11 +127,11 @@ export default function ScheduleNotification() {
         <View className="flex-row items-center">
           <Ionicons name="calendar-outline" size={24} color={isDarkMode ? 'white' : 'black'} />
           <Text className="ml-3 text-light-text dark:text-dark-text">
-            {generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.TITLE')}
+            {generateI18nMessage('FEATURE.SCHEDULE_NOTIFICATION.TITLE')}
           </Text>
         </View>
         <Text className="text-sm text-light-text dark:text-dark-text ml-9 mt-1">
-          {generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.MESSAGE')}
+          {generateI18nMessage('FEATURE.SCHEDULE_NOTIFICATION.MESSAGE')}
         </Text>
       </View>
       <View className="absolute right-4">

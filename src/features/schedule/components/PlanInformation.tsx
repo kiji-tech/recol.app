@@ -45,7 +45,7 @@ export default function PlanInformation() {
         />
       ) : (
         <Text className="text-md text-light-text dark:text-dark-text opacity-70">
-          {generateI18nMessage('COMPONENT.PLAN.NO_MEMO')}
+          {generateI18nMessage('FEATURE.PLAN.NO_MEMO')}
         </Text>
       )}
       {/* メンバーリスト */}

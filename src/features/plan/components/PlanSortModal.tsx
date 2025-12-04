@@ -69,7 +69,7 @@ export default function PlanSortModal({ visible, onClose, onSave }: PlanSortModa
           <View className="rounded-xl p-6 w-full max-w-sm bg-light-background dark:bg-dark-background">
             {/* タイトル */}
             <Text className="text-xl font-bold mb-6 text-light-text dark:text-dark-text">
-              {generateI18nMessage('COMPONENT.PLAN.SORT_TITLE')}
+              {generateI18nMessage('FEATURE.PLAN.SORT_TITLE')}
             </Text>
 
             {/* 選択肢 */}
@@ -90,7 +90,7 @@ export default function PlanSortModal({ visible, onClose, onSave }: PlanSortModa
                       : 'text-light-text dark:text-dark-text'
                   }`}
                 >
-                  {generateI18nMessage('COMPONENT.PLAN.SORT_CREATED_AT')}
+                  {generateI18nMessage('FEATURE.PLAN.SORT_CREATED_AT')}
                 </Text>
               </TouchableOpacity>
 
@@ -110,7 +110,7 @@ export default function PlanSortModal({ visible, onClose, onSave }: PlanSortModa
                       : 'text-light-text dark:text-dark-text'
                   }`}
                 >
-                  {generateI18nMessage('COMPONENT.PLAN.SORT_SCHEDULE_DATE')}
+                  {generateI18nMessage('FEATURE.PLAN.SORT_SCHEDULE_DATE')}
                 </Text>
               </TouchableOpacity>
             </View>

@@ -45,7 +45,7 @@ export default function ScheduleItemMenu({ schedule, onPosts, onDelete }: Props)
           onSelect={() => {
             onPosts();
           }}
-          text={generateI18nMessage('COMPONENT.SCHEDULE.POSTS')}
+          text={generateI18nMessage('FEATURE.SCHEDULE.POSTS')}
         />
         <MenuOption
           customStyles={{

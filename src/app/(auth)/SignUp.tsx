@@ -19,21 +19,21 @@ export default function SignUpScreen() {
   // ==== Method ===
   const verify = (): boolean => {
     if (!email) {
-      Alert.alert(generateI18nMessage('SCREEN.AUTH.EMAIL_REQUIRED'));
+      Alert.alert(generateI18nMessage('FEATURE.AUTH.EMAIL_REQUIRED'));
       return false;
     }
     if (!password || !password2) {
-      Alert.alert(generateI18nMessage('SCREEN.AUTH.PASSWORD_REQUIRED'));
+      Alert.alert(generateI18nMessage('FEATURE.AUTH.PASSWORD_REQUIRED'));
       return false;
     }
 
     if (!email.includes('@')) {
-      Alert.alert(generateI18nMessage('SCREEN.AUTH.EMAIL_INVALID'));
+      Alert.alert(generateI18nMessage('FEATURE.AUTH.EMAIL_INVALID'));
       return false;
     }
 
     if (password != password2) {
-      Alert.alert(generateI18nMessage('SCREEN.AUTH.PASSWORD_MISMATCH'));
+      Alert.alert(generateI18nMessage('FEATURE.AUTH.PASSWORD_MISMATCH'));
       return false;
     }
 
@@ -61,13 +61,13 @@ export default function SignUpScreen() {
             case 'user_already_exists':
               LogUtil.log(`すでに登録されているメールアドレス: ${email}`);
               Alert.alert(
-                generateI18nMessage('SCREEN.AUTH.SIGN_UP_FAILED'),
-                generateI18nMessage('SCREEN.AUTH.EMAIL_ALREADY_EXISTS')
+                generateI18nMessage('FEATURE.AUTH.SIGN_UP_FAILED'),
+                generateI18nMessage('FEATURE.AUTH.EMAIL_ALREADY_EXISTS')
               );
               break;
             default:
               LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-              Alert.alert(generateI18nMessage('SCREEN.AUTH.SIGN_UP_FAILED'), error.message);
+              Alert.alert(generateI18nMessage('FEATURE.AUTH.SIGN_UP_FAILED'), error.message);
           }
         }
       })
@@ -83,7 +83,7 @@ export default function SignUpScreen() {
         {/* form */}
         <View className="w-full flex flex-col gap-4">
           <TextInput
-            placeholder={generateI18nMessage('SCREEN.AUTH.EMAIL_PLACEHOLDER')}
+            placeholder={generateI18nMessage('FEATURE.AUTH.EMAIL_PLACEHOLDER')}
             placeholderTextColor="gray"
             className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
@@ -94,7 +94,7 @@ export default function SignUpScreen() {
             autoCapitalize="none"
           />
           <TextInput
-            placeholder={generateI18nMessage('SCREEN.AUTH.PASSWORD_PLACEHOLDER')}
+            placeholder={generateI18nMessage('FEATURE.AUTH.PASSWORD_PLACEHOLDER')}
             placeholderTextColor="gray"
             className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border`}
@@ -105,7 +105,7 @@ export default function SignUpScreen() {
             autoCapitalize="none"
           />
           <TextInput
-            placeholder={generateI18nMessage('SCREEN.AUTH.PASSWORD_CONFIRM')}
+            placeholder={generateI18nMessage('FEATURE.AUTH.PASSWORD_CONFIRM')}
             placeholderTextColor="gray"
             className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
@@ -120,17 +120,17 @@ export default function SignUpScreen() {
           {/* サインイン */}
           <Button
             theme={'theme'}
-            text={generateI18nMessage('SCREEN.AUTH.SIGN_UP')}
+            text={generateI18nMessage('FEATURE.AUTH.SIGN_UP')}
             onPress={signUpWithPassword}
             disabled={isLoading}
             loading={isLoading}
           />
           <TouchableOpacity onPress={() => router.back()} disabled={isLoading}>
             <Text className="text-sm text-light-text dark:text-dark-text ml-4">
-              {generateI18nMessage('SCREEN.AUTH.BACK_TO_SIGN_IN')}
+              {generateI18nMessage('FEATURE.AUTH.BACK_TO_SIGN_IN')}
             </Text>
           </TouchableOpacity>
-          <Bar text={generateI18nMessage('SCREEN.AUTH.OR')} />
+          <Bar text={generateI18nMessage('FEATURE.AUTH.OR')} />
           <ExternalSignInButton isLoading={isLoading} />
           <BackHomeLink />
         </View>

@@ -48,7 +48,7 @@ export default function PlanListScreen() {
    */
   const handleSaveSortType = async (savedSortType: PlanSortType) => {
     await AsyncStorage.setItem(PLAN_SORT_TYPE_STORAGE_KEY, savedSortType).catch(() => {
-      Toast.warn(generateI18nMessage('SCREEN.PLAN_LIST.SORT_SAVE_FAILED'));
+      Toast.warn(generateI18nMessage('FEATURE.PLAN_LIST.SORT_SAVE_FAILED'));
     });
     setSortType(savedSortType);
     setIsSortModalVisible(false);
@@ -72,7 +72,7 @@ export default function PlanListScreen() {
   return (
     <BackgroundView>
       <Header
-        title={generateI18nMessage('SCREEN.PLAN.LIST_TITLE')}
+        title={generateI18nMessage('FEATURE.PLAN.LIST_TITLE')}
         rightComponent={<PlanListMenu onSortPress={handleSortPress} />}
       />
       {/* プラン一覧 */}

@@ -25,12 +25,12 @@ export default function RateLimitModal({ isOpen, onClose }: Props) {
     <ModalLayout visible={isOpen} size="half" onClose={onClose}>
       <View className="flex flex-col items-center gap-8 px-4">
         <Title
-          text={generateI18nMessage('SCREEN.MAP.RATE_LIMIT_MODAL.TITLE', [
+          text={generateI18nMessage('FEATURE.MAP.RATE_LIMIT_MODAL.TITLE', [
             { key: 'limit', value: '5' },
           ])}
         />
         <Text className="text-center text-md text-light-text dark:text-dark-text">
-          {generateI18nMessage('SCREEN.MAP.RATE_LIMIT_MODAL.MESSAGE', [
+          {generateI18nMessage('FEATURE.MAP.RATE_LIMIT_MODAL.MESSAGE', [
             { key: 'plan', value: profile?.getPlanName() || '' },
           ])}
         </Text>

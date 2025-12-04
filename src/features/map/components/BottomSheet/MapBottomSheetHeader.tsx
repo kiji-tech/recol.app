@@ -27,22 +27,22 @@ export default function MapBottomSheetHeader({ onPress }: MapBottomSheetHeaderPr
   const categoryButtonList: CategoryButton[] = [
     {
       id: 'selected',
-      label: generateI18nMessage('SCREEN.MAP.CATEGORY.SELECTED'),
+      label: generateI18nMessage('FEATURE.MAP.CATEGORY.SELECTED'),
       onPress,
     },
-    { id: 'cafe', label: generateI18nMessage('SCREEN.MAP.CATEGORY.CAFE'), onPress },
-    { id: 'meal', label: generateI18nMessage('SCREEN.MAP.CATEGORY.MEAL'), onPress },
+    { id: 'cafe', label: generateI18nMessage('FEATURE.MAP.CATEGORY.CAFE'), onPress },
+    { id: 'meal', label: generateI18nMessage('FEATURE.MAP.CATEGORY.MEAL'), onPress },
     {
       id: 'hotel',
-      label: generateI18nMessage('SCREEN.MAP.CATEGORY.HOTEL'),
+      label: generateI18nMessage('FEATURE.MAP.CATEGORY.HOTEL'),
       onPress,
     },
-    { id: 'spot', label: generateI18nMessage('SCREEN.MAP.CATEGORY.SPOT'), onPress },
+    { id: 'spot', label: generateI18nMessage('FEATURE.MAP.CATEGORY.SPOT'), onPress },
   ];
   if (selectedCategory == 'text') {
     categoryButtonList.unshift({
       id: 'text',
-      label: generateI18nMessage('SCREEN.MAP.CATEGORY.SEARCH_RESULT'),
+      label: generateI18nMessage('FEATURE.MAP.CATEGORY.SEARCH_RESULT'),
       onPress: () => {},
     });
   }

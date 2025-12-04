@@ -21,9 +21,9 @@ const handlePasswordResetError = (error: unknown): void => {
   const passwordError = error as PasswordResetError;
 
   if (passwordError?.code === 'same_password') {
-    Alert.alert(generateI18nMessage('SCREEN.AUTH.SAME_PASSWORD_ERROR'));
+    Alert.alert(generateI18nMessage('FEATURE.AUTH.SAME_PASSWORD_ERROR'));
   } else {
-    Alert.alert(generateI18nMessage('SCREEN.AUTH.PASSWORD_CHANGE_FAILED'));
+    Alert.alert(generateI18nMessage('FEATURE.AUTH.PASSWORD_CHANGE_FAILED'));
   }
 };
 
@@ -63,8 +63,8 @@ export default function ResetPassword() {
       if (error) {
         LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
         Alert.alert(
-          generateI18nMessage('SCREEN.AUTH.INVALID_LINK'),
-          generateI18nMessage('SCREEN.AUTH.INVALID_LINK_MESSAGE')
+          generateI18nMessage('FEATURE.AUTH.INVALID_LINK'),
+          generateI18nMessage('FEATURE.AUTH.INVALID_LINK_MESSAGE')
         );
         router.replace('/(auth)/SignIn');
         return;
@@ -75,16 +75,16 @@ export default function ResetPassword() {
         setIsValidToken(true);
       } else {
         Alert.alert(
-          generateI18nMessage('SCREEN.AUTH.INVALID_LINK'),
-          generateI18nMessage('SCREEN.AUTH.INVALID_LINK_MESSAGE')
+          generateI18nMessage('FEATURE.AUTH.INVALID_LINK'),
+          generateI18nMessage('FEATURE.AUTH.INVALID_LINK_MESSAGE')
         );
         router.replace('/(auth)/SignIn');
       }
     } catch (error) {
       LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
       Alert.alert(
-        generateI18nMessage('SCREEN.AUTH.ERROR_OCCURRED'),
-        generateI18nMessage('SCREEN.AUTH.ERROR_MESSAGE')
+        generateI18nMessage('FEATURE.AUTH.ERROR_OCCURRED'),
+        generateI18nMessage('FEATURE.AUTH.ERROR_MESSAGE')
       );
       router.replace('/(auth)/SignIn');
     } finally {
@@ -94,12 +94,12 @@ export default function ResetPassword() {
 
   const handleResetPassword = async () => {
     if (!isValidToken) {
-      Alert.alert(generateI18nMessage('SCREEN.AUTH.INVALID_LINK'));
+      Alert.alert(generateI18nMessage('FEATURE.AUTH.INVALID_LINK'));
       return;
     }
 
     if (password !== password2) {
-      Alert.alert(generateI18nMessage('SCREEN.AUTH.PASSWORD_MISMATCH'));
+      Alert.alert(generateI18nMessage('FEATURE.AUTH.PASSWORD_MISMATCH'));
       return;
     }
 
@@ -114,7 +114,7 @@ export default function ResetPassword() {
       // ローカルストレージからセッション情報を削除
       await AsyncStorage.removeItem('sessionType');
 
-      Alert.alert(generateI18nMessage('SCREEN.AUTH.PASSWORD_CHANGED'));
+      Alert.alert(generateI18nMessage('FEATURE.AUTH.PASSWORD_CHANGED'));
       router.navigate('/(auth)/SignIn');
     } catch (error) {
       handlePasswordResetError(error);
@@ -124,10 +124,10 @@ export default function ResetPassword() {
   if (isLoading) {
     return (
       <BackgroundView>
-        <Header title={generateI18nMessage('SCREEN.AUTH.RESET_PASSWORD_TITLE')} />
+        <Header title={generateI18nMessage('FEATURE.AUTH.RESET_PASSWORD_TITLE')} />
         <View className="flex-1 justify-center items-center">
           <Text className="text-light-text dark:text-dark-text">
-            {generateI18nMessage('SCREEN.AUTH.LINK_CHECKING')}
+            {generateI18nMessage('FEATURE.AUTH.LINK_CHECKING')}
           </Text>
         </View>
       </BackgroundView>
@@ -137,10 +137,10 @@ export default function ResetPassword() {
   if (!isValidToken) {
     return (
       <BackgroundView>
-        <Header title={generateI18nMessage('SCREEN.AUTH.RESET_PASSWORD_TITLE')} />
+        <Header title={generateI18nMessage('FEATURE.AUTH.RESET_PASSWORD_TITLE')} />
         <View className="flex-1 justify-center items-center">
           <Text className="text-light-text dark:text-dark-text">
-            {generateI18nMessage('SCREEN.AUTH.INVALID_LINK')}
+            {generateI18nMessage('FEATURE.AUTH.INVALID_LINK')}
           </Text>
         </View>
       </BackgroundView>
@@ -149,10 +149,10 @@ export default function ResetPassword() {
 
   return (
     <BackgroundView>
-      <Header title={generateI18nMessage('SCREEN.AUTH.RESET_PASSWORD_TITLE')} />
+      <Header title={generateI18nMessage('FEATURE.AUTH.RESET_PASSWORD_TITLE')} />
       <View className="w-full flex flex-col gap-4">
         <TextInput
-          placeholder={generateI18nMessage('SCREEN.AUTH.PASSWORD')}
+          placeholder={generateI18nMessage('FEATURE.AUTH.PASSWORD')}
           placeholderTextColor="gray"
           className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
@@ -163,7 +163,7 @@ export default function ResetPassword() {
           autoCapitalize="none"
         />
         <TextInput
-          placeholder={generateI18nMessage('SCREEN.AUTH.PASSWORD_CONFIRM')}
+          placeholder={generateI18nMessage('FEATURE.AUTH.PASSWORD_CONFIRM')}
           placeholderTextColor="gray"
           className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
@@ -177,7 +177,7 @@ export default function ResetPassword() {
         {/* サインイン */}
         <Button
           theme={'theme'}
-          text={generateI18nMessage('SCREEN.AUTH.CHANGE_PASSWORD')}
+          text={generateI18nMessage('FEATURE.AUTH.CHANGE_PASSWORD')}
           onPress={handleResetPassword}
         />
       </View>

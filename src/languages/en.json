@@ -1,22 +1,5 @@
 {
-    "TABBAR": {
-        "HOME": "Home",
-        "PLAN": "Plan",
-        "SCHEDULE": "Schedule",
-        "SETTINGS": "Settings",
-        "MAP": "Map",
-        "MEDIA": "Media",
-        "SAMPLE": "Sample"
-    },
-    "DATA": {
-        "SCHEDULE": {
-            "DATETIME": "Date & Time",
-            "CATEGORY": "Category",
-            "PLACE_LIST": "Candidates",
-            "MEMO": "Memo"
-        }
-    },
-    "SCREEN": {
+    "FEATURE": {
         "HOME": {
             "TODAY_SCHEDULE": "Today's Schedule",
             "RECENT_PLAN": "Recent Plan",
@@ -39,7 +22,21 @@
             "REGISTER_SUCCESS": "has been registered",
             "REGISTER_FAILED": "Failed to register plan",
             "PLAN_NOT_FOUND": "Plan not found",
-            "LIST_TITLE": "Plan List"
+            "LIST_TITLE": "Plan List",
+            "NOT_FOUND": "No plans found",
+            "ADD_PLAN": "Add Plan",
+            "SUPER_USER": "Super User",
+            "FREE_PLAN": "Free Plan",
+            "PREMIUM_PLAN": "Premium Plan",
+            "EXPIRATION_DATE": "Expiration Date",
+            "SORT_TITLE": "Sort",
+            "SORT_CREATED_AT": "Created Date (Descending)",
+            "SORT_SCHEDULE_DATE": "Schedule Date (Descending)",
+            "NO_MEMO": "No memo.",
+            "NO_SCHEDULE_TODAY": "No schedule today",
+            "NO_PLAN_RECENT": "No plan recent #days# days",
+            "DELETE_CONFIRM": "#title# to delete",
+            "DELETE_CONFIRM_MESSAGE": "Once deleted, it cannot be restored. Are you sure you want to delete it?"
         },
         "AUTH": {
             "SIGN_IN": "Sign In",
@@ -88,7 +85,10 @@
         "INFORMATION": {
             "TITLE": "Information",
             "NO_INFORMATION": "No information available",
-            "ERROR_OCCURRED": "An error occurred"
+            "ERROR_OCCURRED": "An error occurred",
+            "DETAIL": "View Details",
+            "CLOSE": "Close",
+            "INVALID_URL": "Invalid URL"
         },
         "ACCOUNT": {
             "DELETE_TITLE": "Delete Account",
@@ -132,7 +132,29 @@
             "SELECT_PLAN": "Select Plan",
             "CANCEL_PREMIUM_BUTTON": "Cancel Premium Plan",
             "UPGRADE_COMPLETE": "Upgrade Complete!",
-            "WELCOME_PREMIUM": "Welcome to Premium Plan. Enjoy all features."
+            "WELCOME_PREMIUM": "Welcome to Premium Plan. Enjoy all features.",
+            "FEATURE": "Feature",
+            "FREE": "Free",
+            "PREMIUM": "Premium",
+            "ALL_FEATURES": "All features available",
+            "MEDIA_CAPACITY": "Media Capacity",
+            "MEDIA_CAPACITY_FREE": "1GB / Plan",
+            "MEDIA_CAPACITY_PREMIUM": "100GB / Plan",
+            "AD_DISPLAY": "Ad Display",
+            "YES": "○",
+            "NO": "-",
+            "RATE_LIMIT": "Map Search Limit",
+            "RATE_LIMIT_FREE": "5 times / hour",
+            "RATE_LIMIT_PREMIUM": "20 times / hour",
+            "RECOMMENDED": "Recommended",
+            "CURRENT_FREE_PLAN": "Currently using Free Plan",
+            "UPGRADE_MESSAGE": "Upgrade to Premium Plan to enjoy all features",
+            "CURRENT_PLAN": "Current Plan",
+            "POPULAR_PLAN": "Popular Plan",
+            "TRIAL_MESSAGE": "Start with 1 month trial",
+            "TRIAL_MESSAGE_MONTHLY": "is 1 month free!",
+            "TRIAL_MESSAGE_AFTER_END": "After the trial ends, you will be automatically upgraded to the premium plan.",
+            "DISCOUNT_MESSAGE": "#discount#% OFF!"
         },
         "SETTINGS": {
             "ACCOUNT_SETTINGS": "Account Settings",
@@ -150,6 +172,10 @@
             "SIGN_OUT": "Sign Out"
         },
         "SCHEDULE": {
+            "DATETIME": "Date & Time",
+            "LABEL_CATEGORY": "Category",
+            "PLACE_LIST": "Candidates",
+            "MEMO": "Memo",
             "TITLE_PLACEHOLDER": "Title...",
             "NO_LOGIN": "Login information not found",
             "PLAN_NOT_FOUND": "Could not retrieve plan information",
@@ -172,7 +198,15 @@
                 "PREVIOUS_START_TIME": "Set start time from previous",
                 "NEXT_START_TIME": "Set start time from next",
                 "SUBMIT_ERROR": "Failed to save schedule"
-            }
+            },
+            "EDIT_PLAN": "Edit Plan",
+            "ADD_SCHEDULE": "Add Schedule",
+            "EDIT_TIME": "Edit Time",
+            "SHARE": "Share",
+            "SHARE_TITLE": "Share schedule",
+            "POSTS": "Posts a memory.",
+            "NOT_FOUND_PLACE": "No place found",
+            "POSTS_PLACE_SELECT": "Select Place"
         },
         "PLAN_LIST": {
             "FETCH_FAILED": "Failed to retrieve plans",
@@ -199,63 +233,6 @@
         },
         "MEDIA": {
             "NO_IMAGE_LIST": "No images registered"
-        }
-    },
-    "COMPONENT": {
-        "PLAN": {
-            "NOT_FOUND": "No plans found",
-            "ADD_PLAN": "Add Plan",
-            "SUPER_USER": "Super User",
-            "FREE_PLAN": "Free Plan",
-            "PREMIUM_PLAN": "Premium Plan",
-            "EXPIRATION_DATE": "Expiration Date",
-            "SORT_TITLE": "Sort",
-            "SORT_CREATED_AT": "Created Date (Descending)",
-            "SORT_SCHEDULE_DATE": "Schedule Date (Descending)",
-            "NO_MEMO": "No memo.",
-            "NO_SCHEDULE_TODAY": "No schedule today",
-            "NO_PLAN_RECENT": "No plan recent #days# days",
-            "DELETE_CONFIRM": "#title# to delete",
-            "DELETE_CONFIRM_MESSAGE": "Once deleted, it cannot be restored. Are you sure you want to delete it?"
-        },
-        "PAYMENT": {
-            "FEATURE": "Feature",
-            "FREE": "Free",
-            "PREMIUM": "Premium",
-            "ALL_FEATURES": "All features available",
-            "MEDIA_CAPACITY": "Media Capacity",
-            "MEDIA_CAPACITY_FREE": "1GB / Plan",
-            "MEDIA_CAPACITY_PREMIUM": "100GB / Plan",
-            "AD_DISPLAY": "Ad Display",
-            "YES": "○",
-            "NO": "-",
-            "RATE_LIMIT": "Map Search Limit",
-            "RATE_LIMIT_FREE": "5 times / hour",
-            "RATE_LIMIT_PREMIUM": "20 times / hour",
-            "RECOMMENDED": "Recommended",
-            "CURRENT_FREE_PLAN": "Currently using Free Plan",
-            "UPGRADE_MESSAGE": "Upgrade to Premium Plan to enjoy all features",
-            "CURRENT_PLAN": "Current Plan",
-            "POPULAR_PLAN": "Popular Plan",
-            "TRIAL_MESSAGE": "Start with 1 month trial",
-            "TRIAL_MESSAGE_MONTHLY": "is 1 month free!",
-            "TRIAL_MESSAGE_AFTER_END": "After the trial ends, you will be automatically upgraded to the premium plan.",
-            "DISCOUNT_MESSAGE": "#discount#% OFF!"
-        },
-        "INFORMATION": {
-            "DETAIL": "View Details",
-            "CLOSE": "Close",
-            "INVALID_URL": "Invalid URL"
-        },
-        "SCHEDULE": {
-            "EDIT_PLAN": "Edit Plan",
-            "ADD_SCHEDULE": "Add Schedule",
-            "EDIT_TIME": "Edit Time",
-            "SHARE": "Share",
-            "SHARE_TITLE": "Share schedule",
-            "POSTS": "Posts a memory.",
-            "NOT_FOUND_PLACE": "No place found",
-            "POSTS_PLACE_SELECT": "Select Place"
         },
         "VERSION": {
             "UPDATE_REQUIRED": "App Update Required",
@@ -281,6 +258,15 @@
         }
     },
     "COMMON": {
+        "TABBAR": {
+            "HOME": "Home",
+            "PLAN": "Plan",
+            "SCHEDULE": "Schedule",
+            "SETTINGS": "Settings",
+            "MAP": "Map",
+            "MEDIA": "Media",
+            "SAMPLE": "Sample"
+        },
         "DARK_MODE": "Dark Mode",
         "ERROR": "Error",
         "SUCCESS": "Success",
@@ -299,5 +285,6 @@
             "FREE": "Free plan",
             "PREMIUM": "Premium plan"
         }
-    }
+    },
+    "MESSAGE": {}
 }

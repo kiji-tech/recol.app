@@ -232,7 +232,7 @@ export default function MediaScreen() {
       {images?.length === 0 && (
         <View className="flex justify-center items-center h-full">
           <Text className="text-light-text dark:text-dark-text text-xl">
-            {generateI18nMessage('SCREEN.MEDIA.NO_IMAGE_LIST')}
+            {generateI18nMessage('FEATURE.MEDIA.NO_IMAGE_LIST')}
           </Text>
         </View>
       )}

@@ -83,7 +83,7 @@ export default function TodayScheduleList({ planList }: Props) {
   if (scheduleList.length === 0) {
     return (
       <Text className="text-light-text dark:text-dark-text text-sm">
-        {generateI18nMessage('COMPONENT.PLAN.NO_SCHEDULE_TODAY')}
+        {generateI18nMessage('FEATURE.PLAN.NO_SCHEDULE_TODAY')}
       </Text>
     );
   }

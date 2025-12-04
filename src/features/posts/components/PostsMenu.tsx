@@ -76,7 +76,7 @@ export default function PostsMenu({ posts, place, onDelete, onReport }: Props) {
               },
             }}
             onSelect={onReport}
-            text={generateI18nMessage('COMPONENT.POSTS.REPORT')}
+            text={generateI18nMessage('FEATURE.POSTS.REPORT')}
           />
         )}
       </MenuOptions>

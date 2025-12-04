@@ -70,7 +70,7 @@ export default function InformationList() {
     return (
       <View className="flex-1 justify-center items-center py-20">
         <Text className={`text-lg ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-          {generateI18nMessage('SCREEN.INFORMATION.NO_INFORMATION')}
+          {generateI18nMessage('FEATURE.INFORMATION.NO_INFORMATION')}
         </Text>
       </View>
     );
@@ -86,7 +86,7 @@ export default function InformationList() {
     return (
       <View className="flex-1 justify-center items-center py-20">
         <Text className={`text-lg ${isDarkMode ? 'text-dark-danger' : 'text-light-danger'}`}>
-          {generateI18nMessage('SCREEN.INFORMATION.ERROR_OCCURRED')}
+          {generateI18nMessage('FEATURE.INFORMATION.ERROR_OCCURRED')}
         </Text>
         <Text className={`text-sm mt-2 ${isDarkMode ? 'text-dark-text' : 'text-light-text'}`}>
           {error.message}
@@ -102,7 +102,7 @@ export default function InformationList() {
   return (
     <BackgroundView>
       <Header
-        title={generateI18nMessage('SCREEN.INFORMATION.TITLE')}
+        title={generateI18nMessage('FEATURE.INFORMATION.TITLE')}
         onBack={() => {
           router.back();
         }}

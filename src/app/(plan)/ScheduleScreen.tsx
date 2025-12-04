@@ -26,13 +26,13 @@ export default function ScheduleScreen(): ReactNode {
    */
   const initView = () => {
     if (!session) {
-      Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.NO_LOGIN'));
+      Toast.warn(generateI18nMessage('FEATURE.SCHEDULE.NO_LOGIN'));
       router.navigate('/(auth)/SignIn');
       return;
     }
 
     if (!planId) {
-      Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.PLAN_NOT_FOUND'));
+      Toast.warn(generateI18nMessage('FEATURE.SCHEDULE.PLAN_NOT_FOUND'));
       router.back();
       return;
     }
@@ -43,7 +43,7 @@ export default function ScheduleScreen(): ReactNode {
    * @param schedule {Schedule} 
    */
   const handleDeleteSchedule = async (schedule: Schedule) => {
-    const text = generateI18nMessage('SCREEN.SCHEDULE.DELETE_SUCCESS', [
+    const text = generateI18nMessage('FEATURE.SCHEDULE.DELETE_SUCCESS', [
       { key: 'title', value: schedule.title || '' },
     ]);
     await deleteSchedule(schedule, session).catch((e) => {

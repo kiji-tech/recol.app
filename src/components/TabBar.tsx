@@ -157,7 +157,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
               <Text
                 className={`text-light-text dark:text-dark-text  ${isFocused ? 'text-md' : 'text-sm'}`}
               >
-                {generateI18nMessage(`TABBAR.${label}`) as string}
+                {generateI18nMessage(`COMMON.TABBAR.${label}`) as string}
               </Text>
             </TouchableOpacity>
           );

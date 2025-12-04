@@ -8,10 +8,10 @@ export default function NotFoundPlanView() {
   return (
     <View className="flex flex-col justify-center items-center h-full">
       <Text className="text-light-text dark:text-dark-text text-lg font-bold">
-        {generateI18nMessage('COMPONENT.PLAN.NOT_FOUND')}
+        {generateI18nMessage('FEATURE.PLAN.NOT_FOUND')}
       </Text>
       <Button
-        text={generateI18nMessage('COMPONENT.PLAN.ADD_PLAN')}
+        text={generateI18nMessage('FEATURE.PLAN.ADD_PLAN')}
         theme={'info'}
         onPress={() => router.push('/(modal)/PlanCreator')}
       />

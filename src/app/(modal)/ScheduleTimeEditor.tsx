@@ -57,7 +57,7 @@ const ScheduleTimeEditorItem = ({
             }}
           >
             <Text className="text-light-text dark:text-dark-text text-sm px-2 py-1">
-              {generateI18nMessage('SCREEN.SCHEDULE.TIME_EDITOR.PREVIOUS_START_TIME')}
+              {generateI18nMessage('FEATURE.SCHEDULE.TIME_EDITOR.PREVIOUS_START_TIME')}
             </Text>
           </TouchableOpacity>
         )}
@@ -75,7 +75,7 @@ const ScheduleTimeEditorItem = ({
             }}
           >
             <Text className="text-light-text dark:text-dark-text text-sm px-2 py-1">
-              {generateI18nMessage('SCREEN.SCHEDULE.TIME_EDITOR.NEXT_START_TIME')}
+              {generateI18nMessage('FEATURE.SCHEDULE.TIME_EDITOR.NEXT_START_TIME')}
             </Text>
           </TouchableOpacity>
         )}
@@ -136,7 +136,7 @@ export default function ScheduleTimeEditor() {
         level: 'error',
         notify: true,
       });
-      Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.TIME_EDITOR.SUBMIT_ERROR'));
+      Toast.warn(generateI18nMessage('FEATURE.SCHEDULE.TIME_EDITOR.SUBMIT_ERROR'));
     },
   });
 

@@ -40,7 +40,7 @@ export default function PostsPlaceSelectModal({ schedule, onSelect, onClose }: P
   // === Render ===
   return (
     <ModalLayout visible={true} onClose={handleClose} size="full">
-      <Title text={generateI18nMessage('COMPONENT.SCHEDULE.POSTS_PLACE_SELECT')} />
+      <Title text={generateI18nMessage('FEATURE.SCHEDULE.POSTS_PLACE_SELECT')} />
       <FlatList
         data={placeList}
         renderItem={({ item }) => (

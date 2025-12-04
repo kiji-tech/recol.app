@@ -41,7 +41,7 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
   const handlePostsSelectModal = () => {
     console.log('handlePostsSelectModal', item.place_list);
     if (!item.place_list || item.place_list.length === 0) {
-      Toast.warn(generateI18nMessage('COMPONENT.SCHEDULE.NOT_FOUND_PLACE'));
+      Toast.warn(generateI18nMessage('FEATURE.SCHEDULE.NOT_FOUND_PLACE'));
       return;
     }
     setIsPostsSelectModalVisible(true);

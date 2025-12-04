@@ -51,7 +51,7 @@ const ScheduleBottomSheetBody = forwardRef(
         {!selectedSchedule && (
           <View className="w-full p-8">
             <Text className="text-center text-light-text dark:text-dark-text">
-              {generateI18nMessage('SCREEN.MAP.NO_SELECTED')}
+              {generateI18nMessage('FEATURE.MAP.NO_SELECTED')}
             </Text>
           </View>
         )}

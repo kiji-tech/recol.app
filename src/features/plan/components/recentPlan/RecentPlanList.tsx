@@ -70,7 +70,7 @@ export default function RecentPlanList({ planList }: Props) {
       {/* プランリスト */}
       {!planList || planList.length === 0 ? (
         <Text className="text-light-text dark:text-dark-text text-sm">
-          {generateI18nMessage('COMPONENT.PLAN.NO_PLAN_RECENT', [
+          {generateI18nMessage('FEATURE.PLAN.NO_PLAN_RECENT', [
             { key: 'days', value: days.toString() },
           ])}
         </Text>

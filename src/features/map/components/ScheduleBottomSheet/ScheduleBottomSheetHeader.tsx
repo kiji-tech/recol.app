@@ -48,7 +48,7 @@ export default function ScheduleBottomSheetHeader({
         }))}
         placeholder={{
           key: 'placeholder',
-          label: generateI18nMessage('SCREEN.MAP.SELECT_SCHEDULE'),
+          label: generateI18nMessage('FEATURE.MAP.SELECT_SCHEDULE'),
           value: 'placeholder',
           color: isDarkMode ? '#5A5A5A' : '#D7D7D7',
         }}

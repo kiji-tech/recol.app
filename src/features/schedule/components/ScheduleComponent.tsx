@@ -76,10 +76,10 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
   const handleScheduleLongPress = (schedule: Schedule) => {
     if (!onDelete) return;
     // 削除アラート
-    const text = generateI18nMessage('SCREEN.SCHEDULE.DELETE_SUCCESS', [
+    const text = generateI18nMessage('FEATURE.SCHEDULE.DELETE_SUCCESS', [
       { key: 'title', value: schedule.title || '' },
     ]);
-    Alert.alert(text, generateI18nMessage('SCREEN.SCHEDULE.DELETE_CONFIRM'), [
+    Alert.alert(text, generateI18nMessage('FEATURE.SCHEDULE.DELETE_CONFIRM'), [
       { text: generateI18nMessage('COMMON.CANCEL'), style: 'cancel' },
       {
         text: generateI18nMessage('COMMON.DELETE'),
@@ -148,7 +148,7 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
       </View>
       <View className="my-8">
         <Button
-          text={generateI18nMessage('COMPONENT.SCHEDULE.ADD_SCHEDULE')}
+          text={generateI18nMessage('FEATURE.SCHEDULE.ADD_SCHEDULE')}
           disabled={isLoading}
           onPress={() => handleAddSchedule()}
         />

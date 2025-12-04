@@ -13,10 +13,10 @@ export default function CurrentPlanBadge({ profile }: CurrentPlanBadgeProps) {
     return (
       <View className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
         <Text className="text-center text-gray-600 dark:text-gray-300 font-medium">
-          {generateI18nMessage('COMPONENT.PAYMENT.CURRENT_FREE_PLAN')}
+          {generateI18nMessage('FEATURE.PAYMENT.CURRENT_FREE_PLAN')}
         </Text>
         <Text className="text-center text-gray-500 dark:text-gray-400 text-sm mt-1">
-          {generateI18nMessage('COMPONENT.PAYMENT.UPGRADE_MESSAGE')}
+          {generateI18nMessage('FEATURE.PAYMENT.UPGRADE_MESSAGE')}
         </Text>
       </View>
     );
@@ -29,12 +29,12 @@ export default function CurrentPlanBadge({ profile }: CurrentPlanBadgeProps) {
       <View className="flex-row items-center justify-center mb-2">
         <View className="bg-light-primary dark:bg-dark-primary rounded-full px-3 py-1">
           <Text className="text-white text-sm font-bold">
-            {generateI18nMessage('COMPONENT.PAYMENT.PREMIUM')}
+            {generateI18nMessage('FEATURE.PAYMENT.PREMIUM')}
           </Text>
         </View>
       </View>
       <Text className="text-center text-light-text dark:text-dark-text">
-        {generateI18nMessage('COMPONENT.PLAN.EXPIRATION_DATE')}: {endDate}まで
+        {generateI18nMessage('FEATURE.PLAN.EXPIRATION_DATE')}: {endDate}まで
       </Text>
     </View>
   );

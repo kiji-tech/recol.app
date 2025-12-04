@@ -71,7 +71,7 @@ export default function MovieAd({ onComplete }: Props) {
         theme="theme"
         disabled={!loaded}
         loading={!loaded}
-        text={generateI18nMessage('SCREEN.MAP.RATE_LIMIT_MODAL.MOVIE_BUTTON')}
+        text={generateI18nMessage('FEATURE.MAP.RATE_LIMIT_MODAL.MOVIE_BUTTON')}
       />
     </>
   );

@@ -28,11 +28,11 @@ type Props = {
 const REPORT_REASONS: { id: PostsReportCategory; label: string }[] = [
   {
     id: 'Inappropriate',
-    label: generateI18nMessage('COMPONENT.POSTS.INAPPROPRIATE_CONTENT'),
+    label: generateI18nMessage('FEATURE.POSTS.INAPPROPRIATE_CONTENT'),
   },
-  { id: 'Offensive', label: generateI18nMessage('COMPONENT.POSTS.OFFENSIVE_CONTENT') },
-  { id: 'Privacy', label: generateI18nMessage('COMPONENT.POSTS.PRIVACY_VIOLATION') },
-  { id: 'Other', label: generateI18nMessage('COMPONENT.POSTS.OTHER') },
+  { id: 'Offensive', label: generateI18nMessage('FEATURE.POSTS.OFFENSIVE_CONTENT') },
+  { id: 'Privacy', label: generateI18nMessage('FEATURE.POSTS.PRIVACY_VIOLATION') },
+  { id: 'Other', label: generateI18nMessage('FEATURE.POSTS.OTHER') },
 ];
 
 export default function PostsReportModal({ isOpen, onClose, posts }: Props) {
@@ -97,7 +97,7 @@ export default function PostsReportModal({ isOpen, onClose, posts }: Props) {
       >
         <ScrollView className="flex-1 px-4">
           <Text className="text-xl font-bold text-light-text dark:text-dark-text mb-4">
-            {generateI18nMessage('COMPONENT.POSTS.REASON_MESSAGE')}
+            {generateI18nMessage('FEATURE.POSTS.REASON_MESSAGE')}
           </Text>
 
           <View className="flex-col gap-3 mb-6">
@@ -135,12 +135,12 @@ export default function PostsReportModal({ isOpen, onClose, posts }: Props) {
           {selectedReason === 'Other' && (
             <View className="mb-4">
               <Text className="text-sm text-light-text dark:text-dark-text mb-2 font-bold">
-                {generateI18nMessage('COMPONENT.POSTS.DETAIL')}
+                {generateI18nMessage('FEATURE.POSTS.DETAIL')}
               </Text>
               <TextInput
                 className="p-4 rounded-xl bg-light-background dark:bg-dark-background border border-light-border dark:border-dark-border text-light-text dark:text-dark-text min-h-[160px]"
                 multiline
-                placeholder={generateI18nMessage('COMPONENT.POSTS.DETAIL_PLACEHOLDER')}
+                placeholder={generateI18nMessage('FEATURE.POSTS.DETAIL_PLACEHOLDER')}
                 placeholderTextColor="gray"
                 value={details}
                 onChangeText={setDetails}
