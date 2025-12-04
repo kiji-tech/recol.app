@@ -28,7 +28,10 @@ const checkStorageCapacity = async (
     .list(planId, { limit: 1000 });
 
   if (listError) {
-    console.error(listError);
+    LogUtil.log(`メディア一覧取得失敗: ${JSON.stringify(listError)}`, {
+      level: 'error',
+      notify: true,
+    });
     return { error: { message: getMessage('C005', ['メディア一覧']), code: 'C005' }, status: 500 };
   }
   const existingSize = existingFiles.reduce(
@@ -69,6 +72,7 @@ const checkStorageCapacity = async (
 const uploadMediaFiles = async (
   supabase: SupabaseClient,
   planId: string,
+  scheduleId: string | null,
   images: string[],
   userId: string
 ) => {
@@ -92,7 +96,10 @@ const uploadMediaFiles = async (
   const uploadedFilePaths: string[] = [];
   for (let i = 0; i < uploadResults.length; i++) {
     if (uploadResults[i].error) {
-      console.error('Upload failed:', uploadResults[i].error);
+      LogUtil.log(`メディアアップロード失敗: ${JSON.stringify(uploadResults[i].error)}`, {
+        level: 'error',
+        notify: true,
+      });
       // 失敗した場合は、それまでに成功したファイルを削除（ロールバック）
       if (uploadedFilePaths.length > 0) {
         await supabase.storage.from('medias').remove(uploadedFilePaths);
@@ -108,13 +115,17 @@ const uploadMediaFiles = async (
   // DBに保存
   const insertData = uploadedFilePaths.map((url) => ({
     plan_id: planId,
+    schedule_id: scheduleId,
     upload_user_id: userId,
     url: url,
   }));
   const { error: insertError } = await supabase.from('media').insert(insertData);
 
   if (insertError) {
-    console.error(insertError);
+    LogUtil.log(`メディア保存失敗: ${JSON.stringify(insertError)}`, {
+      level: 'error',
+      notify: true,
+    });
     // DB保存失敗時もアップロードしたファイルを削除（ロールバック）
     await supabase.storage.from('medias').remove(uploadedFilePaths);
     return {
@@ -127,7 +138,7 @@ const uploadMediaFiles = async (
 };
 
 export const createMedia = async (c: Context, supabase: SupabaseClient, user: User) => {
-  LogUtil.log('[POST] media', { level: 'info' });
+  LogUtil.log('[POST] media', { level: 'info' }, c);
 
   // profile 取得
   const { data: profile, error: fetchProfileError } = await supabase
@@ -137,10 +148,13 @@ export const createMedia = async (c: Context, supabase: SupabaseClient, user: Us
     .maybeSingle();
 
   if (fetchProfileError) {
-    console.error(fetchProfileError);
+    LogUtil.log(`プロフィール取得失敗: ${JSON.stringify(fetchProfileError)}`, {
+      level: 'error',
+      notify: true,
+    });
     return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
   }
-  const { planId, images } = await c.req.json();
+  const { planId, scheduleId, images } = await c.req.json();
   if (!planId || !images || !Array.isArray(images) || images.length === 0) {
     return c.json({ message: getMessage('C009', ['プランID､メディア']), code: 'C009' }, 400);
   }
@@ -152,7 +166,13 @@ export const createMedia = async (c: Context, supabase: SupabaseClient, user: Us
   }
 
   // 2. ファイルアップロードとDB保存
-  const { uploadedImages, error } = await uploadMediaFiles(supabase, planId, images, user.id);
+  const { uploadedImages, error } = await uploadMediaFiles(
+    supabase,
+    planId,
+    scheduleId,
+    images,
+    user.id
+  );
   if (error) {
     return c.json(error, 500);
   }

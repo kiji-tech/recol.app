@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { router } from 'expo-router';
-import { ScrollView, Text, TextInput, View } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { BackgroundView, Button, Header } from '@/src/components';
 import { usePlan } from '@/src/contexts/PlanContext';
 import DatePicker from '../../components/DatePicker';
@@ -8,6 +9,7 @@ import dayjs from '@/src/libs/dayjs';
 import MapModal from '../../features/map/components/MapModal';
 import { upsertSchedule } from '@/src/features/schedule';
 import { useAuth } from '@/src/features/auth';
+import useImagePicker from '@/src/features/media/hooks/useImagePicker';
 import { Schedule } from '@/src/features/schedule';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { LogUtil } from '@/src/libs/LogUtil';
@@ -20,59 +22,83 @@ import {
 } from '@/src/features/schedule/libs/scheduleTime';
 import generateI18nMessage from '@/src/libs/i18n';
 import { useMap } from '@/src/features/map';
+import { useTheme } from '@/src/contexts/ThemeContext';
+import { Image } from 'expo-image';
+import { deletePlanMediaList, Media, uploadPlanMediaList } from '@/src/features/media';
+import { useMutation } from 'react-query';
 
 export default function ScheduleEditor() {
+  const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
   // === Member ===
   const { plan, editSchedule, setEditSchedule } = usePlan();
   const { session, profile, user } = useAuth();
   const [openMapModal, setOpenMapModal] = useState(false);
-  const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { refetchSearchPlaceList } = useMap();
+  const { selectImageList, toBase64 } = useImagePicker();
+  const { isDarkMode } = useTheme();
+  const [mediaList, setMediaList] = useState<ImagePicker.ImagePickerAsset[]>([]);
+  const [removeMediaList, setRemoveMediaList] = useState<string[]>([]);
+  type ViewMedia = { url: string; uid: string; isNew: boolean };
+  const viewMediaList: ViewMedia[] = useMemo(
+    () =>
+      mediaList
+        .map((media, index) => ({
+          url: media.uri!,
+          uid: `media-${index}`,
+          isNew: true,
+        }))
+        .concat(
+          editSchedule?.media_list?.map((media: Media) => ({
+            url: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/medias/${media.url}`,
+            uid: media.uid!,
+            isNew: false,
+          })) || []
+        ),
+    [mediaList, editSchedule]
+  );
   // === Method ===
   /**
    * スケジュールを保存する
+   * @param updateSchedule 更新するスケジュール
    */
-  const saveSchedule = async (updateSchedule: Schedule) => {
-    await upsertSchedule(updateSchedule, session).then(async () => {
+  const saveSchedule = async (updateSchedule: Schedule): Promise<Schedule> => {
+    return await upsertSchedule(updateSchedule, session).then(async (savedSchedule) => {
       // 通知処理の見直し
       await NotificationUtil.upsertUserSchedule(
-        editSchedule as Schedule,
+        updateSchedule,
         profile?.enabled_schedule_notification ?? false
       );
+      return savedSchedule;
     });
   };
 
   /**
-   * スケジュールの編集 イベントハンドラ
+   * メディアを追加
    */
-  const handleScheduleSubmit = async () => {
-    if (!plan || !editSchedule) return;
-    setIsLoading(true);
-    const updateSchedule = {
-      ...editSchedule,
-      from: dayjs(editSchedule.from).format(DATE_FORMAT),
-      to: dayjs(editSchedule.to).format(DATE_FORMAT),
-      place_list: editSchedule.place_list?.filter((place) => place !== null),
-    } as Schedule;
-    saveSchedule(updateSchedule)
-      .then(() => {
-        // プランの再取得
-        router.back();
-      })
-      .catch((e) => {
-        if (e && e.message) {
-          LogUtil.log(JSON.stringify({ saveScheduleError: e }), {
-            level: 'error',
-            notify: true,
-            user,
-          });
-          Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.SAVE_FAILED'));
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+  const handleAddMedia = async () => {
+    const result: ImagePicker.ImagePickerAsset[] = await selectImageList();
+    setMediaList((prev) => [...prev, ...result]);
+  };
+
+  /**
+   * メディア削除処理
+   * 新規メディアの場合は、メディアリストから削除
+   * 既存メディアの場合は、削除メディアリストに追加
+   * @param image { uid: string; url: string; isNew: boolean }
+   */
+  const handleDeleteMedia = (image: { uid: string; url: string; isNew: boolean }) => {
+    LogUtil.log(`handleDeleteMedia Start: ${JSON.stringify(image)}`);
+    if (image.isNew) {
+      setMediaList((prev: ImagePicker.ImagePickerAsset) =>
+        prev.filter((media) => media.uri !== image.url)
+      );
+    } else {
+      setEditSchedule((prev: Schedule) => ({
+        ...prev,
+        media_list: prev.media_list?.filter((media) => media.uid !== image.uid),
+      }));
+      setRemoveMediaList((prev) => [...prev, image.uid]);
+    }
   };
 
   /**
@@ -96,6 +122,58 @@ export default function ScheduleEditor() {
   const handleBack = () => {
     router.back();
   };
+
+  // === mutate ===
+  /**
+   * スケジュールの編集 イベントハンドラ
+   */
+  const mutateUpdateSchedule = useMutation('updateSchedule', {
+    mutationFn: async () => {
+      if (!plan || !editSchedule) return;
+      // 削除対象メディアの更新
+      if (removeMediaList.length > 0) {
+        LogUtil.log(`removeMediaList: ${JSON.stringify(removeMediaList)}`);
+        await deletePlanMediaList(editSchedule.plan_id!, removeMediaList, session);
+      }
+
+      // スケジュールの更新
+      LogUtil.log(`updateSchedule: ${JSON.stringify(editSchedule)}`);
+      const updateSchedule = {
+        ...editSchedule,
+        from: dayjs(editSchedule.from).format(DATE_FORMAT),
+        to: dayjs(editSchedule.to).format(DATE_FORMAT),
+        place_list: editSchedule.place_list?.filter((place) => place !== null),
+      } as Schedule;
+      const savedSchedule = await saveSchedule(updateSchedule);
+
+      setEditSchedule((prev: Schedule) => ({ ...prev, uid: savedSchedule.uid! }));
+
+      // メディアの登録
+      const createMediaList = [];
+      for (const media of mediaList) {
+        const base64 = await toBase64(media.uri!);
+        if (base64) createMediaList.push(base64);
+      }
+      if (createMediaList.length > 0) {
+        await uploadPlanMediaList(
+          savedSchedule.plan_id!,
+          savedSchedule.uid!,
+          createMediaList,
+          session
+        );
+      }
+    },
+    onSuccess: () => {
+      router.back();
+    },
+    onError: (e) => {
+      LogUtil.log(JSON.stringify({ saveScheduleError: e }), {
+        level: 'error',
+        notify: true,
+      });
+      Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.SAVE_FAILED'));
+    },
+  });
 
   // === Effect ===
   useEffect(() => {
@@ -177,6 +255,7 @@ export default function ScheduleEditor() {
                 } as Schedule);
               }}
             />
+
             {/* マップから追加する */}
             <View className="w-full flex flex-col justify-start items-start gap-4">
               <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
@@ -227,13 +306,66 @@ export default function ScheduleEditor() {
               />
             </View>
 
+            {/* メディア */}
+            <View className="w-full flex flex-col justify-start items-start gap-2">
+              <View className="flex flex-row justify-start items-center gap-4   ">
+                <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
+                  {generateI18nMessage('SCREEN.SCHEDULE.MEDIA_LIST', [
+                    {
+                      key: 'count',
+                      value: viewMediaList.length.toString() || '0',
+                    },
+                  ])}
+                </Text>
+                {/* +ボタン */}
+                <TouchableOpacity
+                  className="w-8 h-8 rounded-full flex items-center justify-center bg-light-background dark:bg-dark-background"
+                  onPress={handleAddMedia}
+                >
+                  <FontAwesome5 name="plus" size={12} color={isDarkMode ? 'white' : 'black'} />
+                </TouchableOpacity>
+              </View>
+              {/* 登録している一覧 */}
+              <FlatList
+                data={viewMediaList}
+                horizontal={true}
+                contentContainerClassName="gap-4"
+                keyExtractor={(item: ViewMedia) => item.uid}
+                renderItem={({ item }) => {
+                  return (
+                    <View className="w-32 h-32 rounded-xl border border-light-border dark:border-dark-border">
+                      <TouchableOpacity
+                        className="absolute top-2 right-2 z-10 bg-light-background dark:bg-dark-background rounded-full p-2"
+                        onPress={() => handleDeleteMedia(item)}
+                      >
+                        <FontAwesome5
+                          name="minus"
+                          size={12}
+                          color={isDarkMode ? 'white' : 'black'}
+                        />
+                      </TouchableOpacity>
+                      <Image
+                        cachePolicy="memory-disk"
+                        source={{ uri: item.url }}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: 12,
+                        }}
+                      />
+                    </View>
+                  );
+                }}
+              />
+            </View>
+
             {/* 保存ボタン */}
             <Button
               theme="theme"
-              onPress={handleScheduleSubmit}
+              onPress={mutateUpdateSchedule.mutateAsync}
               text={generateI18nMessage('COMMON.SAVE')}
-              disabled={isLoading}
-              loading={isLoading}
+              disabled={mutateUpdateSchedule.isLoading}
+              loading={mutateUpdateSchedule.isLoading}
             />
           </View>
         </ScrollView>

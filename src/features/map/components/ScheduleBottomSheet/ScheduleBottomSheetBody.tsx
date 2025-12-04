@@ -44,6 +44,7 @@ const ScheduleBottomSheetBody = forwardRef(
       }));
     }
 
+    // === Render ===
     if (isSearchLoading) return <Loading />;
     return (
       <BottomSheetScrollView ref={scrollRef} className="w-full flex-1">

@@ -14,6 +14,7 @@ import { useLocation } from '@/src/contexts/LocationContext';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { MapCategory } from '../types/MapCategory';
 import RateLimitModal from './RateLimitModal';
+import PostPlaceModal from '../../posts/components/PostPlaceModal';
 
 type Props = {
   isOpen: boolean;
@@ -25,6 +26,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const scrollRef = useRef<BottomSheetScrollViewMethods>(null);
   const { currentRegion } = useLocation();
+  const [postModalVisible, setPostModalVisible] = useState(false);
   const [isDetailPlace, setIsDetailPlace] = useState(false);
   const [isRateLimit, setIsRateLimit] = useState(false);
   const {
@@ -89,7 +91,7 @@ export default function MapModal({ isOpen, onClose }: Props) {
    * 検索 イベントハンドラ
    * @param text {string} 検索文字列
    */
-  const handleTextSearch =  async (text: string) => {
+  const handleTextSearch = async (text: string) => {
     const rateLimit = await checkRateLimit();
     if (!rateLimit) {
       // 動画視聴しますかのモーダルを表示する
@@ -163,7 +165,6 @@ export default function MapModal({ isOpen, onClose }: Props) {
       <View className={`w-full h-12 absolute z-50 px-2 ${isIOS ? 'top-20' : 'top-4'}`}>
         <Header onBack={() => handleClose()} onSearch={handleTextSearch} />
       </View>
-
       {/* 再検索 */}
       <ResearchButton
         centerRegion={region || null}
@@ -171,7 +172,6 @@ export default function MapModal({ isOpen, onClose }: Props) {
         radius={radius}
         onPress={() => handleResearch}
       />
-
       {/* マップ */}
       <View style={{ height: '70%' }} className="w-screen absolute top-0 left-0">
         <Map
@@ -186,10 +186,8 @@ export default function MapModal({ isOpen, onClose }: Props) {
           onSelectedPlace={handleSelectedPlace}
         />
       </View>
-
       {/* リミットレートオーバー */}
       {isRateLimit && <RateLimitModal isOpen={isRateLimit} onClose={() => setIsRateLimit(false)} />}
-
       {/* マップボトムシート */}
       {!isDetailPlace && (
         <MapBottomSheet
@@ -208,8 +206,13 @@ export default function MapModal({ isOpen, onClose }: Props) {
         <PlaceBottomSheet
           bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
           isEdit={true}
+          onPost={() => setPostModalVisible(true)}
           onClose={handleCloseDetailPlace}
         />
+      )}
+      {/* ポストモーダル */}
+      {postModalVisible && (
+        <PostPlaceModal place={selectedPlace!} onClose={() => setPostModalVisible(false)} />
       )}
     </View>
   );

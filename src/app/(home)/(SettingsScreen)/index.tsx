@@ -17,6 +17,7 @@ import generateI18nMessage from '@/src/libs/i18n';
 import { useQuery } from 'react-query';
 import { fetchProfile } from '@/src/features/profile';
 import MaskLoading from '@/src/components/MaskLoading';
+import { useShare } from '@/src/features/commons/hooks/useShare';
 
 // TODO: 将来的にはDB化
 // const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
@@ -25,6 +26,7 @@ export default function Settings() {
   // === Member ===
   const { logout } = useAuth();
   const { clearStoragePlan } = usePlan();
+  const { shereApplication } = useShare();
   const version = Constants.expoConfig?.version || '1.0.0';
 
   const { user, session } = useAuth();
@@ -57,18 +59,7 @@ export default function Settings() {
 
   // アプリからデータを送信
   const handleShareTwitter = async () => {
-    // 共有オプション
-    const shareOptions = {
-      title: 'Re:CoL',
-      message:
-        'カフェ行きたいってなったとき、候補がたくさんあってまとめるのがめんどいってことありませんか？\nRe:CoLなら、お店をまとめて紐づけることができるので楽ちん！\n詳しくはリンクから！',
-      url: Platform.select({
-        ios: process.env.EXPO_PUBLIC_IOS_STORE,
-        android: process.env.EXPO_PUBLIC_ANDROID_STORE,
-      }),
-    };
-
-    await Share.open(shareOptions);
+    shereApplication();
   };
 
   // === Effect ===

@@ -9,6 +9,7 @@ export class Media {
   url: string | null = null;
   delete_flag: boolean | null = null;
   created_at: string | null = null;
+
   constructor(data: Tables<'media'>) {
     for (const key in data) {
       this[key as keyof Media] = data[key as keyof Tables<'media'>] as never;

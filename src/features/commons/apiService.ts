@@ -29,6 +29,7 @@ export async function apiRequest<T, B = Record<string, unknown>>(
   }
 ): Promise<ApiResponse<T>> {
   const { method, body, ctrl, session } = options;
+  LogUtil.log(`=== start apiRequest ${endpoint} ===`);
 
   const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     method,
@@ -44,7 +45,7 @@ export async function apiRequest<T, B = Record<string, unknown>>(
     const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
 
     if (sessionError || !sessionData.session) {
-      LogUtil.log(`セッション取得エラー: ${JSON.stringify(sessionError)}`, { level: 'error' });
+      LogUtil.log(`セッション取得エラー: ${JSON.stringify(sessionError)}`, { level: 'warn' });
       throw new Error('認証セッションが無効です。再度ログインしてください。');
     }
 

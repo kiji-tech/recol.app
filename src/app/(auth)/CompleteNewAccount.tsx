@@ -166,6 +166,7 @@ export default function CompleteNewAccount() {
             className="mb-6"
           >
             <Image
+              cachePolicy="memory-disk"
               source={{
                 uri: './assets/images/icon.png',
               }}

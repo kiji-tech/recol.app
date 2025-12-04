@@ -13,6 +13,7 @@ import ScheduleBottomSheet from '@/src/features/map/components/ScheduleBottomShe
 import PlaceBottomSheet from '@/src/features/map/components/PlaceBottomSheet/PlaceBottomSheet';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { LogUtil } from '@/src/libs/LogUtil';
+import PostPlaceModal from '@/src/features/posts/components/PostPlaceModal';
 /**
  * 初期表示
  */
@@ -21,7 +22,7 @@ export default function MapScreen() {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const scrollRef = useRef<BottomSheetScrollViewMethods | null>(null);
 
-  const { plan, editSchedule, setEditSchedule } = usePlan();
+  const { plan, editSchedule, setEditSchedule, refetchPlan } = usePlan();
   const {
     region,
     setRegion,
@@ -35,6 +36,7 @@ export default function MapScreen() {
   const { currentRegion } = useLocation();
 
   const [viewMode, setViewMode] = useState<'list' | 'detail'>('list');
+  const [postModalVisible, setPostModalVisible] = useState(false);
   const [routeList, setRouteList] = useState<Route[]>([]);
   const [handleBackPress, setHandleBackPress] = useState<NativeEventSubscription | null>(null);
 
@@ -45,13 +47,6 @@ export default function MapScreen() {
         .sort((a, b) => dayjs(a.from).diff(dayjs(b.from))) || []
     );
   }, [plan]);
-
-  const stepList: Step[] = useMemo(() => {
-    if (!routeList || routeList.length === 0) return [];
-    const [firstRoute] = routeList;
-    if (!firstRoute || !firstRoute.legs || firstRoute.legs.length === 0) return [];
-    return firstRoute.legs.flatMap((leg) => leg.steps || []);
-  }, [routeList]);
 
   // === Method ===
   /**
@@ -110,9 +105,10 @@ export default function MapScreen() {
   // === Effect ===
   useFocusEffect(
     useCallback(() => {
-      setupBackPress();
+      refetchPlan();
       doSelectedCategory('selected');
       setEditSchedule(viewScheduleList[0] || null);
+      setupBackPress();
       return () => handleBackPress?.remove();
     }, [])
   );
@@ -143,6 +139,7 @@ export default function MapScreen() {
           bottomSheetRef={bottomSheetRef as React.RefObject<BottomSheet>}
           isEdit={false}
           onDirection={handleDirectionView}
+          onPost={() => setPostModalVisible(true)}
           onClose={() => setViewMode('list')}
         />
       )}
@@ -161,6 +158,10 @@ export default function MapScreen() {
             setViewMode('detail');
           }}
         />
+      )}
+      {/* ポストモーダル */}
+      {postModalVisible && (
+        <PostPlaceModal place={selectedPlace!} onClose={() => setPostModalVisible(false)} />
       )}
     </>
   );

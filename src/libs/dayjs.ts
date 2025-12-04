@@ -6,8 +6,11 @@ import 'dayjs/locale/ja';
 import 'dayjs/locale/en';
 import { getLocales } from 'expo-localization';
 
+import relativeTime from 'dayjs/plugin/relativeTime';
+
 // localizedFormatを有効化
 dayjs.extend(localizedFormat);
+dayjs.extend(relativeTime);
 
 // ユーザーのロケールを取得
 const userLocale = getLocales()[0].languageCode || 'en';

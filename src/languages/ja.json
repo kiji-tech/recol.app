@@ -20,7 +20,8 @@
         "HOME": {
             "TODAY_SCHEDULE": "本日の予定",
             "RECENT_PLAN": "直近の予定",
-            "NEW_ARTICLE": "新着記事"
+            "NEW_ARTICLE": "新着記事",
+            "NEW_POST": "新規投稿"
         },
         "PLAN": {
             "CREATE_TITLE": "新しい予定を作成する",
@@ -154,6 +155,7 @@
             "PLAN_NOT_FOUND": "プランの情報が取得できませんでした",
             "FETCH_FAILED": "プランの情報が取得に失敗しました",
             "CANDIDATE_COUNT": "#count# 件候補があります",
+            "MEDIA_LIST": "画像（#count#）",
             "DELETE_CONFIRM": "スケジュールを削除します",
             "DELETE_SUCCESS": "#title#を削除しました",
             "SAVE_FAILED": "スケジュールの保存に失敗しました",
@@ -250,7 +252,10 @@
             "ADD_SCHEDULE": "スケジュールを追加する",
             "EDIT_TIME": "時間をまとめて編集",
             "SHARE": "共有する",
-            "SHARE_TITLE": "スケジュールを共有します"
+            "SHARE_TITLE": "スケジュールを共有します",
+            "POSTS": "思い出を投稿する",
+            "NOT_FOUND_PLACE": "場所が見つかりません",
+            "POSTS_PLACE_SELECT": "場所を選択"
         },
         "VERSION": {
             "UPDATE_REQUIRED": "アプリの更新が必要です",
@@ -263,6 +268,16 @@
             "NO_PERMISSION_TITLE": "通知権限が必要です",
             "NO_PERMISSION": "スケジュール通知を使用するには、デバイスの設定から通知権限を許可してください。",
             "ERROR_MESSAGE": "通知権限を取得できませんでした。後でもう一度お試しください。"
+        },
+        "POSTS": {
+            "REPORT": "通報",
+            "REASON_MESSAGE": "通報する理由を選択してください。",
+            "INAPPROPRIATE_CONTENT": "不適切なコンテンツ",
+            "OFFENSIVE_CONTENT": "攻撃的なコンテンツ",
+            "PRIVACY_VIOLATION": "プライバシーの侵害",
+            "DETAIL": "詳細",
+            "DETAIL_PLACEHOLDER": "詳細を入力してください。",
+            "OTHER": "その他"
         }
     },
     "COMMON": {

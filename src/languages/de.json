@@ -20,7 +20,8 @@
         "HOME": {
             "TODAY_SCHEDULE": "Heutiger Zeitplan",
             "RECENT_PLAN": "Kürzlicher Plan",
-            "NEW_ARTICLE": "Neuer Artikel"
+            "NEW_ARTICLE": "Neuer Artikel",
+            "NEW_POST": "Neuer Beitrag"
         },
         "PLAN": {
             "CREATE_TITLE": "Neuen Plan erstellen",
@@ -154,6 +155,7 @@
             "PLAN_NOT_FOUND": "Planinformationen konnten nicht abgerufen werden",
             "FETCH_FAILED": "Planinformationen konnten nicht abgerufen werden",
             "CANDIDATE_COUNT": "#count# Kandidaten gefunden",
+            "MEDIA_LIST": "Gespeicherte Medien (#count#)",
             "DELETE_CONFIRM": "Zeitplan löschen",
             "DELETE_SUCCESS": "#title# wurde gelöscht",
             "SAVE_FAILED": "Zeitplan konnte nicht gespeichert werden",
@@ -250,7 +252,10 @@
             "ADD_SCHEDULE": "Zeitplan hinzufügen",
             "EDIT_TIME": "Zeit bearbeiten",
             "SHARE": "Teilen",
-            "SHARE_TITLE": "Zeitplan teilen"
+            "SHARE_TITLE": "Zeitplan teilen",
+            "POSTS": "Eine Erinnerung posten",
+            "NOT_FOUND_PLACE": "Kein Ort gefunden",
+            "POSTS_PLACE_SELECT": "Ort auswählen"
         },
         "VERSION": {
             "UPDATE_REQUIRED": "App-Update erforderlich",
@@ -263,6 +268,16 @@
             "NO_PERMISSION_TITLE": "Benachrichtigungsberechtigung erforderlich",
             "NO_PERMISSION": "Die Benachrichtigungsberechtigung ist erforderlich, um Zeitplan-Benachrichtigungen zu verwenden. Bitte erlauben Sie Benachrichtigungsberechtigungen in den Geräteeinstellungen.",
             "ERROR_MESSAGE": "Benachrichtigungsberechtigung konnte nicht abgerufen werden. Bitte versuchen Sie es später erneut."
+        },
+        "POSTS": {
+            "REPORT": "Melden",
+            "REASON_MESSAGE": "Bitte wählen Sie einen Grund für die Meldung.",
+            "INAPPROPRIATE_CONTENT": "Unangemessener Inhalt",
+            "OFFENSIVE_CONTENT": "Beleidigender Inhalt",
+            "PRIVACY_VIOLATION": "Verletzung der Privatsphäre",
+            "DETAIL": "Details",
+            "DETAIL_PLACEHOLDER": "Details eingeben.",
+            "OTHER": "Andere"
         }
     },
     "COMMON": {
