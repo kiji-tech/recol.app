@@ -1,5 +1,6 @@
 ---
-trigger: always_on
+trigger: glob
+globs: *.tsx, *.ts
 ---
 
 **適応されているルールのファイル名を出力すること｡**

@@ -1,5 +1,6 @@
 ---
-trigger: always_on
+trigger: glob
+globs: supabase/**/*.ts
 ---
 
 ## ディレクトリ構成
