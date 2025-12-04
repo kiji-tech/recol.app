@@ -1,7 +1,5 @@
 ---
-description: 
-globs: *.tsx,*.ts
-alwaysApply: false
+trigger: always_on
 ---
 
 # expo ルール

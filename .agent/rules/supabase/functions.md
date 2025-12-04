@@ -1,7 +1,5 @@
 ---
-description: 
-globs: *.ts
-alwaysApply: false
+trigger: always_on
 ---
 
 ## ディレクトリ構成

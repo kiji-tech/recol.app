@@ -1,5 +1,5 @@
 ---
-alwaysApply: true
+trigger: always_on
 ---
 
 **適応されているルールのファイル名を出力すること｡**
