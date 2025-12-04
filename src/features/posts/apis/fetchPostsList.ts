@@ -1,17 +1,17 @@
 import { Posts } from '../types/Posts';
-import { apiRequest } from '../../commons/apiService';
-import { Session } from '@supabase/supabase-js';
 
 export async function fetchPostsList(
   option: { offset?: number; limit?: number },
-  session: Session | null,
   ctrl?: AbortController
 ) {
-  const response = await apiRequest<Posts[]>(`/v1/posts/list`, {
+  const response = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_FUNCTIONS_URL}/v1/posts/list`, {
     method: 'POST',
-    body: { option },
-    session,
-    ctrl,
+    body: JSON.stringify({ option }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    signal: ctrl?.signal,
   });
-  return response.data!.map((item) => new Posts(item));
+  const data = await response.json();
+  return data.map((item: any) => new Posts(item));
 }

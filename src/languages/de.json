@@ -252,7 +252,10 @@
             "ADD_SCHEDULE": "Zeitplan hinzufügen",
             "EDIT_TIME": "Zeit bearbeiten",
             "SHARE": "Teilen",
-            "SHARE_TITLE": "Zeitplan teilen"
+            "SHARE_TITLE": "Zeitplan teilen",
+            "POSTS": "Eine Erinnerung posten",
+            "NOT_FOUND_PLACE": "Kein Ort gefunden",
+            "POSTS_PLACE_SELECT": "Ort auswählen"
         },
         "VERSION": {
             "UPDATE_REQUIRED": "App-Update erforderlich",

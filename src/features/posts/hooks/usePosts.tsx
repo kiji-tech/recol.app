@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import { fetchPostsList } from '../apis/fetchPostsList';
 import { useAuth } from '../../auth';
 import { QueryParams } from '../../commons/QueryParams';
@@ -45,8 +45,7 @@ export const usePosts = () => {
       const option = isReset ? { offset: 0, limit: LIMIT_NUM } : queryParams;
       setIsLoading(true);
       try {
-        const data = await fetchPostsList(option, session);
-        console.log({ data });
+        const data = await fetchPostsList(option);
         if (isReset) setPosts(data);
         else {
           setPosts((prev) => {

@@ -252,7 +252,10 @@
                 "ADD_SCHEDULE": "Ajouter un calendrier",
                 "EDIT_TIME": "Modifier l'heure",
                 "SHARE": "Partager",
-                "SHARE_TITLE": "Partager le calendrier"
+                "SHARE_TITLE": "Partager le calendrier",
+                "POSTS": "Publier un souvenir",
+                "NOT_FOUND_PLACE": "Aucun lieu trouvé",
+                "POSTS_PLACE_SELECT": "Sélectionner un lieu"
             },
             "VERSION": {
                 "UPDATE_REQUIRED": "Mise à jour de l'application requise",
