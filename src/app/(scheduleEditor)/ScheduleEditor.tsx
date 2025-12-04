@@ -154,12 +154,14 @@ export default function ScheduleEditor() {
         const base64 = await toBase64(media.uri!);
         if (base64) createMediaList.push(base64);
       }
-      await uploadPlanMediaList(
-        savedSchedule.plan_id!,
-        savedSchedule.uid!,
-        createMediaList,
-        session
-      );
+      if (createMediaList.length > 0) {
+        await uploadPlanMediaList(
+          savedSchedule.plan_id!,
+          savedSchedule.uid!,
+          createMediaList,
+          session
+        );
+      }
     },
     onSuccess: () => {
       router.back();
