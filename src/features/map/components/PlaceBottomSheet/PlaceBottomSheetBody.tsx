@@ -12,12 +12,13 @@ import { useTheme } from '@/src/contexts/ThemeContext';
 import MediaDetailModal from '@/src/features/media/components/MediaDetailModal';
 import MaskLoading from '@/src/components/MaskLoading';
 import { useMap } from '../../hooks/useMap';
+
 type Props = {
   isEdit?: boolean;
   onDirection?: () => void;
+  onPost?: () => void;
 };
-
-export default function PlaceBottomSheetBody({ isEdit = false, onDirection }: Props) {
+export default function PlaceBottomSheetBody({ isEdit = false, onDirection, onPost }: Props) {
   // === Member ===
   const { isDarkMode } = useTheme();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -48,7 +49,7 @@ export default function PlaceBottomSheetBody({ isEdit = false, onDirection }: Pr
   return (
     <>
       <View className="w-full flex-1 px-4">
-        <BottomSheetScrollView className="w-full flex-1">
+        <BottomSheetScrollView className="w-full flex-1" showsVerticalScrollIndicator={false}>
           <View className="flex flex-col justify-start items-start gap-4 pb-8">
             {isSearchLoading && <MaskLoading />}
             <View className="flex flex-row justify-between items-start gap-4">
@@ -106,6 +107,19 @@ export default function PlaceBottomSheetBody({ isEdit = false, onDirection }: Pr
                     }
                     theme="theme"
                     onPress={onDirection}
+                  />
+                )}
+                {onPost && (
+                  <IconButton
+                    icon={
+                      <FontAwesome5
+                        name="location-arrow"
+                        size={16}
+                        color={isDarkMode ? 'white' : 'black'}
+                      />
+                    }
+                    theme="theme"
+                    onPress={onPost}
                   />
                 )}
 

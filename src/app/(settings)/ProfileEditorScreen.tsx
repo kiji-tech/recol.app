@@ -108,6 +108,7 @@ export default function ProfileEditorScreen() {
             <View className="w-24 h-24 rounded-full overflow-hidden border-2 border-light-border dark:border-dark-border">
               {avatar ? (
                 <Image
+                  cachePolicy="memory-disk"
                   source={{
                     uri: avatar,
                   }}

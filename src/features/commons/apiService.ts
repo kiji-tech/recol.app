@@ -45,7 +45,7 @@ export async function apiRequest<T, B = Record<string, unknown>>(
     const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
 
     if (sessionError || !sessionData.session) {
-      LogUtil.log(`セッション取得エラー: ${JSON.stringify(sessionError)}`, { level: 'error' });
+      LogUtil.log(`セッション取得エラー: ${JSON.stringify(sessionError)}`, { level: 'warn' });
       throw new Error('認証セッションが無効です。再度ログインしてください。');
     }
 

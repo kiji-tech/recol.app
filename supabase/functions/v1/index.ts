@@ -3,6 +3,7 @@ import { withUser } from './libs/authenticate/withUser.ts';
 import * as plan from './plan/index.ts';
 import * as schedule from './schedule/index.ts';
 import * as media from './media/index.ts';
+import * as posts from './posts/index.ts';
 
 const app = new Hono().basePath('/v1');
 
@@ -25,4 +26,9 @@ app.post('/media/list', (c: Context) => withUser(c, media.listMedia));
 app.post('/media', (c: Context) => withUser(c, media.createMedia));
 app.post('/media/delete', (c: Context) => withUser(c, media.deleteMedia));
 
+// === Posts ===
+app.post('/posts/list', posts.fetchPostsList);
+app.post('/posts', (c: Context) => withUser(c, posts.createPosts));
+app.post('/posts/report', posts.createPostsReport);
+app.post('/posts/delete', (c: Context) => withUser(c, posts.deletePosts));
 Deno.serve(app.fetch);

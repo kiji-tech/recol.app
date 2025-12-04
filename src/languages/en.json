@@ -20,7 +20,8 @@
         "HOME": {
             "TODAY_SCHEDULE": "Today's Schedule",
             "RECENT_PLAN": "Recent Plan",
-            "NEW_ARTICLE": "New Article"
+            "NEW_ARTICLE": "New Article",
+            "NEW_POST": "New Post"
         },
         "PLAN": {
             "CREATE_TITLE": "Create New Plan",
@@ -251,7 +252,10 @@
             "ADD_SCHEDULE": "Add Schedule",
             "EDIT_TIME": "Edit Time",
             "SHARE": "Share",
-            "SHARE_TITLE": "Share Schedule"
+            "SHARE_TITLE": "Share schedule",
+            "POSTS": "Posts a memory.",
+            "NOT_FOUND_PLACE": "No place found",
+            "POSTS_PLACE_SELECT": "Select Place"
         },
         "VERSION": {
             "UPDATE_REQUIRED": "App Update Required",
@@ -264,6 +268,16 @@
             "NO_PERMISSION_TITLE": "Notification Permission Required",
             "NO_PERMISSION": "Notification permission is required to use schedule notifications. Please allow notification permissions in device settings.",
             "ERROR_MESSAGE": "Failed to get notification permission. Please try again later."
+        },
+        "POSTS": {
+            "REPORT": "Report",
+            "REASON_MESSAGE": "Please select a reason for reporting.",
+            "INAPPROPRIATE_CONTENT": "Inappropriate content",
+            "OFFENSIVE_CONTENT": "Offensive content",
+            "PRIVACY_VIOLATION": "Privacy violation",
+            "DETAIL": "Details",
+            "DETAIL_PLACEHOLDER": "Enter details.",
+            "OTHER": "Other"
         }
     },
     "COMMON": {
@@ -276,6 +290,9 @@
         "NOT_FOUND": "not found",
         "DELETE": "Delete",
         "DAYS": " days",
+        "SEND": "Send",
+        "SEND_SUCCESS": "Sent successfully.",
+        "SEND_FAILURE": "Failed to send.",
         "SEARCH": "Search",
         "MONTH": "Month",
         "PLAN": {

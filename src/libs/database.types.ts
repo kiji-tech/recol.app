@@ -114,6 +114,90 @@ export type Database = {
         }
         Relationships: []
       }
+      posts: {
+        Row: {
+          body: string
+          created_at: string
+          delete_flag: boolean | null
+          medias: string[]
+          place_id: string
+          uid: string
+          user_id: string | null
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          delete_flag?: boolean | null
+          medias?: string[]
+          place_id: string
+          uid?: string
+          user_id?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          delete_flag?: boolean | null
+          medias?: string[]
+          place_id?: string
+          uid?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["uid"]
+          },
+        ]
+      }
+      posts_report: {
+        Row: {
+          body: string | null
+          category_id: Database["public"]["Enums"]["PostsReportCategory"] | null
+          created_at: string
+          posts_id: string
+          uid: string
+          user_id: string | null
+        }
+        Insert: {
+          body?: string | null
+          category_id?:
+            | Database["public"]["Enums"]["PostsReportCategory"]
+            | null
+          created_at?: string
+          posts_id: string
+          uid?: string
+          user_id?: string | null
+        }
+        Update: {
+          body?: string | null
+          category_id?:
+            | Database["public"]["Enums"]["PostsReportCategory"]
+            | null
+          created_at?: string
+          posts_id?: string
+          uid?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_report_posts_id_fkey"
+            columns: ["posts_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["uid"]
+          },
+          {
+            foreignKeyName: "posts_report_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["uid"]
+          },
+        ]
+      }
       profile: {
         Row: {
           avatar_url: string | null
@@ -269,7 +353,8 @@ export type Database = {
     }
     Enums: {
       PaymentPlan: "Free" | "Basic" | "Premium"
-      Role: "Admin" | "SuperUser" | "User"
+      PostsReportCategory: "Inappropriate" | "Offensive" | "Privacy" | "Other"
+      Role: "Admin" | "SuperUser" | "User" | "Tester"
       schedule_category: "movement" | "meals" | "sightseeing" | "other"
       ScheduleCategory:
         | "Movement"
@@ -406,7 +491,8 @@ export const Constants = {
   public: {
     Enums: {
       PaymentPlan: ["Free", "Basic", "Premium"],
-      Role: ["Admin", "SuperUser", "User"],
+      PostsReportCategory: ["Inappropriate", "Offensive", "Privacy", "Other"],
+      Role: ["Admin", "SuperUser", "User", "Tester"],
       schedule_category: ["movement", "meals", "sightseeing", "other"],
       ScheduleCategory: [
         "Movement",

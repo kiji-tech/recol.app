@@ -87,6 +87,12 @@ allowed_mime_types = ["image/*", "video/*"]
 [storage.buckets.caches]
 public = true
 
+[storage.buckets.posts]
+public = true
+file_size_limit = "50MiB"
+allowed_mime_types = ["image/*", "video/*"]
+
+
 [auth]
 enabled = true
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used

@@ -5,9 +5,9 @@ import { View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import generateI18nMessage from '@/src/libs/i18n';
-interface PlanListMenuProps {
+type PlanListMenuProps = {
   onSortPress: () => void;
-}
+};
 
 export default function PlanListMenu({ onSortPress }: PlanListMenuProps) {
   const { isDarkMode } = useTheme();

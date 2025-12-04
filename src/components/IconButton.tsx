@@ -4,7 +4,8 @@ import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 
 type Props = {
   icon: React.ReactNode;
-  theme?: 'info' | 'danger' | 'warn' | 'theme' | 'background';
+  theme?: 'info' | 'danger' | 'warn' | 'theme' | 'background' | 'clear';
+  size?: 'small' | 'large' | number;
   onPress: () => void;
   disabled?: boolean;
   loading?: boolean;
@@ -12,6 +13,7 @@ type Props = {
 export default function IconButton({
   icon,
   theme = 'theme',
+  size = 'small',
   onPress,
   disabled = false,
   loading = false,
@@ -23,7 +25,7 @@ export default function IconButton({
         className={`
         h-12 w-12 rounded-full
         flex justify-center items-center
-        bg-light-${theme} dark:bg-dark-${theme}
+        ${theme === 'clear' ? '' : `bg-light-${theme} dark:bg-dark-${theme}`}
         ${disabled ? 'opacity-50' : ''}
         `}
       >

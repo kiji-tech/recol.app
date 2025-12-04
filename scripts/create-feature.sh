@@ -18,5 +18,6 @@ touch "src/features/$feature_name/index.ts"
 # 機能に必要なディレクトリを作成する
 mkdir -p "src/features/$feature_name/types"
 mkdir -p "src/features/$feature_name/apis"
+mkdir -p "src/features/$feature_name/components"
 mkdir -p "src/features/$feature_name/hooks"
 mkdir -p "src/features/$feature_name/libs"

@@ -9,9 +9,16 @@ type Props = {
   children: ReactNode;
   size: 'full' | 'half' | string;
   visible: boolean;
+  rightComponent?: ReactNode;
   onClose: () => void;
 };
-export default function ModalLayout({ children, visible = true, size, onClose }: Props): ReactNode {
+export default function ModalLayout({
+  children,
+  visible = true,
+  size,
+  rightComponent,
+  onClose,
+}: Props): ReactNode {
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       onClose();
@@ -28,7 +35,10 @@ export default function ModalLayout({ children, visible = true, size, onClose }:
       style={{ height: size == 'full' ? '92%' : size == 'half' ? '50%' : Number(size) }}
     >
       <SafeAreaView className="h-screen w-screen bg-light-background dark:bg-dark-background">
-        <BackButton onPress={onClose} />
+        <View className="flex flex-row justify-between items-center my-4">
+          <BackButton onPress={onClose} />
+          <View className="mr-4">{rightComponent}</View>
+        </View>
         {children}
       </SafeAreaView>
     </Modal>

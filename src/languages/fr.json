@@ -20,7 +20,8 @@
             "HOME": {
                 "TODAY_SCHEDULE": "Calendrier d'aujourd'hui",
                 "RECENT_PLAN": "Plan récent",
-                "NEW_ARTICLE": "Nouvel article"
+                "NEW_ARTICLE": "Nouvel article",
+                "NEW_POST": "Nouveau post"
             },
             "PLAN": {
                 "CREATE_TITLE": "Créer un nouveau plan",
@@ -251,7 +252,10 @@
                 "ADD_SCHEDULE": "Ajouter un calendrier",
                 "EDIT_TIME": "Modifier l'heure",
                 "SHARE": "Partager",
-                "SHARE_TITLE": "Partager le calendrier"
+                "SHARE_TITLE": "Partager le calendrier",
+                "POSTS": "Publier un souvenir",
+                "NOT_FOUND_PLACE": "Aucun lieu trouvé",
+                "POSTS_PLACE_SELECT": "Sélectionner un lieu"
             },
             "VERSION": {
                 "UPDATE_REQUIRED": "Mise à jour de l'application requise",
@@ -264,6 +268,16 @@
                 "NO_PERMISSION_TITLE": "Autorisation de notification requise",
                 "NO_PERMISSION": "L'autorisation de notification est requise pour utiliser les notifications de calendrier. Veuillez autoriser les notifications dans les paramètres de l'appareil.",
                 "ERROR_MESSAGE": "Échec de l'obtention de l'autorisation de notification. Veuillez réessayer plus tard."
+            },
+            "POSTS": {
+                "REPORT": "Signaler",
+                "REASON_MESSAGE": "Veuillez sélectionner une raison pour le signalement.",
+                "INAPPROPRIATE_CONTENT": "Contenu inapproprié",
+                "OFFENSIVE_CONTENT": "Contenu offensant",
+                "PRIVACY_VIOLATION": "Violation de la vie privée",
+                "DETAIL": "Détails",
+                "DETAIL_PLACEHOLDER": "Entrez les détails.",
+                "OTHER": "Autre"
             }
         },
         "COMMON": {
