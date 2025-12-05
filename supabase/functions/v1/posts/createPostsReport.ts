@@ -1,7 +1,6 @@
 import { Context } from 'jsr:@hono/hono';
 import { generateSupabase } from '../libs/supabase.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
-import * as ResponseUtil from '../libs/ResponseUtil.ts';
 
 export const createPostsReport = async (c: Context) => {
   LogUtil.log('=== createPostsReport ===', { level: 'info' });
@@ -18,8 +17,8 @@ export const createPostsReport = async (c: Context) => {
 
   if (error) {
     LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-    return ResponseUtil.error(c, error.message, 'C007', 500);
+    return c.json({ error: error.message }, 500);
   }
 
-  return ResponseUtil.success(c, data);
+  return c.json({ data }, 200);
 };

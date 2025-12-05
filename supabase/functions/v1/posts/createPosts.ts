@@ -3,7 +3,6 @@ import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { uploadMediaFiles } from '../libs/uploadMediaFiles.ts';
-import * as ResponseUtil from '../libs/ResponseUtil.ts';
 
 export const createPosts = async (c: Context, supabase: SupabaseClient, user: User) => {
   const { posts } = await c.req.json();
@@ -18,11 +17,11 @@ export const createPosts = async (c: Context, supabase: SupabaseClient, user: Us
 
   if (error) {
     LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-    return ResponseUtil.error(c, getMessage('C007', ['投稿']), 'C007', 400);
+    return c.json({ message: getMessage('C007', ['投稿']), code: 'C007' }, 400);
   }
   // 画像がなければ終了
   if (medias.length == 0) {
-    return ResponseUtil.success(c, data);
+    return c.json({ data, error: null });
   }
 
   // 画像をアップロード
@@ -35,7 +34,7 @@ export const createPosts = async (c: Context, supabase: SupabaseClient, user: Us
   );
   if (uploadMediaFileError) {
     LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-    return ResponseUtil.error(c, getMessage('C006', ['メディア']), 'C006', 400);
+    return c.json({ message: getMessage('C006', ['メディア']), code: 'C006' }, 400);
   }
 
   // DB更新
@@ -49,8 +48,8 @@ export const createPosts = async (c: Context, supabase: SupabaseClient, user: Us
     .eq('uid', data.uid);
   if (updateError) {
     LogUtil.log(JSON.stringify(updateError), { level: 'error', notify: true });
-    return ResponseUtil.error(c, getMessage('C007', ['投稿']), 'C007', 400);
+    return c.json({ message: getMessage('C007', ['投稿']), code: 'C007' }, 400);
   }
 
-  return ResponseUtil.success(c, data);
+  return c.json({ data, error: null });
 };

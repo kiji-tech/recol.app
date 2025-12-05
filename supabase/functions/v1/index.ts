@@ -4,8 +4,15 @@ import * as plan from './plan/index.ts';
 import * as schedule from './schedule/index.ts';
 import * as media from './media/index.ts';
 import * as posts from './posts/index.ts';
+import * as profile from './profile/index.ts';
 
 const app = new Hono().basePath('/v1');
+
+// === Profile ===
+app.get('/profile', (c: Context) => withUser(c, profile.getProfile));
+app.post('/profile', (c: Context) => withUser(c, profile.createProfileHandler));
+app.put('/profile', (c: Context) => withUser(c, profile.updateProfile));
+app.put('/profile/sync-premium-plan', (c: Context) => withUser(c, profile.syncPremiumPlan));
 
 // === Plan ===
 app.get('/plan/:uid', (c: Context) => withUser(c, plan.get));
