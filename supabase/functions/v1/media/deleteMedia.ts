@@ -2,12 +2,13 @@ import { Context } from 'jsr:@hono/hono';
 import { SupabaseClient } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
+import * as ResponseUtil from '../libs/ResponseUtil.ts';
 
 export const deleteMedia = async (c: Context, supabase: SupabaseClient) => {
   LogUtil.log('[POST] media/delete', { level: 'info' });
   const { planId, mediaIdList } = await c.req.json();
   if (!planId || !mediaIdList) {
-    return c.json({ message: getMessage('C009', ['プランID､メディア']), code: 'C009' });
+    return ResponseUtil.error(c, getMessage('C009', ['プランID、メディア']), 'C009', 400);
   }
 
   const { error } = await supabase
@@ -17,8 +18,8 @@ export const deleteMedia = async (c: Context, supabase: SupabaseClient) => {
 
   if (error) {
     LogUtil.log(error, { level: 'error' });
-    return c.json({ message: getMessage('C008', ['メディア']), code: 'C008' }, 500);
+    return ResponseUtil.error(c, getMessage('C008', ['メディア']), 'C008', 500);
   }
 
-  return c.json({ message: getMessage('C004', ['メディア']), code: 'C004' }, 200);
+  return ResponseUtil.success(c, { message: getMessage('C004', ['メディア']) });
 };

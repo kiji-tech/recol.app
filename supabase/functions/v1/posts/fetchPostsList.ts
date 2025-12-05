@@ -1,6 +1,7 @@
 import { Context } from 'jsr:@hono/hono';
 import { generateSupabase } from '../libs/supabase.ts';
 import { LogUtil } from '../../libs/LogUtil.ts';
+import * as ResponseUtil from '../libs/ResponseUtil.ts';
 
 export const fetchPostsList = async (c: Context) => {
   LogUtil.log('fetchPostsList', { level: 'info' });
@@ -15,10 +16,10 @@ export const fetchPostsList = async (c: Context) => {
     .order('created_at', { ascending: false });
 
   if (error) {
-    return c.json({ message: error.message }, 500);
+    return ResponseUtil.error(c, error.message, 'C005', 500);
   }
 
   LogUtil.log(JSON.stringify({ posts }), { level: 'info' });
 
-  return c.json(posts);
+  return ResponseUtil.success(c, posts);
 };

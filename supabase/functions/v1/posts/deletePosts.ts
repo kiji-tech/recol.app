@@ -2,6 +2,7 @@ import { Context } from 'jsr:@hono/hono';
 import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { getMessage } from '../libs/MessageUtil.ts';
+import * as ResponseUtil from '../libs/ResponseUtil.ts';
 
 export const deletePosts = async (c: Context, supabase: SupabaseClient, user: User) => {
   LogUtil.log('=== deletePosts Start ===');
@@ -12,8 +13,8 @@ export const deletePosts = async (c: Context, supabase: SupabaseClient, user: Us
 
   if (error) {
     LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-    return c.json({ message: getMessage('C007', ['投稿']), code: 'C007' }, 400);
+    return ResponseUtil.error(c, getMessage('C007', ['投稿']), 'C007', 400);
   }
 
-  return c.json({ data, error: null });
+  return ResponseUtil.success(c, data);
 };
