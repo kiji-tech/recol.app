@@ -19,7 +19,7 @@ type Props = {
 export default function PostsItem({ posts, onSelect, onDelete, onReport }: Props) {
   // === Member ===
   const { session } = useAuth();
-  const { uid, place_id, body, created_at, medias, profile } = posts;
+  const { place_id, body, created_at, medias, profile } = posts;
 
   // === Method ===
   /**

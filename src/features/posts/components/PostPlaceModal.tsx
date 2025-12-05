@@ -52,7 +52,6 @@ export default function PostPlaceModal({ place, onClose }: Props) {
    * @returns
    */
   const handlePost = () => {
-    console.log('Post:', { placeId: place.id, body, mediaList });
     mutate();
   };
 
@@ -117,6 +116,7 @@ export default function PostPlaceModal({ place, onClose }: Props) {
       onClose();
     },
     onError: () => {
+      console.log('投稿に失敗しました');
       Toast.warn('投稿に失敗しました');
     },
   });

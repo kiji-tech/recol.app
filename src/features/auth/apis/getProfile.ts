@@ -6,8 +6,6 @@ import { Subscription } from '../../payment/types/Subscription';
 /**
  * プロフィール取得
  */
-export const getProfile = async (
-  session: Session
-): Promise<(Profile & { subscription: Subscription[] }) | null> => {
+export const getProfile = async (session: Session): Promise<Profile | null> => {
   return await fetchProfile(session);
-};
+};  

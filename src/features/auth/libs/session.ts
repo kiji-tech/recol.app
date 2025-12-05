@@ -8,9 +8,7 @@ import { isRecoverySession as isRecoverySessionApi } from '../apis/isRecoverySes
 /**
  * プロフィール取得
  */
-export const getProfile = async (
-  session: Session
-): Promise<(Profile & { subscription: Subscription[] }) | null> => {
+export const getProfile = async (session: Session): Promise<Profile | null> => {
   return await getProfileApi(session);
 };
 

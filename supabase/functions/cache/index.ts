@@ -60,9 +60,19 @@ const getPlace = async (c: Context) => {
       placeDataList.push(JSON.parse(placeData));
     }
   }
-  return c.json(placeDataList, 200, {
-    'Cache-Control': `public, max-age=${TTL}`,
-  });
+
+  // 統一レスポンス形式で返す
+  return c.json(
+    {
+      success: true,
+      data: placeDataList,
+      error: null,
+    },
+    200,
+    {
+      'Cache-Control': `public, max-age=${TTL}`,
+    }
+  );
 };
 
 const getGooglePlacePhoto = async (c: Context) => {

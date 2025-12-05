@@ -10,7 +10,7 @@ export async function updateProfile(
   session: Session | null,
   ctrl?: AbortController
 ) {
-  const response = await apiRequest<Profile>('/profile', {
+  const response = await apiRequest<Profile>('/v1/profile', {
     method: 'PUT',
     session,
     body: {

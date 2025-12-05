@@ -8,7 +8,7 @@ import { Profile } from '../types/Profile';
  * @param ctrl {AbortController | undefined} - コントローラー
  */
 export async function createProfile(session: Session | null, ctrl?: AbortController) {
-  const response = await apiRequest<Profile>('/profile', {
+  const response = await apiRequest<Profile>('/v1/profile', {
     method: 'POST',
     session,
     ctrl,

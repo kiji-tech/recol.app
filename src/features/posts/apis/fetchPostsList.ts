@@ -1,4 +1,11 @@
 import { supabase } from '@/src/libs/supabase';
+
+/**
+ * 投稿一覧を取得する
+ * @param option
+ * @param ctrl
+ * @returns
+ */
 export async function fetchPostsList(
   option: { offset?: number; limit?: number },
   ctrl?: AbortController

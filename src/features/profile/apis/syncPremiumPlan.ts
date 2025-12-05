@@ -7,7 +7,7 @@ export async function syncPremiumPlan(
   endAt: Date | null,
   session: Session | null
 ) {
-  const response = await apiRequest<Profile>('/profile/sync-premium-plan', {
+  const response = await apiRequest<Profile>('/v1/profile/sync-premium-plan', {
     method: 'PUT',
     session,
     body: {
