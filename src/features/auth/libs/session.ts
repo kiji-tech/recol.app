@@ -1,6 +1,5 @@
 import { Session } from '@supabase/supabase-js';
 import { Profile } from '../../profile/types/Profile';
-import { Subscription } from '../../payment/types/Subscription';
 import { getProfile as getProfileApi } from '../apis/getProfile';
 import { getSession as getSessionApi } from '../apis/getSession';
 import { isRecoverySession as isRecoverySessionApi } from '../apis/isRecoverySession';

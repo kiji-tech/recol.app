@@ -1,6 +1,6 @@
 import { Session, User } from '@supabase/supabase-js';
-import { Profile } from '../../profile/types/Profile';
-import { Subscription } from '../../payment/types/Subscription';
+import { Profile } from '@/src/features/profile';
+import { Subscription } from '@/src/features/payment';
 
 export type AuthContextType = {
   user: User | null;

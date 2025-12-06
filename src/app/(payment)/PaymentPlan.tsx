@@ -6,9 +6,7 @@ import { useRouter } from 'expo-router';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { usePremiumPlan } from '@/src/features/auth/hooks/usePremiumPlan';
 import { PurchasesPackage } from 'react-native-purchases';
-import CurrentPlanBadge from '../../features/payment/components/CurrentPlanBadge';
-import PlanTable from '../../features/payment/components/PlanTable';
-import PlanCard from '../../features/payment/components/PlanCard';
+import { CurrentPlanBadge, PlanTable, PlanCard } from '@/src/features/payment';
 import generateI18nMessage from '@/src/libs/i18n';
 
 export default function PaymentPlan() {
