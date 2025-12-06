@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { Tables, Enums } from '@/src/libs/database.types';
 import { Subscription } from '@/src/features/payment';
-import { Posts } from '@/src/features/posts/types/Posts';
+import { Posts } from '@/src/features/posts';
 
 import generateI18nMessage from '@/src/libs/i18n';
 

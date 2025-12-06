@@ -16,7 +16,7 @@ import { SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
 import { Header } from '@/src/components';
 import { useLocation } from '@/src/contexts';
 import { LogUtil } from '@/src/libs/LogUtil';
-import PostPlaceModal from '../../posts/components/PostPlaceModal';
+import { PostPlaceModal } from '@/src/features/posts';
 
 type Props = {
   isOpen: boolean;

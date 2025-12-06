@@ -5,8 +5,7 @@ import { useQuery } from 'react-query';
 import { Place, fetchCachePlace } from '@/src/features/map';
 import { Image } from 'expo-image';
 import MediaViewer from '@/src/features/schedule/components/MediaViewer';
-import { Posts } from '@/src/features/posts/types/Posts';
-import PostsMenu from '@/src/features/posts/components/PostsMenu';
+import { Posts, PostsMenu } from '@/src/features/posts';
 import dayjs from '@/src/libs/dayjs';
 
 type Props = {

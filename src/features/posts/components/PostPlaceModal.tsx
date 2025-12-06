@@ -18,9 +18,8 @@ import { Image } from 'expo-image';
 import { ImagePickerAsset } from 'expo-image-picker';
 import { useMutation } from 'react-query';
 import { Toast } from 'toastify-react-native';
-import { createPosts } from '@/src/features/posts/apis/createPosts';
+import { Posts, createPosts } from '@/src/features/posts';
 import { useAuth } from '@/src/features/auth';
-import { Posts } from '@/src/features/posts/types/Posts';
 
 type Props = {
   place: Place;

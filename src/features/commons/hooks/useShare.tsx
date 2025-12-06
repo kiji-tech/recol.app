@@ -1,6 +1,6 @@
 import Share from 'react-native-share';
-import { Posts } from '@/src/features/posts/types/Posts';
 import { Place } from '@/src/features/map';
+import { Posts } from '@/src/features/posts';
 import { useAuth } from '@/src/features/auth';
 
 export const useShare = () => {

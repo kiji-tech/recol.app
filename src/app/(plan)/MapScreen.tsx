@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { BackHandler, Linking, View } from 'react-native';
+import { BackHandler, Linking, View, NativeEventSubscription } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Region } from 'react-native-maps';
 import { useLocation, usePlan } from '@/src/contexts';
@@ -11,12 +11,11 @@ import {
   ScheduleBottomSheet,
   PlaceBottomSheet,
 } from '@/src/features/map';
-import { NativeEventSubscription } from 'react-native';
 import { Schedule } from '@/src/features/schedule';
+import { PostPlaceModal } from '@/src/features/posts';
 import { LogUtil } from '@/src/libs/LogUtil';
 import dayjs from 'dayjs';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
-import PostPlaceModal from '@/src/features/posts/components/PostPlaceModal';
 /**
  * 初期表示
  */

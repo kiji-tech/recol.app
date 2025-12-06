@@ -2,13 +2,11 @@ import React, { useCallback, useState } from 'react';
 import { BackgroundView, Header, IconButton } from '@/src/components';
 import { useInformation, InformationModal } from '@/src/features/information';
 import { useRouter } from 'expo-router';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useTheme } from '@/src/contexts';
 import { useFocusEffect } from '@react-navigation/native';
-import PostsList from '@/src/features/posts/components/PostsList';
 import { Place, useMap, PlaceBottomSheet } from '@/src/features/map';
-import PostsReportModal from '@/src/features/posts/components/PostsReportModal';
-import { Posts } from '@/src/features/posts/types/Posts';
+import { Posts, PostsList, PostsReportModal } from '@/src/features/posts';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function Home() {
   // === Member ===

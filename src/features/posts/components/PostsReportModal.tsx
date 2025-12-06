@@ -13,7 +13,7 @@ import { Posts } from '../types/Posts';
 import { useTheme } from '@/src/contexts';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Toast } from 'toastify-react-native';
-import { PostsReportCategory, PostsReports } from '../types/PostsReports';
+import { PostsReportCategory, PostsReport } from '../types/PostsReport';
 import { useAuth } from '../../auth';
 import { createPostsReport } from '../apis/createPostsReport';
 import { useMutation } from 'react-query';
@@ -48,12 +48,12 @@ export default function PostsReportModal({ isOpen, onClose, posts }: Props) {
    */
   const handleReport = async () => {
     if (!selectedReason) return;
-    const postsReport = new PostsReports({
+    const postsReport = new PostsReport({
       posts_id: posts.uid,
       category_id: selectedReason,
       body: details,
       user_id: profile?.uid || null,
-    } as PostsReports);
+    } as PostsReport);
 
     await createPostsReport(postsReport, session);
 

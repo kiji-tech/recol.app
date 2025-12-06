@@ -7,13 +7,13 @@ import { useTheme } from '@/src/contexts';
 import { isTargetTime } from '@/src/features/schedule/libs/isTargetTime';
 import { openUrl } from '@/src/features/article/libs/openBrowser';
 import { Place } from '@/src/features/map';
+import { PostPlaceModal } from '@/src/features/posts';
 import CategoryIcon from '@/src/features/schedule/components/CategoryIcon';
 import ScheduleItemMenu from './ScheduleItemMenu';
 import PostsScheduleSelectModal from './PostsScheduleSelectModal';
 import MediaViewer from '../MediaViewer';
 import Autolink from 'react-native-autolink';
 import generateI18nMessage from '@/src/libs/i18n';
-import PostPlaceModal from '@/src/features/posts/components/PostPlaceModal';
 import dayjs from 'dayjs';
 
 type Props = {
