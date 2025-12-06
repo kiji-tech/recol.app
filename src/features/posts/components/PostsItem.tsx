@@ -1,14 +1,13 @@
 import React, { useMemo } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { Posts } from '../types/Posts';
 import { useAuth } from '@/src/features/auth';
 import { useQuery } from 'react-query';
-import { fetchCachePlace } from '../../map/apis/fetchCachePlace';
-import { Place } from '../../map/types/Place';
+import { Place, fetchCachePlace } from '@/src/features/map';
 import { Image } from 'expo-image';
-import MediaViewer from '../../schedule/components/MediaViewer';
+import MediaViewer from '@/src/features/schedule/components/MediaViewer';
+import { Posts } from '@/src/features/posts/types/Posts';
+import PostsMenu from '@/src/features/posts/components/PostsMenu';
 import dayjs from '@/src/libs/dayjs';
-import PostsMenu from './PostsMenu';
 
 type Props = {
   posts: Posts;

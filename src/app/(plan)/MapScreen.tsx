@@ -3,15 +3,19 @@ import { BackHandler, Linking, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Region } from 'react-native-maps';
 import { useLocation, usePlan } from '@/src/contexts';
-import { Place, Route, useMap } from '@/src/features/map';
-import Map from '@/src/features/map/components/Map';
+import {
+  Place,
+  Route,
+  useMap,
+  Map,
+  ScheduleBottomSheet,
+  PlaceBottomSheet,
+} from '@/src/features/map';
 import { NativeEventSubscription } from 'react-native';
 import { Schedule } from '@/src/features/schedule';
+import { LogUtil } from '@/src/libs/LogUtil';
 import dayjs from 'dayjs';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
-import ScheduleBottomSheet from '@/src/features/map/components/ScheduleBottomSheet/ScheduleBottomSheet';
-import PlaceBottomSheet from '@/src/features/map/components/PlaceBottomSheet/PlaceBottomSheet';
-import { LogUtil } from '@/src/libs/LogUtil';
 import PostPlaceModal from '@/src/features/posts/components/PostPlaceModal';
 /**
  * 初期表示

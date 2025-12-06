@@ -1,10 +1,8 @@
-import { MapCategory } from '@/src/features/map/types/MapCategory';
-import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import React, { useCallback } from 'react';
+import { MapCategory, useMap, BottomSheetHeaderButton } from '@/src/features/map';
+import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { View } from 'react-native';
-import BottomSheetHeaderButton from './BottomSheetHeaderButton';
 import generateI18nMessage from '@/src/libs/i18n';
-import { useMap } from '../../hooks/useMap';
 
 type CategoryButton = {
   id: MapCategory;

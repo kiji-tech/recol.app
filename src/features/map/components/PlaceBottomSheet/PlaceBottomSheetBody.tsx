@@ -6,8 +6,7 @@ import { Title, ImageScrollView, IconButton, MaskLoading } from '@/src/component
 import { FontAwesome5, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Linking } from 'react-native';
 import { useTheme } from '@/src/contexts';
-import { useMap } from '../../hooks/useMap';
-import RateViewer from '@/src/features/map/components/Place/RateViewer';
+import { RateViewer, useMap } from '@/src/features/map';
 import MediaDetailModal from '@/src/features/media/components/MediaDetailModal';
 
 type Props = {

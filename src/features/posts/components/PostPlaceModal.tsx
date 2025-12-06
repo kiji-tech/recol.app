@@ -10,8 +10,7 @@ import {
   FlatList,
 } from 'react-native';
 import { Button, ModalLayout } from '@/src/components';
-import { Place } from '@/src/features/map';
-import PlaceCard from '../../map/components/Place/PlaceCard';
+import { Place, PlaceCard } from '@/src/features/map';
 import { useTheme } from '@/src/contexts';
 import { FontAwesome5 } from '@expo/vector-icons';
 import useImagePicker from '@/src/features/media/hooks/useImagePicker';
@@ -19,9 +18,9 @@ import { Image } from 'expo-image';
 import { ImagePickerAsset } from 'expo-image-picker';
 import { useMutation } from 'react-query';
 import { Toast } from 'toastify-react-native';
-import { createPosts } from '../apis/createPosts';
-import { useAuth } from '../../auth';
-import { Posts } from '../types/Posts';
+import { createPosts } from '@/src/features/posts/apis/createPosts';
+import { useAuth } from '@/src/features/auth';
+import { Posts } from '@/src/features/posts/types/Posts';
 
 type Props = {
   place: Place;

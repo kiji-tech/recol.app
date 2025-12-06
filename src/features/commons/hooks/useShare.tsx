@@ -1,8 +1,7 @@
 import Share from 'react-native-share';
 import { Posts } from '@/src/features/posts/types/Posts';
-import { Place } from '@/src/features/map/types/Place';
-import { Platform } from 'react-native';
-import { useAuth } from '../../auth';
+import { Place } from '@/src/features/map';
+import { useAuth } from '@/src/features/auth';
 
 export const useShare = () => {
   // === Member ===

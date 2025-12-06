@@ -1,19 +1,21 @@
 import React, { useCallback, useEffect } from 'react';
-import dayjs from 'dayjs';
 import { createContext, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import { searchPlaceByText } from '../libs/searchPlaceByText';
 import { useAuth } from '@/src/features/auth';
-import { Place } from '../types/Place';
-import { searchNearby } from '../libs/searchNearby';
+import {
+  fetchCachePlace,
+  Place,
+  searchPlaceByText,
+  searchNearby,
+  MapCategory,
+} from '@/src/features/map';
 import { LogUtil } from '@/src/libs/LogUtil';
-import { MapCategory } from '../types/MapCategory';
-import { Region } from 'react-native-maps';
-import { fetchCachePlace } from '../apis/fetchCachePlace';
 import { Schedule } from '../../schedule';
 import { usePlan, useLocation } from '@/src/contexts';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Region } from 'react-native-maps';
 import { PaymentPlan } from '../../profile';
+import dayjs from 'dayjs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type MapContextType = {
   searchPlaceList: Place[];

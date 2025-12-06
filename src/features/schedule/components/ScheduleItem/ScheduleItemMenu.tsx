@@ -1,10 +1,10 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
-import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { useTheme } from '@/src/contexts';
-import generateI18nMessage from '@/src/libs/i18n';
 import { Schedule } from '../../types/Schedule';
+import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
+import generateI18nMessage from '@/src/libs/i18n';
 
 type Props = {
   schedule: Schedule;

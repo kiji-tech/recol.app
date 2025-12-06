@@ -6,8 +6,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useTheme } from '@/src/contexts';
 import { useFocusEffect } from '@react-navigation/native';
 import PostsList from '@/src/features/posts/components/PostsList';
-import { Place, useMap } from '@/src/features/map';
-import PlaceBottomSheet from '@/src/features/map/components/PlaceBottomSheet/PlaceBottomSheet';
+import { Place, useMap, PlaceBottomSheet } from '@/src/features/map';
 import PostsReportModal from '@/src/features/posts/components/PostsReportModal';
 import { Posts } from '@/src/features/posts/types/Posts';
 

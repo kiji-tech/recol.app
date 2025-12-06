@@ -10,8 +10,7 @@ import MapView, {
 import { useTheme } from '@/src/contexts';
 import { Route } from '../types/Direction';
 import { decodePolyline } from '../libs/direction';
-import { CurrentMarker, DefaultMarker, SelectedMarker } from './Marker';
-import { Place } from '../types/Place';
+import { Place, CurrentMarker, DefaultMarker, SelectedMarker } from '@/src/features/map';
 /** センターサークル */
 const CenterCircle = ({
   region,

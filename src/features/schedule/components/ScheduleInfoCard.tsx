@@ -1,10 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { Place } from '@/src/features/map/types/Place';
-import { Tables } from '@/src/libs/database.types';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
-import PlaceDetailModal from '@/src/features/map/components/PlaceBottomSheet/PlaceDetailModal';
-import RateViewer from '@/src/features/map/components/Place/RateViewer';
+import { Place, PlaceDetailModal, RateViewer } from '@/src/features/map';
+import { Tables } from '@/src/libs/database.types';
 
 type ScheduleInfoCardProps = {
   schedule: Tables<'schedule'>;

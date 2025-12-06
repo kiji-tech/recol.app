@@ -17,13 +17,13 @@ import {
   adjustStartAtWhenNormal,
 } from '@/src/features/schedule/libs/scheduleTime';
 import generateI18nMessage from '@/src/libs/i18n';
-import { useMap } from '@/src/features/map';
+import { useMap, MapModal } from '@/src/features/map';
 import { Image } from 'expo-image';
 import { deletePlanMediaList, Media, uploadPlanMediaList } from '@/src/features/media';
 import { useMutation } from 'react-query';
 import dayjs from '@/src/libs/dayjs';
-import MapModal from '../../features/map/components/MapModal';
 import useImagePicker from '@/src/features/media/hooks/useImagePicker';
+import { ImagePickerAsset } from 'expo-image-picker';
 
 export default function ScheduleEditor() {
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
@@ -87,9 +87,7 @@ export default function ScheduleEditor() {
   const handleDeleteMedia = (image: { uid: string; url: string; isNew: boolean }) => {
     LogUtil.log(`handleDeleteMedia Start: ${JSON.stringify(image)}`);
     if (image.isNew) {
-      setMediaList((prev: ImagePicker.ImagePickerAsset) =>
-        prev.filter((media) => media.uri !== image.url)
-      );
+      setMediaList((prev: ImagePickerAsset[]) => prev.filter((media) => media.uri !== image.url));
     } else {
       setEditSchedule((prev: Schedule) => ({
         ...prev,

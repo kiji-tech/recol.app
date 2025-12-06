@@ -1,13 +1,11 @@
 import React, { useImperativeHandle, useRef } from 'react';
 import { ForwardedRef, forwardRef } from 'react';
-import PlaceCard from '../Place/PlaceCard';
 import { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { Schedule } from '@/src/features/schedule';
-import { Place } from '@/src/features/map/types/Place';
+import { Place, PlaceCard, useMap } from '@/src/features/map';
 import { ScrollResponderMixin, Text, View } from 'react-native';
-import generateI18nMessage from '@/src/libs/i18n';
-import { useMap } from '../../hooks/useMap';
 import { Loading } from '@/src/components';
+import generateI18nMessage from '@/src/libs/i18n';
 
 type Props = {
   selectedPlace: Place | null;

@@ -1,13 +1,11 @@
 import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef } from 'react';
-import PlaceCard from '@/src/features/map/components/Place/PlaceCard';
 import { Text, View } from 'react-native';
-import { Place } from '@/src/features/map/types/Place';
+import { Place, PlaceCard, useMap } from '@/src/features/map';
 import { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { ScrollResponderMixin } from 'react-native';
-import { useMap } from '../../hooks/useMap';
 import { isIOS } from 'toastify-react-native/utils/helpers';
-import generateI18nMessage from '@/src/libs/i18n';
 import { Loading } from '@/src/components';
+import generateI18nMessage from '@/src/libs/i18n';
 
 type Props = {
   onSelectedPlace: (place: Place) => void;

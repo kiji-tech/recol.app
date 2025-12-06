@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
-import { Place } from '@/src/features/map/types/Place';
-import RateViewer from '@/src/features/map/components/Place/RateViewer';
+import { Place, RateViewer } from '@/src/features/map';
 
 type Props = {
   place: Place;

@@ -1,6 +1,5 @@
 import { Session } from '@supabase/supabase-js';
-import { Place } from '@/src/features/map/types/Place';
-import { fetchCachePlace } from '../apis/fetchCachePlace';
+import { Place, fetchCachePlace } from '@/src/features/map';
 import { i18n } from '@/src/libs/i18n';
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
 const FiledMaskValue = 'places.id';

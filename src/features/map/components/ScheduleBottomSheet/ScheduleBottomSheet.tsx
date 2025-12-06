@@ -1,12 +1,10 @@
 import React, { ForwardedRef, forwardRef, useCallback } from 'react';
 import { BottomSheetLayout } from '@/src/components';
-import { Place } from '@/src/features/map/types/Place';
+import { Place, ScheduleBottomSheetBody, ScheduleBottomSheetHeader } from '@/src/features/map';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { Schedule } from '@/src/features/schedule';
-import SelectedMapBottomSheetBody from './ScheduleBottomSheetBody';
 import { useFocusEffect } from '@react-navigation/native';
 import { SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
-import SelectedMapBottomSheetHeader from './ScheduleBottomSheetHeader';
 
 type Props = {
   scrollRef: React.RefObject<BottomSheetScrollViewMethods>;
@@ -68,13 +66,13 @@ const ScheduleBottomSheet = forwardRef(
     return (
       <BottomSheetLayout ref={ref}>
         {/* ヘッダー */}
-        <SelectedMapBottomSheetHeader
+        <ScheduleBottomSheetHeader
           scheduleList={scheduleList}
           selectedSchedule={selectedSchedule}
           onSelectedSchedule={handleSelectSchedule}
         />
         {/* コンテンツ */}
-        <SelectedMapBottomSheetBody
+        <ScheduleBottomSheetBody
           ref={scrollRef}
           selectedPlace={selectedPlace}
           selectedSchedule={selectedSchedule}

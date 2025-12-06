@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Schedule } from '@/src/features/schedule';
 import { Title, ModalLayout } from '@/src/components';
-import generateI18nMessage from '@/src/libs/i18n';
-import { fetchCachePlace, Place } from '@/src/features/map';
+import { fetchCachePlace, Place, RateViewer } from '@/src/features/map';
 import { FlatList, TouchableOpacity, View, Text } from 'react-native';
 import { useAuth } from '@/src/features/auth';
+import generateI18nMessage from '@/src/libs/i18n';
 import MediaViewer from '../MediaViewer';
-import RateViewer from '@/src/features/map/components/Place/RateViewer';
 
 type Props = {
   schedule: Schedule;
