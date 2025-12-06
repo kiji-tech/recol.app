@@ -7,17 +7,21 @@ import {
   Platform,
   BackHandler,
   SafeAreaView,
+  FlatList,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { IconButton, MaskLoading } from '@/src/components';
 import { router, useFocusEffect } from 'expo-router';
 import { useTheme, usePlan } from '@/src/contexts';
-import { FlatList } from 'react-native-gesture-handler';
-import { deletePlanMediaList, fetchPlanMediaList, uploadPlanMediaList } from '@/src/features/media';
 import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
-import { Media } from '@/src/features/media';
-import MediaDetailModal from '@/src/features/media/components/MediaDetailModal';
+import {
+  Media,
+  MediaDetailModal,
+  deletePlanMediaList,
+  fetchPlanMediaList,
+  uploadPlanMediaList,
+} from '@/src/features/media';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import * as ImagePicker from 'expo-image-picker';
 import * as Progress from 'react-native-progress';

@@ -10,7 +10,7 @@ import { Schedule } from '@/src/features/schedule';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { FontAwesome5 } from '@expo/vector-icons';
-import CategorySelector from '../../features/schedule/components/CategorySelector';
+import CategorySelector from '@/src/features/schedule/components/CategorySelector';
 import { Toast } from 'toastify-react-native';
 import {
   adjustEndAtWhenReversed,
@@ -19,11 +19,15 @@ import {
 import generateI18nMessage from '@/src/libs/i18n';
 import { useMap, MapModal } from '@/src/features/map';
 import { Image } from 'expo-image';
-import { deletePlanMediaList, Media, uploadPlanMediaList } from '@/src/features/media';
+import {
+  deletePlanMediaList,
+  Media,
+  uploadPlanMediaList,
+  useImagePicker,
+} from '@/src/features/media';
 import { useMutation } from 'react-query';
-import dayjs from '@/src/libs/dayjs';
-import useImagePicker from '@/src/features/media/hooks/useImagePicker';
 import { ImagePickerAsset } from 'expo-image-picker';
+import dayjs from '@/src/libs/dayjs';
 
 export default function ScheduleEditor() {
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';

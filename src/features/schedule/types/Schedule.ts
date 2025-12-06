@@ -1,5 +1,5 @@
 import { Database, Tables } from '@/src/libs/database.types';
-import { Media } from '../../media';
+import { Media } from '@/src/features/media';
 
 export class Schedule {
   uid?: string;

@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import { Linking } from 'react-native';
 import { Title, IconButton, ModalLayout, ImageScrollView } from '@/src/components';
 import { Place, RateViewer } from '@/src/features/map';
-import MediaDetailModal from '../../../media/components/MediaDetailModal';
+import { MediaDetailModal } from '@/src/features/media';
 import { useTheme } from '@/src/contexts';
 import { FontAwesome5, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';

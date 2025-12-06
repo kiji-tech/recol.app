@@ -7,7 +7,7 @@ import { FontAwesome5, FontAwesome6, MaterialCommunityIcons } from '@expo/vector
 import { Linking } from 'react-native';
 import { useTheme } from '@/src/contexts';
 import { RateViewer, useMap } from '@/src/features/map';
-import MediaDetailModal from '@/src/features/media/components/MediaDetailModal';
+import { MediaDetailModal } from '@/src/features/media';
 
 type Props = {
   isEdit?: boolean;

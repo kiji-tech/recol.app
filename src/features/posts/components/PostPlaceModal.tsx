@@ -13,7 +13,7 @@ import { Button, ModalLayout } from '@/src/components';
 import { Place, PlaceCard } from '@/src/features/map';
 import { useTheme } from '@/src/contexts';
 import { FontAwesome5 } from '@expo/vector-icons';
-import useImagePicker from '@/src/features/media/hooks/useImagePicker';
+import { useImagePicker } from '@/src/features/media';
 import { Image } from 'expo-image';
 import { ImagePickerAsset } from 'expo-image-picker';
 import { useMutation } from 'react-query';
