@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Information } from '../types/Information';
-import { fetchInformationList } from '../apis/fetchInformationList';
-import { LogUtil } from '../../../libs/LogUtil';
+import { Information, fetchInformationList } from '@/src/features/information';
+import { LogUtil } from '@/src/libs/LogUtil';
+import { useAuth } from '@/src/features/auth/hooks/useAuth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAuth } from '../../auth/hooks/useAuth';
 
 const INFORMATION_VIEWED_IDS_KEY = '@information_viewed_ids';
 

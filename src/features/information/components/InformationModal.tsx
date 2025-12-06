@@ -3,9 +3,9 @@ import { View, Text, Modal, Linking, ScrollView } from 'react-native';
 import { Image } from 'expo-image';
 import { useTheme } from '@/src/contexts';
 import { Button } from '@/src/components';
-import { Information } from '../types/Information';
+import { Information } from '@/src/features/information';
 import { LogUtil } from '@/src/libs/LogUtil';
-import { useAuth } from '../../auth/hooks/useAuth';
+import { useAuth } from '@/src/features/auth/hooks/useAuth';
 import generateI18nMessage from '@/src/libs/i18n';
 
 interface InformationModalProps {

@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { BackgroundView, Header } from '@/src/components';
-import { useInformationList, InformationModal } from '@/src/features/information';
-import InformationCard from '@/src/features/information/components/InformationCard';
-import { Information } from '@/src/features/information/types/Information';
+import {
+  Information,
+  useInformationList,
+  InformationModal,
+  InformationCard,
+} from '@/src/features/information';
 import { MaskLoading } from '@/src/components';
 import { useTheme } from '@/src/contexts';
 import generateI18nMessage from '@/src/libs/i18n';
