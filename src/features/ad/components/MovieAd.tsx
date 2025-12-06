@@ -8,7 +8,7 @@ import {
 } from 'react-native-google-mobile-ads';
 import generateI18nMessage from '@/src/libs/i18n';
 import { useFocusEffect } from 'expo-router';
-import Button from '../Button';
+import Button from '../../../components/Button';
 import { useMap } from '@/src/features/map';
 
 const adUnitId =

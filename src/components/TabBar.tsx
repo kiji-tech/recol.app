@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTheme } from '../contexts/ThemeContext';
-import { MyBannerAd } from './Ad/BannerAd';
+import { MyBannerAd } from '../features/ad';
 import { useAuth } from '../features/auth';
 import { router } from 'expo-router';
 import generateI18nMessage from '@/src/libs/i18n';

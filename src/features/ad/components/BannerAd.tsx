@@ -10,7 +10,7 @@ const adUnitId =
       ? process.env.EXPO_PUBLIC_ADMOB_IOS_UNIT_ID
       : process.env.EXPO_PUBLIC_ADMOB_ANDROID_UNIT_ID;
 
-export const MyBannerAd = () => {
+export default function MyBannerAd() {
   const bannerRef = useRef<BannerAd | null>(null);
   const { profile, initialized } = useAuth();
 
@@ -24,9 +24,9 @@ export const MyBannerAd = () => {
     }
   });
 
-  if (!adUnitId || !initialized || profile?.isPremiumUser()) return null;
+  if (!adUnitId || !initialized || profile?.isPremiumUser()) return <></>;
 
   return (
     <BannerAd ref={bannerRef} unitId={adUnitId} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
   );
-};
+}
