@@ -6,8 +6,8 @@ import { useRouter } from 'expo-router';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import { Share, View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
-import dayjs from 'dayjs';
 import { generateShareMessage } from '@/src/features/schedule/libs/generateShareMessage';
+import dayjs from 'dayjs';
 import generateI18nMessage from '@/src/libs/i18n';
 
 export default function ScheduleMenu({ plan }: { plan: Plan }) {

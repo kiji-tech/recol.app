@@ -3,15 +3,14 @@ import { Button, Header, Loading, BackgroundView } from '@/src/components';
 import { borderColor } from '@/src/themes/ColorUtil';
 import { useRouter } from 'expo-router';
 import { View, Text, TextInput } from 'react-native';
-import { updatePlan } from '@/src/features/plan/apis/updatePlan';
-import { Plan } from '@/src/features/plan';
+import { Plan, updatePlan } from '@/src/features/plan';
 import { useAuth } from '@/src/features/auth';
-import * as Location from 'expo-location';
 import { useMutation } from 'react-query';
-import generateI18nMessage from '@/src/libs/i18n';
 import { Toast } from 'toastify-react-native';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { usePlan } from '@/src/contexts';
+import generateI18nMessage from '@/src/libs/i18n';
+import * as Location from 'expo-location';
 
 export default function PlanEditor() {
   // === Member ===

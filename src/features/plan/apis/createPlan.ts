@@ -1,6 +1,6 @@
-import { Plan } from '../types/Plan';
-import { apiRequest } from '../../commons/apiService';
+import { apiRequest } from '@/src/features/commons/apiService';
 import { Session } from '@supabase/supabase-js';
+import { Plan } from '@/src/features/plan';
 
 /**
  * プランの作成

@@ -4,11 +4,10 @@ import { useRouter } from 'expo-router';
 import { Button, Header, BackgroundView } from '@/src/components';
 import { borderColor } from '@/src/themes/ColorUtil';
 import { useAuth } from '@/src/features/auth';
-import { createPlan } from '@/src/features/plan';
-import { Plan } from '@/src/features/plan/types/Plan';
+import { Plan, createPlan } from '@/src/features/plan';
 import { Toast } from 'toastify-react-native';
-import generateI18nMessage from '@/src/libs/i18n';
 import { useMutation } from 'react-query';
+import generateI18nMessage from '@/src/libs/i18n';
 
 export default function PlanCreator() {
   // === Member ===

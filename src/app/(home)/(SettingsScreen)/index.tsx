@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { BackgroundView, Button } from '@/src/components';
+import { BackgroundView, Button, MaskLoading } from '@/src/components';
 import {
   useAuth,
   SettingItem,
@@ -8,17 +8,16 @@ import {
   DevelopmentBar,
 } from '@/src/features/auth';
 import { router, useFocusEffect } from 'expo-router';
-import { Text, View, ScrollView, Platform } from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
 import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts';
-import Constants from 'expo-constants';
-import ProfileAvatar from '@/src/features/profile/components/ProfileAvatar';
-import PlanComponent from '@/src/features/plan/components/PlanComponent';
-import generateI18nMessage from '@/src/libs/i18n';
+import { PlanComponent } from '@/src/features/plan';
 import { useQuery } from 'react-query';
 import { fetchProfile } from '@/src/features/profile';
-import MaskLoading from '@/src/components/MaskLoading';
 import { useShare } from '@/src/features/commons/hooks/useShare';
+import Constants from 'expo-constants';
+import ProfileAvatar from '@/src/features/profile/components/ProfileAvatar';
+import generateI18nMessage from '@/src/libs/i18n';
 
 // TODO: 将来的にはDB化
 // const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
