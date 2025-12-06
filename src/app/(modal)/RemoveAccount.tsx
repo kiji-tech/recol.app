@@ -4,14 +4,12 @@ import React, { useState } from 'react';
 import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/src/contexts';
-import { deleteAccount } from '@/src/features/auth';
-import { useAuth } from '@/src/features/auth';
+import { deleteAccount, useAuth, usePremiumPlan } from '@/src/features/auth';
 import { useSlackNotification } from '@/src/features/slack/hooks/useSlackNotification';
-import { usePremiumPlan } from '@/src/features/auth/hooks/usePremiumPlan';
 import { Linking } from 'react-native';
-import generateI18nMessage from '@/src/libs/i18n';
 import { useMutation } from 'react-query';
 import { Toast } from 'toastify-react-native';
+import generateI18nMessage from '@/src/libs/i18n';
 
 interface ConsentItem {
   id: string;

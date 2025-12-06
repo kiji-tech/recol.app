@@ -1,18 +1,19 @@
 import React, { useCallback } from 'react';
 import { BackgroundView, Button } from '@/src/components';
-import { useAuth } from '@/src/features/auth';
+import {
+  useAuth,
+  SettingItem,
+  SettingDarkMode,
+  ScheduleNotification,
+  DevelopmentBar,
+} from '@/src/features/auth';
 import { router, useFocusEffect } from 'expo-router';
 import { Text, View, ScrollView, Platform } from 'react-native';
 import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts';
 import Constants from 'expo-constants';
-import SettingItem from '@/src/features/auth/components/Setting/SettingItem';
-import SettingDarkMode from '@/src/features/auth/components/Setting/SettingDarkMode';
-import ScheduleNotification from '@/src/features/auth/components/Setting/ScheduleNotification';
-import DevelopmentBar from '@/src/features/auth/components/DevelopmentBar';
 import ProfileAvatar from '@/src/features/profile/components/ProfileAvatar';
 import PlanComponent from '@/src/features/plan/components/PlanComponent';
-import Share from 'react-native-share';
 import generateI18nMessage from '@/src/libs/i18n';
 import { useQuery } from 'react-query';
 import { fetchProfile } from '@/src/features/profile';

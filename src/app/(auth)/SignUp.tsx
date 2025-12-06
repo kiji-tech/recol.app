@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { BackgroundView, Button } from '@/src/components';
 import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
-import { ExternalSignInButton, BackHomeLink, ReCoLTop, Bar } from '@/src/features/auth';
+import { useAuth, ExternalSignInButton, BackHomeLink, ReCoLTop, Bar } from '@/src/features/auth';
 import generateI18nMessage from '@/src/libs/i18n';
 
 export default function SignUpScreen() {
