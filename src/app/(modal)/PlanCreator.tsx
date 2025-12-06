@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Button, Header } from '@/src/components';
-import { BackgroundView } from '@/src/components';
+import { Button, Header, BackgroundView } from '@/src/components';
 import { borderColor } from '@/src/themes/ColorUtil';
 import { useAuth } from '@/src/features/auth';
 import { createPlan } from '@/src/features/plan';

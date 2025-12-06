@@ -1,5 +1,5 @@
 import React, { ForwardedRef, forwardRef, useCallback } from 'react';
-import BottomSheetLayout from '@/src/components/BottomSheetLayout';
+import { BottomSheetLayout } from '@/src/components';
 import { Place } from '@/src/features/map/types/Place';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { Schedule } from '@/src/features/schedule';

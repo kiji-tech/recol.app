@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Header, Loading } from '@/src/components';
-import { BackgroundView } from '@/src/components';
+import { Button, Header, Loading,BackgroundView } from '@/src/components';
 import { borderColor } from '@/src/themes/ColorUtil';
 import { useRouter } from 'expo-router';
 import { View, Text, TextInput } from 'react-native';

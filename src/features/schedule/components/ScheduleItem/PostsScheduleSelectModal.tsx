@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Schedule } from '@/src/features/schedule';
-import { ModalLayout } from '@/src/components';
+import { Title, ModalLayout } from '@/src/components';
 import generateI18nMessage from '@/src/libs/i18n';
 import { fetchCachePlace, Place } from '@/src/features/map';
-import Title from '@/src/components/Title';
 import { FlatList, TouchableOpacity, View, Text } from 'react-native';
-import { useTheme } from '@/src/contexts/ThemeContext';
 import { useAuth } from '@/src/features/auth';
 import MediaViewer from '../MediaViewer';
 import RateViewer from '@/src/features/map/components/Place/RateViewer';

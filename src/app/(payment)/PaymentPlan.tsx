@@ -128,8 +128,8 @@ export default function PaymentPlan() {
                     isCurrentPlan={checkActivePlanId(p)}
                     discount={
                       (1 -
-                        premiumPlanList[1].product.pricePerYear /
-                          premiumPlanList[0].product.pricePerYear) *
+                        premiumPlanList[1].product.pricePerYear! /
+                          premiumPlanList[0].product.pricePerYear!) *
                       100
                     }
                   />

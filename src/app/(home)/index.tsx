@@ -1,6 +1,5 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { BackgroundView, Header, IconButton } from '@/src/components';
-import { fetchArticleList } from '@/src/features/article';
 import { useInformation, InformationModal } from '@/src/features/information';
 import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';

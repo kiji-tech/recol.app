@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Linking, Platform } from 'react-native';
 import { Modal } from 'react-native';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import Button from '@/src/components/Button';
+import { Button } from '@/src/components';
 import generateI18nMessage from '@/src/libs/i18n';
 
 interface ForceUpdateModalProps {

@@ -5,10 +5,9 @@ import { useRouter } from 'expo-router';
 import { usePlan } from '@/src/contexts/PlanContext';
 import { Schedule } from '@/src/features/schedule';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import { Button, IconButton } from '@/src/components';
+import { Button, IconButton, MaskLoading } from '@/src/components';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import dayjs from 'dayjs';
-import MaskLoading from '@/src/components/MaskLoading';
 import ScheduleItem from '@/src/features/schedule/components/ScheduleItem';
 import generateI18nMessage from '@/src/libs/i18n';
 

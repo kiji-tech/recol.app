@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Modal, TouchableOpacity } from 'react-native';
-import Button from '@/src/components/Button';
+import {Button} from '@/src/components';
 import { PlanSortType, DEFAULT_PLAN_SORT_TYPE } from '../types/PlanSortType';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PLAN_SORT_TYPE_STORAGE_KEY } from '../types/PlanSortType';

@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, Modal, Linking, ScrollView } from 'react-native';
 import { Image } from 'expo-image';
 import { useTheme } from '@/src/contexts/ThemeContext';
-import Button from '@/src/components/Button';
+import { Button } from '@/src/components';
 import { Information } from '../types/Information';
 import { LogUtil } from '@/src/libs/LogUtil';
-import generateI18nMessage from '@/src/libs/i18n';
 import { useAuth } from '../../auth/hooks/useAuth';
+import generateI18nMessage from '@/src/libs/i18n';
 
 interface InformationModalProps {
   information: Information | null;
