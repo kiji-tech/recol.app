@@ -96,7 +96,7 @@ export default function TodayScheduleList({ planList }: Props) {
       renderItem={({ item }: { item: Schedule }) => (
         <TodayScheduleItem schedule={item} onPress={handlePress} />
       )}
-      keyExtractor={(item: Schedule) => item.uid}
+      keyExtractor={(item: Schedule) => item.uid!}
     />
   );
 }

@@ -26,7 +26,7 @@ const hasLocation = (location: string) => {
  * 記事カードコンポーネント
  * @param {Article} item - 記事データ
  */
-export const ArticleCard: React.FC<{ item: Article }> = ({ item }) => {
+export default function ArticleCard({ item }: { item: Article }) {
   return (
     <TouchableOpacity
       className="flex flex-col bg-light-background dark:bg-dark-background rounded-md w-60"
