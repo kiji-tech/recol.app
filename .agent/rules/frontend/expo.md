@@ -15,8 +15,9 @@ globs: src/**/*.tsx,src/**/*.ts
   - (機能ディレクトリ)/
     - apis: RestAPIに関する処理をまとめる ･･･ fetchXXX.tsなど
     - hooks: Reactのカスタムフックをまとめる
-    - libs: 機能の共通機能をまとめる｡日付のフォーマット整形処理など
+    - libs: 機能の共通機能をまとめる｡日付のフォーマット整形処理など｡mutateやqueryもここにまとめること
     - types: 機能に関するの型定義をまとめる
+    - components: 機能に関する ReactFunctional コンポーネント
 - themes/:テーマ色に関する
 - TypeScriptで書くこと
 - React Nativeの記法とする
@@ -32,7 +33,7 @@ globs: src/**/*.tsx,src/**/*.ts
 - デザインは基本､**NativewindCSS**のルールに則ること
 - ページを追加する際は [index.tsx](./index.tsx)を参考にすること
 - \_layout.tsxは[StackLayout.tsx](./StackLayout.tsx)､または[Tablayout.tsx](./TabLayout.tsx)を参考にすること
--
+
 
 ## ライブラリ
 

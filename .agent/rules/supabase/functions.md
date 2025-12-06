@@ -7,11 +7,12 @@ globs: supabase/**/*.ts
 
 - supabase/
   - functions/(機能)/: 各種RestAPIの機能別ディレクトリ（例：profile, schedule, version-check）
-    - index.ts: HonoでRestAPIの設定を行うためのファイル｡[index.ts](./index.ts)を参考にすること｡
-    - xxx.ts: 任意のRestAPIの実行ファイル｡RestAPI単位でファイルを作成すること｡
-      - [fetchProfile](./fetchProfile.ts)を参考にすること
-      - xxxのファイル名は**[fetch | create | update | delete][機能名].ts**っとすること
-    - deno.json: 機能ごとに必要なライブラリなどを定義するためのファイル
+    - vn: APIバージョン別ディレクトリ n=1,2,3....
+      - index.ts: HonoでRestAPIの設定を行うためのファイル｡[index.ts](./index.ts)を参考にすること｡
+      - xxx.ts: 任意のRestAPIの実行ファイル｡RestAPI単位でファイルを作成すること｡
+        - [fetchProfile](./fetchProfile.ts)を参考にすること
+        - xxxのファイル名は**[fetch | create | update | delete][機能名].ts**っとすること
+      - deno.json: 機能ごとに必要なライブラリなどを定義するためのファイル
   - functions/libs/: すべてのRestAPIで共通で利用するファイルをまとめる｡Utilityファイルなど｡
   - migrations/: supabaseのDBマイグレーションファイル｡**編集しないこと**
   - config.toml: supabaseをローカルで実行するときの設定ファイル
@@ -23,6 +24,7 @@ globs: supabase/**/*.ts
 - 該当する機能がない場合はディレクトリを追加すること
 - すでに同じ機能がある場合は､ファイルを追加して､機能を書くこと
 - index.tsファイルには直接機能を書かないこと｡HonoでRestAPIの受け口だけを書くこと
+- ユーザー認証が必要な場合は､withUserメソッドを使うこと
 - Logなど､幅広いファイルで使う機能についてはlibsディレクトリの下にファイルを作成・編集すること
 
 ## エラーハンドリング
@@ -76,37 +78,9 @@ LogUtil.log('処理完了', {
 
 - すべてのAPIエンドポイントでユーザー認証を必須とすること
 - JWTトークンの検証は統一された方法で行うこと
-- 認証失敗時は401 Unauthorizedを返すこと
-- 認可失敗時は403 Forbiddenを返すこと
+- SupabaseのSession確認は @withUser.tsx
 
-### 認証・認可のサンプルコード
+## 返却について
 
-```typescript
-import { Context } from 'jsr:@hono/hono';
-import { generateSupabase, getUser } from '../libs/supabase.ts';
-import { getMessage } from '../libs/MessageUtil.ts';
-import { LogUtil } from '../libs/LogUtil.ts';
-
-export const exampleApi = async (c: Context) => {
-  // 1. Supabaseクライアントの生成
-  const supabase = generateSupabase(c);
-
-  // 2. ユーザー認証の実行
-  const user = await getUser(c, supabase);
-  if (!user) {
-    LogUtil.log('認証失敗: ユーザーが見つかりません', { level: 'warn' });
-    return c.json({ message: getMessage('C001'), code: 'C001' }, 401);
-  }
-
-  LogUtil.log(`認証成功: ${user.id}`, { level: 'info' });
-
-  // 3. 認可チェック（必要に応じて）
-  if (!user.email_verified) {
-    LogUtil.log(`認可失敗: メール未認証 ${user.id}`, { level: 'warn' });
-    return c.json({ message: getMessage('C002'), code: 'C002' }, 403);
-  }
-
-  // 4. メイン処理
-  // ...
-};
-```
+- ResponseUtil.success､ResponseUtil.errorを使うこと
+- エラーコードはsrc/languages/xx.jsonに定義されている **MESSAGE** にあるものを使うこと

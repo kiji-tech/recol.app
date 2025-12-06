@@ -3,6 +3,7 @@ import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { DeletePlanRequest, ValidationResult, DatabaseResult } from '../libs/types.ts';
+import * as ResponseUtil from '../libs/ResponseUtil.ts';
 
 const validateDeleteRequest = async (c: Context): Promise<ValidationResult<DeletePlanRequest>> => {
   const { planId } = await c.req.json();
@@ -12,7 +13,7 @@ const validateDeleteRequest = async (c: Context): Promise<ValidationResult<Delet
     return {
       isValid: false,
       data: null,
-      error: c.json({ message: getMessage('C003'), code: 'C003' }, 400),
+      error: ResponseUtil.error(c, getMessage('C003'), 'C003', 400),
     };
   }
 
@@ -58,9 +59,9 @@ export const deletePlan = async (
 
   const { data, error } = await softDeletePlan(supabase, validation.data!.planId, user.id);
   if (error) {
-    return c.json({ message: getMessage('C008'), code: 'C008' }, 500);
+    return ResponseUtil.error(c, getMessage('C008'), 'C008', 500);
   }
 
   LogUtil.log('[POST] plan/delete 完了', { level: 'info' });
-  return c.json(data);
+  return ResponseUtil.success(c, data);
 };
