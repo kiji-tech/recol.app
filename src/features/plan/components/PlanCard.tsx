@@ -2,10 +2,10 @@ import React from 'react';
 import { Plan } from '@/src/features/plan';
 import { Schedule } from '@/src/features/schedule';
 import { useRouter } from 'expo-router';
-import { usePlan } from '@/src/contexts/PlanContext';
+import { usePlan } from '@/src/contexts';
 import { useMemo } from 'react';
-import dayjs from 'dayjs';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import dayjs from 'dayjs';
 import generateI18nMessage from '@/src/libs/i18n';
 
 type PlanCardProps = {

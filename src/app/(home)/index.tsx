@@ -3,7 +3,7 @@ import { BackgroundView, Header, IconButton } from '@/src/components';
 import { useInformation, InformationModal } from '@/src/features/information';
 import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import { useFocusEffect } from '@react-navigation/native';
 import PostsList from '@/src/features/posts/components/PostsList';
 import { Place, useMap } from '@/src/features/map';

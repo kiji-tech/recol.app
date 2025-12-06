@@ -10,7 +10,7 @@ import { SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
 import { Header } from '@/src/components';
 import PlaceBottomSheet from './PlaceBottomSheet/PlaceBottomSheet';
 import { useMap } from '../hooks/useMap';
-import { useLocation } from '@/src/contexts/LocationContext';
+import { useLocation } from '@/src/contexts';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { MapCategory } from '../types/MapCategory';
 import RateLimitModal from './RateLimitModal';

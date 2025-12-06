@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Modal, Linking, ScrollView } from 'react-native';
 import { Image } from 'expo-image';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import { Button } from '@/src/components';
 import { Information } from '../types/Information';
 import { LogUtil } from '@/src/libs/LogUtil';

@@ -3,7 +3,7 @@ import { View, Text, Animated, Button } from 'react-native';
 import { useRouter } from 'expo-router';
 import { BackgroundView } from '@/src/components';
 import { Image } from 'expo-image';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import generateI18nMessage from '@/src/libs/i18n';
 
 // パーティクルコンポーネント

@@ -12,7 +12,7 @@ import {
 import { Button, ModalLayout } from '@/src/components';
 import { Place } from '@/src/features/map';
 import PlaceCard from '../../map/components/Place/PlaceCard';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import { FontAwesome5 } from '@expo/vector-icons';
 import useImagePicker from '@/src/features/media/hooks/useImagePicker';
 import { Image } from 'expo-image';

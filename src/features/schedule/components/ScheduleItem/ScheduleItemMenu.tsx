@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import generateI18nMessage from '@/src/libs/i18n';
 import { Schedule } from '../../types/Schedule';
 

@@ -3,9 +3,9 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useTheme } from '../contexts/ThemeContext';
-import { MyBannerAd } from '../features/ad';
-import { useAuth } from '../features/auth';
+import { useTheme } from '@/src/contexts';
+import { MyBannerAd } from '@/src/features/ad';
+import { useAuth } from '@/src/features/auth';
 import { router } from 'expo-router';
 import generateI18nMessage from '@/src/libs/i18n';
 

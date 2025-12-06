@@ -4,7 +4,7 @@ import { useAuth } from '@/src/features/auth';
 import { router, useFocusEffect } from 'expo-router';
 import { Text, View, ScrollView, Platform } from 'react-native';
 import { CommonUtil } from '@/src/libs/CommonUtil';
-import { usePlan } from '@/src/contexts/PlanContext';
+import { usePlan } from '@/src/contexts';
 import Constants from 'expo-constants';
 import SettingItem from '@/src/features/auth/components/Setting/SettingItem';
 import SettingDarkMode from '@/src/features/auth/components/Setting/SettingDarkMode';

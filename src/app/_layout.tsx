@@ -1,10 +1,8 @@
 import '@/global.css';
 import React, { useCallback, useEffect, useState } from 'react';
 import { router, Stack } from 'expo-router';
-import { PlanProvider } from '../contexts/PlanContext';
 import { Linking, StatusBar, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { ThemeProvider } from '../contexts/ThemeContext';
 import {
   PermissionStatus,
   getTrackingPermissionsAsync,
@@ -12,22 +10,22 @@ import {
 } from 'expo-tracking-transparency';
 import 'expo-dev-client';
 import { LogBox } from 'react-native';
-import * as SplashScreen from 'expo-splash-screen';
 import mobileAds from 'react-native-google-mobile-ads';
 import { MenuProvider } from 'react-native-popup-menu';
-import { LocationProvider } from '../contexts/LocationContext';
+import { LocationProvider } from '@/src/contexts';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme, ThemeProvider, PlanProvider } from '@/src/contexts';
 import { useAuth, AuthProvider } from '@/src/features/auth';
-import * as Font from 'expo-font';
-import { PremiumPlanProvider } from '../features/auth/hooks/usePremiumPlan';
-import { isUpdateRequired, checkVersion as checkVersionApi } from '../features/version';
-import { ForceUpdateModal } from '../features/version/components/ForceUpdateModal';
-import Constants from 'expo-constants';
-import ToastManager from 'toastify-react-native';
+import { PremiumPlanProvider } from '@/src/features/auth/hooks/usePremiumPlan';
+import { isUpdateRequired, checkVersion as checkVersionApi } from '@/src/features/version';
+import { ForceUpdateModal } from '@/src/features/version/components/ForceUpdateModal';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { MapProvider } from '@/src/features/map';
-import { LogUtil } from '../libs/LogUtil';
+import { LogUtil } from '@/src/libs/LogUtil';
+import * as Font from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import ToastManager from 'toastify-react-native';
+import Constants from 'expo-constants';
 
 // === LogBox ===
 LogBox.ignoreLogs([

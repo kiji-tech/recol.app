@@ -5,7 +5,7 @@ import { Place } from '../../types/Place';
 import { Title, ImageScrollView, IconButton, MaskLoading } from '@/src/components';
 import { FontAwesome5, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Linking } from 'react-native';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import { useMap } from '../../hooks/useMap';
 import RateViewer from '@/src/features/map/components/Place/RateViewer';
 import MediaDetailModal from '@/src/features/media/components/MediaDetailModal';

@@ -14,7 +14,7 @@ import generateI18nMessage from '@/src/libs/i18n';
 import { deletePlan } from '@/src/features/plan';
 import { useMutation } from 'react-query';
 import { useAuth } from '@/src/features/auth';
-import { usePlan } from '@/src/contexts/PlanContext';
+import { usePlan } from '@/src/contexts';
 import { sortPlanSchedule } from '@/src/features/plan/libs/sortPlanSchedule';
 
 export default function PlanListScreen() {

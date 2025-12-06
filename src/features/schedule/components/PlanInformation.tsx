@@ -2,9 +2,7 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import Autolink from 'react-native-autolink';
 import { Title, MaskLoading } from '@/src/components';
-import { Plan } from '@/src/features/plan';
-import { useTheme } from '@/src/contexts/ThemeContext';
-import { usePlan } from '@/src/contexts/PlanContext';
+import { usePlan, useTheme } from '@/src/contexts';
 import { openUrl } from '../../article/libs/openBrowser';
 import generateI18nMessage from '@/src/libs/i18n';
 

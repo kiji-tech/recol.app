@@ -1,6 +1,6 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
 import BottomSheet from '@gorhom/bottom-sheet';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 
 type Props = {
   children: React.ReactNode;

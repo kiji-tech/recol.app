@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Schedule } from '@/src/features/schedule';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import CategoryIcon from '../CategoryIcon';
 import { isTargetTime } from '../../libs/isTargetTime';
 import Autolink from 'react-native-autolink';

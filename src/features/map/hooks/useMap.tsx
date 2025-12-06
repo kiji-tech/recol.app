@@ -11,10 +11,9 @@ import { MapCategory } from '../types/MapCategory';
 import { Region } from 'react-native-maps';
 import { fetchCachePlace } from '../apis/fetchCachePlace';
 import { Schedule } from '../../schedule';
-import { usePlan } from '@/src/contexts/PlanContext';
-import { useLocation } from '@/src/contexts/LocationContext';
+import { usePlan, useLocation } from '@/src/contexts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PaymentPlan, Role } from '../../profile';
+import { PaymentPlan } from '../../profile';
 
 type MapContextType = {
   searchPlaceList: Place[];

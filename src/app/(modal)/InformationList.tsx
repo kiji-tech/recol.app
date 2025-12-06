@@ -5,8 +5,8 @@ import { BackgroundView, Header } from '@/src/components';
 import { useInformationList, InformationModal } from '@/src/features/information';
 import InformationCard from '@/src/features/information/components/InformationCard';
 import { Information } from '@/src/features/information/types/Information';
-import { useTheme } from '@/src/contexts/ThemeContext';
-import MaskLoading from '@/src/components/MaskLoading';
+import { MaskLoading } from '@/src/components';
+import { useTheme } from '@/src/contexts';
 import generateI18nMessage from '@/src/libs/i18n';
 
 /**

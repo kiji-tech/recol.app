@@ -8,10 +8,10 @@ import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { ScrollView } from 'react-native-gesture-handler';
 import { BackHandler } from 'react-native';
+import { Toast } from 'toastify-react-native';
+import { usePlan } from '@/src/contexts';
 import PlanInformation from '../../features/schedule/components/PlanInformation';
 import ScheduleMenu from '../../features/schedule/components/ScheduleMenu';
-import { Toast } from 'toastify-react-native';
-import { usePlan } from '@/src/contexts/PlanContext';
 import generateI18nMessage from '@/src/libs/i18n';
 
 export default function ScheduleScreen(): ReactNode {

@@ -2,10 +2,10 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Linking } from 'react-native';
 import { Image } from 'expo-image';
 import { Information } from '../types/Information';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import { LogUtil } from '@/src/libs/LogUtil';
 import dayjs from 'dayjs';
-import { useAuth } from '../../auth/hooks/useAuth';
+import { useAuth } from '@/src/features/auth/hooks/useAuth';
 
 interface InformationCardProps {
   information: Information;

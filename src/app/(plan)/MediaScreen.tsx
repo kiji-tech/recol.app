@@ -11,7 +11,7 @@ import {
 import { Image } from 'expo-image';
 import { IconButton, MaskLoading } from '@/src/components';
 import { router, useFocusEffect } from 'expo-router';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme, usePlan } from '@/src/contexts';
 import { FlatList } from 'react-native-gesture-handler';
 import { deletePlanMediaList, fetchPlanMediaList, uploadPlanMediaList } from '@/src/features/media';
 import { useAuth } from '@/src/features/auth';
@@ -23,7 +23,6 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Progress from 'react-native-progress';
 import { useMutation, useQuery } from 'react-query';
 import { Toast } from 'toastify-react-native';
-import { usePlan } from '@/src/contexts/PlanContext';
 import generateI18nMessage from '@/src/libs/i18n';
 
 export default function MediaScreen() {

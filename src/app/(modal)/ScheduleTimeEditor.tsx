@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { BackgroundView, DatePicker, Header, Button, MaskLoading } from '@/src/components';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
-import { usePlan } from '@/src/contexts/PlanContext';
+import { usePlan, useTheme } from '@/src/contexts';
 import { Schedule } from '@/src/features/schedule';
-import { useTheme } from '@/src/contexts/ThemeContext';
 import { Plan, updatePlan } from '@/src/features/plan';
 import CategoryIcon from '@/src/features/schedule/components/CategoryIcon';
 import dayjs from '@/src/libs/dayjs';
@@ -15,8 +14,8 @@ import {
 } from '@/src/features/schedule/libs/scheduleTime';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { Toast } from 'toastify-react-native';
-import generateI18nMessage from '@/src/libs/i18n';
 import { useMutation } from 'react-query';
+import generateI18nMessage from '@/src/libs/i18n';
 
 const ScheduleTimeEditorItem = ({
   item,

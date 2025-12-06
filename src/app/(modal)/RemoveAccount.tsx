@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import { deleteAccount } from '@/src/features/auth';
 import { useAuth } from '@/src/features/auth';
 import { useSlackNotification } from '@/src/features/slack/hooks/useSlackNotification';

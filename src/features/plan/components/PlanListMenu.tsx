@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import { View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import { IconButton } from '@/src/components';
 type Props = {
   onClose: () => void;

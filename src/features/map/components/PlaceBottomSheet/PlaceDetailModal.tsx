@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import { Linking } from 'react-native';
-import ModalLayout from '../../../../components/ModalLayout';
+import { Title, IconButton, ModalLayout, ImageScrollView } from '@/src/components';
 import { Place } from '@/src/features/map/types/Place';
 import MediaDetailModal from '../../../media/components/MediaDetailModal';
-import { useTheme } from '@/src/contexts/ThemeContext';
-import ImageScrollView from '../../../../components/ImageScrollView';
-import IconButton from '../../../../components/IconButton';
+import { useTheme } from '@/src/contexts';
 import { FontAwesome5, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
-import Title from '../../../../components/Title';
 import RateViewer from '@/src/features/map/components/Place/RateViewer';
 
 type Props = {

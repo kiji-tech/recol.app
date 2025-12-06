@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { Posts } from '../types/Posts';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Toast } from 'toastify-react-native';
 import { PostsReportCategory, PostsReports } from '../types/PostsReports';

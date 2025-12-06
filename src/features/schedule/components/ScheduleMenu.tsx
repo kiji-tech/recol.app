@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme, usePlan } from '@/src/contexts';
 import { Plan } from '@/src/features/plan';
 import { Schedule } from '@/src/features/schedule';
 import { useRouter } from 'expo-router';
@@ -9,7 +9,6 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 import { generateShareMessage } from '@/src/features/schedule/libs/generateShareMessage';
 import generateI18nMessage from '@/src/libs/i18n';
-import { usePlan } from '@/src/contexts/PlanContext';
 
 export default function ScheduleMenu({ plan }: { plan: Plan }) {
   const router = useRouter();
