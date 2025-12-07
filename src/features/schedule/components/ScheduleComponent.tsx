@@ -24,6 +24,11 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
   const router = useRouter();
 
   // === Method ====
+  /**
+   * 新しいスケジュールを作成する
+   * @param from {Dayjs} 開始日時
+   * @param to {Dayjs} 終了日時
+   */
   const onNewSchedule = (from: dayjs.Dayjs, to: dayjs.Dayjs) => {
     const newSchedule = new Schedule({
       plan_id: plan!.uid,
@@ -34,6 +39,9 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
 
+  /**
+   * 新しいスケジュールを追加する
+   */
   const handleAddSchedule = () => {
     // スケジュールリストの最後の日付(to)を設定する
     const from =
@@ -44,14 +52,20 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
     onNewSchedule(from, to);
   };
 
-  /** 間のスケジュールから予定を追加する */
+  /**
+   * 間のスケジュールから予定を追加する
+   * @param schedule {Schedule} スケジュール
+   */
   const handleAddScheduleBetween = (schedule: Schedule) => {
     const from = dayjs(schedule.to);
     const to = dayjs(from).add(1, 'hour');
     onNewSchedule(from, to);
   };
 
-  /** アイテムクリックイベント */
+  /**
+   * スケジュールアイテムを押した際のイベント
+   * @param schedule {Schedule} スケジュール
+   */
   const handleSchedulePress = (schedule: Schedule) => {
     const s = new Schedule({
       ...schedule,
@@ -69,7 +83,10 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
 
-  /** アイテム長押しイベント */
+  /**
+   * スケジュールアイテムを長押しした際のイベント
+   * @param schedule {Schedule} スケジュール
+   */
   const handleScheduleLongPress = (schedule: Schedule) => {
     if (!onDelete) return;
     // 削除アラート

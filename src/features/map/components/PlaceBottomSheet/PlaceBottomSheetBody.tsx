@@ -147,7 +147,10 @@ export default function PlaceBottomSheetBody({ isEdit = false, onDirection, onPo
                   )}
               </View>
             </View>
-
+            {/* 住所 */}
+            <Text className="text-light-text dark:text-dark-text">
+              {selectedPlace?.formattedAddress}
+            </Text>
             {/* 詳細 */}
             <Text className="text-ellipsis text-light-text dark:text-dark-text text-lg">
               {selectedPlace?.editorialSummary?.text || ''}

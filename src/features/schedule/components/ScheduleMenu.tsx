@@ -8,11 +8,13 @@ import { Share, View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 import generateI18nMessage from '@/src/libs/i18n';
+import { useAuth } from '@/src/features/auth';
 
 export default function ScheduleMenu({ plan }: { plan: Plan }) {
   const router = useRouter();
   const { setPlanId, setEditSchedule } = usePlan();
   const { isDarkMode } = useTheme();
+  const { session } = useAuth();
 
   // === Method ===
   /** プランの編集 */
@@ -43,7 +45,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
    */
   const handleSharePress = async () => {
     await Share.share({
-      message: generateShareMessage(plan),
+      message: (await generateShareMessage(plan, session)) || '',
       title: generateI18nMessage('FEATURE.SCHEDULE.SHARE_TITLE'),
     });
   };

@@ -30,7 +30,7 @@ export default function PostsItem({ posts, onSelect, onDelete, onReport }: Props
   };
 
   // === Query ===
-  const { data: placeData, isLoading } = useQuery<Place[]>({
+  const { data: placeData } = useQuery<Place[]>({
     queryKey: ['fetchPlaceInfo', place_id],
     queryFn: () => fetchCachePlace([place_id], session),
   });
@@ -81,7 +81,7 @@ export default function PostsItem({ posts, onSelect, onDelete, onReport }: Props
                   {profile?.display_name}
                 </Text>
                 <Text className="text-light-text dark:text-dark-text text-sm">
-                  @{profile?.uid.slice(0, 6)} {toDateString(created_at!)}
+                  {toDateString(created_at!)}
                 </Text>
               </View>
             </View>
@@ -92,6 +92,10 @@ export default function PostsItem({ posts, onSelect, onDelete, onReport }: Props
               onReport={() => onReport(posts)}
             />
           </View>
+          {/* 住所 */}
+          <Text className="text-light-text dark:text-dark-text text-sm">
+            {placeInfo.shortFormattedAddress}
+          </Text>
           {/* 投稿内容 */}
           <Text className="text-light-text dark:text-dark-text text-md ">{body}</Text>
         </View>
