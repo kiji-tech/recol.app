@@ -1,6 +1,6 @@
-import { apiRequest } from '../../commons/apiService';
 import { Session } from '@supabase/supabase-js';
-import { Profile } from '../types/Profile';
+import { apiRequest } from '@/src/features/commons/apiService';
+import { Profile } from '@/src/features/profile/types/Profile';
 
 /**
  * プロフィールの作成

@@ -1,7 +1,6 @@
 import { Session } from '@supabase/supabase-js';
-import { fetchProfile } from '../../profile/apis/fetchProfile';
-import { Profile } from '../../profile/types/Profile';
-
+import { Profile, fetchProfile } from '../../profile';
+3
 /**
  * プロフィール取得
  */

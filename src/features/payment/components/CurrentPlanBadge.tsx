@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import dayjs from 'dayjs';
 import { Profile } from '@/src/features/profile';
+import dayjs from 'dayjs';
 import generateI18nMessage from '@/src/libs/i18n';
 
 type CurrentPlanBadgeProps = {

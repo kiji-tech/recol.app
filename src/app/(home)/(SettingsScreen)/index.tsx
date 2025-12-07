@@ -13,10 +13,9 @@ import { CommonUtil } from '@/src/libs/CommonUtil';
 import { usePlan } from '@/src/contexts';
 import { PlanComponent } from '@/src/features/plan';
 import { useQuery } from 'react-query';
-import { fetchProfile } from '@/src/features/profile';
+import { fetchProfile, ProfileAvatar } from '@/src/features/profile';
 import { useShare } from '@/src/features/commons/hooks/useShare';
 import Constants from 'expo-constants';
-import ProfileAvatar from '@/src/features/profile/components/ProfileAvatar';
 import generateI18nMessage from '@/src/libs/i18n';
 
 // TODO: 将来的にはDB化

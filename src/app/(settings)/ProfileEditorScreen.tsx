@@ -5,13 +5,11 @@ import { View, Text, TextInput, TouchableOpacity, Platform } from 'react-native'
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/src/features/auth';
-import { updateProfile } from '@/src/features/profile';
-import * as ImagePicker from 'expo-image-picker';
-import { Profile } from '@/src/features/profile/types/Profile';
-import generateI18nMessage from '@/src/libs/i18n';
+import { fetchProfile, updateProfile, Profile } from '@/src/features/profile';
 import { useMutation, useQuery } from 'react-query';
 import { Toast } from 'toastify-react-native';
-import { fetchProfile } from '@/src/features/profile';
+import * as ImagePicker from 'expo-image-picker';
+import generateI18nMessage from '@/src/libs/i18n';
 
 export default function ProfileEditorScreen() {
   // === Member ===

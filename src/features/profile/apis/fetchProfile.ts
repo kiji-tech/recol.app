@@ -1,5 +1,5 @@
 import { Session } from '@supabase/supabase-js';
-import { apiRequest } from '../../commons/apiService';
+import { apiRequest } from '@/src/features/commons/apiService';
 import { Profile } from '@/src/features/profile';
 
 /**

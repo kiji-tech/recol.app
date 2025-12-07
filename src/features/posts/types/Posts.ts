@@ -1,5 +1,5 @@
 import { Tables } from '@/src/libs/database.types';
-import { Profile } from '../../profile';
+import { Profile } from '@/src/features/profile';
 export type PostsType = Tables<'posts'>;
 
 export class Posts {

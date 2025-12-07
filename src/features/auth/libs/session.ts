@@ -1,8 +1,6 @@
 import { Session } from '@supabase/supabase-js';
-import { Profile } from '../../profile/types/Profile';
-import { getProfile as getProfileApi } from '../apis/getProfile';
-import { getSession as getSessionApi } from '../apis/getSession';
-import { isRecoverySession as isRecoverySessionApi } from '../apis/isRecoverySession';
+import { Profile } from '@/src/features/profile';
+import { getProfile as getProfileApi, getSession as getSessionApi, isRecoverySession as isRecoverySessionApi } from '@/src/features/auth';
 
 /**
  * プロフィール取得

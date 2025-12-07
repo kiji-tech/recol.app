@@ -10,10 +10,10 @@ import {
   MapCategory,
 } from '@/src/features/map';
 import { LogUtil } from '@/src/libs/LogUtil';
-import { Schedule } from '../../schedule';
+import { Schedule } from '@/src/features/schedule';
 import { usePlan, useLocation } from '@/src/contexts';
 import { Region } from 'react-native-maps';
-import { PaymentPlan } from '../../profile';
+import { PaymentPlan } from '@/src/features/profile';
 import dayjs from 'dayjs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

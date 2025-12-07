@@ -1,6 +1,6 @@
 import { Session } from '@supabase/supabase-js';
-import { apiRequest } from '../../commons/apiService';
-import { Profile } from '../types/Profile';
+import { apiRequest } from '@/src/features/commons/apiService';
+import { Profile } from '@/src/features/profile';
 
 export async function syncPremiumPlan(
   isPremium: boolean,
