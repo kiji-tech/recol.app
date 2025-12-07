@@ -1,9 +1,8 @@
-import React, { useImperativeHandle, useRef } from 'react';
-import { ForwardedRef, forwardRef } from 'react';
+import React, { useImperativeHandle, useRef, ForwardedRef, forwardRef } from 'react';
+import { ScrollResponderMixin, Text, View } from 'react-native';
 import { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { Schedule } from '@/src/features/schedule';
 import { Place, PlaceCard, useMap } from '@/src/features/map';
-import { ScrollResponderMixin, Text, View } from 'react-native';
 import { Loading } from '@/src/components';
 import generateI18nMessage from '@/src/libs/i18n';
 

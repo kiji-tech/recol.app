@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
 import { useAuth } from '@/src/features/auth';
 import { useQuery } from 'react-query';
 import { Place, fetchCachePlace } from '@/src/features/map';
-import { Image } from 'expo-image';
-import MediaViewer from '@/src/features/schedule/components/MediaViewer';
+import { MediaViewer } from '@/src/features/schedule';
 import { Posts, PostsMenu } from '@/src/features/posts';
 import dayjs from '@/src/libs/dayjs';
 

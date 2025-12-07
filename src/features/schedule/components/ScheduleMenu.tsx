@@ -1,12 +1,11 @@
 import React from 'react';
 import { useTheme, usePlan } from '@/src/contexts';
 import { Plan } from '@/src/features/plan';
-import { Schedule } from '@/src/features/schedule';
+import { Schedule, generateShareMessage } from '@/src/features/schedule';
 import { useRouter } from 'expo-router';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import { Share, View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
-import { generateShareMessage } from '@/src/features/schedule/libs/generateShareMessage';
 import dayjs from 'dayjs';
 import generateI18nMessage from '@/src/libs/i18n';
 

@@ -1,6 +1,6 @@
-import { apiRequest } from '../../commons/apiService';
-import { Schedule } from '../types/Schedule';
 import { Session } from '@supabase/supabase-js';
+import { apiRequest } from '@/src/features/commons/apiService';
+import { Schedule } from '@/src/features/schedule';
 
 /**
  * スケジュールの作成・更新

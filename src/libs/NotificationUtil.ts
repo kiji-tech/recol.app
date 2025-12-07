@@ -1,7 +1,7 @@
 import * as Notifications from 'expo-notifications';
-import { Schedule } from '../features/schedule/types/Schedule';
-import dayjs from '@/src/libs/dayjs';
+import { Schedule } from '../features/schedule';
 import { LogUtil } from './LogUtil';
+import dayjs from '@/src/libs/dayjs';
 
 export class NotificationUtil {
   /** 初期化処理 */

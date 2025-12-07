@@ -11,6 +11,7 @@ import { useMutation } from 'react-query';
 import Constants from 'expo-constants';
 import generateI18nMessage from '@/src/libs/i18n';
 import * as Notifications from 'expo-notifications';
+
 export default function ScheduleNotification() {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';

@@ -3,11 +3,10 @@ import { ReactNode } from 'react';
 import { Text, View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { usePlan, useTheme } from '@/src/contexts';
-import { Schedule } from '@/src/features/schedule';
+import { Schedule, ScheduleItem } from '@/src/features/schedule';
 import { Button, IconButton, MaskLoading } from '@/src/components';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import dayjs from 'dayjs';
-import ScheduleItem from '@/src/features/schedule/components/ScheduleItem';
 import generateI18nMessage from '@/src/libs/i18n';
 
 type Props = {

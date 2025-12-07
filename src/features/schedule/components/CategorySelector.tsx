@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import { ScheduleCategoryList } from '@/src/features/schedule/types/ScheduleCategory';
+import { ScheduleCategoryList } from '@/src/features/schedule';
 import { FontAwesome6, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/src/contexts';
 import generateI18nMessage from '@/src/libs/i18n';

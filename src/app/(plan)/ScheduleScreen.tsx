@@ -1,17 +1,20 @@
 import React, { ReactNode, useCallback } from 'react';
-import ScheduleComponents from '../../features/schedule/components/ScheduleComponent';
 import { BackgroundView, Header, MaskLoading } from '@/src/components';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { deleteSchedule, Schedule } from '@/src/features/schedule';
+import {
+  deleteSchedule,
+  Schedule,
+  PlanInformation,
+  ScheduleMenu,
+  ScheduleComponent,
+} from '@/src/features/schedule';
 import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { ScrollView } from 'react-native-gesture-handler';
 import { BackHandler } from 'react-native';
 import { Toast } from 'toastify-react-native';
 import { usePlan } from '@/src/contexts';
-import PlanInformation from '../../features/schedule/components/PlanInformation';
-import ScheduleMenu from '../../features/schedule/components/ScheduleMenu';
 import generateI18nMessage from '@/src/libs/i18n';
 
 export default function ScheduleScreen(): ReactNode {
@@ -99,7 +102,7 @@ export default function ScheduleScreen(): ReactNode {
           <>
             <PlanInformation />
             {/* Schedule */}
-            <ScheduleComponents onDelete={handleDeleteSchedule} />
+            <ScheduleComponent onDelete={handleDeleteSchedule} />
           </>
         )}
       </ScrollView>

@@ -4,18 +4,18 @@ import * as ImagePicker from 'expo-image-picker';
 import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { BackgroundView, Button, Header, DatePicker } from '@/src/components';
 import { usePlan, useTheme } from '@/src/contexts';
-import { upsertSchedule } from '@/src/features/schedule';
+import {
+  Schedule,
+  upsertSchedule,
+  CategorySelector,
+  adjustEndAtWhenReversed,
+  adjustStartAtWhenNormal,
+} from '@/src/features/schedule';
 import { useAuth } from '@/src/features/auth';
-import { Schedule } from '@/src/features/schedule';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { FontAwesome5 } from '@expo/vector-icons';
-import CategorySelector from '@/src/features/schedule/components/CategorySelector';
 import { Toast } from 'toastify-react-native';
-import {
-  adjustEndAtWhenReversed,
-  adjustStartAtWhenNormal,
-} from '@/src/features/schedule/libs/scheduleTime';
 import generateI18nMessage from '@/src/libs/i18n';
 import { useMap, MapModal } from '@/src/features/map';
 import { Image } from 'expo-image';

@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 import { Plan } from '@/src/features/plan';
-import { Schedule } from '@/src/features/schedule/types/Schedule';
+import { Schedule } from '@/src/features/schedule';
 import { useTheme, usePlan } from '@/src/contexts';
 import dayjs from 'dayjs';
 import generateI18nMessage from '@/src/libs/i18n';
