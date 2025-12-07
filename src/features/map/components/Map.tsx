@@ -57,7 +57,7 @@ export default function Map({
   selectedPlaceList: Place[];
   placeList: Place[];
   radius: number;
-  region: Region | null;
+  region: Region;
   isMarker?: boolean;
   isCallout?: boolean;
   isCenterCircle?: boolean;

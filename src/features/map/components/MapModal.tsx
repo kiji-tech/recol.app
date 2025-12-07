@@ -180,7 +180,10 @@ export default function MapModal({ isOpen, onClose }: Props) {
           placeList={searchPlaceList}
           selectedPlaceList={selectedPlaceList}
           radius={radius}
-          region={region || currentRegion}
+          region={
+            region ||
+            currentRegion || { latitude: 0, longitude: 0, latitudeDelta: 0, longitudeDelta: 0 }
+          }
           isMarker={true}
           isCallout={true}
           isCenterCircle={true}

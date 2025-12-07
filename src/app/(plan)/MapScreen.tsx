@@ -123,7 +123,10 @@ export default function MapScreen() {
           placeList={[]}
           selectedPlaceList={selectedPlaceList}
           radius={radius}
-          region={region}
+          region={
+            region ||
+            currentRegion || { latitude: 0, longitude: 0, latitudeDelta: 0, longitudeDelta: 0 }
+          }
           isMarker={true}
           isCallout={true}
           isCenterCircle={false}
