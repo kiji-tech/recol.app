@@ -16,8 +16,11 @@ import { LocationProvider } from '@/src/contexts';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { useTheme, ThemeProvider, PlanProvider } from '@/src/contexts';
 import { useAuth, AuthProvider, PremiumPlanProvider } from '@/src/features/auth';
-import { isUpdateRequired, checkVersion as checkVersionApi } from '@/src/features/version';
-import { ForceUpdateModal } from '@/src/features/version/components/ForceUpdateModal';
+import {
+  isUpdateRequired,
+  checkVersion as checkVersionApi,
+  ForceUpdateModal,
+} from '@/src/features/version';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { MapProvider } from '@/src/features/map';
 import { LogUtil } from '@/src/libs/LogUtil';

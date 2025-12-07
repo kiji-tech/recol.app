@@ -9,7 +9,7 @@ interface ForceUpdateModalProps {
   visible: boolean;
 }
 
-export const ForceUpdateModal: React.FC<ForceUpdateModalProps> = ({ visible }) => {
+export default function ForceUpdateModal({ visible }: ForceUpdateModalProps) {
   const { isDarkMode } = useTheme();
 
   const handleUpdate = () => {
@@ -58,4 +58,4 @@ export const ForceUpdateModal: React.FC<ForceUpdateModalProps> = ({ visible }) =
       </View>
     </Modal>
   );
-};
+}
