@@ -5,7 +5,7 @@ import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/src/contexts';
 import { deleteAccount, useAuth, usePremiumPlan } from '@/src/features/auth';
-import { useSlackNotification } from '@/src/features/slack/hooks/useSlackNotification';
+import { useSlackNotification } from '@/src/features/slack';
 import { Linking } from 'react-native';
 import { useMutation } from 'react-query';
 import { Toast } from 'toastify-react-native';
