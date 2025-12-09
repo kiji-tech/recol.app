@@ -237,10 +237,10 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   const doAddSelectedPlace = useCallback(
     (place: Place) => {
       setSelectedPlaceList((prev) => [...prev, place]);
-      setEditSchedule({
-        ...editSchedule,
-        place_list: [...(editSchedule?.place_list || []), place.id],
-      } as Schedule);
+      setEditSchedule((prev) => {
+        if (prev == null) return new Schedule({} as Schedule);
+        return new Schedule({ ...prev, place_list: [...(prev?.place_list || []), place.id] });
+      });
     },
     [editSchedule?.place_list]
   );
@@ -253,10 +253,13 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   const doRemoveSelectedPlace = useCallback(
     (place: Place) => {
       setSelectedPlaceList((prev) => prev.filter((p) => p.id !== place.id));
-      setEditSchedule({
-        ...editSchedule,
-        place_list: editSchedule?.place_list?.filter((p: string) => p !== place.id) || [],
-      } as Schedule);
+      setEditSchedule((prev) => {
+        if (prev == null) return new Schedule({} as Schedule);
+        return new Schedule({
+          ...prev,
+          place_list: prev?.place_list?.filter((p: string) => p !== place.id) || [],
+        });
+      });
     },
     [editSchedule?.place_list]
   );
