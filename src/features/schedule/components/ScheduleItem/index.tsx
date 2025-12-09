@@ -74,7 +74,10 @@ export default function ScheduleItem({ item, isEndDateView, onPress, onLongPress
             />
           </View>
           {/* 情報詳細 */}
-          <View className="flex flex-col gap-2 p-4 ml-4 border-l-[1px] border-light-border dark:border-dark-border">
+          <View
+            className="flex flex-col gap-2 p-4 ml-4 border-light-border dark:border-dark-border"
+            style={{ borderLeftWidth: 1 }}
+          >
             <View className="flex flex-row justify-between">
               {/* メモ */}
               <View className="flex-1">
