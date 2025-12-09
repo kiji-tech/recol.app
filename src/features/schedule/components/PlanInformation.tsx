@@ -1,17 +1,10 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import Autolink from 'react-native-autolink';
-import Title from '@/src/components/Title';
-import { Plan } from '@/src/features/plan';
-import { useTheme } from '@/src/contexts/ThemeContext';
-import { usePlan } from '@/src/contexts/PlanContext';
+import { Title, MaskLoading } from '@/src/components';
+import { usePlan, useTheme } from '@/src/contexts';
 import { openUrl } from '../../article/libs/openBrowser';
 import generateI18nMessage from '@/src/libs/i18n';
-import MaskLoading from '@/src/components/MaskLoading';
-
-type Props = {
-  plan: Plan | null;
-};
 
 /**
  * プランインフォメーション
@@ -45,7 +38,7 @@ export default function PlanInformation() {
         />
       ) : (
         <Text className="text-md text-light-text dark:text-dark-text opacity-70">
-          {generateI18nMessage('COMPONENT.PLAN.NO_MEMO')}
+          {generateI18nMessage('FEATURE.PLAN.NO_MEMO')}
         </Text>
       )}
       {/* メンバーリスト */}

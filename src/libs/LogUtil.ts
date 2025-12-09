@@ -1,5 +1,5 @@
 import { User } from '@supabase/supabase-js';
-import { notifySlack } from '../features/slack';
+import { notifySlack } from '@/src/features/slack';
 import * as Network from 'expo-network';
 
 type LogLevel = 'info' | 'warn' | 'error';

@@ -1,7 +1,7 @@
 import { TouchableOpacity, View } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 type Props = {
   onPress: () => void;
 };

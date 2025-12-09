@@ -10,18 +10,16 @@ import {
   FlatList,
 } from 'react-native';
 import { Button, ModalLayout } from '@/src/components';
-import { Place } from '@/src/features/map';
-import PlaceCard from '../../map/components/Place/PlaceCard';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { Place, PlaceCard } from '@/src/features/map';
+import { useTheme } from '@/src/contexts';
 import { FontAwesome5 } from '@expo/vector-icons';
-import useImagePicker from '@/src/features/media/hooks/useImagePicker';
+import { useImagePicker } from '@/src/features/media';
 import { Image } from 'expo-image';
 import { ImagePickerAsset } from 'expo-image-picker';
 import { useMutation } from 'react-query';
 import { Toast } from 'toastify-react-native';
-import { createPosts } from '../apis/createPosts';
-import { useAuth } from '../../auth';
-import { Posts } from '../types/Posts';
+import { Posts, createPosts } from '@/src/features/posts';
+import { useAuth } from '@/src/features/auth';
 
 type Props = {
   place: Place;
@@ -52,7 +50,6 @@ export default function PostPlaceModal({ place, onClose }: Props) {
    * @returns
    */
   const handlePost = () => {
-    console.log('Post:', { placeId: place.id, body, mediaList });
     mutate();
   };
 
@@ -117,6 +114,7 @@ export default function PostPlaceModal({ place, onClose }: Props) {
       onClose();
     },
     onError: () => {
+      console.log('投稿に失敗しました');
       Toast.warn('投稿に失敗しました');
     },
   });

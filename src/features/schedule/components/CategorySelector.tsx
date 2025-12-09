@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import { ScheduleCategoryList } from '@/src/features/schedule/types/ScheduleCategory';
+import { ScheduleCategoryList } from '@/src/features/schedule';
 import { FontAwesome6, FontAwesome, Ionicons } from '@expo/vector-icons';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import generateI18nMessage from '@/src/libs/i18n';
 
 type Props = {
@@ -16,7 +16,7 @@ export default function CategorySelector({ category, onChange }: Props) {
   return (
     <View className="w-full flex flex-col justify-start items-start">
       <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
-        {generateI18nMessage('DATA.SCHEDULE.CATEGORY')}
+        {generateI18nMessage('FEATURE.SCHEDULE.LABEL_CATEGORY')}
       </Text>
       <View className="w-full flex flex-row justify-start items-center gap-2  rounded-xl p-4">
         {/* アイコン */}
@@ -61,7 +61,7 @@ export default function CategorySelector({ category, onChange }: Props) {
           }}
           placeholder={{
             key: 'placeholder',
-            label: generateI18nMessage('SCREEN.SCHEDULE.SELECT_CATEGORY'),
+            label: generateI18nMessage('FEATURE.SCHEDULE.SELECT_CATEGORY'),
             value: 'placeholder',
             color: isDarkMode ? '#5A5A5A' : '#D7D7D7',
           }}

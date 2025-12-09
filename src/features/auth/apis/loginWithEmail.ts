@@ -1,8 +1,7 @@
-import { supabase } from '../../../libs/supabase';
-import { fetchProfile } from '../../profile/apis/fetchProfile';
-import { Profile } from '../../profile/types/Profile';
+import { supabase } from '@/src/libs/supabase';
+import { fetchProfile, Profile } from '@/src/features/profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AuthResult } from '../types/Auth';
+import { AuthResult } from '@/src/features/auth/types/Auth';
 
 /**
  * メールアドレスとパスワードでログイン

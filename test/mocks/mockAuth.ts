@@ -1,6 +1,6 @@
-import { Profile } from '@/src/entities';
 import { AuthContextType } from '@/src/features/auth/types/Auth';
-import { Subscription } from '@/src/features/payment/types/Subscription';
+import { Subscription } from '@/src/features/payment';
+import { Profile } from '@/src/features/profile';
 
 /**
  * テスト用のuseAuthモックユーティリティ

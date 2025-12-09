@@ -1,6 +1,6 @@
-import { Information, InformationType } from '@/src/features/information/types/Information';
-import dayjs from 'dayjs';
+import { Information, InformationType } from '@/src/features/information';
 import { Platform } from 'react-native';
+import dayjs from 'dayjs';
 
 /**
  * お知らせ一覧の取得

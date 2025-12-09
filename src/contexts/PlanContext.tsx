@@ -1,11 +1,7 @@
 import React from 'react';
 import { createContext, useContext } from 'react';
-import { Plan } from '../features/plan';
-import { Schedule } from '../features/schedule';
-import { usePlanList } from '../features/plan/hooks/usePlanList';
-import { usePlan as usePlanHook } from '../features/plan/hooks/usePlan';
-import { useStoragePlanList } from '../features/plan/hooks/useStoragePlanList';
-import { PlanSortType } from '../features/plan/types/PlanSortType';
+import { Plan, PlanSortType, useStoragePlanList, usePlan as usePlanHook, usePlanList } from '@/src/features/plan';
+import { Schedule } from '@/src/features/schedule';
 
 type PlanContextType = {
   planList: Plan[] | undefined;

@@ -1,13 +1,10 @@
-import React, { useImperativeHandle, useRef } from 'react';
-import { ForwardedRef, forwardRef } from 'react';
-import PlaceCard from '../Place/PlaceCard';
+import React, { useImperativeHandle, useRef, ForwardedRef, forwardRef } from 'react';
+import { ScrollResponderMixin, Text, View } from 'react-native';
 import { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { Schedule } from '@/src/features/schedule';
-import { Place } from '@/src/features/map/types/Place';
-import { ScrollResponderMixin, Text, View } from 'react-native';
-import generateI18nMessage from '@/src/libs/i18n';
-import { useMap } from '../../hooks/useMap';
+import { Place, PlaceCard, useMap } from '@/src/features/map';
 import { Loading } from '@/src/components';
+import generateI18nMessage from '@/src/libs/i18n';
 
 type Props = {
   selectedPlace: Place | null;
@@ -51,7 +48,7 @@ const ScheduleBottomSheetBody = forwardRef(
         {!selectedSchedule && (
           <View className="w-full p-8">
             <Text className="text-center text-light-text dark:text-dark-text">
-              {generateI18nMessage('SCREEN.MAP.NO_SELECTED')}
+              {generateI18nMessage('FEATURE.MAP.NO_SELECTED')}
             </Text>
           </View>
         )}

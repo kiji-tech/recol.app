@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 import { useRecentPlanDays, RecentPlanDays } from '../../hooks/useRecentPlanDays';
-import { usePlan } from '@/src/contexts/PlanContext';
+import { usePlan } from '@/src/contexts';
 import { Plan } from '../../index';
 import RecentPlanItem from './RecentPlanItem';
 import generateI18nMessage from '@/src/libs/i18n';
@@ -70,7 +70,7 @@ export default function RecentPlanList({ planList }: Props) {
       {/* プランリスト */}
       {!planList || planList.length === 0 ? (
         <Text className="text-light-text dark:text-dark-text text-sm">
-          {generateI18nMessage('COMPONENT.PLAN.NO_PLAN_RECENT', [
+          {generateI18nMessage('FEATURE.PLAN.NO_PLAN_RECENT', [
             { key: 'days', value: days.toString() },
           ])}
         </Text>

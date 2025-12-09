@@ -14,6 +14,24 @@ type ApiResponse<T> = {
   error: ApiErrorResponse | null;
 };
 
+// v1 APIの統一レスポンス形式
+type ServerSuccessResponse<T> = {
+  success: true;
+  data: T;
+  error: null;
+};
+
+type ServerErrorResponse = {
+  success: false;
+  data: null;
+  error: {
+    message: string;
+    code: string;
+  };
+};
+
+type ServerResponse<T> = ServerSuccessResponse<T> | ServerErrorResponse;
+
 const createHeaders = (session: Session | null) => ({
   'Content-Type': 'application/json',
   Authorization: `Bearer ${session?.access_token}`,
@@ -38,9 +56,10 @@ export async function apiRequest<T, B = Record<string, unknown>>(
     signal: ctrl?.signal,
   });
 
-  const data = await res.json();
+  const serverData: ServerResponse<T> = await res.json();
+
   // ユーザー認証に失敗した場合は最新セッションを取得してリトライ
-  if (data && data.code == 'C001') {
+  if (!serverData.success && serverData.error?.code === 'C001') {
     LogUtil.log('C001エラー: 最新セッションを取得してリトライします', { level: 'warn' });
     const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
 
@@ -57,26 +76,29 @@ export async function apiRequest<T, B = Record<string, unknown>>(
       signal: ctrl?.signal,
     });
 
-    const retryData = await retryRes.json();
-    if (!retryRes.ok) {
-      if (retryData.message && retryData.code) {
-        LogUtil.log(JSON.stringify(retryData), { level: 'error', notify: true });
-        throw retryData;
+    const retryServerData: ServerResponse<T> = await retryRes.json();
+
+    if (!retryRes.ok || !retryServerData.success) {
+      if (retryServerData.success === false && retryServerData.error) {
+        LogUtil.log(JSON.stringify(retryServerData.error), { level: 'error', notify: true });
+        throw retryServerData.error;
       }
       throw new Error(`Other API error: ${retryRes.status} ${retryRes.statusText}`);
     }
     LogUtil.log(`=== apiRequest ${endpoint} (retry) ===`);
 
-    return { data: retryData, error: null };
+    return { data: retryServerData.data, error: null };
   }
-  if (!res.ok) {
-    if (data.message && data.code) {
-      LogUtil.log(JSON.stringify(data), { level: 'error', notify: true });
-      throw data;
+
+  // エラーレスポンスの処理
+  if (!res.ok || !serverData.success) {
+    if (serverData.success === false && serverData.error) {
+      LogUtil.log(JSON.stringify(serverData.error), { level: 'error', notify: true });
+      throw serverData.error;
     }
     throw new Error(`Other API error: ${res.status} ${res.statusText}`);
   }
-  LogUtil.log(`=== completed apiRequest ${endpoint} ===`);
 
-  return { data: data, error: null };
+  LogUtil.log(`=== completed apiRequest ${endpoint} ===`);
+  return { data: serverData.data, error: null };
 }

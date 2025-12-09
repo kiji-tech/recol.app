@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Button, Header } from '@/src/components';
-import { BackgroundView } from '@/src/components';
+import { Button, Header, BackgroundView } from '@/src/components';
 import { borderColor } from '@/src/themes/ColorUtil';
 import { useAuth } from '@/src/features/auth';
-import { createPlan } from '@/src/features/plan';
-import { Plan } from '@/src/features/plan/types/Plan';
+import { Plan, createPlan } from '@/src/features/plan';
 import { Toast } from 'toastify-react-native';
-import generateI18nMessage from '@/src/libs/i18n';
 import { useMutation } from 'react-query';
+import generateI18nMessage from '@/src/libs/i18n';
 
 export default function PlanCreator() {
   // === Member ===
@@ -33,7 +31,7 @@ export default function PlanCreator() {
   // === Method ===
   const verify = () => {
     if (!title) {
-      Toast.warn(generateI18nMessage('SCREEN.PLAN.TITLE_REQUIRED'));
+      Toast.warn(generateI18nMessage('FEATURE.PLAN.TITLE_REQUIRED'));
       return false;
     }
     return true;
@@ -48,7 +46,7 @@ export default function PlanCreator() {
   return (
     <BackgroundView>
       <Header
-        title={generateI18nMessage('SCREEN.PLAN.CREATE_TITLE')}
+        title={generateI18nMessage('FEATURE.PLAN.CREATE_TITLE')}
         onBack={() => {
           router.back();
         }}
@@ -56,10 +54,10 @@ export default function PlanCreator() {
       {/* タイトル */}
       <View className="w-full flex flex-col justify-start items-start gap-4">
         <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
-          {generateI18nMessage('SCREEN.PLAN.TITLE_LABEL')}
+          {generateI18nMessage('FEATURE.PLAN.TITLE_LABEL')}
         </Text>
         <TextInput
-          placeholder={generateI18nMessage('SCREEN.PLAN.TITLE_PLACEHOLDER')}
+          placeholder={generateI18nMessage('FEATURE.PLAN.TITLE_PLACEHOLDER')}
           placeholderTextColor="gray"
           className={`flex flex-row justify-center rounded-xl items-center border px-4 py-4 w-full text-xl
                 ${borderColor} text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background
@@ -69,11 +67,11 @@ export default function PlanCreator() {
         />
         <View className="w-full flex flex-col justify-start items-start">
           <Text className="text-lg font-bold text-light-text dark:text-dark-text">
-            {generateI18nMessage('SCREEN.PLAN.MEMO_LABEL')}
+            {generateI18nMessage('FEATURE.PLAN.MEMO_LABEL')}
           </Text>
           <TextInput
             multiline={true}
-            placeholder={generateI18nMessage('SCREEN.PLAN.MEMO_PLACEHOLDER')}
+            placeholder={generateI18nMessage('FEATURE.PLAN.MEMO_PLACEHOLDER')}
             placeholderTextColor="gray"
             className={`rounded-xl border px-4 py-4 w-full text-lg h-32 text-start align-top 
             border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
@@ -84,18 +82,18 @@ export default function PlanCreator() {
         </View>
 
         <Text className="text-lg font-bold text-light-text dark:text-dark-text">
-          {generateI18nMessage('SCREEN.PLAN.ADD_FRIEND')}
+          {generateI18nMessage('FEATURE.PLAN.ADD_FRIEND')}
         </Text>
         <Button
           theme="info"
-          text={generateI18nMessage('SCREEN.PLAN.SELECT')}
-          onPress={() => alert(generateI18nMessage('SCREEN.PLAN.PREPARING'))}
+          text={generateI18nMessage('FEATURE.PLAN.SELECT')}
+          onPress={() => alert(generateI18nMessage('FEATURE.PLAN.PREPARING'))}
           disabled={isLoading}
           loading={isLoading}
         />
         <Button
           theme="theme"
-          text={generateI18nMessage('SCREEN.PLAN.REGISTER')}
+          text={generateI18nMessage('FEATURE.PLAN.REGISTER')}
           onPress={handlerSubmit}
           disabled={isLoading}
           loading={isLoading}

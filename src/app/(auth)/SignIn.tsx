@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { BackgroundView, Button } from '@/src/components';
 import { Alert, ScrollView, TextInput, View } from 'react-native';
 import { Link, router } from 'expo-router';
-import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
-import { ExternalSignInButton, BackHomeLink, ReCoLTop, Bar } from '@/src/features/auth';
+import { useAuth, ExternalSignInButton, BackHomeLink, ReCoLTop, Bar } from '@/src/features/auth';
 import generateI18nMessage from '@/src/libs/i18n';
 
 export default function SignInScreen() {
@@ -17,16 +16,16 @@ export default function SignInScreen() {
   // ==== Method ===
   const verify = (): boolean => {
     if (!email) {
-      Alert.alert(generateI18nMessage('SCREEN.AUTH.EMAIL_REQUIRED'));
+      Alert.alert(generateI18nMessage('FEATURE.AUTH.EMAIL_REQUIRED'));
       return false;
     }
     if (!password) {
-      Alert.alert(generateI18nMessage('SCREEN.AUTH.PASSWORD_REQUIRED'));
+      Alert.alert(generateI18nMessage('FEATURE.AUTH.PASSWORD_REQUIRED'));
       return false;
     }
 
     if (!email.includes('@')) {
-      Alert.alert(generateI18nMessage('SCREEN.AUTH.EMAIL_INVALID'));
+      Alert.alert(generateI18nMessage('FEATURE.AUTH.EMAIL_INVALID'));
       return false;
     }
 
@@ -43,7 +42,7 @@ export default function SignInScreen() {
       })
       .catch((e) => {
         LogUtil.log(JSON.stringify(e), { level: 'error', notify: true });
-        Alert.alert(generateI18nMessage('SCREEN.AUTH.SIGN_IN_FAILED'));
+        Alert.alert(generateI18nMessage('FEATURE.AUTH.SIGN_IN_FAILED'));
       })
       .finally(() => {
         setIsLoading(false);
@@ -60,7 +59,7 @@ export default function SignInScreen() {
           <View className="w-full flex flex-col gap-4">
             <TextInput
               keyboardType="email-address"
-              placeholder={generateI18nMessage('SCREEN.AUTH.EMAIL_PLACEHOLDER')}
+              placeholder={generateI18nMessage('FEATURE.AUTH.EMAIL_PLACEHOLDER')}
               placeholderTextColor="gray"
               className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
@@ -71,7 +70,7 @@ export default function SignInScreen() {
               autoCapitalize="none"
             />
             <TextInput
-              placeholder={generateI18nMessage('SCREEN.AUTH.PASSWORD_PLACEHOLDER')}
+              placeholder={generateI18nMessage('FEATURE.AUTH.PASSWORD_PLACEHOLDER')}
               placeholderTextColor="gray"
               className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
                 text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
@@ -86,7 +85,7 @@ export default function SignInScreen() {
             {/* サインイン */}
             <Button
               theme={'theme'}
-              text={generateI18nMessage('SCREEN.AUTH.SIGN_IN')}
+              text={generateI18nMessage('FEATURE.AUTH.SIGN_IN')}
               onPress={handleSignInWithPassword}
               disabled={isLoading}
               loading={isLoading}
@@ -94,7 +93,7 @@ export default function SignInScreen() {
             {/* 新規登録 */}
             <Button
               theme={'theme'}
-              text={generateI18nMessage('SCREEN.AUTH.SIGN_UP')}
+              text={generateI18nMessage('FEATURE.AUTH.SIGN_UP')}
               onPress={() => router.push('/(auth)/SignUp')}
               disabled={isLoading}
               loading={isLoading}
@@ -105,10 +104,10 @@ export default function SignInScreen() {
               href="/(auth)/ForgetPassword"
               className="text-sm text-light-text dark:text-dark-text ml-4"
             >
-              {generateI18nMessage('SCREEN.AUTH.FORGOT_PASSWORD')}
+              {generateI18nMessage('FEATURE.AUTH.FORGOT_PASSWORD')}
             </Link>
 
-            <Bar text={generateI18nMessage('SCREEN.AUTH.OR')} />
+            <Bar text={generateI18nMessage('FEATURE.AUTH.OR')} />
 
             <ExternalSignInButton isLoading={isLoading} />
             <BackHomeLink />

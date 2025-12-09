@@ -56,4 +56,5 @@ export interface Place {
     openNow: boolean;
     weekdayDescriptions: string[];
   };
+  shortFormattedAddress: string | null;
 }

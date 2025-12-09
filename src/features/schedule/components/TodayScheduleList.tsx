@@ -3,12 +3,11 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 import { Plan } from '@/src/features/plan';
-import { Schedule } from '../types/Schedule';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { Schedule } from '@/src/features/schedule';
+import { useTheme, usePlan } from '@/src/contexts';
 import dayjs from 'dayjs';
 import generateI18nMessage from '@/src/libs/i18n';
 import CategoryIcon from './CategoryIcon';
-import { usePlan } from '@/src/contexts/PlanContext';
 
 /**
  * 本日の予定を表示するコンポーネント
@@ -83,7 +82,7 @@ export default function TodayScheduleList({ planList }: Props) {
   if (scheduleList.length === 0) {
     return (
       <Text className="text-light-text dark:text-dark-text text-sm">
-        {generateI18nMessage('COMPONENT.PLAN.NO_SCHEDULE_TODAY')}
+        {generateI18nMessage('FEATURE.PLAN.NO_SCHEDULE_TODAY')}
       </Text>
     );
   }
@@ -97,7 +96,7 @@ export default function TodayScheduleList({ planList }: Props) {
       renderItem={({ item }: { item: Schedule }) => (
         <TodayScheduleItem schedule={item} onPress={handlePress} />
       )}
-      keyExtractor={(item: Schedule) => item.uid}
+      keyExtractor={(item: Schedule) => item.uid!}
     />
   );
 }

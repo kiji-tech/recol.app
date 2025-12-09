@@ -1,6 +1,5 @@
-import { Plan } from '../types/Plan';
-import { Schedule } from '@/src/features/schedule/types/Schedule';
-import { PlanSortType } from '../types/PlanSortType';
+import { Schedule } from '@/src/features/schedule';
+import { Plan, PlanSortType } from '@/src/features/plan';
 import dayjs from 'dayjs';
 
 /**

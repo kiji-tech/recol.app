@@ -1,15 +1,15 @@
 import React from 'react';
 import { View, Text, Linking, Platform } from 'react-native';
 import { Modal } from 'react-native';
-import { useTheme } from '@/src/contexts/ThemeContext';
-import Button from '@/src/components/Button';
+import { useTheme } from '@/src/contexts';
+import { Button } from '@/src/components';
 import generateI18nMessage from '@/src/libs/i18n';
 
 interface ForceUpdateModalProps {
   visible: boolean;
 }
 
-export const ForceUpdateModal: React.FC<ForceUpdateModalProps> = ({ visible }) => {
+export default function ForceUpdateModal({ visible }: ForceUpdateModalProps) {
   const { isDarkMode } = useTheme();
 
   const handleUpdate = () => {
@@ -39,7 +39,7 @@ export const ForceUpdateModal: React.FC<ForceUpdateModalProps> = ({ visible }) =
               isDarkMode ? 'text-white' : 'text-black'
             }`}
           >
-            {generateI18nMessage('COMPONENT.VERSION.UPDATE_REQUIRED')}
+            {generateI18nMessage('FEATURE.VERSION.UPDATE_REQUIRED')}
           </Text>
 
           <Text
@@ -47,15 +47,15 @@ export const ForceUpdateModal: React.FC<ForceUpdateModalProps> = ({ visible }) =
               isDarkMode ? 'text-gray-300' : 'text-gray-600'
             }`}
           >
-            {generateI18nMessage('COMPONENT.VERSION.UPDATE_MESSAGE')}
+            {generateI18nMessage('FEATURE.VERSION.UPDATE_MESSAGE')}
           </Text>
 
           <Button
-            text={generateI18nMessage('COMPONENT.VERSION.UPDATE_BUTTON')}
+            text={generateI18nMessage('FEATURE.VERSION.UPDATE_BUTTON')}
             onPress={handleUpdate}
           />
         </View>
       </View>
     </Modal>
   );
-};
+}

@@ -1,20 +1,20 @@
-import React, { useCallback, useEffect } from 'react';
-import dayjs from 'dayjs';
-import { createContext, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, createContext, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import { searchPlaceByText } from '../libs/searchPlaceByText';
 import { useAuth } from '@/src/features/auth';
-import { Place } from '../types/Place';
-import { searchNearby } from '../libs/searchNearby';
+import {
+  fetchCachePlace,
+  Place,
+  searchPlaceByText,
+  searchNearby,
+  MapCategory,
+} from '@/src/features/map';
 import { LogUtil } from '@/src/libs/LogUtil';
-import { MapCategory } from '../types/MapCategory';
+import { Schedule } from '@/src/features/schedule';
+import { usePlan, useLocation } from '@/src/contexts';
 import { Region } from 'react-native-maps';
-import { fetchCachePlace } from '../apis/fetchCachePlace';
-import { Schedule } from '../../schedule';
-import { usePlan } from '@/src/contexts/PlanContext';
-import { useLocation } from '@/src/contexts/LocationContext';
+import { PaymentPlan } from '@/src/features/profile';
+import dayjs from 'dayjs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PaymentPlan, Role } from '../../profile';
 
 type MapContextType = {
   searchPlaceList: Place[];
@@ -237,10 +237,10 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   const doAddSelectedPlace = useCallback(
     (place: Place) => {
       setSelectedPlaceList((prev) => [...prev, place]);
-      setEditSchedule({
-        ...editSchedule,
-        place_list: [...(editSchedule?.place_list || []), place.id],
-      } as Schedule);
+      setEditSchedule((prev) => {
+        if (prev == null) return new Schedule({} as Schedule);
+        return new Schedule({ ...prev, place_list: [...(prev?.place_list || []), place.id] });
+      });
     },
     [editSchedule?.place_list]
   );
@@ -253,10 +253,13 @@ const MapProvider = ({ children }: { children: React.ReactNode }) => {
   const doRemoveSelectedPlace = useCallback(
     (place: Place) => {
       setSelectedPlaceList((prev) => prev.filter((p) => p.id !== place.id));
-      setEditSchedule({
-        ...editSchedule,
-        place_list: editSchedule?.place_list?.filter((p: string) => p !== place.id) || [],
-      } as Schedule);
+      setEditSchedule((prev) => {
+        if (prev == null) return new Schedule({} as Schedule);
+        return new Schedule({
+          ...prev,
+          place_list: prev?.place_list?.filter((p: string) => p !== place.id) || [],
+        });
+      });
     },
     [editSchedule?.place_list]
   );

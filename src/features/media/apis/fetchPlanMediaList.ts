@@ -1,6 +1,6 @@
 import { apiRequest } from '../../commons/apiService';
 import { Session } from '@supabase/supabase-js';
-import { Media, MediaType } from '../types/Media';
+import { Media, MediaType } from '@/src/features/media';
 
 /**
  * プランのメディア一覧を取得

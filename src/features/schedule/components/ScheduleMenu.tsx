@@ -1,20 +1,20 @@
 import React from 'react';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme, usePlan } from '@/src/contexts';
 import { Plan } from '@/src/features/plan';
-import { Schedule } from '@/src/features/schedule';
+import { Schedule, generateShareMessage } from '@/src/features/schedule';
 import { useRouter } from 'expo-router';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import { Share, View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
-import { generateShareMessage } from '@/src/features/schedule/libs/generateShareMessage';
 import generateI18nMessage from '@/src/libs/i18n';
-import { usePlan } from '@/src/contexts/PlanContext';
+import { useAuth } from '@/src/features/auth';
 
 export default function ScheduleMenu({ plan }: { plan: Plan }) {
   const router = useRouter();
   const { setPlanId, setEditSchedule } = usePlan();
   const { isDarkMode } = useTheme();
+  const { session } = useAuth();
 
   // === Method ===
   /** プランの編集 */
@@ -45,8 +45,8 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
    */
   const handleSharePress = async () => {
     await Share.share({
-      message: generateShareMessage(plan),
-      title: generateI18nMessage('COMPONENT.SCHEDULE.SHARE_TITLE'),
+      message: (await generateShareMessage(plan, session)) || '',
+      title: generateI18nMessage('FEATURE.SCHEDULE.SHARE_TITLE'),
     });
   };
 
@@ -69,7 +69,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
         }}
       >
         <MenuOption
-          text={generateI18nMessage('COMPONENT.SCHEDULE.EDIT_PLAN')}
+          text={generateI18nMessage('FEATURE.SCHEDULE.EDIT_PLAN')}
           customStyles={{
             optionText: {
               paddingVertical: 12,
@@ -80,7 +80,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
           onSelect={handleEditPress}
         />
         <MenuOption
-          text={generateI18nMessage('COMPONENT.SCHEDULE.ADD_SCHEDULE')}
+          text={generateI18nMessage('FEATURE.SCHEDULE.ADD_SCHEDULE')}
           customStyles={{
             optionText: {
               paddingVertical: 12,
@@ -93,7 +93,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
           }}
         />
         <MenuOption
-          text={generateI18nMessage('COMPONENT.SCHEDULE.EDIT_TIME')}
+          text={generateI18nMessage('FEATURE.SCHEDULE.EDIT_TIME')}
           customStyles={{
             optionText: {
               paddingVertical: 12,
@@ -106,7 +106,7 @@ export default function ScheduleMenu({ plan }: { plan: Plan }) {
           }}
         />
         <MenuOption
-          text={generateI18nMessage('COMPONENT.SCHEDULE.SHARE')}
+          text={generateI18nMessage('FEATURE.SCHEDULE.SHARE')}
           customStyles={{
             optionText: {
               paddingVertical: 12,

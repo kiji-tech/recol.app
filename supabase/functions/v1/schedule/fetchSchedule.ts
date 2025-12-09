@@ -3,6 +3,7 @@ import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { Schedule, DatabaseResult, Media } from '../libs/types.ts';
+import * as ResponseUtil from '../libs/ResponseUtil.ts';
 import dayjs from 'dayjs';
 
 /**
@@ -123,11 +124,11 @@ export const get = async (c: Context, supabase: SupabaseClient) => {
 
   const { data: schedule, error } = await fetchScheduleById(supabase, scheduleId);
   if (error) {
-    return c.json({ message: getMessage('C005', ['スケジュール']), code: 'C005' }, 400);
+    return ResponseUtil.error(c, getMessage('C005', ['スケジュール']), 'C005', 400);
   }
 
   LogUtil.log('[GET] schedule/:id 完了', { level: 'info' });
-  return c.json({ ...schedule, media_list: schedule?.media || [] });
+  return ResponseUtil.success(c, { ...schedule, media_list: schedule?.media || [] });
 };
 
 /**
@@ -141,15 +142,16 @@ export const list = async (c: Context, supabase: SupabaseClient) => {
   const { planId } = await c.req.json();
   const { data: scheduleList, error } = await fetchScheduleListByPlanId(supabase, planId);
   if (error) {
-    return c.json({ message: getMessage('C005', ['スケジュール']), code: 'C005' }, 400);
+    return ResponseUtil.error(c, getMessage('C005', ['スケジュール']), 'C005', 400);
   }
   LogUtil.log(`スケジュール一覧取得成功: ${scheduleList?.length || 0}件`, { level: 'info' });
   LogUtil.log(
-    `スケジュールメディア取得成功: ${scheduleList?.map((schedule) => schedule.media?.length || 0).reduce((a, b) => a + b, 0)}件`,
+    `スケジュールメディア取得成功: ${scheduleList?.map((schedule) => (Array.isArray(schedule.media) ? schedule.media.length : 0)).reduce((a, b) => a + b, 0)}件`,
     { level: 'info' }
   );
   LogUtil.log('[POST] schedule/list 完了', { level: 'info' });
-  return c.json(
+  return ResponseUtil.success(
+    c,
     scheduleList?.map((schedule) => ({ ...schedule, media_list: schedule.media || [] }))
   );
 };
@@ -165,9 +167,9 @@ export const listForNotification = async (c: Context, supabase: SupabaseClient, 
   LogUtil.log('[POST] schedule/list/notification 開始', { level: 'info' });
   const { data: scheduleList, error } = await fetchScheduleListForNotification(supabase, user.id);
   if (error) {
-    return c.json({ message: getMessage('C005', ['スケジュール']), code: 'C005' }, 400);
+    return ResponseUtil.error(c, getMessage('C005', ['スケジュール']), 'C005', 400);
   }
 
   LogUtil.log('[POST] schedule/list/notification 完了', { level: 'info' });
-  return c.json(scheduleList || []);
+  return ResponseUtil.success(c, scheduleList || []);
 };

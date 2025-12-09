@@ -5,13 +5,11 @@ import { View, Text, TextInput, TouchableOpacity, Platform } from 'react-native'
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/src/features/auth';
-import { updateProfile } from '@/src/features/profile';
-import * as ImagePicker from 'expo-image-picker';
-import { Profile } from '@/src/features/profile/types/Profile';
-import generateI18nMessage from '@/src/libs/i18n';
+import { fetchProfile, updateProfile, Profile } from '@/src/features/profile';
 import { useMutation, useQuery } from 'react-query';
 import { Toast } from 'toastify-react-native';
-import { fetchProfile } from '@/src/features/profile';
+import * as ImagePicker from 'expo-image-picker';
+import generateI18nMessage from '@/src/libs/i18n';
 
 export default function ProfileEditorScreen() {
   // === Member ===
@@ -99,7 +97,7 @@ export default function ProfileEditorScreen() {
   return (
     <BackgroundView>
       <Header
-        title={generateI18nMessage('SCREEN.PROFILE.EDIT_TITLE')}
+        title={generateI18nMessage('FEATURE.PROFILE.EDIT_TITLE')}
         onBack={() => router.back()}
       />
       <View className="p-4 flex flex-col gap-6">
@@ -131,24 +129,24 @@ export default function ProfileEditorScreen() {
 
         <View>
           <Text className="text-base font-bold mb-2 text-light-text dark:text-dark-text">
-            {generateI18nMessage('SCREEN.PROFILE.EMAIL_LABEL')}
+            {generateI18nMessage('FEATURE.PROFILE.EMAIL_LABEL')}
           </Text>
           <TextInput
             className="border border-light-border dark:border-dark-border rounded-lg p-3 text-base text-light-text dark:text-dark-text bg-light-shadow dark:bg-dark-shadow"
-            value={user?.email || generateI18nMessage('SCREEN.PROFILE.NOT_FOUND')}
+            value={user?.email || generateI18nMessage('FEATURE.PROFILE.NOT_FOUND')}
             editable={false}
           />
         </View>
 
         <View>
           <Text className="text-base font-bold mb-2 text-light-text dark:text-dark-text">
-            {generateI18nMessage('SCREEN.PROFILE.DISPLAY_NAME_LABEL')}
+            {generateI18nMessage('FEATURE.PROFILE.DISPLAY_NAME_LABEL')}
           </Text>
           <TextInput
             className="border border-light-border dark:border-dark-border rounded-lg p-3 text-base text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background"
             value={displayName}
             onChangeText={setDisplayName}
-            placeholder={generateI18nMessage('SCREEN.PROFILE.DISPLAY_NAME_PLACEHOLDER')}
+            placeholder={generateI18nMessage('FEATURE.PROFILE.DISPLAY_NAME_PLACEHOLDER')}
             placeholderTextColor="gray"
             editable={!isLoading}
           />
@@ -156,7 +154,7 @@ export default function ProfileEditorScreen() {
 
         <Button
           onPress={handleSave}
-          text={generateI18nMessage('SCREEN.PROFILE.SAVE')}
+          text={generateI18nMessage('FEATURE.PROFILE.SAVE')}
           theme="theme"
           disabled={isLoading}
           loading={isLoading}

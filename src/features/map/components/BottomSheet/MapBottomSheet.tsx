@@ -1,10 +1,7 @@
 import React from 'react';
-import MapBottomSheetHeader from './MapBottomSheetHeader';
-import MapBottomSheetBody from './MapBottomSheetBody';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
-import BottomSheetLayout from '@/src/components/BottomSheetLayout';
-import { Place } from '../../types/Place';
-import { MapCategory } from '../../types/MapCategory';
+import { BottomSheetLayout } from '@/src/components';
+import { MapBottomSheetHeader, MapBottomSheetBody, Place, MapCategory } from '@/src/features/map';
 
 type Props = {
   bottomSheetRef?: React.RefObject<BottomSheet>;

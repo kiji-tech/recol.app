@@ -1,6 +1,6 @@
-import { apiRequest } from '../../commons/apiService';
+import { apiRequest } from '@/src/features/commons/apiService';
 import { Session } from '@supabase/supabase-js';
-import { Schedule } from '../types/Schedule';
+import { Schedule } from '@/src/features/schedule';
 
 /**
  * スケジュールの削除

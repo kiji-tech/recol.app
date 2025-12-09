@@ -1,5 +1,5 @@
-import { Place } from '@/src/features/map/types/Place';
-import { apiRequest } from '../../commons/apiService';
+import { Place } from '@/src/features/map';
+import { apiRequest } from '@/src/features/commons/apiService';
 import { Session } from '@supabase/supabase-js';
 import { i18n } from '@/src/libs/i18n';
 

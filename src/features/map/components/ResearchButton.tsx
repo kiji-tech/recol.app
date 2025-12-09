@@ -69,7 +69,7 @@ export default function ResearchButton({ centerRegion, currentRegion, radius, on
         onPress={handlePress}
       >
         <Text className="text-center text-md text-light-text dark:text-dark-text">
-          {generateI18nMessage('SCREEN.MAP.RESEARCH')}
+          {generateI18nMessage('FEATURE.MAP.RESEARCH')}
         </Text>
       </TouchableOpacity>
     </View>

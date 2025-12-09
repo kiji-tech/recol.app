@@ -14,7 +14,8 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "types": ["node", "react", "react-native", "jest", "expo-router"]
+    "types": ["node", "react", "react-native", "jest", "expo-router"],
+    "allowImportingTsExtensions": true
   },
   "include": ["**/*.ts", "**/*.tsx", "nativewind-env.d.ts", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }

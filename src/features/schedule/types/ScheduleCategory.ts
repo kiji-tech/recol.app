@@ -8,27 +8,27 @@ export type ScheduleCategory = {
 export const ScheduleCategoryList = [
   {
     key: 'movement',
-    label: generateI18nMessage('SCREEN.SCHEDULE.CATEGORY.MOVEMENT'),
+    label: generateI18nMessage('FEATURE.SCHEDULE.CATEGORY.MOVEMENT'),
     value: 'Movement',
   },
   {
     key: 'meals',
-    label: generateI18nMessage('SCREEN.SCHEDULE.CATEGORY.MEALS'),
+    label: generateI18nMessage('FEATURE.SCHEDULE.CATEGORY.MEALS'),
     value: 'Meals',
   },
   {
     key: 'cafe',
-    label: generateI18nMessage('SCREEN.SCHEDULE.CATEGORY.CAFE'),
+    label: generateI18nMessage('FEATURE.SCHEDULE.CATEGORY.CAFE'),
     value: 'Cafe',
   },
   {
     key: 'amusement',
-    label: generateI18nMessage('SCREEN.SCHEDULE.CATEGORY.AMUSEMENT'),
+    label: generateI18nMessage('FEATURE.SCHEDULE.CATEGORY.AMUSEMENT'),
     value: 'Amusement',
   },
   {
     key: 'other',
-    label: generateI18nMessage('SCREEN.SCHEDULE.CATEGORY.OTHER'),
+    label: generateI18nMessage('FEATURE.SCHEDULE.CATEGORY.OTHER'),
     value: 'Other',
   },
 ];

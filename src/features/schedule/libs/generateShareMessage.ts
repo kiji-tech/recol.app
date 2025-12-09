@@ -1,27 +1,28 @@
-import { Place } from '@/src/features/map/types/Place';
-import { Plan } from '../../plan';
-import { Schedule } from '../types/Schedule';
+import { Plan } from '@/src/features/plan';
+import { Schedule } from '@/src/features/schedule';
+import { Place, fetchCachePlace } from '@/src/features/map';
+import { Session } from '@supabase/supabase-js';
 import dayjs from 'dayjs';
 /**
  * スケジュールを共有のためのメッセージ（text）を作成する
- *
  * @param plan {Plan} プラン
  * @returns {string} 共有メッセージ
  */
-export const generateShareMessage = (plan: Plan) => {
+export const generateShareMessage = async (plan: Plan, session: Session | null) => {
+  if (!session) return;
   const { schedule: scheduleList } = plan;
-  const message = `【Re:CoL】${plan.title}
+  let message = `【Re:CoL】${plan.title}
 ■■■メモ■■■
 ${plan.memo || ''}
 
 ■■■予定■■■
-${scheduleList
-  .sort((a, b) => dayjs(a.from).diff(dayjs(b.from)))
-  .map((schedule) => generateScheduleMessage(schedule))
-  .join('\n')}
----------------------------------------------
 `;
-  return message;
+  for (let schedule of scheduleList.sort((a, b) => dayjs(a.from).diff(dayjs(b.from)))) {
+    const scheduleMessage = await generateScheduleMessage(schedule, session);
+    message += scheduleMessage;
+  }
+
+  return (message += '\n---------------------------------------------').trim();
 };
 
 /**
@@ -30,10 +31,12 @@ ${scheduleList
  * @param schedule {Schedule} スケジュール
  * @returns
  */
-const generateScheduleMessage = (schedule: Schedule) => {
-  return `---------------------------------------------
+const generateScheduleMessage = async (schedule: Schedule, session: Session) => {
+  // ToDo: place_listがstringなので､fetchするか､別途placeListを引数で取る
+  const placeList = await fetchCachePlace(schedule.place_list || [], session);
+  return `\n---------------------------------------------\n
 - ${dayjs(schedule.from).format('YYYY/M/D H:mm')} 〜 ${dayjs(schedule.to).format('H:mm')}
 - ${schedule.title || '(タイトル未設定)'}
 - ${schedule.description || ''}
-${schedule.place_list?.map((place: Place) => `●${place.displayName.text}\n${place.googleMapsUri}\n`).join('\n') || ''}`.trim();
+${(placeList && placeList.map((place: Place) => `●${place.displayName.text}\n${place.googleMapsUri}\n`).join('\n')) || ''}`;
 };

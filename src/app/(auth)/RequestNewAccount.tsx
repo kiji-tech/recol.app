@@ -15,7 +15,7 @@ export default function RequestNewAccount() {
 
   const resendEmail = async () => {
     if (!email) {
-      Alert.alert(generateI18nMessage('COMMON.ERROR'), generateI18nMessage('SCREEN.AUTH.EMAIL_NOT_FOUND'));
+      Alert.alert(generateI18nMessage('COMMON.ERROR'), generateI18nMessage('FEATURE.AUTH.EMAIL_NOT_FOUND'));
       return;
     }
 
@@ -24,10 +24,10 @@ export default function RequestNewAccount() {
 
     try {
       await resendConfirmationEmailLib(email);
-      Alert.alert(generateI18nMessage('COMMON.SUCCESS'), generateI18nMessage('SCREEN.AUTH.RESEND_SUCCESS'));
+      Alert.alert(generateI18nMessage('COMMON.SUCCESS'), generateI18nMessage('FEATURE.AUTH.RESEND_SUCCESS'));
     } catch (error: unknown) {
       LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-      Alert.alert(generateI18nMessage('COMMON.ERROR'), generateI18nMessage('SCREEN.AUTH.RESEND_FAILED'));
+      Alert.alert(generateI18nMessage('COMMON.ERROR'), generateI18nMessage('FEATURE.AUTH.RESEND_FAILED'));
     } finally {
       setIsLoading(false);
     }
@@ -37,12 +37,12 @@ export default function RequestNewAccount() {
     <BackgroundView>
       <View className="flex flex-col items-center w-full gap-8 ">
         <Text className="text-4xl font-bold text-light-text dark:text-dark-text">
-          {generateI18nMessage('SCREEN.AUTH.REQUEST_NEW_ACCOUNT_TITLE')}
+          {generateI18nMessage('FEATURE.AUTH.REQUEST_NEW_ACCOUNT_TITLE')}
         </Text>
         {email && (
           <View className="w-full">
             <Text className="text-sm font-medium text-light-text dark:text-dark-text mb-2">
-              {generateI18nMessage('SCREEN.AUTH.EMAIL_LABEL')}
+              {generateI18nMessage('FEATURE.AUTH.EMAIL_LABEL')}
             </Text>
             <View className="bg-light-background dark:bg-dark-background border border-light-border dark:border-dark-border rounded-xl p-4 w-full">
               <Text className="text-lg text-light-text dark:text-dark-text">{email}</Text>
@@ -50,18 +50,18 @@ export default function RequestNewAccount() {
           </View>
         )}
         <Text className="text-lg text-light-text dark:text-dark-text">
-          {generateI18nMessage('SCREEN.AUTH.CHECK_EMAIL')}
+          {generateI18nMessage('FEATURE.AUTH.CHECK_EMAIL')}
         </Text>
         <Button
           theme="theme"
-          text={generateI18nMessage('SCREEN.AUTH.RESEND_EMAIL')}
+          text={generateI18nMessage('FEATURE.AUTH.RESEND_EMAIL')}
           onPress={resendEmail}
           disabled={isLoading}
           loading={isLoading}
         />
         <Link href="/(auth)/SignIn">
           <Text className="text-lg text-light-text dark:text-dark-text">
-            {generateI18nMessage('SCREEN.AUTH.BACK_TO_SIGN_IN')}
+            {generateI18nMessage('FEATURE.AUTH.BACK_TO_SIGN_IN')}
           </Text>
         </Link>
       </View>

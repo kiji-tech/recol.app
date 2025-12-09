@@ -1,10 +1,10 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
-import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
-import { useTheme } from '@/src/contexts/ThemeContext';
-import generateI18nMessage from '@/src/libs/i18n';
+import { useTheme } from '@/src/contexts';
 import { Schedule } from '../../types/Schedule';
+import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
+import generateI18nMessage from '@/src/libs/i18n';
 
 type Props = {
   schedule: Schedule;
@@ -45,7 +45,7 @@ export default function ScheduleItemMenu({ schedule, onPosts, onDelete }: Props)
           onSelect={() => {
             onPosts();
           }}
-          text={generateI18nMessage('COMPONENT.SCHEDULE.POSTS')}
+          text={generateI18nMessage('FEATURE.SCHEDULE.POSTS')}
         />
         <MenuOption
           customStyles={{

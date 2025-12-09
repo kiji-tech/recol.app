@@ -6,6 +6,7 @@ import { LogUtil } from '../libs/LogUtil.ts';
 import { SubscriptionUtil } from '../libs/SubscriptionUtil.ts';
 import { FileObject } from 'npm:@supabase/storage-js';
 import { uploadMediaFiles } from '../libs/uploadMediaFiles.ts';
+import * as ResponseUtil from '../libs/ResponseUtil.ts';
 
 const FREE_STORAGE_LIMIT_GB = 1; // 上限を1GBに設定
 const PREMIUM_STORAGE_LIMIT_GB = 10; // 上限を100GBに設定
@@ -71,24 +72,29 @@ export const createMedia = async (c: Context, supabase: SupabaseClient, user: Us
 
   if (fetchProfileError) {
     console.error(fetchProfileError);
-    return c.json({ message: getMessage('C005', ['プロフィール']), code: 'C005' }, 400);
+    return ResponseUtil.error(c, getMessage('C005', ['プロフィール']), 'C005', 400);
   }
   const { planId, scheduleId, images } = await c.req.json();
   if (!planId || !images || !Array.isArray(images) || images.length === 0) {
-    return c.json({ message: getMessage('C009', ['プランID､メディア']), code: 'C009' }, 400);
+    return ResponseUtil.error(c, getMessage('C009', ['プランID､メディア']), 'C009', 400);
   }
 
   // 1. ストレージ容量チェック
   const capacityCheckResult = await checkStorageCapacity(supabase, profile, planId, images);
   if (capacityCheckResult) {
-    return c.json(capacityCheckResult);
+    return ResponseUtil.error(
+      c,
+      capacityCheckResult.error.message,
+      capacityCheckResult.error.code,
+      capacityCheckResult.status
+    );
   }
 
   // 2. ファイルアップロードとDB保存
   const filePath = `${planId}/${Date.now()}-${Math.random().toString(36).substring(2)}`;
   const { uploadedImages, error } = await uploadMediaFiles(supabase, filePath, images, 'medias');
   if (error) {
-    return c.json(error, 500);
+    return ResponseUtil.error(c, error.message, error.code, 500);
   }
 
   // DBに保存
@@ -104,11 +110,8 @@ export const createMedia = async (c: Context, supabase: SupabaseClient, user: Us
     console.error(insertError);
     // DB保存失敗時もアップロードしたファイルを削除（ロールバック）
     await supabase.storage.from('medias').remove(uploadedImages);
-    return {
-      uploadedImages: [],
-      error: { message: getMessage('C006', ['メディア']), code: 'C006' },
-    };
+    return ResponseUtil.error(c, getMessage('C006', ['メディア']), 'C006', 500);
   }
 
-  return c.json({ uploadedImages });
+  return ResponseUtil.success(c, { uploadedImages });
 };

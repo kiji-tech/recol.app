@@ -13,22 +13,22 @@ export default function ForgetPassword() {
   const handleResetPassword = () => {
     resetPassword(email)
       .then(() => {
-        Alert.alert(generateI18nMessage('SCREEN.AUTH.RESET_PASSWORD_SUCCESS'));
+        Alert.alert(generateI18nMessage('FEATURE.AUTH.RESET_PASSWORD_SUCCESS'));
         router.navigate('/(auth)/SignIn');
       })
       .catch((error) => {
         LogUtil.log(JSON.stringify(error), { level: 'error', notify: true, user });
-        Alert.alert(generateI18nMessage('SCREEN.AUTH.RESET_PASSWORD_FAILED'));
+        Alert.alert(generateI18nMessage('FEATURE.AUTH.RESET_PASSWORD_FAILED'));
       });
   };
 
   return (
     <BackgroundView>
-      <Header title={generateI18nMessage('SCREEN.AUTH.RESET_PASSWORD_TITLE')} onBack={() => router.back()} />
+      <Header title={generateI18nMessage('FEATURE.AUTH.RESET_PASSWORD_TITLE')} onBack={() => router.back()} />
       <View className="w-full flex flex-col gap-4">
         <TextInput
           keyboardType="email-address"
-          placeholder={generateI18nMessage('SCREEN.AUTH.EMAIL_PLACEHOLDER')}
+          placeholder={generateI18nMessage('FEATURE.AUTH.EMAIL_PLACEHOLDER')}
           placeholderTextColor="gray"
           className={`flex flex-row justify-center rounded-xl items-center border p-4 w-full text-md
             text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background border-light-border dark:border-dark-border
@@ -39,7 +39,7 @@ export default function ForgetPassword() {
         />
         <Button
           theme="theme"
-          text={generateI18nMessage('SCREEN.AUTH.RESET_PASSWORD_BUTTON')}
+          text={generateI18nMessage('FEATURE.AUTH.RESET_PASSWORD_BUTTON')}
           onPress={handleResetPassword}
         />
       </View>

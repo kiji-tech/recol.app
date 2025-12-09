@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
-import { Tables, Enums } from '../../../libs/database.types';
-import { Subscription } from '../../payment/types/Subscription';
+import { Tables, Enums } from '@/src/libs/database.types';
+import { Subscription } from '@/src/features/payment';
+import { Posts } from '@/src/features/posts';
 
 import generateI18nMessage from '@/src/libs/i18n';
-import { Posts } from '../../posts/types/Posts';
 
 export type ProfileType = Tables<'profile'>;
 export type PaymentPlan = Enums<'PaymentPlan'>;

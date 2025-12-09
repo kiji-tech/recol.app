@@ -2,6 +2,7 @@ import { Context } from 'jsr:@hono/hono';
 import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
+import * as ResponseUtil from '../libs/ResponseUtil.ts';
 import {
   Plan,
   Schedule,
@@ -69,11 +70,8 @@ const fetchPlanList = async (
   return {
     data: data.map((p: PlanWithScheduleWithMedia) => ({
       ...p,
-      schedule: p.schedule.map((s: ScheduleWithMedia) => ({
-        ...s,
-        media_list: s.media || [],
-      })),
-    })),
+      schedule: p.schedule.map((s: ScheduleWithMedia) => s),
+    })) as any,
     error: null,
   };
 };
@@ -84,11 +82,11 @@ export const get = async (c: Context, supabase: SupabaseClient, user: User) => {
 
   const { data: plan, error } = await fetchPlanWithSchedule(supabase, uid, user.id);
   if (error) {
-    return c.json({ message: getMessage('C005', ['プラン']), code: 'C005' }, 500);
+    return ResponseUtil.error(c, getMessage('C005', ['プラン']), 'C005', 500);
   }
 
   LogUtil.log('[GET] plan/:uid 完了', { level: 'info' }, c);
-  return c.json(plan);
+  return ResponseUtil.success(c, plan);
 };
 
 export const list = async (c: Context, supabase: SupabaseClient, user: User) => {
@@ -96,9 +94,9 @@ export const list = async (c: Context, supabase: SupabaseClient, user: User) => 
 
   const { data: planList, error } = await fetchPlanList(supabase, user.id);
   if (error) {
-    return c.json({ message: getMessage('C005', ['プラン']), code: 'C005' }, 500);
+    return ResponseUtil.error(c, getMessage('C005', ['プラン']), 'C005', 500);
   }
   LogUtil.log(`プラン一覧取得成功: ${JSON.stringify(planList)}`, { level: 'info' });
   LogUtil.log('[POST] plan/list 完了', { level: 'info' }, c);
-  return c.json(planList);
+  return ResponseUtil.success(c, planList);
 };

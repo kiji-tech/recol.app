@@ -6,7 +6,7 @@ const app = new Hono().basePath('/cache');
 const TTL = 60 * 60 * 24 * 25; // 25日
 const GOOGLE_MAPS_API_URL = 'https://places.googleapis.com/v1/places';
 const FiledMaskValue =
-  'id,types,reviews,displayName,formattedAddress,rating,location,photos,websiteUri,editorialSummary,currentOpeningHours.openNow,currentOpeningHours.weekdayDescriptions,googleMapsUri,googleMapsLinks.*';
+  'id,types,reviews,displayName,formattedAddress,rating,location,photos,websiteUri,editorialSummary,currentOpeningHours.openNow,currentOpeningHours.weekdayDescriptions,googleMapsUri,googleMapsLinks.*,shortFormattedAddress';
 
 const searchId = async (placeId: string, languageCode: string) => {
   const apiKey = Deno.env.get('GOOGLE_MAPS_API_KEY') || '';
@@ -60,9 +60,19 @@ const getPlace = async (c: Context) => {
       placeDataList.push(JSON.parse(placeData));
     }
   }
-  return c.json(placeDataList, 200, {
-    'Cache-Control': `public, max-age=${TTL}`,
-  });
+
+  // 統一レスポンス形式で返す
+  return c.json(
+    {
+      success: true,
+      data: placeDataList,
+      error: null,
+    },
+    200,
+    {
+      'Cache-Control': `public, max-age=${TTL}`,
+    }
+  );
 };
 
 const getGooglePlacePhoto = async (c: Context) => {

@@ -1,5 +1,4 @@
-import { SlackMessage, SlackNotificationType } from '../types/Slack';
-import { SlackConfigUtil } from '../libs/slackConfig';
+import { SlackConfigUtil, SlackMessage, SlackNotificationType } from '@/src/features/slack';
 import { LogUtil } from '@/src/libs/LogUtil';
 
 export const sendSlackNotification = async (

@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { BackgroundView, Header } from '@/src/components';
-import { useInformationList, InformationModal } from '@/src/features/information';
-import InformationCard from '@/src/features/information/components/InformationCard';
-import { Information } from '@/src/features/information/types/Information';
-import { useTheme } from '@/src/contexts/ThemeContext';
-import MaskLoading from '@/src/components/MaskLoading';
+import {
+  Information,
+  useInformationList,
+  InformationModal,
+  InformationCard,
+} from '@/src/features/information';
+import { MaskLoading } from '@/src/components';
+import { useTheme } from '@/src/contexts';
 import generateI18nMessage from '@/src/libs/i18n';
 
 /**
@@ -70,7 +73,7 @@ export default function InformationList() {
     return (
       <View className="flex-1 justify-center items-center py-20">
         <Text className={`text-lg ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-          {generateI18nMessage('SCREEN.INFORMATION.NO_INFORMATION')}
+          {generateI18nMessage('FEATURE.INFORMATION.NO_INFORMATION')}
         </Text>
       </View>
     );
@@ -86,7 +89,7 @@ export default function InformationList() {
     return (
       <View className="flex-1 justify-center items-center py-20">
         <Text className={`text-lg ${isDarkMode ? 'text-dark-danger' : 'text-light-danger'}`}>
-          {generateI18nMessage('SCREEN.INFORMATION.ERROR_OCCURRED')}
+          {generateI18nMessage('FEATURE.INFORMATION.ERROR_OCCURRED')}
         </Text>
         <Text className={`text-sm mt-2 ${isDarkMode ? 'text-dark-text' : 'text-light-text'}`}>
           {error.message}
@@ -102,7 +105,7 @@ export default function InformationList() {
   return (
     <BackgroundView>
       <Header
-        title={generateI18nMessage('SCREEN.INFORMATION.TITLE')}
+        title={generateI18nMessage('FEATURE.INFORMATION.TITLE')}
         onBack={() => {
           router.back();
         }}

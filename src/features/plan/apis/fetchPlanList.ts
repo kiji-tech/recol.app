@@ -1,7 +1,7 @@
-import { apiRequest } from '../../commons/apiService';
-import { Plan } from '../types/Plan';
+import { apiRequest } from '@/src/features/commons/apiService';
+import { Plan } from '@/src/features/plan';
 import { Session } from '@supabase/supabase-js';
-import { PlanSortType } from '../types/PlanSortType';
+import { PlanSortType } from '@/src/features/plan';
 
 /**
  * プラン一覧の取得

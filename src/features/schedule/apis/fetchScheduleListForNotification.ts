@@ -1,6 +1,6 @@
-import { apiRequest } from '../../commons/apiService';
 import { Session } from '@supabase/supabase-js';
-import { Schedule } from '../types/Schedule';
+import { apiRequest } from '@/src/features/commons/apiService';
+import { Schedule } from '@/src/features/schedule';
 
 /**
  * 通知を追加するスケジュール一覧の取得

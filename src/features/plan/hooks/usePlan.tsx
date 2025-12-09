@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { fetchPlan } from '../index';
-import { Schedule } from '../../schedule';
 import { useQuery } from 'react-query';
-import { useAuth } from '../../auth';
+import { fetchPlan } from '@/src/features/plan';
+import { Schedule } from '@/src/features/schedule';
+import { useAuth } from '@/src/features/auth';
 
 export const usePlan = () => {
   const { session } = useAuth();

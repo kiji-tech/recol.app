@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import BottomSheetLayout from '@/src/components/BottomSheetLayout';
+import { BottomSheetLayout } from '@/src/components';
 import BottomSheet from '@gorhom/bottom-sheet';
 import PlaceBottomSheetHeader from './PlaceBottomSheetHeader';
 import PlaceBottomSheetBody from './PlaceBottomSheetBody';
