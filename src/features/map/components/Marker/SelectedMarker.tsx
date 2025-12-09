@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import { Marker } from 'react-native-maps';
 import { Place } from '../../types/Place';
 

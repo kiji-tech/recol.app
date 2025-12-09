@@ -1,31 +1,33 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { BackgroundView, Button, Header } from '@/src/components';
-import { usePlan } from '@/src/contexts/PlanContext';
-import DatePicker from '../../components/DatePicker';
-import dayjs from '@/src/libs/dayjs';
-import MapModal from '../../features/map/components/MapModal';
-import { upsertSchedule } from '@/src/features/schedule';
+import { BackgroundView, Button, Header, DatePicker } from '@/src/components';
+import { usePlan, useTheme } from '@/src/contexts';
+import {
+  Schedule,
+  upsertSchedule,
+  CategorySelector,
+  adjustEndAtWhenReversed,
+  adjustStartAtWhenNormal,
+} from '@/src/features/schedule';
 import { useAuth } from '@/src/features/auth';
-import useImagePicker from '@/src/features/media/hooks/useImagePicker';
-import { Schedule } from '@/src/features/schedule';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { FontAwesome5 } from '@expo/vector-icons';
-import CategorySelector from '../../features/schedule/components/CategorySelector';
 import { Toast } from 'toastify-react-native';
-import {
-  adjustEndAtWhenReversed,
-  adjustStartAtWhenNormal,
-} from '@/src/features/schedule/libs/scheduleTime';
 import generateI18nMessage from '@/src/libs/i18n';
-import { useMap } from '@/src/features/map';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useMap, MapModal } from '@/src/features/map';
 import { Image } from 'expo-image';
-import { deletePlanMediaList, Media, uploadPlanMediaList } from '@/src/features/media';
+import {
+  deletePlanMediaList,
+  Media,
+  uploadPlanMediaList,
+  useImagePicker,
+} from '@/src/features/media';
 import { useMutation } from 'react-query';
+import { ImagePickerAsset } from 'expo-image-picker';
+import dayjs from '@/src/libs/dayjs';
 
 export default function ScheduleEditor() {
   const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00.000Z';
@@ -89,9 +91,7 @@ export default function ScheduleEditor() {
   const handleDeleteMedia = (image: { uid: string; url: string; isNew: boolean }) => {
     LogUtil.log(`handleDeleteMedia Start: ${JSON.stringify(image)}`);
     if (image.isNew) {
-      setMediaList((prev: ImagePicker.ImagePickerAsset) =>
-        prev.filter((media) => media.uri !== image.url)
-      );
+      setMediaList((prev: ImagePickerAsset[]) => prev.filter((media) => media.uri !== image.url));
     } else {
       setEditSchedule((prev: Schedule) => ({
         ...prev,
@@ -171,7 +171,7 @@ export default function ScheduleEditor() {
         level: 'error',
         notify: true,
       });
-      Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.SAVE_FAILED'));
+      Toast.warn(generateI18nMessage('FEATURE.SCHEDULE.SAVE_FAILED'));
     },
   });
 
@@ -189,7 +189,7 @@ export default function ScheduleEditor() {
         <ScrollView showsVerticalScrollIndicator={false} className="flex-1 ">
           <View className="flex flex-col gap-6 pb-8">
             <TextInput
-              placeholder={generateI18nMessage('SCREEN.SCHEDULE.TITLE_PLACEHOLDER')}
+              placeholder={generateI18nMessage('FEATURE.SCHEDULE.TITLE_PLACEHOLDER')}
               value={editSchedule.title!}
               className={`flex flex-row justify-center rounded-xl items-center border-b-[1px] px-4 py-4 w-full text-3xl
               border-light-border dark:border-dark-border text-light-text dark:text-dark-text bg-light-background dark:bg-dark-background`}
@@ -204,7 +204,7 @@ export default function ScheduleEditor() {
             {/* 日程 */}
             <View className="w-full flex flex-col justify-start items-start">
               <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
-                {generateI18nMessage('DATA.SCHEDULE.DATETIME')}
+                {generateI18nMessage('FEATURE.SCHEDULE.DATETIME')}
               </Text>
               <View className={`flex flex-row justify-center items-center gap-4`}>
                 <DatePicker
@@ -259,20 +259,20 @@ export default function ScheduleEditor() {
             {/* マップから追加する */}
             <View className="w-full flex flex-col justify-start items-start gap-4">
               <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
-                {generateI18nMessage('DATA.SCHEDULE.PLACE_LIST')}
+                {generateI18nMessage('FEATURE.SCHEDULE.PLACE_LIST')}
               </Text>
               {/* 追加ボタン */}
               <Button
                 theme={'info'}
                 onPress={handleMapModal}
-                text={generateI18nMessage('SCREEN.SCHEDULE.ADD_FROM_MAP')}
+                text={generateI18nMessage('FEATURE.SCHEDULE.ADD_FROM_MAP')}
               />
 
               {/* 候補数 */}
               <View className="flex flex-row gap-2 items-center">
                 <FontAwesome5 name="map-marker-alt" size={18} color="#f87171" />
                 <Text className="text-light-text dark:text-dark-text">
-                  {generateI18nMessage('SCREEN.SCHEDULE.CANDIDATE_COUNT', [
+                  {generateI18nMessage('FEATURE.SCHEDULE.CANDIDATE_COUNT', [
                     {
                       key: 'count',
                       value: (
@@ -289,7 +289,7 @@ export default function ScheduleEditor() {
             {/* メモ */}
             <View className="w-full flex flex-col justify-start items-start">
               <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
-                {generateI18nMessage('DATA.SCHEDULE.MEMO')}
+                {generateI18nMessage('FEATURE.SCHEDULE.MEMO')}
               </Text>
               <TextInput
                 value={editSchedule.description!}
@@ -310,7 +310,7 @@ export default function ScheduleEditor() {
             <View className="w-full flex flex-col justify-start items-start gap-2">
               <View className="flex flex-row justify-start items-center gap-4   ">
                 <Text className={`text-lg font-bold text-light-text dark:text-dark-text`}>
-                  {generateI18nMessage('SCREEN.SCHEDULE.MEDIA_LIST', [
+                  {generateI18nMessage('FEATURE.SCHEDULE.MEDIA_LIST', [
                     {
                       key: 'count',
                       value: viewMediaList.length.toString() || '0',

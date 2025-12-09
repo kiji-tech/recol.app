@@ -7,11 +7,10 @@ import MapView, {
   PROVIDER_GOOGLE,
   Region,
 } from 'react-native-maps';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import { Route } from '../types/Direction';
 import { decodePolyline } from '../libs/direction';
-import { CurrentMarker, DefaultMarker, SelectedMarker } from './Marker';
-import { Place } from '../types/Place';
+import { Place, CurrentMarker, DefaultMarker, SelectedMarker } from '@/src/features/map';
 /** センターサークル */
 const CenterCircle = ({
   region,
@@ -58,7 +57,7 @@ export default function Map({
   selectedPlaceList: Place[];
   placeList: Place[];
   radius: number;
-  region: Region | null;
+  region: Region;
   isMarker?: boolean;
   isCallout?: boolean;
   isCenterCircle?: boolean;

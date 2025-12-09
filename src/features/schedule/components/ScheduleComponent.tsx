@@ -2,14 +2,11 @@ import React, { useMemo } from 'react';
 import { ReactNode } from 'react';
 import { Text, View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { usePlan } from '@/src/contexts/PlanContext';
-import { Schedule } from '@/src/features/schedule';
-import { useTheme } from '@/src/contexts/ThemeContext';
-import { Button, IconButton } from '@/src/components';
+import { usePlan, useTheme } from '@/src/contexts';
+import { Schedule, ScheduleItem } from '@/src/features/schedule';
+import { Button, IconButton, MaskLoading } from '@/src/components';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import dayjs from 'dayjs';
-import MaskLoading from '@/src/components/MaskLoading';
-import ScheduleItem from '@/src/features/schedule/components/ScheduleItem';
 import generateI18nMessage from '@/src/libs/i18n';
 
 type Props = {
@@ -27,6 +24,11 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
   const router = useRouter();
 
   // === Method ====
+  /**
+   * 新しいスケジュールを作成する
+   * @param from {Dayjs} 開始日時
+   * @param to {Dayjs} 終了日時
+   */
   const onNewSchedule = (from: dayjs.Dayjs, to: dayjs.Dayjs) => {
     const newSchedule = new Schedule({
       plan_id: plan!.uid,
@@ -37,6 +39,9 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
 
+  /**
+   * 新しいスケジュールを追加する
+   */
   const handleAddSchedule = () => {
     // スケジュールリストの最後の日付(to)を設定する
     const from =
@@ -47,14 +52,20 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
     onNewSchedule(from, to);
   };
 
-  /** 間のスケジュールから予定を追加する */
+  /**
+   * 間のスケジュールから予定を追加する
+   * @param schedule {Schedule} スケジュール
+   */
   const handleAddScheduleBetween = (schedule: Schedule) => {
     const from = dayjs(schedule.to);
     const to = dayjs(from).add(1, 'hour');
     onNewSchedule(from, to);
   };
 
-  /** アイテムクリックイベント */
+  /**
+   * スケジュールアイテムを押した際のイベント
+   * @param schedule {Schedule} スケジュール
+   */
   const handleSchedulePress = (schedule: Schedule) => {
     const s = new Schedule({
       ...schedule,
@@ -72,14 +83,17 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
     router.push(`/(scheduleEditor)/ScheduleEditor`);
   };
 
-  /** アイテム長押しイベント */
+  /**
+   * スケジュールアイテムを長押しした際のイベント
+   * @param schedule {Schedule} スケジュール
+   */
   const handleScheduleLongPress = (schedule: Schedule) => {
     if (!onDelete) return;
     // 削除アラート
-    const text = generateI18nMessage('SCREEN.SCHEDULE.DELETE_SUCCESS', [
+    const text = generateI18nMessage('FEATURE.SCHEDULE.DELETE_SUCCESS', [
       { key: 'title', value: schedule.title || '' },
     ]);
-    Alert.alert(text, generateI18nMessage('SCREEN.SCHEDULE.DELETE_CONFIRM'), [
+    Alert.alert(text, generateI18nMessage('FEATURE.SCHEDULE.DELETE_CONFIRM'), [
       { text: generateI18nMessage('COMMON.CANCEL'), style: 'cancel' },
       {
         text: generateI18nMessage('COMMON.DELETE'),
@@ -148,7 +162,7 @@ export default function ScheduleComponents({ onDelete }: Props): ReactNode {
       </View>
       <View className="my-8">
         <Button
-          text={generateI18nMessage('COMPONENT.SCHEDULE.ADD_SCHEDULE')}
+          text={generateI18nMessage('FEATURE.SCHEDULE.ADD_SCHEDULE')}
           disabled={isLoading}
           onPress={() => handleAddSchedule()}
         />

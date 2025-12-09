@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 
 export default function DevelopmentBar() {
   const isDevelopment = process.env.EXPO_PUBLIC_APP_ENV == 'development';

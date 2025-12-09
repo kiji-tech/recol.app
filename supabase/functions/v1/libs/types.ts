@@ -95,12 +95,32 @@ export interface Photo {
 }
 
 // API レスポンス用の型定義
-export interface ApiResponse<T = unknown> {
-  data?: T;
-  error?: Error | string | null;
-  message?: string;
-  code?: string;
+
+/**
+ * 成功レスポンスの型定義
+ */
+export interface SuccessResponse<T> {
+  success: true;
+  data: T;
+  error: null;
 }
+
+/**
+ * エラーレスポンスの型定義
+ */
+export interface ErrorResponse {
+  success: false;
+  data: null;
+  error: {
+    message: string;
+    code: string;
+  };
+}
+
+/**
+ * 統一APIレスポンス型
+ */
+export type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
 
 // プラン関連のリクエスト型
 export interface CreatePlanRequest {

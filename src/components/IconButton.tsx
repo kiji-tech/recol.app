@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 
 type Props = {

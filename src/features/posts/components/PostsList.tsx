@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
-import { usePosts } from '../hooks/usePosts';
 import { View, Text, FlatList, ActivityIndicator } from 'react-native';
-import { Posts } from '../types/Posts';
-import { Place } from '../../map/types/Place';
-import PostsItem from './PostsItem';
+import { Posts, usePosts, PostsItem } from '@/src/features/posts';
+import { Place } from '@/src/features/map';
 
 type Props = {
   onSelect: (place: Place) => void;

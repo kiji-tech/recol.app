@@ -1,14 +1,12 @@
 import React, { useMemo } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { Posts } from '../types/Posts';
+import { Image } from 'expo-image';
 import { useAuth } from '@/src/features/auth';
 import { useQuery } from 'react-query';
-import { fetchCachePlace } from '../../map/apis/fetchCachePlace';
-import { Place } from '../../map/types/Place';
-import { Image } from 'expo-image';
-import MediaViewer from '../../schedule/components/MediaViewer';
+import { Place, fetchCachePlace } from '@/src/features/map';
+import { MediaViewer } from '@/src/features/schedule';
+import { Posts, PostsMenu } from '@/src/features/posts';
 import dayjs from '@/src/libs/dayjs';
-import PostsMenu from './PostsMenu';
 
 type Props = {
   posts: Posts;
@@ -19,7 +17,7 @@ type Props = {
 export default function PostsItem({ posts, onSelect, onDelete, onReport }: Props) {
   // === Member ===
   const { session } = useAuth();
-  const { uid, place_id, body, created_at, medias, profile } = posts;
+  const { place_id, body, created_at, medias, profile } = posts;
 
   // === Method ===
   /**
@@ -32,7 +30,7 @@ export default function PostsItem({ posts, onSelect, onDelete, onReport }: Props
   };
 
   // === Query ===
-  const { data: placeData, isLoading } = useQuery<Place[]>({
+  const { data: placeData } = useQuery<Place[]>({
     queryKey: ['fetchPlaceInfo', place_id],
     queryFn: () => fetchCachePlace([place_id], session),
   });
@@ -83,7 +81,7 @@ export default function PostsItem({ posts, onSelect, onDelete, onReport }: Props
                   {profile?.display_name}
                 </Text>
                 <Text className="text-light-text dark:text-dark-text text-sm">
-                  @{profile?.uid.slice(0, 6)} {toDateString(created_at!)}
+                  {toDateString(created_at!)}
                 </Text>
               </View>
             </View>
@@ -94,6 +92,10 @@ export default function PostsItem({ posts, onSelect, onDelete, onReport }: Props
               onReport={() => onReport(posts)}
             />
           </View>
+          {/* 住所 */}
+          <Text className="text-light-text dark:text-dark-text text-sm">
+            {placeInfo.shortFormattedAddress}
+          </Text>
           {/* 投稿内容 */}
           <Text className="text-light-text dark:text-dark-text text-md ">{body}</Text>
         </View>

@@ -3,6 +3,7 @@ import { SupabaseClient } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { Schedule } from '../libs/types.ts';
+import * as ResponseUtil from '../libs/ResponseUtil.ts';
 
 /**
  * スケジュールの作成・更新APIのメイン処理
@@ -37,8 +38,8 @@ export const upsertSchedule = async (c: Context, supabase: SupabaseClient) => {
     .maybeSingle();
   if (error) {
     LogUtil.log(JSON.stringify(error), { level: 'error' });
-    return c.json({ message: getMessage('C007', ['スケジュール']), code: 'C007' }, 400);
+    return ResponseUtil.error(c, getMessage('C007', ['スケジュール']), 'C007', 400);
   }
 
-  return c.json(data);
+  return ResponseUtil.success(c, data);
 };

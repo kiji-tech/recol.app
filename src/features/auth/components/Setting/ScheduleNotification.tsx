@@ -1,17 +1,17 @@
 import React from 'react';
 import { View, Text, Switch, Alert, Linking, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import { useAuth } from '@/src/features/auth';
-import { Profile } from '@/src/features/profile/types/Profile';
 import { NotificationUtil } from '@/src/libs/NotificationUtil';
-import { updateProfile } from '@/src/features/profile';
+import { Profile, updateProfile } from '@/src/features/profile';
 import { fetchScheduleListForNotification } from '@/src/features/schedule';
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
-import generateI18nMessage from '@/src/libs/i18n';
 import { Toast } from 'toastify-react-native';
 import { useMutation } from 'react-query';
+import Constants from 'expo-constants';
+import generateI18nMessage from '@/src/libs/i18n';
+import * as Notifications from 'expo-notifications';
+
 export default function ScheduleNotification() {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
@@ -41,8 +41,8 @@ export default function ScheduleNotification() {
         }
 
         Alert.alert(
-          generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.NO_PERMISSION_TITLE'),
-          generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.NO_PERMISSION'),
+          generateI18nMessage('FEATURE.SCHEDULE_NOTIFICATION.NO_PERMISSION_TITLE'),
+          generateI18nMessage('FEATURE.SCHEDULE_NOTIFICATION.NO_PERMISSION'),
           [
             {
               text: '設定を開く',
@@ -71,7 +71,7 @@ export default function ScheduleNotification() {
 
         Alert.alert(
           generateI18nMessage('COMMON.ERROR'),
-          generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.ERROR_MESSAGE'),
+          generateI18nMessage('FEATURE.SCHEDULE_NOTIFICATION.ERROR_MESSAGE'),
           [{ text: 'OK' }]
         );
         return false;
@@ -127,11 +127,11 @@ export default function ScheduleNotification() {
         <View className="flex-row items-center">
           <Ionicons name="calendar-outline" size={24} color={isDarkMode ? 'white' : 'black'} />
           <Text className="ml-3 text-light-text dark:text-dark-text">
-            {generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.TITLE')}
+            {generateI18nMessage('FEATURE.SCHEDULE_NOTIFICATION.TITLE')}
           </Text>
         </View>
         <Text className="text-sm text-light-text dark:text-dark-text ml-9 mt-1">
-          {generateI18nMessage('COMPONENT.SCHEDULE_NOTIFICATION.MESSAGE')}
+          {generateI18nMessage('FEATURE.SCHEDULE_NOTIFICATION.MESSAGE')}
         </Text>
       </View>
       <View className="absolute right-4">

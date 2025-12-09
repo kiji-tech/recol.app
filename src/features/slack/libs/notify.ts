@@ -1,8 +1,10 @@
-import { SlackNotificationOptions, SlackNotificationType } from '../types/Slack';
-import { SlackConfigUtil } from './slackConfig';
-import { SlackMessageFilterUtil } from './messageFilter';
-import { SlackMessageFormatterUtil } from './messageFormatter';
-import { sendSlackNotification } from '../apis/sendSlackNotification';
+import {
+  SlackNotificationOptions,
+  SlackConfigUtil,
+  SlackMessageFilterUtil,
+  SlackMessageFormatterUtil,
+  sendSlackNotification,
+} from '@/src/features/slack';
 
 /**
  * Slack通知を送信する（lib向けユーティリティ）

@@ -1,22 +1,5 @@
 {
-    "TABBAR": {
-        "HOME": "ホーム",
-        "PLAN": "予定",
-        "SCHEDULE": "スケジュール",
-        "SETTINGS": "設定",
-        "MAP": "マップ",
-        "MEDIA": "メディア",
-        "SAMPLE": "サンプル"
-    },
-    "DATA": {
-        "SCHEDULE": {
-            "DATETIME": "日時",
-            "CATEGORY": "カテゴリ",
-            "PLACE_LIST": "候補",
-            "MEMO": "メモ"
-        }
-    },
-    "SCREEN": {
+    "FEATURE": {
         "HOME": {
             "TODAY_SCHEDULE": "本日の予定",
             "RECENT_PLAN": "直近の予定",
@@ -39,7 +22,58 @@
             "REGISTER_SUCCESS": "を登録しました",
             "REGISTER_FAILED": "プランの登録に失敗しました",
             "PLAN_NOT_FOUND": "プランが見つかりません",
-            "LIST_TITLE": "予定一覧"
+            "LIST_TITLE": "予定一覧",
+            "NOT_FOUND": "プランがありません",
+            "ADD_PLAN": "プランを追加する",
+            "SUPER_USER": "スーパーユーザー",
+            "FREE_PLAN": "無料プラン",
+            "PREMIUM_PLAN": "プレミアムプラン",
+            "EXPIRATION_DATE": "有効期限",
+            "SORT_TITLE": "並び替え",
+            "SORT_CREATED_AT": "作成日順（降順）",
+            "SORT_SCHEDULE_DATE": "スケジュールの日付順（降順）",
+            "NO_MEMO": "メモはありません.",
+            "NO_SCHEDULE_TODAY": "本日の予定はありません",
+            "NO_PLAN_RECENT": "直近#days#日のプランはありません",
+            "DELETE_CONFIRM": "#title#を削除します",
+            "DELETE_CONFIRM_MESSAGE": "一度削除すると復元することはできません。削除してもよろしいですか？"
+        },
+        "SCHEDULE": {
+            "DATETIME": "日時",
+            "LABEL_CATEGORY": "カテゴリ",
+            "PLACE_LIST": "候補",
+            "MEMO": "メモ",
+            "TITLE_PLACEHOLDER": "タイトル...",
+            "NO_LOGIN": "ログイン情報が見つかりませんでした",
+            "PLAN_NOT_FOUND": "プランの情報が取得できませんでした",
+            "FETCH_FAILED": "プランの情報が取得に失敗しました",
+            "CANDIDATE_COUNT": "#count# 件候補があります",
+            "MEDIA_LIST": "画像（#count#）",
+            "DELETE_CONFIRM": "スケジュールを削除します",
+            "DELETE_SUCCESS": "#title#を削除しました",
+            "SAVE_FAILED": "スケジュールの保存に失敗しました",
+            "ADD_FROM_MAP": "マップから確認・追加",
+            "SELECT_CATEGORY": "カテゴリを選んでください…",
+            "CATEGORY": {
+                "MOVEMENT": "移動",
+                "MEALS": "食事",
+                "CAFE": "カフェ",
+                "AMUSEMENT": "観光",
+                "OTHER": "その他"
+            },
+            "TIME_EDITOR": {
+                "PREVIOUS_START_TIME": "前から開始時刻を設定",
+                "NEXT_START_TIME": "次の開始時刻を設定",
+                "SUBMIT_ERROR": "スケジュールの保存に失敗しました"
+            },
+            "EDIT_PLAN": "予定編集",
+            "ADD_SCHEDULE": "スケジュールを追加する",
+            "EDIT_TIME": "時間をまとめて編集",
+            "SHARE": "共有する",
+            "SHARE_TITLE": "スケジュールを共有します",
+            "POSTS": "思い出を投稿する",
+            "NOT_FOUND_PLACE": "場所が見つかりません",
+            "POSTS_PLACE_SELECT": "場所を選択"
         },
         "AUTH": {
             "SIGN_IN": "サインイン",
@@ -88,7 +122,10 @@
         "INFORMATION": {
             "TITLE": "お知らせ",
             "NO_INFORMATION": "お知らせがありません",
-            "ERROR_OCCURRED": "エラーが発生しました"
+            "ERROR_OCCURRED": "エラーが発生しました",
+            "DETAIL": "詳細はこちら",
+            "CLOSE": "閉じる",
+            "INVALID_URL": "無効なURLです"
         },
         "ACCOUNT": {
             "DELETE_TITLE": "アカウント削除",
@@ -132,93 +169,7 @@
             "SELECT_PLAN": "プランを選択",
             "CANCEL_PREMIUM_BUTTON": "プレミアムプランを解約",
             "UPGRADE_COMPLETE": "アップグレードが完了しました！",
-            "WELCOME_PREMIUM": "プレミアムプランへようこそ。全ての機能をお楽しみいただけます。"
-        },
-        "SETTINGS": {
-            "ACCOUNT_SETTINGS": "アカウント設定",
-            "PROFILE_EDIT": "プロフィール編集",
-            "PLAN": "プラン",
-            "APP_SETTINGS": "アプリ設定",
-            "APP_VERSION": "アプリバージョン",
-            "TESTER_SETTINGS": "テスター設定",
-            "OTHER": "その他",
-            "TERMS": "利用規約",
-            "PRIVACY_POLICY": "プライバシーポリシー",
-            "CONTACT": "お問い合わせはこちら",
-            "SHARE_TWITTER": "Twitterで宣伝する",
-            "DELETE_ACCOUNT": "アカウント削除する",
-            "SIGN_OUT": "サインアウト"
-        },
-        "SCHEDULE": {
-            "TITLE_PLACEHOLDER": "タイトル...",
-            "NO_LOGIN": "ログイン情報が見つかりませんでした",
-            "PLAN_NOT_FOUND": "プランの情報が取得できませんでした",
-            "FETCH_FAILED": "プランの情報が取得に失敗しました",
-            "CANDIDATE_COUNT": "#count# 件候補があります",
-            "MEDIA_LIST": "画像（#count#）",
-            "DELETE_CONFIRM": "スケジュールを削除します",
-            "DELETE_SUCCESS": "#title#を削除しました",
-            "SAVE_FAILED": "スケジュールの保存に失敗しました",
-            "ADD_FROM_MAP": "マップから確認・追加",
-            "SELECT_CATEGORY": "カテゴリを選んでください…",
-            "CATEGORY": {
-                "MOVEMENT": "移動",
-                "MEALS": "食事",
-                "CAFE": "カフェ",
-                "AMUSEMENT": "観光",
-                "OTHER": "その他"
-            },
-            "TIME_EDITOR": {
-                "PREVIOUS_START_TIME": "前から開始時刻を設定",
-                "NEXT_START_TIME": "次の開始時刻を設定",
-                "SUBMIT_ERROR": "スケジュールの保存に失敗しました"
-            }
-        },
-        "PLAN_LIST": {
-            "FETCH_FAILED": "プランの取得に失敗しました",
-            "SORT_SAVE_FAILED": "並び替えを保存に失敗しました"
-        },
-        "MAP": {
-            "SELECT_SCHEDULE": "スケジュールを選んでください...",
-            "NO_RESULT": "検索結果がありません",
-            "NO_SELECTED": "候補が選択されていません",
-            "RESEARCH": "エリアで再検索する",
-            "CATEGORY": {
-                "SEARCH_RESULT": "検索結果",
-                "SELECTED": "選択中",
-                "CAFE": "カフェ",
-                "MEAL": "食事",
-                "HOTEL": "ホテル・旅館",
-                "SPOT": "観光スポット"
-            },
-            "RATE_LIMIT_MODAL": {
-                "TITLE": "検索制限エラー",
-                "MESSAGE": "#plan#では1時間に5回まで検索可能です。動画を視聴すると回数がリセットされます。",
-                "MOVIE_BUTTON": "動画を見て制限を解除する"
-            }
-        },
-        "MEDIA": {
-            "NO_IMAGE_LIST": "メディアは登録されていません"
-        }
-    },
-    "COMPONENT": {
-        "PLAN": {
-            "NOT_FOUND": "プランがありません",
-            "ADD_PLAN": "プランを追加する",
-            "SUPER_USER": "スーパーユーザー",
-            "FREE_PLAN": "無料プラン",
-            "PREMIUM_PLAN": "プレミアムプラン",
-            "EXPIRATION_DATE": "有効期限",
-            "SORT_TITLE": "並び替え",
-            "SORT_CREATED_AT": "作成日順（降順）",
-            "SORT_SCHEDULE_DATE": "スケジュールの日付順（降順）",
-            "NO_MEMO": "メモはありません.",
-            "NO_SCHEDULE_TODAY": "本日の予定はありません",
-            "NO_PLAN_RECENT": "直近#days#日のプランはありません",
-            "DELETE_CONFIRM": "#title#を削除します",
-            "DELETE_CONFIRM_MESSAGE": "一度削除すると復元することはできません。削除してもよろしいですか？"
-        },
-        "PAYMENT": {
+            "WELCOME_PREMIUM": "プレミアムプランへようこそ。全ての機能をお楽しみいただけます。",
             "FEATURE": "機能",
             "FREE": "フリー",
             "PREMIUM": "プレミアム",
@@ -242,20 +193,46 @@
             "TRIAL_MESSAGE_AFTER_END": "トライアル終了後プレミアムプランに自動的にアップグレードされます。",
             "DISCOUNT_MESSAGE": "#discount#% OFF!"
         },
-        "INFORMATION": {
-            "DETAIL": "詳細はこちら",
-            "CLOSE": "閉じる",
-            "INVALID_URL": "無効なURLです"
+        "SETTINGS": {
+            "ACCOUNT_SETTINGS": "アカウント設定",
+            "PROFILE_EDIT": "プロフィール編集",
+            "PLAN": "プラン",
+            "APP_SETTINGS": "アプリ設定",
+            "APP_VERSION": "アプリバージョン",
+            "TESTER_SETTINGS": "テスター設定",
+            "OTHER": "その他",
+            "TERMS": "利用規約",
+            "PRIVACY_POLICY": "プライバシーポリシー",
+            "CONTACT": "お問い合わせはこちら",
+            "SHARE_TWITTER": "Twitterで宣伝する",
+            "DELETE_ACCOUNT": "アカウント削除する",
+            "SIGN_OUT": "サインアウト"
         },
-        "SCHEDULE": {
-            "EDIT_PLAN": "予定編集",
-            "ADD_SCHEDULE": "スケジュールを追加する",
-            "EDIT_TIME": "時間をまとめて編集",
-            "SHARE": "共有する",
-            "SHARE_TITLE": "スケジュールを共有します",
-            "POSTS": "思い出を投稿する",
-            "NOT_FOUND_PLACE": "場所が見つかりません",
-            "POSTS_PLACE_SELECT": "場所を選択"
+        "MAP": {
+            "SELECT_SCHEDULE": "スケジュールを選んでください...",
+            "NO_RESULT": "検索結果がありません",
+            "NO_SELECTED": "候補が選択されていません",
+            "RESEARCH": "エリアで再検索する",
+            "CATEGORY": {
+                "SEARCH_RESULT": "検索結果",
+                "SELECTED": "選択中",
+                "CAFE": "カフェ",
+                "MEAL": "食事",
+                "HOTEL": "ホテル・旅館",
+                "SPOT": "観光スポット"
+            },
+            "RATE_LIMIT_MODAL": {
+                "TITLE": "検索制限エラー",
+                "MESSAGE": "#plan#では1時間に5回まで検索可能です。動画を視聴すると回数がリセットされます。",
+                "MOVIE_BUTTON": "動画を見て制限を解除する"
+            }
+        },
+        "MEDIA": {
+            "NO_IMAGE_LIST": "メディアは登録されていません"
+        },
+        "PLAN_LIST": {
+            "FETCH_FAILED": "プランの取得に失敗しました",
+            "SORT_SAVE_FAILED": "並び替えを保存に失敗しました"
         },
         "VERSION": {
             "UPDATE_REQUIRED": "アプリの更新が必要です",
@@ -281,6 +258,15 @@
         }
     },
     "COMMON": {
+        "TABBAR": {
+            "HOME": "ホーム",
+            "PLAN": "予定",
+            "SCHEDULE": "スケジュール",
+            "SETTINGS": "設定",
+            "MAP": "マップ",
+            "MEDIA": "メディア",
+            "SAMPLE": "サンプル"
+        },
         "DARK_MODE": "ダークモード",
         "ERROR": "エラー",
         "SUCCESS": "成功",
@@ -296,5 +282,6 @@
             "FREE": "フリープラン",
             "PREMIUM": "プレミアムプラン"
         }
-    }
+    },
+    "MESSAGE": {}
 }

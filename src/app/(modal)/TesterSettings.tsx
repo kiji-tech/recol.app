@@ -8,7 +8,7 @@ export default function TesterSettings() {
   return (
     <BackgroundView>
       <Header
-        title={generateI18nMessage('SCREEN.SETTINGS.TESTER_SETTINGS')}
+        title={generateI18nMessage('FEATURE.SETTINGS.TESTER_SETTINGS')}
         onBack={() => router.back()}
       />
       <Text>TesterSettings</Text>

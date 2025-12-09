@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Plan } from '../../index';
+import { Plan, RecentPlanDays } from '@/src/features/plan';
 import { Schedule } from '@/src/features/schedule';
 import dayjs from 'dayjs';
-import { RecentPlanDays } from '../../hooks/useRecentPlanDays';
 
 /**
  * 直近プランのカードコンポーネント

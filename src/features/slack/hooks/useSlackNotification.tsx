@@ -1,9 +1,11 @@
 import { useCallback } from 'react';
-import { SlackNotificationOptions } from '../types/Slack';
-import { SlackConfigUtil } from '../libs/slackConfig';
-import { SlackMessageFilterUtil } from '../libs/messageFilter';
-import { SlackMessageFormatterUtil } from '../libs/messageFormatter';
-import { sendSlackNotification } from '../apis/sendSlackNotification';
+import {
+  SlackMessageFilterUtil,
+  SlackMessageFormatterUtil,
+  SlackNotificationOptions,
+  sendSlackNotification,
+  SlackConfigUtil,
+} from '@/src/features/slack';
 
 export const useSlackNotification = () => {
   const sendNotification = useCallback(async (options: SlackNotificationOptions): Promise<void> => {

@@ -1,20 +1,22 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import Map from '@/src/features/map/components/Map';
-import { Place } from '@/src/features/map/types/Place';
+import {
+  Place,
+  Map,
+  MapBottomSheet,
+  PlaceBottomSheet,
+  RateLimitModal,
+  ResearchButton,
+  MapCategory,
+  useMap,
+} from '@/src/features/map';
 import { BackHandler, Platform, View } from 'react-native';
-import MapBottomSheet from './BottomSheet/MapBottomSheet';
 import BottomSheet, { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { useFocusEffect } from 'expo-router';
-import ResearchButton from './ResearchButton';
 import { SCROLL_EVENT_TIMEOUT } from '@/src/libs/ConstValue';
 import { Header } from '@/src/components';
-import PlaceBottomSheet from './PlaceBottomSheet/PlaceBottomSheet';
-import { useMap } from '../hooks/useMap';
-import { useLocation } from '@/src/contexts/LocationContext';
+import { useLocation } from '@/src/contexts';
 import { LogUtil } from '@/src/libs/LogUtil';
-import { MapCategory } from '../types/MapCategory';
-import RateLimitModal from './RateLimitModal';
-import PostPlaceModal from '../../posts/components/PostPlaceModal';
+import { PostPlaceModal } from '@/src/features/posts';
 
 type Props = {
   isOpen: boolean;
@@ -178,7 +180,10 @@ export default function MapModal({ isOpen, onClose }: Props) {
           placeList={searchPlaceList}
           selectedPlaceList={selectedPlaceList}
           radius={radius}
-          region={region || currentRegion}
+          region={
+            region ||
+            currentRegion || { latitude: 0, longitude: 0, latitudeDelta: 0, longitudeDelta: 0 }
+          }
           isMarker={true}
           isCallout={true}
           isCenterCircle={true}

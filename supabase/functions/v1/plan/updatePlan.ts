@@ -2,6 +2,7 @@ import { Context } from 'jsr:@hono/hono';
 import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
+import * as ResponseUtil from '../libs/ResponseUtil.ts';
 import {
   Plan,
   UpdatePlanRequest,
@@ -18,7 +19,7 @@ const validateUpdateRequest = async (c: Context): Promise<ValidationResult<Updat
     return {
       isValid: false,
       data: null,
-      error: c.json({ message: getMessage('C003'), code: 'C003' }, 400),
+      error: ResponseUtil.error(c, getMessage('C003'), 'C003', 400),
     };
   }
 
@@ -118,7 +119,7 @@ export const updatePlan = async (
   );
 
   if (error) {
-    return c.json({ message: getMessage('C007', ['プラン']), code: 'C007' }, 500);
+    return ResponseUtil.error(c, getMessage('C007', ['プラン']), 'C007', 500);
   }
 
   // scheduleを更新
@@ -128,9 +129,9 @@ export const updatePlan = async (
   );
 
   if (updateScheduleError) {
-    return c.json({ message: getMessage('C007', ['スケジュール']), code: 'C007' }, 500);
+    return ResponseUtil.error(c, getMessage('C007', ['スケジュール']), 'C007', 500);
   }
 
   LogUtil.log('[PUT] plan 完了', { level: 'info' });
-  return c.json({ ...data, schedule: updateScheduleData });
+  return ResponseUtil.success(c, { ...data, schedule: updateScheduleData });
 };

@@ -1,19 +1,21 @@
 import React, { ReactNode, useCallback } from 'react';
-import ScheduleComponents from '../../features/schedule/components/ScheduleComponent';
-import { BackgroundView, Header } from '@/src/components';
+import { BackgroundView, Header, MaskLoading } from '@/src/components';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { deleteSchedule, Schedule } from '@/src/features/schedule';
+import {
+  deleteSchedule,
+  Schedule,
+  PlanInformation,
+  ScheduleMenu,
+  ScheduleComponent,
+} from '@/src/features/schedule';
 import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { ScrollView } from 'react-native-gesture-handler';
 import { BackHandler } from 'react-native';
-import PlanInformation from '../../features/schedule/components/PlanInformation';
-import ScheduleMenu from '../../features/schedule/components/ScheduleMenu';
 import { Toast } from 'toastify-react-native';
+import { usePlan } from '@/src/contexts';
 import generateI18nMessage from '@/src/libs/i18n';
-import { usePlan } from '@/src/contexts/PlanContext';
-import MaskLoading from '@/src/components/MaskLoading';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
@@ -26,13 +28,13 @@ export default function ScheduleScreen(): ReactNode {
    */
   const initView = () => {
     if (!session) {
-      Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.NO_LOGIN'));
+      Toast.warn(generateI18nMessage('FEATURE.SCHEDULE.NO_LOGIN'));
       router.navigate('/(auth)/SignIn');
       return;
     }
 
     if (!planId) {
-      Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.PLAN_NOT_FOUND'));
+      Toast.warn(generateI18nMessage('FEATURE.SCHEDULE.PLAN_NOT_FOUND'));
       router.back();
       return;
     }
@@ -40,10 +42,10 @@ export default function ScheduleScreen(): ReactNode {
 
   /**
    * 予定の削除処理
-   * @param schedule {Schedule} 
+   * @param schedule {Schedule}
    */
   const handleDeleteSchedule = async (schedule: Schedule) => {
-    const text = generateI18nMessage('SCREEN.SCHEDULE.DELETE_SUCCESS', [
+    const text = generateI18nMessage('FEATURE.SCHEDULE.DELETE_SUCCESS', [
       { key: 'title', value: schedule.title || '' },
     ]);
     await deleteSchedule(schedule, session).catch((e) => {
@@ -100,7 +102,7 @@ export default function ScheduleScreen(): ReactNode {
           <>
             <PlanInformation />
             {/* Schedule */}
-            <ScheduleComponents onDelete={handleDeleteSchedule} />
+            <ScheduleComponent onDelete={handleDeleteSchedule} />
           </>
         )}
       </ScrollView>

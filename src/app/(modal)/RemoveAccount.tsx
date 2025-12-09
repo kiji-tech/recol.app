@@ -3,15 +3,13 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '@/src/contexts/ThemeContext';
-import { deleteAccount } from '@/src/features/auth';
-import { useAuth } from '@/src/features/auth';
-import { useSlackNotification } from '@/src/features/slack/hooks/useSlackNotification';
-import { usePremiumPlan } from '@/src/features/auth/hooks/usePremiumPlan';
+import { useTheme } from '@/src/contexts';
+import { deleteAccount, useAuth, usePremiumPlan } from '@/src/features/auth';
+import { useSlackNotification } from '@/src/features/slack';
 import { Linking } from 'react-native';
-import generateI18nMessage from '@/src/libs/i18n';
 import { useMutation } from 'react-query';
 import { Toast } from 'toastify-react-native';
+import generateI18nMessage from '@/src/libs/i18n';
 
 interface ConsentItem {
   id: string;
@@ -28,17 +26,17 @@ export default function RemoveAccount() {
   const [consentItems, setConsentItems] = useState<ConsentItem[]>([
     {
       id: 'subscription_cancel',
-      text: generateI18nMessage('SCREEN.ACCOUNT.SUBSCRIPTION_CANCELED'),
+      text: generateI18nMessage('FEATURE.ACCOUNT.SUBSCRIPTION_CANCELED'),
       checked: false,
     },
     {
       id: 'premium_refund',
-      text: generateI18nMessage('SCREEN.ACCOUNT.NO_REFUND'),
+      text: generateI18nMessage('FEATURE.ACCOUNT.NO_REFUND'),
       checked: false,
     },
     {
       id: 'plan_restore',
-      text: generateI18nMessage('SCREEN.ACCOUNT.NO_RESTORE'),
+      text: generateI18nMessage('FEATURE.ACCOUNT.NO_RESTORE'),
       checked: false,
     },
   ]);
@@ -47,8 +45,8 @@ export default function RemoveAccount() {
     mutationFn: () => deleteAccount(session),
     onSuccess: () => {
       Alert.alert(
-        generateI18nMessage('SCREEN.ACCOUNT.DELETE_SUCCESS_TITLE'),
-        generateI18nMessage('SCREEN.ACCOUNT.DELETE_SUCCESS_MESSAGE'),
+        generateI18nMessage('FEATURE.ACCOUNT.DELETE_SUCCESS_TITLE'),
+        generateI18nMessage('FEATURE.ACCOUNT.DELETE_SUCCESS_MESSAGE'),
         [
           {
             text: generateI18nMessage('COMMON.OK'),
@@ -84,8 +82,8 @@ export default function RemoveAccount() {
   // アカウント削除処理
   const handleDeleteAccount = async () => {
     Alert.alert(
-      generateI18nMessage('SCREEN.ACCOUNT.DELETE_CONFIRM_TITLE'),
-      generateI18nMessage('SCREEN.ACCOUNT.DELETE_CONFIRM_MESSAGE'),
+      generateI18nMessage('FEATURE.ACCOUNT.DELETE_CONFIRM_TITLE'),
+      generateI18nMessage('FEATURE.ACCOUNT.DELETE_CONFIRM_MESSAGE'),
       [
         {
           text: generateI18nMessage('COMMON.CANCEL'),
@@ -102,7 +100,7 @@ export default function RemoveAccount() {
                 generateI18nMessage('COMMON.ERROR'),
                 error instanceof Error
                   ? error.message
-                  : generateI18nMessage('SCREEN.ACCOUNT.DELETE_FAILED')
+                  : generateI18nMessage('FEATURE.ACCOUNT.DELETE_FAILED')
               );
             }
           },
@@ -114,7 +112,7 @@ export default function RemoveAccount() {
   return (
     <BackgroundView>
       <Header
-        title={generateI18nMessage('SCREEN.ACCOUNT.DELETE_TITLE')}
+        title={generateI18nMessage('FEATURE.ACCOUNT.DELETE_TITLE')}
         onBack={() => router.back()}
       />
 
@@ -124,11 +122,11 @@ export default function RemoveAccount() {
           <View className="flex-row items-center mb-2">
             <Ionicons name="warning" size={20} color={isDarkMode ? '#fca5a5' : '#dc2626'} />
             <Text className="ml-2 text-red-600 dark:text-red-400 font-bold text-base">
-              {generateI18nMessage('SCREEN.ACCOUNT.IMPORTANT_NOTICE')}
+              {generateI18nMessage('FEATURE.ACCOUNT.IMPORTANT_NOTICE')}
             </Text>
           </View>
           <Text className="text-red-700 dark:text-red-300 text-sm leading-6">
-            {generateI18nMessage('SCREEN.ACCOUNT.DELETE_WARNING')}
+            {generateI18nMessage('FEATURE.ACCOUNT.DELETE_WARNING')}
           </Text>
         </View>
 
@@ -136,10 +134,10 @@ export default function RemoveAccount() {
         {activePlanId && (
           <View className="mb-8">
             <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-4">
-              {generateI18nMessage('SCREEN.ACCOUNT.PREMIUM_CANCEL_GUIDE')}
+              {generateI18nMessage('FEATURE.ACCOUNT.PREMIUM_CANCEL_GUIDE')}
             </Text>
             <Text className="text-sm text-light-text dark:text-dark-text">
-              {generateI18nMessage('SCREEN.ACCOUNT.PREMIUM_NOT_AUTO_CANCEL')}
+              {generateI18nMessage('FEATURE.ACCOUNT.PREMIUM_NOT_AUTO_CANCEL')}
               <Text
                 onPress={() => {
                   Linking.openURL(managementURL || '').then(async () => {
@@ -148,9 +146,9 @@ export default function RemoveAccount() {
                 }}
                 className="text-sm text-blue-500"
               >
-                {generateI18nMessage('SCREEN.ACCOUNT.CHECK_HERE')}
+                {generateI18nMessage('FEATURE.ACCOUNT.CHECK_HERE')}
               </Text>
-              {generateI18nMessage('SCREEN.ACCOUNT.CHECK_PURCHASE')}
+              {generateI18nMessage('FEATURE.ACCOUNT.CHECK_PURCHASE')}
             </Text>
           </View>
         )}
@@ -158,7 +156,7 @@ export default function RemoveAccount() {
         {/* 同意項目 */}
         <View className="mb-8">
           <Text className="text-lg font-bold text-light-text dark:text-dark-text mb-4">
-            {generateI18nMessage('SCREEN.ACCOUNT.DELETE_CONSENT')}
+            {generateI18nMessage('FEATURE.ACCOUNT.DELETE_CONSENT')}
           </Text>
           {consentItems.map((item) => (
             <TouchableOpacity
@@ -191,7 +189,7 @@ export default function RemoveAccount() {
         {/* 削除ボタン */}
         <View className="mt-auto">
           <Button
-            text={generateI18nMessage('SCREEN.ACCOUNT.DELETE_BUTTON')}
+            text={generateI18nMessage('FEATURE.ACCOUNT.DELETE_BUTTON')}
             onPress={handleDeleteAccount}
             theme="danger"
             disabled={!allItemsChecked || isLoading}
@@ -199,7 +197,7 @@ export default function RemoveAccount() {
           />
 
           <Text className="text-center text-xs text-light-text dark:text-dark-text mt-4 opacity-70">
-            {generateI18nMessage('SCREEN.ACCOUNT.ENABLE_DELETE')}
+            {generateI18nMessage('FEATURE.ACCOUNT.ENABLE_DELETE')}
           </Text>
         </View>
       </View>

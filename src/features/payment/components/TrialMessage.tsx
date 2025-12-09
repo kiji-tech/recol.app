@@ -14,7 +14,7 @@ export default function TrialMessage({ isMonthly, isCurrentPlan }: TrialMessageP
 
   return (
     <Text className="mt-1 text-xs text-light-success dark:text-dark-success font-medium">
-      {generateI18nMessage('COMPONENT.PAYMENT.TRIAL_MESSAGE')}
+      {generateI18nMessage('FEATURE.PAYMENT.TRIAL_MESSAGE')}
     </Text>
   );
 }

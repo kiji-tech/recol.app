@@ -7,24 +7,26 @@ import {
   Platform,
   BackHandler,
   SafeAreaView,
+  FlatList,
 } from 'react-native';
 import { Image } from 'expo-image';
-import { IconButton } from '@/src/components';
+import { IconButton, MaskLoading } from '@/src/components';
 import { router, useFocusEffect } from 'expo-router';
-import { useTheme } from '@/src/contexts/ThemeContext';
-import { FlatList } from 'react-native-gesture-handler';
-import { deletePlanMediaList, fetchPlanMediaList, uploadPlanMediaList } from '@/src/features/media';
+import { useTheme, usePlan } from '@/src/contexts';
 import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
-import { Media } from '@/src/features/media';
-import MediaDetailModal from '@/src/features/media/components/MediaDetailModal';
+import {
+  Media,
+  MediaDetailModal,
+  deletePlanMediaList,
+  fetchPlanMediaList,
+  uploadPlanMediaList,
+} from '@/src/features/media';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import * as ImagePicker from 'expo-image-picker';
 import * as Progress from 'react-native-progress';
 import { useMutation, useQuery } from 'react-query';
 import { Toast } from 'toastify-react-native';
-import MaskLoading from '@/src/components/MaskLoading';
-import { usePlan } from '@/src/contexts/PlanContext';
 import generateI18nMessage from '@/src/libs/i18n';
 
 export default function MediaScreen() {
@@ -232,7 +234,7 @@ export default function MediaScreen() {
       {images?.length === 0 && (
         <View className="flex justify-center items-center h-full">
           <Text className="text-light-text dark:text-dark-text text-xl">
-            {generateI18nMessage('SCREEN.MEDIA.NO_IMAGE_LIST')}
+            {generateI18nMessage('FEATURE.MEDIA.NO_IMAGE_LIST')}
           </Text>
         </View>
       )}

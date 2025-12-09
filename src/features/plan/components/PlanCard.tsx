@@ -1,11 +1,11 @@
 import React from 'react';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { Plan } from '@/src/features/plan';
 import { Schedule } from '@/src/features/schedule';
 import { useRouter } from 'expo-router';
-import { usePlan } from '@/src/contexts/PlanContext';
+import { usePlan } from '@/src/contexts';
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
-import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import generateI18nMessage from '@/src/libs/i18n';
 
 type PlanCardProps = {
@@ -35,8 +35,8 @@ export default function PlanCard({ plan, onDelete }: PlanCardProps) {
    */
   const handleDeletePlan = (plan: Plan) => {
     Alert.alert(
-      generateI18nMessage('COMPONENT.PLAN.DELETE_CONFIRM').replace('#title#', plan.title || ''),
-      generateI18nMessage('COMPONENT.PLAN.DELETE_CONFIRM_MESSAGE'),
+      generateI18nMessage('FEATURE.PLAN.DELETE_CONFIRM').replace('#title#', plan.title || ''),
+      generateI18nMessage('FEATURE.PLAN.DELETE_CONFIRM_MESSAGE'),
       [
         {
           text: generateI18nMessage('COMMON.CANCEL'),
@@ -82,7 +82,7 @@ export default function PlanCard({ plan, onDelete }: PlanCardProps) {
               </Text>
             ) : (
               <Text className="text-light-text dark:text-dark-text text-sm line-clamp-2 opacity-70">
-                {generateI18nMessage('COMPONENT.PLAN.NO_MEMO')}
+                {generateI18nMessage('FEATURE.PLAN.NO_MEMO')}
               </Text>
             )}
           </View>

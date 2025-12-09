@@ -1,21 +1,26 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { Alert, AppState, AppStateStatus } from 'react-native';
-import { supabase } from '../../../libs/supabase';
+import { supabase } from '@/src/libs/supabase';
 import { useRouter } from 'expo-router';
-import { LogUtil } from '../../../libs/LogUtil';
+import { LogUtil } from '@/src/libs/LogUtil';
 import { statusCodes } from '@react-native-google-signin/google-signin';
-import { Profile } from '../../profile/types/Profile';
-import { login } from '../libs/login';
-import { signup } from '../libs/signup';
-import { resetPassword, updateUserPassword } from '../libs/password';
-import { logout } from '../libs/logout';
-import { signInWithGoogle, signInWithApple } from '../libs/socialAuth';
-import { getProfile, getSession, isRecoverySession } from '../libs/session';
-import { AuthContextType } from '../types/Auth';
-import { CommonUtil } from '../../../libs/CommonUtil';
-import { usePremiumPlan } from './usePremiumPlan';
-import { syncPremiumPlan } from '../../profile/apis/syncPremiumPlan';
+import { Profile, syncPremiumPlan } from '@/src/features/profile';
+import {
+  getProfile,
+  getSession,
+  isRecoverySession,
+  resetPassword,
+  updateUserPassword,
+  login,
+  signup,
+  logout,
+  signInWithGoogle,
+  signInWithApple,
+  AuthContextType,
+  usePremiumPlan,
+} from '@/src/features/auth';
+import { CommonUtil } from '@/src/libs/CommonUtil';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

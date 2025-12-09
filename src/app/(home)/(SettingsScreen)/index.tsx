@@ -1,23 +1,22 @@
 import React, { useCallback } from 'react';
-import { BackgroundView, Button } from '@/src/components';
-import { useAuth } from '@/src/features/auth';
+import { BackgroundView, Button, MaskLoading } from '@/src/components';
+import {
+  useAuth,
+  SettingItem,
+  SettingDarkMode,
+  ScheduleNotification,
+  DevelopmentBar,
+} from '@/src/features/auth';
 import { router, useFocusEffect } from 'expo-router';
-import { Text, View, ScrollView, Platform } from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
 import { CommonUtil } from '@/src/libs/CommonUtil';
-import { usePlan } from '@/src/contexts/PlanContext';
-import Constants from 'expo-constants';
-import SettingItem from '@/src/features/auth/components/Setting/SettingItem';
-import SettingDarkMode from '@/src/features/auth/components/Setting/SettingDarkMode';
-import ScheduleNotification from '@/src/features/auth/components/Setting/ScheduleNotification';
-import DevelopmentBar from '@/src/features/auth/components/DevelopmentBar';
-import ProfileAvatar from '@/src/features/profile/components/ProfileAvatar';
-import PlanComponent from '@/src/features/plan/components/PlanComponent';
-import Share from 'react-native-share';
-import generateI18nMessage from '@/src/libs/i18n';
+import { usePlan } from '@/src/contexts';
+import { PlanComponent } from '@/src/features/plan';
 import { useQuery } from 'react-query';
-import { fetchProfile } from '@/src/features/profile';
-import MaskLoading from '@/src/components/MaskLoading';
+import { fetchProfile, ProfileAvatar } from '@/src/features/profile';
 import { useShare } from '@/src/features/commons/hooks/useShare';
+import Constants from 'expo-constants';
+import generateI18nMessage from '@/src/libs/i18n';
 
 // TODO: 将来的にはDB化
 // const CHAT_NOTIFICATION_KEY = STORAGE_KEYS.CHAT_NOTIFICATION_KEY;
@@ -87,17 +86,17 @@ export default function Settings() {
         {/* アカウント設定 */}
         <View className="mb-4">
           <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">
-            {generateI18nMessage('SCREEN.SETTINGS.ACCOUNT_SETTINGS')}
+            {generateI18nMessage('FEATURE.SETTINGS.ACCOUNT_SETTINGS')}
           </Text>
           <SettingItem
             icon="person-outline"
-            title={generateI18nMessage('SCREEN.SETTINGS.PROFILE_EDIT')}
+            title={generateI18nMessage('FEATURE.SETTINGS.PROFILE_EDIT')}
             onPress={() => router.push('/(settings)/ProfileEditorScreen')}
           />
         </View>
         <View className="pb-4 border-b border-light-border dark:border-dark-border">
           <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">
-            {generateI18nMessage('SCREEN.SETTINGS.PLAN')}
+            {generateI18nMessage('FEATURE.SETTINGS.PLAN')}
           </Text>
           <PlanComponent />
         </View>
@@ -105,7 +104,7 @@ export default function Settings() {
         {/* アプリ設定 */}
         <View className="mb-4">
           <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">
-            {generateI18nMessage('SCREEN.SETTINGS.APP_SETTINGS')}
+            {generateI18nMessage('FEATURE.SETTINGS.APP_SETTINGS')}
           </Text>
 
           {/* ダークモード設定 */}
@@ -136,14 +135,14 @@ export default function Settings() {
 
           <SettingItem
             icon="information-circle-outline"
-            title={generateI18nMessage('SCREEN.SETTINGS.APP_VERSION')}
+            title={generateI18nMessage('FEATURE.SETTINGS.APP_VERSION')}
             value={version}
             showArrow={false}
           />
           {profile && (profile.isTester() || profile.isSuperUser() || profile.isAdmin()) && (
             <SettingItem
               icon="bug-outline"
-              title={generateI18nMessage('SCREEN.SETTINGS.TESTER_SETTINGS')}
+              title={generateI18nMessage('FEATURE.SETTINGS.TESTER_SETTINGS')}
               onPress={() => router.push('/(modal)/TesterSettings')}
             />
           )}
@@ -152,33 +151,33 @@ export default function Settings() {
         {/* その他 */}
         <View className="mb-4">
           <Text className="px-4 py-2 text-sm text-light-text dark:text-dark-text">
-            {generateI18nMessage('SCREEN.SETTINGS.OTHER')}
+            {generateI18nMessage('FEATURE.SETTINGS.OTHER')}
           </Text>
           <SettingItem
             icon="document-text-outline"
-            title={generateI18nMessage('SCREEN.SETTINGS.TERMS')}
+            title={generateI18nMessage('FEATURE.SETTINGS.TERMS')}
             onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/terms`)}
           />
           <SettingItem
             icon="shield-outline"
-            title={generateI18nMessage('SCREEN.SETTINGS.PRIVACY_POLICY')}
+            title={generateI18nMessage('FEATURE.SETTINGS.PRIVACY_POLICY')}
             onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_WEB_URI}/policy`)}
           />
           <SettingItem
             icon="mail-outline"
-            title={generateI18nMessage('SCREEN.SETTINGS.CONTACT')}
+            title={generateI18nMessage('FEATURE.SETTINGS.CONTACT')}
             onPress={() => CommonUtil.openBrowser(`${process.env.EXPO_PUBLIC_CONTACT_PAGE_URL}`)}
           />
           <SettingItem
             icon="logo-twitter"
-            title={generateI18nMessage('SCREEN.SETTINGS.SHARE_TWITTER')}
+            title={generateI18nMessage('FEATURE.SETTINGS.SHARE_TWITTER')}
             onPress={() => {
               handleShareTwitter();
             }}
           />
           <SettingItem
             icon="trash-outline"
-            title={generateI18nMessage('SCREEN.SETTINGS.DELETE_ACCOUNT')}
+            title={generateI18nMessage('FEATURE.SETTINGS.DELETE_ACCOUNT')}
             isDanger={true}
             showArrow={false}
             onPress={() => router.push('/(modal)/RemoveAccount')}
@@ -189,7 +188,7 @@ export default function Settings() {
         <View className="p-4 mb-4">
           <Button
             theme="danger"
-            text={generateI18nMessage('SCREEN.SETTINGS.SIGN_OUT')}
+            text={generateI18nMessage('FEATURE.SETTINGS.SIGN_OUT')}
             onPress={handleSignOut}
           />
         </View>

@@ -1,22 +1,5 @@
 {
-    "TABBAR": {
-        "HOME": "Startseite",
-        "PLAN": "Plan",
-        "SCHEDULE": "Zeitplan",
-        "SETTINGS": "Einstellungen",
-        "MAP": "Karte",
-        "MEDIA": "Medien",
-        "SAMPLE": "Beispiel"
-    },
-    "DATA": {
-        "SCHEDULE": {
-            "DATETIME": "Datum und Uhrzeit",
-            "CATEGORY": "Kategorie",
-            "PLACE_LIST": "Kandidaten",
-            "MEMO": "Notiz"
-        }
-    },
-    "SCREEN": {
+    "FEATURE": {
         "HOME": {
             "TODAY_SCHEDULE": "Heutiger Zeitplan",
             "RECENT_PLAN": "Kürzlicher Plan",
@@ -39,7 +22,21 @@
             "REGISTER_SUCCESS": "wurde registriert",
             "REGISTER_FAILED": "Plan konnte nicht registriert werden",
             "PLAN_NOT_FOUND": "Plan nicht gefunden",
-            "LIST_TITLE": "Planliste"
+            "LIST_TITLE": "Planliste",
+            "NOT_FOUND": "Keine Pläne gefunden",
+            "ADD_PLAN": "Plan hinzufügen",
+            "SUPER_USER": "Super-Benutzer",
+            "FREE_PLAN": "Kostenloser Plan",
+            "PREMIUM_PLAN": "Premium-Plan",
+            "EXPIRATION_DATE": "Ablaufdatum",
+            "SORT_TITLE": "Sortieren",
+            "SORT_CREATED_AT": "Erstellungsdatum (Absteigend)",
+            "SORT_SCHEDULE_DATE": "Zeitplandatum (Absteigend)",
+            "NO_MEMO": "Keine Notiz.",
+            "NO_SCHEDULE_TODAY": "Kein Zeitplan heute",
+            "NO_PLAN_RECENT": "Kein Plan in den letzten #days# Tagen",
+            "DELETE_CONFIRM": "Plan löschen",
+            "DELETE_CONFIRM_MESSAGE": "Einmal gelöscht, kann nicht wiederhergestellt werden. Sind Sie sicher, dass Sie den Plan löschen möchten?"
         },
         "AUTH": {
             "SIGN_IN": "Anmelden",
@@ -88,7 +85,10 @@
         "INFORMATION": {
             "TITLE": "Informationen",
             "NO_INFORMATION": "Keine Informationen verfügbar",
-            "ERROR_OCCURRED": "Ein Fehler ist aufgetreten"
+            "ERROR_OCCURRED": "Ein Fehler ist aufgetreten",
+            "DETAIL": "Details anzeigen",
+            "CLOSE": "Schließen",
+            "INVALID_URL": "Ungültige URL"
         },
         "ACCOUNT": {
             "DELETE_TITLE": "Konto löschen",
@@ -132,7 +132,29 @@
             "SELECT_PLAN": "Plan auswählen",
             "CANCEL_PREMIUM_BUTTON": "Premium-Plan kündigen",
             "UPGRADE_COMPLETE": "Upgrade abgeschlossen!",
-            "WELCOME_PREMIUM": "Willkommen beim Premium-Plan. Genießen Sie alle Funktionen."
+            "WELCOME_PREMIUM": "Willkommen beim Premium-Plan. Genießen Sie alle Funktionen.",
+            "FEATURE": "Funktion",
+            "FREE": "Kostenlos",
+            "PREMIUM": "Premium",
+            "ALL_FEATURES": "Alle Funktionen verfügbar",
+            "MEDIA_CAPACITY": "Medienkapazität",
+            "MEDIA_CAPACITY_FREE": "1 GB / Plan",
+            "MEDIA_CAPACITY_PREMIUM": "100 GB / Plan",
+            "AD_DISPLAY": "Werbeanzeige",
+            "YES": "○",
+            "NO": "-",
+            "RATE_LIMIT": "Kartensuchlimit",
+            "RATE_LIMIT_FREE": "5 Mal / Stunde",
+            "RATE_LIMIT_PREMIUM": "20 Mal / Stunde",
+            "RECOMMENDED": "Empfohlen",
+            "CURRENT_FREE_PLAN": "Aktuell kostenloser Plan in Verwendung",
+            "UPGRADE_MESSAGE": "Upgrade auf Premium-Plan, um alle Funktionen zu nutzen",
+            "CURRENT_PLAN": "Aktueller Plan",
+            "POPULAR_PLAN": "Beliebter Plan",
+            "TRIAL_MESSAGE": "Starten Sie mit 1 Monat Testversion",
+            "TRIAL_MESSAGE_MONTHLY": "ist 1 Monat kostenlos!",
+            "TRIAL_MESSAGE_AFTER_END": "Nach Ende der Testversion werden Sie automatisch auf den Premium-Plan aktualisiert.",
+            "DISCOUNT_MESSAGE": "#discount#% RABATT!"
         },
         "SETTINGS": {
             "ACCOUNT_SETTINGS": "Kontoeinstellungen",
@@ -150,6 +172,10 @@
             "SIGN_OUT": "Abmelden"
         },
         "SCHEDULE": {
+            "DATETIME": "Datum und Uhrzeit",
+            "LABEL_CATEGORY": "Kategorie",
+            "PLACE_LIST": "Kandidaten",
+            "MEMO": "Notiz",
             "TITLE_PLACEHOLDER": "Titel...",
             "NO_LOGIN": "Anmeldeinformationen nicht gefunden",
             "PLAN_NOT_FOUND": "Planinformationen konnten nicht abgerufen werden",
@@ -172,7 +198,15 @@
                 "PREVIOUS_START_TIME": "Startzeit vom vorherigen festlegen",
                 "NEXT_START_TIME": "Startzeit des nächsten festlegen",
                 "SUBMIT_ERROR": "Zeitplan konnte nicht gespeichert werden"
-            }
+            },
+            "EDIT_PLAN": "Plan bearbeiten",
+            "ADD_SCHEDULE": "Zeitplan hinzufügen",
+            "EDIT_TIME": "Zeit bearbeiten",
+            "SHARE": "Teilen",
+            "SHARE_TITLE": "Zeitplan teilen",
+            "POSTS": "Eine Erinnerung posten",
+            "NOT_FOUND_PLACE": "Kein Ort gefunden",
+            "POSTS_PLACE_SELECT": "Ort auswählen"
         },
         "PLAN_LIST": {
             "FETCH_FAILED": "Pläne konnten nicht abgerufen werden",
@@ -199,63 +233,6 @@
         },
         "MEDIA": {
             "NO_IMAGE_LIST": "Keine Medien registriert"
-        }
-    },
-    "COMPONENT": {
-        "PLAN": {
-            "NOT_FOUND": "Keine Pläne gefunden",
-            "ADD_PLAN": "Plan hinzufügen",
-            "SUPER_USER": "Super-Benutzer",
-            "FREE_PLAN": "Kostenloser Plan",
-            "PREMIUM_PLAN": "Premium-Plan",
-            "EXPIRATION_DATE": "Ablaufdatum",
-            "SORT_TITLE": "Sortieren",
-            "SORT_CREATED_AT": "Erstellungsdatum (Absteigend)",
-            "SORT_SCHEDULE_DATE": "Zeitplandatum (Absteigend)",
-            "NO_MEMO": "Keine Notiz.",
-            "NO_SCHEDULE_TODAY": "Kein Zeitplan heute",
-            "NO_PLAN_RECENT": "Kein Plan in den letzten #days# Tagen",
-            "DELETE_CONFIRM": "Plan löschen",
-            "DELETE_CONFIRM_MESSAGE": "Einmal gelöscht, kann nicht wiederhergestellt werden. Sind Sie sicher, dass Sie den Plan löschen möchten?"
-        },
-        "PAYMENT": {
-            "FEATURE": "Funktion",
-            "FREE": "Kostenlos",
-            "PREMIUM": "Premium",
-            "ALL_FEATURES": "Alle Funktionen verfügbar",
-            "MEDIA_CAPACITY": "Medienkapazität",
-            "MEDIA_CAPACITY_FREE": "1 GB / Plan",
-            "MEDIA_CAPACITY_PREMIUM": "100 GB / Plan",
-            "AD_DISPLAY": "Werbeanzeige",
-            "YES": "○",
-            "NO": "-",
-            "RATE_LIMIT": "Kartensuchlimit",
-            "RATE_LIMIT_FREE": "5 Mal / Stunde",
-            "RATE_LIMIT_PREMIUM": "20 Mal / Stunde",
-            "RECOMMENDED": "Empfohlen",
-            "CURRENT_FREE_PLAN": "Aktuell kostenloser Plan in Verwendung",
-            "UPGRADE_MESSAGE": "Upgrade auf Premium-Plan, um alle Funktionen zu nutzen",
-            "CURRENT_PLAN": "Aktueller Plan",
-            "POPULAR_PLAN": "Beliebter Plan",
-            "TRIAL_MESSAGE": "Starten Sie mit 1 Monat Testversion",
-            "TRIAL_MESSAGE_MONTHLY": "ist 1 Monat kostenlos!",
-            "TRIAL_MESSAGE_AFTER_END": "Nach Ende der Testversion werden Sie automatisch auf den Premium-Plan aktualisiert.",
-            "DISCOUNT_MESSAGE": "#discount#% RABATT!"
-        },
-        "INFORMATION": {
-            "DETAIL": "Details anzeigen",
-            "CLOSE": "Schließen",
-            "INVALID_URL": "Ungültige URL"
-        },
-        "SCHEDULE": {
-            "EDIT_PLAN": "Plan bearbeiten",
-            "ADD_SCHEDULE": "Zeitplan hinzufügen",
-            "EDIT_TIME": "Zeit bearbeiten",
-            "SHARE": "Teilen",
-            "SHARE_TITLE": "Zeitplan teilen",
-            "POSTS": "Eine Erinnerung posten",
-            "NOT_FOUND_PLACE": "Kein Ort gefunden",
-            "POSTS_PLACE_SELECT": "Ort auswählen"
         },
         "VERSION": {
             "UPDATE_REQUIRED": "App-Update erforderlich",
@@ -281,6 +258,15 @@
         }
     },
     "COMMON": {
+        "TABBAR": {
+            "HOME": "Startseite",
+            "PLAN": "Plan",
+            "SCHEDULE": "Zeitplan",
+            "SETTINGS": "Einstellungen",
+            "MAP": "Karte",
+            "MEDIA": "Medien",
+            "SAMPLE": "Beispiel"
+        },
         "DARK_MODE": "Dunkler Modus",
         "ERROR": "Fehler",
         "SUCCESS": "Erfolg",
@@ -296,5 +282,6 @@
             "FREE": "Kostenloser Plan",
             "PREMIUM": "Premium-Plan"
         }
-    }
+    },
+    "MESSAGE": {}
 }

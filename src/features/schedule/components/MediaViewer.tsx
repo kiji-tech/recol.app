@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
-import MediaDetailModal from '../../media/components/MediaDetailModal';
+import { MediaDetailModal } from '@/src/features/media';
 
 type Props = {
   mediaUrlList: string[];

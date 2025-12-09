@@ -40,14 +40,14 @@ export default function PlanCard({
       {isCurrentPlan ? (
         <View className="absolute top-[-10px] right-[-10px]">
           <Text className="text-xs bg-light-primary dark:bg-dark-primary text-white px-2 py-1 rounded-full">
-            {generateI18nMessage('COMPONENT.PAYMENT.CURRENT_PLAN')}
+            {generateI18nMessage('FEATURE.PAYMENT.CURRENT_PLAN')}
           </Text>
         </View>
       ) : (
         isPopular && (
           <View className="absolute top-[-10px] right-[-10px]">
             <Text className="text-xs bg-light-primary dark:bg-dark-primary text-white px-2 py-1 rounded-full">
-              {generateI18nMessage('COMPONENT.PAYMENT.POPULAR_PLAN')}
+              {generateI18nMessage('FEATURE.PAYMENT.POPULAR_PLAN')}
             </Text>
           </View>
         )
@@ -56,18 +56,18 @@ export default function PlanCard({
       {isMonthly && (
         <View className="flex flex-col gap-2">
           <Text className="text-sm font-bold text-light-text dark:text-dark-text">
-            {generateI18nMessage('COMPONENT.PAYMENT.TRIAL_MESSAGE')}
+            {generateI18nMessage('FEATURE.PAYMENT.TRIAL_MESSAGE')}
           </Text>
           <View className="flex flex-row gap-2 justify-start items-end">
             <Text className="text-3xl font-bold text-light-text dark:text-dark-text">
               {getPriceString(payment.product.priceString)} / Month
             </Text>
             <Text className="text-md font-semibold text-light-danger dark:text-dark-danger">
-              {generateI18nMessage('COMPONENT.PAYMENT.TRIAL_MESSAGE_MONTHLY')}
+              {generateI18nMessage('FEATURE.PAYMENT.TRIAL_MESSAGE_MONTHLY')}
             </Text>
           </View>
           <Text className="text-xs opacity-70 font-semibold">
-            {generateI18nMessage('COMPONENT.PAYMENT.TRIAL_MESSAGE_AFTER_END')}
+            {generateI18nMessage('FEATURE.PAYMENT.TRIAL_MESSAGE_AFTER_END')}
           </Text>
         </View>
       )}
@@ -76,14 +76,14 @@ export default function PlanCard({
       {!isMonthly && (
         <View className="flex flex-col gap-2">
           <Text className="text-sm font-bold text-light-text dark:text-dark-text">
-            {generateI18nMessage('COMPONENT.PAYMENT.POPULAR_PLAN')}
+            {generateI18nMessage('FEATURE.PAYMENT.POPULAR_PLAN')}
           </Text>
           <View className="flex flex-row gap-2 justify-start items-end">
             <Text className="text-3xl font-bold text-light-text dark:text-dark-text">
               {getPriceString(payment.product.priceString)} / Year
             </Text>
             <Text className="text-md font-semibold text-light-danger dark:text-dark-danger">
-              {generateI18nMessage('COMPONENT.PAYMENT.DISCOUNT_MESSAGE', [
+              {generateI18nMessage('FEATURE.PAYMENT.DISCOUNT_MESSAGE', [
                 { key: 'discount', value: (discount?.toFixed(0) ?? 0).toString() },
               ])}
             </Text>

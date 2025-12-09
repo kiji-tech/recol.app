@@ -2,16 +2,12 @@ import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Place } from '../../types/Place';
-import Title from '@/src/components/Title';
-import ImageScrollView from '@/src/components/ImageScrollView';
-import RateViewer from '@/src/features/map/components/Place/RateViewer';
-import IconButton from '@/src/components/IconButton';
+import { Title, ImageScrollView, IconButton, MaskLoading } from '@/src/components';
 import { FontAwesome5, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Linking } from 'react-native';
-import { useTheme } from '@/src/contexts/ThemeContext';
-import MediaDetailModal from '@/src/features/media/components/MediaDetailModal';
-import MaskLoading from '@/src/components/MaskLoading';
-import { useMap } from '../../hooks/useMap';
+import { useTheme } from '@/src/contexts';
+import { RateViewer, useMap } from '@/src/features/map';
+import { MediaDetailModal } from '@/src/features/media';
 
 type Props = {
   isEdit?: boolean;
@@ -151,7 +147,10 @@ export default function PlaceBottomSheetBody({ isEdit = false, onDirection, onPo
                   )}
               </View>
             </View>
-
+            {/* 住所 */}
+            <Text className="text-light-text dark:text-dark-text">
+              {selectedPlace?.formattedAddress}
+            </Text>
             {/* 詳細 */}
             <Text className="text-ellipsis text-light-text dark:text-dark-text text-lg">
               {selectedPlace?.editorialSummary?.text || ''}

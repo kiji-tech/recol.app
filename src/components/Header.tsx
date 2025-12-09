@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Platform } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import BackButton from './BackButton';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import generateI18nMessage from '@/src/libs/i18n';
 
 type Props = {

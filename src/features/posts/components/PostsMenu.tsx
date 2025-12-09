@@ -1,13 +1,13 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
+import { useTheme } from '@/src/contexts';
+import { Place } from '@/src/features/map';
+import { useAuth } from '@/src/features/auth';
+import { Posts } from '@/src/features/posts';
+import { useShare } from '@/src/features/commons/hooks/useShare';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
-import { useTheme } from '@/src/contexts/ThemeContext';
 import generateI18nMessage from '@/src/libs/i18n';
-import { useAuth } from '../../auth';
-import { Posts } from '../types/Posts';
-import { Place } from '../../map/types/Place';
-import { useShare } from '../../commons/hooks/useShare';
 
 type Props = {
   posts: Posts;
@@ -76,7 +76,7 @@ export default function PostsMenu({ posts, place, onDelete, onReport }: Props) {
               },
             }}
             onSelect={onReport}
-            text={generateI18nMessage('COMPONENT.POSTS.REPORT')}
+            text={generateI18nMessage('FEATURE.POSTS.REPORT')}
           />
         )}
       </MenuOptions>

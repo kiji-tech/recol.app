@@ -1,7 +1,6 @@
-import { supabase } from '../../../libs/supabase';
-import { fetchProfile } from '../../profile/apis/fetchProfile';
-import { Profile } from '../../profile/types/Profile';
-import { AuthResult } from '../types/Auth';
+import { supabase } from '@/src/libs/supabase';
+import { fetchProfile, Profile } from '@/src/features/profile';
+import { AuthResult } from '@/src/features/auth/types/Auth';
 
 /**
  * メールアドレスとパスワードでサインアップ

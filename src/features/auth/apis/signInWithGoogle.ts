@@ -1,9 +1,8 @@
-import { supabase } from '../../../libs/supabase';
-import { fetchProfile } from '../../profile/apis/fetchProfile';
-import { LogUtil } from '../../../libs/LogUtil';
+import { supabase } from '@/src/libs/supabase';
+import { fetchProfile, Profile } from '@/src/features/profile';
+import { LogUtil } from '@/src/libs/LogUtil';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { Profile } from '../../profile/types/Profile';
-import { AuthResult } from '../types/Auth';
+import { AuthResult } from '@/src/features/auth/types/Auth';
 
 /**
  * Googleサインイン

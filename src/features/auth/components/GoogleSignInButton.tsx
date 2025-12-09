@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useAuth } from '@/src/features/auth';
 

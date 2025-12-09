@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState, useRef } from 'react';
-import { Information } from '../types/Information';
-import { fetchInformationListPaginated } from '../apis/fetchInformationListPaginated';
-import { LogUtil } from '../../../libs/LogUtil';
-import { useAuth } from '../../auth/hooks/useAuth';
+import { Information, fetchInformationListPaginated } from '@/src/features/information';
+import { LogUtil } from '@/src/libs/LogUtil';
+import { useAuth } from '@/src/features/auth';
 
 const LIMIT = process.env.EXPO_PUBLIC_INFORMATION_LIST_LIMIT
   ? parseInt(process.env.EXPO_PUBLIC_INFORMATION_LIST_LIMIT)

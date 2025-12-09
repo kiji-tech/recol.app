@@ -1,10 +1,9 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { useTheme } from '@/src/contexts/ThemeContext';
 import { Marker, Region } from 'react-native-maps';
 import { useFocusEffect } from 'expo-router';
-import Geolocation from '@react-native-community/geolocation';
-import { useLocation } from '@/src/contexts/LocationContext';
+import { useTheme, useLocation } from '@/src/contexts';
 import { LogUtil } from '@/src/libs/LogUtil';
+import Geolocation from '@react-native-community/geolocation';
 /**
  * 現在地のマーカー
  */

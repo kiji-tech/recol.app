@@ -3,19 +3,22 @@ import { BackgroundView, Header } from '@/src/components';
 import { useFocusEffect } from 'expo-router';
 import { View } from 'react-native';
 import { Toast } from 'toastify-react-native';
-import { Plan } from '@/src/features/plan/types/Plan';
-import NotFoundPlanView from '../../../features/plan/components/NotFoundPlanView';
-import PlanCard from '../../../features/plan/components/PlanCard';
-import PlanListMenu from '@/src/features/plan/components/PlanListMenu';
-import PlanSortModal from '@/src/features/plan/components/PlanSortModal';
-import { PlanSortType, PLAN_SORT_TYPE_STORAGE_KEY } from '@/src/features/plan/types/PlanSortType';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import generateI18nMessage from '@/src/libs/i18n';
-import { deletePlan } from '@/src/features/plan';
+import {
+  Plan,
+  NotFoundPlanView,
+  PlanCard,
+  PlanListMenu,
+  PlanSortModal,
+  PlanSortType,
+  PLAN_SORT_TYPE_STORAGE_KEY,
+  sortPlanSchedule,
+  deletePlan,
+} from '@/src/features/plan';
 import { useMutation } from 'react-query';
 import { useAuth } from '@/src/features/auth';
-import { usePlan } from '@/src/contexts/PlanContext';
-import { sortPlanSchedule } from '@/src/features/plan/libs/sortPlanSchedule';
+import { usePlan } from '@/src/contexts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import generateI18nMessage from '@/src/libs/i18n';
 
 export default function PlanListScreen() {
   // === Member ===
@@ -48,7 +51,7 @@ export default function PlanListScreen() {
    */
   const handleSaveSortType = async (savedSortType: PlanSortType) => {
     await AsyncStorage.setItem(PLAN_SORT_TYPE_STORAGE_KEY, savedSortType).catch(() => {
-      Toast.warn(generateI18nMessage('SCREEN.PLAN_LIST.SORT_SAVE_FAILED'));
+      Toast.warn(generateI18nMessage('FEATURE.PLAN_LIST.SORT_SAVE_FAILED'));
     });
     setSortType(savedSortType);
     setIsSortModalVisible(false);
@@ -72,7 +75,7 @@ export default function PlanListScreen() {
   return (
     <BackgroundView>
       <Header
-        title={generateI18nMessage('SCREEN.PLAN.LIST_TITLE')}
+        title={generateI18nMessage('FEATURE.PLAN.LIST_TITLE')}
         rightComponent={<PlanListMenu onSortPress={handleSortPress} />}
       />
       {/* プラン一覧 */}

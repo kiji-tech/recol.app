@@ -1,24 +1,21 @@
 import React, { useState } from 'react';
-import { BackgroundView, DatePicker, Header } from '@/src/components';
+import { BackgroundView, DatePicker, Header, Button, MaskLoading } from '@/src/components';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
-import { usePlan } from '@/src/contexts/PlanContext';
-import { Schedule } from '@/src/features/schedule';
-import { useTheme } from '@/src/contexts/ThemeContext';
-import { Button } from '@/src/components';
-import { Plan, updatePlan } from '@/src/features/plan';
-import CategoryIcon from '@/src/features/schedule/components/CategoryIcon';
-import dayjs from '@/src/libs/dayjs';
-import { useAuth } from '@/src/features/auth';
+import { usePlan, useTheme } from '@/src/contexts';
 import {
+  Schedule,
+  CategoryIcon,
   adjustEndAtWhenReversed,
   adjustStartAtWhenNormal,
-} from '@/src/features/schedule/libs/scheduleTime';
+} from '@/src/features/schedule';
+import { Plan, updatePlan } from '@/src/features/plan';
+import { useAuth } from '@/src/features/auth';
 import { LogUtil } from '@/src/libs/LogUtil';
 import { Toast } from 'toastify-react-native';
-import MaskLoading from '@/src/components/MaskLoading';
-import generateI18nMessage from '@/src/libs/i18n';
 import { useMutation } from 'react-query';
+import dayjs from '@/src/libs/dayjs';
+import generateI18nMessage from '@/src/libs/i18n';
 
 const ScheduleTimeEditorItem = ({
   item,
@@ -57,7 +54,7 @@ const ScheduleTimeEditorItem = ({
             }}
           >
             <Text className="text-light-text dark:text-dark-text text-sm px-2 py-1">
-              {generateI18nMessage('SCREEN.SCHEDULE.TIME_EDITOR.PREVIOUS_START_TIME')}
+              {generateI18nMessage('FEATURE.SCHEDULE.TIME_EDITOR.PREVIOUS_START_TIME')}
             </Text>
           </TouchableOpacity>
         )}
@@ -75,7 +72,7 @@ const ScheduleTimeEditorItem = ({
             }}
           >
             <Text className="text-light-text dark:text-dark-text text-sm px-2 py-1">
-              {generateI18nMessage('SCREEN.SCHEDULE.TIME_EDITOR.NEXT_START_TIME')}
+              {generateI18nMessage('FEATURE.SCHEDULE.TIME_EDITOR.NEXT_START_TIME')}
             </Text>
           </TouchableOpacity>
         )}
@@ -136,7 +133,7 @@ export default function ScheduleTimeEditor() {
         level: 'error',
         notify: true,
       });
-      Toast.warn(generateI18nMessage('SCREEN.SCHEDULE.TIME_EDITOR.SUBMIT_ERROR'));
+      Toast.warn(generateI18nMessage('FEATURE.SCHEDULE.TIME_EDITOR.SUBMIT_ERROR'));
     },
   });
 
@@ -171,7 +168,7 @@ export default function ScheduleTimeEditor() {
                 }
               />
             )}
-            keyExtractor={(item) => item.uid}
+            keyExtractor={(item) => item.uid!}
             showsVerticalScrollIndicator={false}
           />
           {isLoading && <MaskLoading />}

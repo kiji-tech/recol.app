@@ -1,4 +1,4 @@
-// Types
+// === Types ===
 export type {
   SlackMessage,
   SlackNotificationOptions,
@@ -6,13 +6,13 @@ export type {
   SlackNotificationType,
 } from './types/Slack';
 
-// APIs
+// === APIs ===
 export { sendSlackNotification } from './apis/sendSlackNotification';
 
-// Hooks
+// === Hooks ===
 export { useSlackNotification } from './hooks/useSlackNotification';
 
-// Utils
+// === Libs ===
 export { SlackConfigUtil } from './libs/slackConfig';
 export { SlackMessageFilterUtil } from './libs/messageFilter';
 export { SlackMessageFormatterUtil } from './libs/messageFormatter';

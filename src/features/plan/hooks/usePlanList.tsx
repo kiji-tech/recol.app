@@ -9,8 +9,6 @@ import { useEffect, useState } from 'react';
 import { DEFAULT_PLAN_SORT_TYPE } from '../types/PlanSortType';
 import { useStoragePlanList } from './useStoragePlanList';
 
-export const PLAN_LIST_STORAGE_KEY = '@plan_list';
-
 export const usePlanList = () => {
   const { session, user } = useAuth();
   const { setStoragePlan, refetch: refetchStoragePlanList } = useStoragePlanList();

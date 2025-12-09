@@ -1,6 +1,6 @@
-import { apiRequest } from '../../commons/apiService';
+import { apiRequest } from '@/src/features/commons/apiService';
 import { Session } from '@supabase/supabase-js';
-import { Profile } from '../types/Profile';
+import { Profile } from '@/src/features/profile';
 
 /**
  * プロフィールの更新
@@ -10,7 +10,7 @@ export async function updateProfile(
   session: Session | null,
   ctrl?: AbortController
 ) {
-  const response = await apiRequest<Profile>('/profile', {
+  const response = await apiRequest<Profile>('/v1/profile', {
     method: 'PUT',
     session,
     body: {

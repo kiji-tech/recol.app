@@ -1,8 +1,6 @@
 import { Tables } from '@/src/libs/database.types';
-import { Profile } from '../../profile';
+import { Profile } from '@/src/features/profile';
 export type PostsType = Tables<'posts'>;
-
-const IS_MY_POSTS = true;
 
 export class Posts {
   uid?: string;

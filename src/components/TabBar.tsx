@@ -3,9 +3,9 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useTheme } from '../contexts/ThemeContext';
-import { MyBannerAd } from './Ad/BannerAd';
-import { useAuth } from '../features/auth';
+import { useTheme } from '@/src/contexts';
+import { MyBannerAd } from '@/src/features/ad';
+import { useAuth } from '@/src/features/auth';
 import { router } from 'expo-router';
 import generateI18nMessage from '@/src/libs/i18n';
 
@@ -157,7 +157,7 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
               <Text
                 className={`text-light-text dark:text-dark-text  ${isFocused ? 'text-md' : 'text-sm'}`}
               >
-                {generateI18nMessage(`TABBAR.${label}`) as string}
+                {generateI18nMessage(`COMMON.TABBAR.${label}`) as string}
               </Text>
             </TouchableOpacity>
           );

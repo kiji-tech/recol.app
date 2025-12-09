@@ -36,10 +36,10 @@ export default function SubscriptionComplete() {
       <View className="flex-1 items-center justify-center p-4">
         <Text className="mb-4 text-light-text dark:text-dark-text text-center text-6xl">🎉</Text>
         <Text className="mb-2 text-light-text dark:text-dark-text text-center text-2xl font-bold">
-          {generateI18nMessage('SCREEN.PAYMENT.UPGRADE_COMPLETE')}
+          {generateI18nMessage('FEATURE.PAYMENT.UPGRADE_COMPLETE')}
         </Text>
         <Text className="text-center text-light-text dark:text-dark-text text-lg">
-          {generateI18nMessage('SCREEN.PAYMENT.WELCOME_PREMIUM')}
+          {generateI18nMessage('FEATURE.PAYMENT.WELCOME_PREMIUM')}
         </Text>
       </View>
     </BackgroundView>

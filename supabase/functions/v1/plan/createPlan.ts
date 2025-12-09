@@ -3,6 +3,7 @@ import { SupabaseClient, User } from 'npm:@supabase/supabase-js';
 import { getMessage } from '../libs/MessageUtil.ts';
 import { LogUtil } from '../libs/LogUtil.ts';
 import { Plan, CreatePlanRequest, ValidationResult, DatabaseResult } from '../libs/types.ts';
+import * as ResponseUtil from '../libs/ResponseUtil.ts';
 
 const validateCreateRequest = async (c: Context): Promise<ValidationResult<CreatePlanRequest>> => {
   const { title, memo } = await c.req.json();
@@ -12,7 +13,7 @@ const validateCreateRequest = async (c: Context): Promise<ValidationResult<Creat
     return {
       isValid: false,
       data: null,
-      error: c.json({ message: getMessage('C003'), code: 'C003' }, 400),
+      error: ResponseUtil.error(c, getMessage('C003'), 'C003', 400),
     };
   }
 
@@ -63,9 +64,9 @@ export const createPlan = async (
     user.id
   );
   if (error) {
-    return c.json({ message: getMessage('C006', ['プラン']), code: 'C006' }, 500);
+    return ResponseUtil.error(c, getMessage('C006', ['プラン']), 'C006', 500);
   }
 
   LogUtil.log('[POST] plan 完了', { level: 'info' });
-  return c.json({ data, error: null });
+  return ResponseUtil.success(c, data);
 };

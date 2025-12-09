@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts';
 import { View } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -40,7 +40,7 @@ export default function PlanListMenu({ onSortPress }: PlanListMenuProps) {
         }}
       >
         <MenuOption
-          text={generateI18nMessage('COMPONENT.PLAN.ADD_PLAN')}
+          text={generateI18nMessage('FEATURE.PLAN.ADD_PLAN')}
           customStyles={{
             optionText: {
               paddingVertical: 12,
@@ -51,7 +51,7 @@ export default function PlanListMenu({ onSortPress }: PlanListMenuProps) {
           onSelect={handleAddPress}
         />
         <MenuOption
-          text={generateI18nMessage('COMPONENT.PLAN.SORT_TITLE')}
+          text={generateI18nMessage('FEATURE.PLAN.SORT_TITLE')}
           customStyles={{
             optionText: {
               paddingVertical: 12,
