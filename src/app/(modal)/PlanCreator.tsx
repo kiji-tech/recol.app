@@ -8,6 +8,7 @@ import { Plan, createPlan } from '@/src/features/plan';
 import { Toast } from 'toastify-react-native';
 import { useMutation } from 'react-query';
 import generateI18nMessage from '@/src/libs/i18n';
+import { ApiErrorResponse } from '@/src/features/commons/apiService';
 
 export default function PlanCreator() {
   // === Member ===
@@ -21,10 +22,16 @@ export default function PlanCreator() {
     onSuccess: () => {
       router.back();
     },
-    onError: (error) => {
-      if (error && error instanceof Error && error.message) {
-        Toast.warn(error.message);
+    onError: (error: ApiErrorResponse) => {
+      if (error && error.code == 'C006') {
+        Toast.warn(
+          generateI18nMessage(`MESSAGE.${error.code}`, [
+            { key: 'param1', value: generateI18nMessage('FEATURE.PLAN.TITLE') },
+          ])
+        );
+        return;
       }
+      Toast.warn(generateI18nMessage('MESSAGE.O001'));
     },
   });
 
