@@ -7,6 +7,8 @@ import { Posts } from '../types/Posts';
 import { deletePosts } from '../apis/deletePosts';
 import { Toast } from 'toastify-react-native';
 import { LogUtil } from '@/src/libs/LogUtil';
+import { ApiErrorResponse } from '../../commons/apiService';
+import generateI18nMessage from '@/src/libs/i18n';
 
 export const usePosts = () => {
   const LIMIT_NUM = 10;
@@ -69,10 +71,26 @@ export const usePosts = () => {
   const deleteMutate = useMutation({
     mutationFn: (posts: Posts) => deletePosts(posts, session),
     onSuccess: () => {
-      Toast.warn('削除しました.');
+      Toast.warn(
+        generateI18nMessage('MESSAGE.C004', [
+          {
+            key: 'param1',
+            value: generateI18nMessage('FEATURE.POSTS.TITLE'),
+          },
+        ])
+      );
+      reset();
     },
-    onError: () => {
-      Toast.warn('削除に失敗しました.');
+    onError: (error: ApiErrorResponse) => {
+      if (error && error.code == 'C008') {
+        Toast.warn(
+          generateI18nMessage(`MESSAGE.${error.code}`, [
+            { key: 'param1', value: generateI18nMessage('FEATURE.POSTS.TITLE') },
+          ])
+        );
+        return;
+      }
+      Toast.warn(generateI18nMessage('MESSAGE.O001'));
     },
   });
 

@@ -13,7 +13,7 @@ export const deletePosts = async (c: Context, supabase: SupabaseClient, user: Us
 
   if (error) {
     LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-    return ResponseUtil.error(c, getMessage('C007', ['投稿']), 'C007', 400);
+    return ResponseUtil.error(c, getMessage('C008', ['投稿']), 'C008', 400);
   }
 
   return ResponseUtil.success(c, data);
