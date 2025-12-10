@@ -6,6 +6,7 @@ import { useQuery } from 'react-query';
 import { Place, fetchCachePlace } from '@/src/features/map';
 import { MediaViewer } from '@/src/features/schedule';
 import { Posts, PostsMenu } from '@/src/features/posts';
+import { Ionicons } from '@expo/vector-icons';
 import dayjs from '@/src/libs/dayjs';
 
 type Props = {
@@ -64,21 +65,27 @@ export default function PostsItem({ posts, onSelect, onDelete, onReport }: Props
           {/* アバター */}
           <View className="flex flex-row items-center justify-between">
             <View className="flex flex-row gap-2 flex-1 items-center justify-start">
-              <Image
-                cachePolicy="memory-disk"
-                source={{
-                  uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`,
-                }}
-                style={{
-                  borderRadius: 100,
-                  width: 32,
-                  height: 32,
-                }}
-              />
+              {profile.avatar_url ? (
+                <Image
+                  cachePolicy="memory-disk"
+                  source={{
+                    uri: `${process.env.EXPO_PUBLIC_SUPABASE_STORAGE_URL}/object/public/avatars/${profile?.avatar_url}`,
+                  }}
+                  style={{
+                    borderRadius: 100,
+                    width: 32,
+                    height: 32,
+                  }}
+                />
+              ) : (
+                <View className="w-8 h-8 bg-light-shadow dark:bg-dark-shadow items-center justify-center rounded-full">
+                  <Ionicons name="person" size={10} color="gray" />
+                </View>
+              )}
               {/* 投稿者 */}
               <View className="flex flex-1 flex-col items-start justify-start">
                 <Text className="text-light-text dark:text-dark-text text-md font-bold">
-                  {profile?.display_name}
+                  {profile?.display_name || 'ユーザー名未設定'}
                 </Text>
                 <Text className="text-light-text dark:text-dark-text text-sm">
                   {toDateString(created_at!)}
