@@ -281,7 +281,23 @@
         "PLAN": {
             "FREE": "Plan gratuit",
             "PREMIUM": "Plan premium"
-        }
+        },
+        "SEND": "Envoyer",
+        "SEND_SUCCESS": "Envoyé avec succès.",
+        "SEND_FAILURE": "Échec de l'envoi."
     },
-    "MESSAGE": {}
+    "MESSAGE": {
+        "C001": "Utilisateur de connexion introuvable. Veuillez vous reconnecter.",
+        "C002": "#param1# a été enregistré.",
+        "C003": "#param1# a été mis à jour.",
+        "C004": "#param1# a été supprimé.",
+        "C005": "Échec de la récupération de #param1#.",
+        "C006": "Échec de l'enregistrement de #param1#.",
+        "C007": "Échec de la mise à jour de #param1#.",
+        "C008": "Échec de la suppression de #param1#.",
+        "C009": "Élément de données (#param1#) introuvable.",
+        "PP001": "Le nombre de plans créés a dépassé la limite. Veuillez mettre à jour votre plan.",
+        "M001": "La capacité de stockage a dépassé #param1# Go. Veuillez mettre à jour votre plan.",
+        "O001": "Échec du traitement. Veuillez nous contacter."
+    }
 }

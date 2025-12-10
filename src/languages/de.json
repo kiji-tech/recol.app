@@ -281,7 +281,23 @@
         "PLAN": {
             "FREE": "Kostenloser Plan",
             "PREMIUM": "Premium-Plan"
-        }
+        },
+        "SEND": "Senden",
+        "SEND_SUCCESS": "Erfolgreich gesendet.",
+        "SEND_FAILURE": "Senden fehlgeschlagen."
     },
-    "MESSAGE": {}
+    "MESSAGE": {
+        "C001": "Angemeldeter Benutzer nicht gefunden. Bitte melden Sie sich erneut an.",
+        "C002": "#param1# wurde registriert.",
+        "C003": "#param1# wurde aktualisiert.",
+        "C004": "#param1# wurde gelöscht.",
+        "C005": "#param1# konnte nicht abgerufen werden.",
+        "C006": "#param1# konnte nicht registriert werden.",
+        "C007": "#param1# konnte nicht aktualisiert werden.",
+        "C008": "#param1# konnte nicht gelöscht werden.",
+        "C009": "Datenelement (#param1#) nicht gefunden.",
+        "PP001": "Die Anzahl der erstellten Pläne hat das Limit überschritten. Bitte aktualisieren Sie Ihren Plan.",
+        "M001": "Die Speicherkapazität hat #param1# GB überschritten. Bitte aktualisieren Sie Ihren Plan.",
+        "O001": "Verarbeitung fehlgeschlagen. Bitte kontaktieren Sie uns."
+    }
 }
