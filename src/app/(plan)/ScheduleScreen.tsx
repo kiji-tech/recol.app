@@ -16,6 +16,7 @@ import { BackHandler } from 'react-native';
 import { Toast } from 'toastify-react-native';
 import { usePlan } from '@/src/contexts';
 import generateI18nMessage from '@/src/libs/i18n';
+import { ApiErrorResponse } from '@/src/features/commons/apiService';
 
 export default function ScheduleScreen(): ReactNode {
   const router = useRouter();
@@ -45,23 +46,28 @@ export default function ScheduleScreen(): ReactNode {
    * @param schedule {Schedule}
    */
   const handleDeleteSchedule = async (schedule: Schedule) => {
-    const text = generateI18nMessage('FEATURE.SCHEDULE.DELETE_SUCCESS', [
-      { key: 'title', value: schedule.title || '' },
-    ]);
-    await deleteSchedule(schedule, session).catch((e) => {
+    await deleteSchedule(schedule, session).catch((e: ApiErrorResponse) => {
       LogUtil.log(JSON.stringify({ deleteScheduleError: e }), {
         level: 'error',
         notify: true,
         user,
       });
-      if (e && e.message) {
-        Toast.warn(e.message);
+      if (e && e.code == 'C007') {
+        Toast.warn(
+          generateI18nMessage(`MESSAGE.${e.code}`, [{ key: 'param1', value: schedule.title || '' }])
+        );
+        return;
       }
+      Toast.warn(generateI18nMessage('MESSAGE.O001'));
       throw new Error(e.message);
     });
     refetchPlan();
     refetchPlanList();
-    Toast.info(text);
+    Toast.info(
+      generateI18nMessage('FEATURE.SCHEDULE.DELETE_SUCCESS', [
+        { key: 'title', value: schedule.title || '' },
+      ])
+    );
     initView();
   };
 
