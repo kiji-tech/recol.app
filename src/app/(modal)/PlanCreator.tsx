@@ -17,6 +17,7 @@ export default function PlanCreator() {
   const { session } = useAuth();
   const router = useRouter();
 
+  // === Mutate ===
   const { mutate, isLoading } = useMutation({
     mutationFn: (newPlan: Plan) => createPlan(newPlan, session),
     onSuccess: () => {
@@ -36,6 +37,9 @@ export default function PlanCreator() {
   });
 
   // === Method ===
+  /**
+   * バリデーションチェック
+   */
   const verify = () => {
     if (!title) {
       Toast.warn(generateI18nMessage('FEATURE.PLAN.TITLE_REQUIRED'));
