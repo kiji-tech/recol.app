@@ -18,7 +18,7 @@ export const createPosts = async (c: Context, supabase: SupabaseClient, user: Us
 
   if (error) {
     LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-    return ResponseUtil.error(c, getMessage('C007', ['投稿']), 'C007', 400);
+    return ResponseUtil.error(c, getMessage('C007', ['投稿']), 'C006', 400);
   }
   // 画像がなければ終了
   if (medias.length == 0) {
@@ -49,7 +49,7 @@ export const createPosts = async (c: Context, supabase: SupabaseClient, user: Us
     .eq('uid', data.uid);
   if (updateError) {
     LogUtil.log(JSON.stringify(updateError), { level: 'error', notify: true });
-    return ResponseUtil.error(c, getMessage('C007', ['投稿']), 'C007', 400);
+    return ResponseUtil.error(c, getMessage('C006', ['投稿']), 'C006', 400);
   }
 
   return ResponseUtil.success(c, data);

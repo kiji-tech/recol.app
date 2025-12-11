@@ -10,6 +10,7 @@ import { useMutation, useQuery } from 'react-query';
 import { Toast } from 'toastify-react-native';
 import * as ImagePicker from 'expo-image-picker';
 import generateI18nMessage from '@/src/libs/i18n';
+import { ApiErrorResponse } from '@/src/features/commons/apiService';
 
 export default function ProfileEditorScreen() {
   // === Member ===
@@ -19,13 +20,15 @@ export default function ProfileEditorScreen() {
     queryKey: ['profile'],
     queryFn: () => fetchProfile(session),
   });
+
+  // === Mutate ===
   const { mutate, isLoading } = useMutation({
     mutationFn: (profile: Profile) => updateProfile(profile, session),
     onSuccess: () => {
       router.back();
     },
-    onError: (error) => {
-      if (error && error instanceof Error && error.message) {
+    onError: (error: ApiErrorResponse) => {
+      if (error && error.code === 'C007') {
         Toast.warn(error.message);
       }
     },
