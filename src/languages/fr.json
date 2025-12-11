@@ -7,6 +7,7 @@
             "NEW_POST": "Nouveau post"
         },
         "PLAN": {
+            "TITLE": "Plan",
             "CREATE_TITLE": "Créer un nouveau plan",
             "EDIT_TITLE": "Modifier",
             "NEW_PLAN": "Nouveau plan",
@@ -247,6 +248,7 @@
             "ERROR_MESSAGE": "Échec de l'obtention de l'autorisation de notification. Veuillez réessayer plus tard."
         },
         "POSTS": {
+            "TITLE": "Publications",
             "REPORT": "Signaler",
             "REASON_MESSAGE": "Veuillez sélectionner une raison pour le signalement.",
             "INAPPROPRIATE_CONTENT": "Contenu inapproprié",
@@ -296,6 +298,7 @@
         "C007": "Échec de la mise à jour de #param1#.",
         "C008": "Échec de la suppression de #param1#.",
         "C009": "Élément de données (#param1#) introuvable.",
+        "C010": "#param1# introuvable.",
         "PP001": "Le nombre de plans créés a dépassé la limite. Veuillez mettre à jour votre plan.",
         "M001": "La capacité de stockage a dépassé #param1# Go. Veuillez mettre à jour votre plan.",
         "O001": "Échec du traitement. Veuillez nous contacter."

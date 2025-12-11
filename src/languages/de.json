@@ -7,6 +7,7 @@
             "NEW_POST": "Neuer Beitrag"
         },
         "PLAN": {
+            "TITLE": "Plan",
             "CREATE_TITLE": "Neuen Plan erstellen",
             "EDIT_TITLE": "Bearbeiten",
             "NEW_PLAN": "Neuer Plan",
@@ -247,6 +248,7 @@
             "ERROR_MESSAGE": "Benachrichtigungsberechtigung konnte nicht abgerufen werden. Bitte versuchen Sie es später erneut."
         },
         "POSTS": {
+            "TITLE": "Beiträge",
             "REPORT": "Melden",
             "REASON_MESSAGE": "Bitte wählen Sie einen Grund für die Meldung.",
             "INAPPROPRIATE_CONTENT": "Unangemessener Inhalt",
@@ -296,6 +298,7 @@
         "C007": "#param1# konnte nicht aktualisiert werden.",
         "C008": "#param1# konnte nicht gelöscht werden.",
         "C009": "Datenelement (#param1#) nicht gefunden.",
+        "C010": "#param1# nicht gefunden.",
         "PP001": "Die Anzahl der erstellten Pläne hat das Limit überschritten. Bitte aktualisieren Sie Ihren Plan.",
         "M001": "Die Speicherkapazität hat #param1# GB überschritten. Bitte aktualisieren Sie Ihren Plan.",
         "O001": "Verarbeitung fehlgeschlagen. Bitte kontaktieren Sie uns."
