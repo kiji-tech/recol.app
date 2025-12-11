@@ -18,7 +18,7 @@ export const createPostsReport = async (c: Context) => {
 
   if (error) {
     LogUtil.log(JSON.stringify(error), { level: 'error', notify: true });
-    return ResponseUtil.error(c, error.message, 'C007', 500);
+    return ResponseUtil.error(c, error.message, 'C006', 500);
   }
 
   return ResponseUtil.success(c, data);

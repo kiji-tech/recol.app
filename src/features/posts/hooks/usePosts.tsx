@@ -7,11 +7,13 @@ import { Posts } from '../types/Posts';
 import { deletePosts } from '../apis/deletePosts';
 import { Toast } from 'toastify-react-native';
 import { LogUtil } from '@/src/libs/LogUtil';
+import { ApiErrorResponse } from '../../commons/apiService';
+import generateI18nMessage from '@/src/libs/i18n';
 
 export const usePosts = () => {
   const LIMIT_NUM = 10;
   // === Member ===
-  const { session, profile } = useAuth();
+  const { session } = useAuth();
   const [queryParams, setQueryParams] = useState<QueryParams>({ offset: 0, limit: LIMIT_NUM });
   const [posts, setPosts] = useState<Posts[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +47,9 @@ export const usePosts = () => {
       const option = isReset ? { offset: 0, limit: LIMIT_NUM } : queryParams;
       setIsLoading(true);
       try {
-        const data = await fetchPostsList(option);
+        const data = await fetchPostsList(option).catch((e) => {
+          throw e;
+        });
         if (isReset) setPosts(data);
         else {
           setPosts((prev) => {
@@ -55,6 +59,14 @@ export const usePosts = () => {
         setQueryParams((prev) => ({ offset: prev.offset! + LIMIT_NUM, limit: LIMIT_NUM }));
       } catch (e) {
         LogUtil.log(e, { level: 'warn' });
+        Toast.warn(
+          generateI18nMessage('MESSAGE.C006', [
+            {
+              key: 'param1',
+              value: generateI18nMessage('FEATURE.POSTS.TITLE'),
+            },
+          ])
+        );
       } finally {
         setIsLoading(false);
       }
@@ -69,10 +81,26 @@ export const usePosts = () => {
   const deleteMutate = useMutation({
     mutationFn: (posts: Posts) => deletePosts(posts, session),
     onSuccess: () => {
-      Toast.warn('削除しました.');
+      Toast.warn(
+        generateI18nMessage('MESSAGE.C004', [
+          {
+            key: 'param1',
+            value: generateI18nMessage('FEATURE.POSTS.TITLE'),
+          },
+        ])
+      );
+      reset();
     },
-    onError: () => {
-      Toast.warn('削除に失敗しました.');
+    onError: (error: ApiErrorResponse) => {
+      if (error && error.code == 'C008') {
+        Toast.warn(
+          generateI18nMessage(`MESSAGE.${error.code}`, [
+            { key: 'param1', value: generateI18nMessage('FEATURE.POSTS.TITLE') },
+          ])
+        );
+        return;
+      }
+      Toast.warn(generateI18nMessage('MESSAGE.O001'));
     },
   });
 

@@ -7,6 +7,7 @@
             "NEW_POST": "New Post"
         },
         "PLAN": {
+            "TITLE": "Plan",
             "CREATE_TITLE": "Create New Plan",
             "EDIT_TITLE": "Edit",
             "NEW_PLAN": "New Plan",
@@ -247,6 +248,7 @@
             "ERROR_MESSAGE": "Failed to get notification permission. Please try again later."
         },
         "POSTS": {
+            "TITLE": "Posts",
             "REPORT": "Report",
             "REASON_MESSAGE": "Please select a reason for reporting.",
             "INAPPROPRIATE_CONTENT": "Inappropriate content",
@@ -286,5 +288,19 @@
             "PREMIUM": "Premium plan"
         }
     },
-    "MESSAGE": {}
+    "MESSAGE": {
+        "C001": "Login user not found. Please log in again.",
+        "C002": "#param1# has been registered.",
+        "C003": "#param1# has been updated.",
+        "C004": "#param1# has been deleted.",
+        "C005": "Failed to retrieve #param1#.",
+        "C006": "Failed to register #param1#.",
+        "C007": "Failed to update #param1#.",
+        "C008": "Failed to delete #param1#.",
+        "C009": "Data item (#param1#) not found.",
+        "C010": "#param1# not found.",
+        "PP001": "The number of plans created has exceeded the limit. Please update your plan.",
+        "M001": "Storage capacity has exceeded #param1#GB. Please update your plan.",
+        "O001": "Processing failed. Please contact us."
+    }
 }

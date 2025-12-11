@@ -19,16 +19,7 @@ const validateUpdateRequest = async (c: Context): Promise<ValidationResult<Updat
     return {
       isValid: false,
       data: null,
-      error: ResponseUtil.error(c, getMessage('C003'), 'C003', 400),
-    };
-  }
-
-  if (!title || typeof title !== 'string') {
-    LogUtil.log('プラン更新リクエスト: タイトルが無効', { level: 'warn' });
-    return {
-      isValid: false,
-      data: null,
-      error: c.json({ message: getMessage('C003'), code: 'C003' }, 400),
+      error: ResponseUtil.error(c, 'uidがありません', 'C010', 400),
     };
   }
 

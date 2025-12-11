@@ -19,6 +19,7 @@ import { useAuth } from '@/src/features/auth';
 import { usePlan } from '@/src/contexts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import generateI18nMessage from '@/src/libs/i18n';
+import { ApiErrorResponse } from '@/src/features/commons/apiService';
 
 export default function PlanListScreen() {
   // === Member ===
@@ -37,10 +38,16 @@ export default function PlanListScreen() {
     onSuccess: () => {
       refetchPlanList();
     },
-    onError: (error) => {
-      if (error && error instanceof Error && error.message) {
-        Toast.warn(error.message);
+    onError: (error: ApiErrorResponse) => {
+      if (error && error.code == 'C008') {
+        Toast.warn(
+          generateI18nMessage(`MESSAGE.${error.code}`, [
+            { key: 'param1', value: generateI18nMessage('FEATURE.PLAN.TITLE') },
+          ])
+        );
+        return;
       }
+      Toast.warn(generateI18nMessage(`MESSAGE.O001`));
     },
   });
 

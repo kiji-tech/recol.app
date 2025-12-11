@@ -155,7 +155,7 @@ export const updateProfile = async (c: Context, supabase: SupabaseClient, user: 
 
   const finalAvatarUrl = await handleAvatarUpdate(supabase, user.id, avatar_url);
   if (avatar_url && finalAvatarUrl === null) {
-    return ResponseUtil.error(c, getMessage('C006', ['アバター']), 'C006', 500);
+    return ResponseUtil.error(c, getMessage('C007', ['アバター']), 'C006', 500);
   }
 
   const profileData = await updateProfileData(supabase, user.id, {
@@ -169,11 +169,5 @@ export const updateProfile = async (c: Context, supabase: SupabaseClient, user: 
     return ResponseUtil.error(c, getMessage('C007', ['プロフィール']), 'C007', 400);
   }
 
-  const subscriptionData = await getSubscriptionData(supabase, user.id);
-  if (!subscriptionData) {
-    return ResponseUtil.error(c, getMessage('C005', ['プロフィール']), 'C005', 400);
-  }
-
-  profileData.subscription = subscriptionData;
   return ResponseUtil.success(c, profileData);
 };

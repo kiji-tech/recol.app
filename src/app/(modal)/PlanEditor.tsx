@@ -11,6 +11,7 @@ import { LogUtil } from '@/src/libs/LogUtil';
 import { usePlan } from '@/src/contexts';
 import generateI18nMessage from '@/src/libs/i18n';
 import * as Location from 'expo-location';
+import { ApiErrorResponse } from '@/src/features/commons/apiService';
 
 export default function PlanEditor() {
   // === Member ===
@@ -20,15 +21,22 @@ export default function PlanEditor() {
   const [title, setTitle] = useState<string>(plan?.title || '');
   const [memo, setMemo] = useState<string>(plan?.memo || '');
 
+  // ==== Mutate ===
   const mutation = useMutation({
     mutationFn: (newPlan: Plan) => updatePlan(newPlan, session),
     onSuccess: () => {
       router.back();
     },
-    onError: (error) => {
-      if (error && error instanceof Error && error.message) {
-        Toast.warn(error.message);
+    onError: (error: ApiErrorResponse) => {
+      if (error && error.code == 'C007') {
+        Toast.warn(
+          generateI18nMessage(`MESSAGE.${error.code}`, [
+            { key: 'param1', value: generateI18nMessage('FEATURE.PLAN.TITLE') },
+          ])
+        );
+        return;
       }
+      Toast.warn(generateI18nMessage('MESSAGE.O001'));
     },
   });
 
