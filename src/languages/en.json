@@ -298,6 +298,7 @@
         "C007": "Failed to update #param1#.",
         "C008": "Failed to delete #param1#.",
         "C009": "Data item (#param1#) not found.",
+        "C010": "#param1# not found.",
         "PP001": "The number of plans created has exceeded the limit. Please update your plan.",
         "M001": "Storage capacity has exceeded #param1#GB. Please update your plan.",
         "O001": "Processing failed. Please contact us."
